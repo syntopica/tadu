@@ -39,3 +39,9 @@ def test_format_reference_matches_the_spec(skill_dir: Path) -> None:
     first_line, _, rest = copy.partition("\n")
     assert first_line == "Copied from spec/todo-format-v1.md; the spec is authoritative."
     assert rest == spec
+
+
+def test_rule_block_reference_matches_the_package_copy() -> None:
+    copy = REPO_ROOT / "skills" / "tadu-create" / "references" / "rule-block.md"
+    package = REPO_ROOT / "tadu" / "rule_block_v1.md"
+    assert copy.read_bytes() == package.read_bytes()

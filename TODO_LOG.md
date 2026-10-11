@@ -3,3 +3,11 @@
 > Searchable record of closed project work. Active work lives in `TODO.md`.
 
 <!-- tadu:log v1 since 2026-10-11 -->
+
+## 2026
+
+### 2026-10
+
+- [x] 2026-10-11 — **Tooling:** Ship doctor and sync (plan tasks 2-6).
+  - Result: `tadu doctor` checks TODO.md, TODO_LOG.md, the history index and the rule block read-only; `tadu sync` rewrites only the marked rule block, dry-run by default; the tadu-create and tadu-work skills ship with the plugin manifests.
+  - Evidence: uv run pytest (87 passed); uv run tadu doctor . exits 0

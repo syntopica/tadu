@@ -16,7 +16,7 @@ argument-hint: [scope-or-category]
 
 - Scope is the current repository and its project-owned TODO files. The primary
   backlog is the root `TODO.md`; nested TODO files apply when their subproject
-  is in scope. English in every artifact.
+  is in scope. Write entries in the backlog's existing language.
 - Cross-project discoveries are the one exception to repository scope: work that
   belongs to another project is filed in that project's own `TODO.md` as a
   bookkeeping write with an evidence pointer, never executed from this run. When

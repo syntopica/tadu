@@ -82,13 +82,25 @@ argument-hint: [repository-or-scope]
    entry shape and the optional item fields. Reconcile a documented existing
    convention deliberately and say what was normalized rather than mixing
    conventions.
-6. Add the rule block with `tadu sync <repo> --write` (or, when the CLI is not
-   installed, paste tadu's rule block from
-   `https://github.com/syntopica/tadu/blob/main/tadu/rule_block_v1.md` between
-   its markers into the canonical instruction source). For an existing log,
-   insert `<!-- tadu:log v1 since <today> -->` once after the header; a new log
-   carries it with its creation date. Do not duplicate a rule already present or
-   paste the audit workflow into an always-loaded file.
+6. Add the rule block to the canonical instruction source identified in step 1.
+   `tadu sync` defaults to `AGENTS.md`, then `CLAUDE.md`, and cannot see a
+   generated or imported source, so pass the file explicitly:
+   1. Run `tadu sync <repo> --file <canonical source>` as a dry run and read the
+      diff.
+   2. If the file already has an unmarked section headed "Continuous TODO", add
+      `--adopt-legacy` so the block replaces it instead of being appended as a
+      second rule, and read that diff too.
+   3. Apply the same command with `--write`.
+
+   The `--file` path is relative to the repository root. When the canonical
+   source is generated output (a write there is lost on the next build) or lives
+   outside the repository (sync refuses to write there), or the CLI is not
+   installed, edit the owning source by hand: paste `references/rule-block.md`
+   verbatim, markers included, replacing any legacy section. Do not duplicate a
+   rule already present or paste the audit workflow into an always-loaded file.
+
+   For an existing log, insert `<!-- tadu:log v1 since <today> -->` once after
+   the header; a new log carries it with its creation date.
 
 Every entry is concise, actionable, understandable without reopening the
 conversation, specific enough to know when it is done, deduplicated, and free of
