@@ -91,8 +91,9 @@ configured (another CLI agent, a cheaper model tier, a local model) for
 offloaded work - each with a cap on calls, so the cost is approved with
 everything else rather than spent silently.
 
-A run-scoped waiver ("execute without asking") skips this gate but never covers
-actions that independently require authority.
+When the user explicitly waives plan approval for this run, start without
+presenting the plan; every action on the authority list above still needs its
+own approval.
 
 ## Deciding instead of asking
 
