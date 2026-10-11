@@ -6,9 +6,8 @@ import json
 from pathlib import Path
 
 from tadu.finding import Finding
-
-KEYS = ("source", "conversation_id", "review_status", "review_version")
-STATUSES = frozenset({"complete", "partial", "inaccessible", "irrelevant"})
+from tadu.index_required_keys import INDEX_REQUIRED_KEYS
+from tadu.review_statuses import REVIEW_STATUSES
 
 
 def check_history_index(root: Path) -> tuple[Finding, ...]:
@@ -26,21 +25,16 @@ def check_history_index(root: Path) -> tuple[Finding, ...]:
         if not isinstance(record, dict):
             findings.append(Finding("H001", "error", str(path), number, "not a JSON object"))
             continue
-        missing = [key for key in KEYS if key not in record]
+        missing = [key for key in INDEX_REQUIRED_KEYS if key not in record]
         if missing:
             findings.append(
                 Finding("H002", "error", str(path), number, f"missing {', '.join(missing)}")
             )
             continue
-        if record["review_status"] not in STATUSES:
+        status = record["review_status"]
+        if not isinstance(status, str) or status not in REVIEW_STATUSES:
             findings.append(
-                Finding(
-                    "H003",
-                    "error",
-                    str(path),
-                    number,
-                    f"unknown status {record['review_status']!r}",
-                )
+                Finding("H003", "error", str(path), number, f"unknown status {status!r}")
             )
         key = (str(record["source"]), str(record["conversation_id"]))
         if key in seen:

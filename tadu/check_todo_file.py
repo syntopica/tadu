@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
+from tadu.closed_item_pattern import CLOSED_ITEM_PATTERN
 from tadu.finding import Finding
 from tadu.has_state_legend import has_state_legend
-
-CLOSED_ITEM = re.compile(r"^\s*- \[(x|-)\] ")
 
 
 def check_todo_file(root: Path) -> tuple[Finding, ...]:
@@ -21,7 +19,7 @@ def check_todo_file(root: Path) -> tuple[Finding, ...]:
     if not has_state_legend(text):
         findings.append(Finding("T002", "warning", str(path), 1, "no state legend"))
     for number, line in enumerate(text.splitlines(), start=1):
-        if CLOSED_ITEM.match(line):
+        if CLOSED_ITEM_PATTERN.match(line):
             findings.append(
                 Finding(
                     "T003",

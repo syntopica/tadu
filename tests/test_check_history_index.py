@@ -21,3 +21,11 @@ def test_each_index_rule(tmp_path: Path) -> None:
 
 def test_absent_index_is_fine(tmp_path: Path) -> None:
     assert check_history_index(tmp_path) == ()
+
+
+def test_non_string_status_is_h003_not_a_crash(tmp_path: Path) -> None:
+    (tmp_path / "TODO_HISTORY_INDEX.jsonl").write_text(
+        '{"source":"codex","conversation_id":"a","review_status":[],"review_version":1}\n'
+        '{"source":"codex","conversation_id":"b","review_status":{},"review_version":1}\n'
+    )
+    assert [(f.code, f.line) for f in check_history_index(tmp_path)] == [("H003", 1), ("H003", 2)]

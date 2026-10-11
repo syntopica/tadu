@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 from tadu.finding import Finding
-
-ENTRY = re.compile(r"^- \[(x|-)\] \d{4}-\d{2}-\d{2} ")
-REQUIRED = {"x": ("L002", "Evidence:"), "-": ("L003", "Resolution:")}
+from tadu.has_label_line import has_label_line
+from tadu.log_entry_pattern import LOG_ENTRY_PATTERN
+from tadu.required_log_labels import REQUIRED_LOG_LABELS
 
 
 def check_log_file(root: Path) -> tuple[Finding, ...]:
@@ -22,12 +21,12 @@ def check_log_file(root: Path) -> tuple[Finding, ...]:
     starts = [
         (number, match.group(1))
         for number, line in enumerate(lines, start=1)
-        if (match := ENTRY.match(line))
+        if (match := LOG_ENTRY_PATTERN.match(line))
     ]
     findings: list[Finding] = []
     for index, (number, state) in enumerate(starts):
         end = starts[index + 1][0] - 1 if index + 1 < len(starts) else len(lines)
-        code, label = REQUIRED[state]
-        if not any(label in line for line in lines[number:end]):
+        code, label = REQUIRED_LOG_LABELS[state]
+        if not has_label_line(lines[number:end], label):
             findings.append(Finding(code, "error", str(path), number, f"entry has no {label} line"))
     return tuple(findings)

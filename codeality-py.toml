@@ -10,7 +10,14 @@ max-file-lines = 150
 test-max-file-lines = 300
 
 [roles]
-data = []
+data = [
+  "tadu/closed_item_pattern.py",
+  "tadu/index_required_keys.py",
+  "tadu/log_entry_pattern.py",
+  "tadu/required_log_labels.py",
+  "tadu/review_statuses.py",
+  "tadu/state_markers.py",
+]
 registry = []
 entrypoint = ["tadu/cli.py"]
 generated = []
