@@ -14,3 +14,9 @@ def test_version_prints_and_exits_zero(capsys: pytest.CaptureFixture[str]) -> No
 
 def test_doctor_on_an_empty_directory_exits_one(tmp_path: Path) -> None:
     assert main(["doctor", str(tmp_path)]) == 1
+
+
+def test_sync_prints_the_diff_without_writing(tmp_path: Path) -> None:
+    (tmp_path / "AGENTS.md").write_text("# A\n")
+    assert main(["sync", str(tmp_path)]) == 0
+    assert (tmp_path / "AGENTS.md").read_text() == "# A\n"
