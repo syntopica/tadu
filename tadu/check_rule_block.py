@@ -7,6 +7,7 @@ from pathlib import Path
 from tadu.finding import Finding
 from tadu.instruction_file import instruction_file
 from tadu.legacy_rule_heading_pattern import LEGACY_RULE_HEADING_PATTERN
+from tadu.rule_block_close_pattern import RULE_BLOCK_CLOSE_PATTERN
 from tadu.rule_block_open_pattern import RULE_BLOCK_OPEN_PATTERN
 from tadu.rule_block_version import RULE_BLOCK_VERSION
 
@@ -23,6 +24,9 @@ def check_rule_block(root: Path) -> tuple[Finding, ...]:
             message = "legacy rule section; run sync --adopt-legacy"
             return (Finding("R002", "warning", str(path), 0, message),)
         return (Finding("R003", "error", str(path), 0, "no TODO maintenance rule"),)
+    close = RULE_BLOCK_CLOSE_PATTERN.search(text, match.end())
+    if close is None:
+        return (Finding("R005", "error", str(path), 0, "rule block has no closing marker"),)
     if int(match.group(1)) < RULE_BLOCK_VERSION:
         message = f"rule block v{match.group(1)}; current is v{RULE_BLOCK_VERSION}"
         return (Finding("R004", "warning", str(path), 0, message),)
