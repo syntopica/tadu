@@ -87,9 +87,13 @@ argument-hint: [repository-or-scope]
    generated or imported source, so pass the file explicitly:
    1. Run `tadu sync <repo> --file <canonical source>` as a dry run and read the
       diff.
-   2. If the file already has an unmarked section headed "Continuous TODO", add
-      `--adopt-legacy` so the block replaces it instead of being appended as a
-      second rule, and read that diff too.
+   2. If the file already has an unmarked section headed "Continuous TODO",
+      read it first. When it holds only the standard rule, add `--adopt-legacy`
+      so the block replaces it instead of being appended as a second rule, and
+      read that diff too. When it holds repository-specific lines, do not adopt
+      it: run plain `sync --write`, then keep those lines by hand under a "TODO
+      conventions specific to this repository" heading after the block, and
+      remove the superseded generic rule text.
    3. Apply the same command with `--write`.
 
    The `--file` path is relative to the repository root. When the canonical

@@ -24,3 +24,15 @@ def test_two_opens_is_malformed() -> None:
 
 def test_close_before_open_is_malformed() -> None:
     assert has_malformed_rule_markers("<!-- /tadu:rule -->\n<!-- tadu:rule v1 -->\n")
+
+
+def test_an_inline_mention_next_to_a_real_pair_is_not_malformed() -> None:
+    text = "Use `<!-- tadu:rule v1 -->`.\n<!-- tadu:rule v1 -->\nx\n<!-- /tadu:rule -->\n"
+    assert not has_malformed_rule_markers(text)
+
+
+def test_a_fenced_example_next_to_a_real_pair_is_not_malformed() -> None:
+    fenced = "```md\n<!-- tadu:rule v1 -->\n<!-- /tadu:rule -->\n```\n"
+    assert not has_malformed_rule_markers(
+        fenced + "<!-- tadu:rule v1 -->\nx\n<!-- /tadu:rule -->\n"
+    )

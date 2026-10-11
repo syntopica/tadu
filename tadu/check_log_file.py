@@ -5,11 +5,13 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
+from tadu.entry_end import entry_end
 from tadu.finding import Finding
 from tadu.has_label_line import has_label_line
 from tadu.is_legacy_entry import is_legacy_entry
 from tadu.log_entry_pattern import LOG_ENTRY_PATTERN
 from tadu.log_marker_pattern import LOG_MARKER_PATTERN
+from tadu.read_text_exact import read_text_exact
 from tadu.required_log_labels import REQUIRED_LOG_LABELS
 
 
@@ -20,7 +22,10 @@ def check_log_file(root: Path) -> tuple[Finding, ...]:
         if (root / "TODO.md").is_file():
             return (Finding("L001", "warning", str(path), 0, "no TODO_LOG.md"),)
         return ()
-    lines = path.read_text(encoding="utf-8").splitlines()
+    text = read_text_exact(path)
+    if not text.strip():
+        return (Finding("L006", "warning", str(path), 0, "TODO_LOG.md is empty"),)
+    lines = text.splitlines()
     findings: list[Finding] = []
     since = None
     for number, line in enumerate(lines, start=1):
@@ -41,10 +46,10 @@ def check_log_file(root: Path) -> tuple[Finding, ...]:
         for number, line in enumerate(lines, start=1)
         if (match := LOG_ENTRY_PATTERN.match(line))
     ]
-    for index, (number, state, stamp) in enumerate(starts):
+    for number, state, stamp in starts:
         if since is not None and is_legacy_entry(stamp, since):
             continue
-        end = starts[index + 1][0] - 1 if index + 1 < len(starts) else len(lines)
+        end = entry_end(lines, number)
         code, label = REQUIRED_LOG_LABELS[state]
         if not has_label_line(lines[number:end], label):
             findings.append(

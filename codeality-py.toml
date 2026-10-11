@@ -13,10 +13,11 @@ test-max-file-lines = 300
 data = [
   "tadu/closed_item_pattern.py",
   "tadu/doctor_checks.py",
+  "tadu/entry_boundary_pattern.py",
+  "tadu/fence_line_pattern.py",
   "tadu/index_required_keys.py",
   "tadu/legacy_rule_heading_pattern.py",
   "tadu/legacy_rule_section_pattern.py",
-  "tadu/marked_rule_block_pattern.py",
   "tadu/log_entry_pattern.py",
   "tadu/log_marker_pattern.py",
   "tadu/required_log_labels.py",

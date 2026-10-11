@@ -33,7 +33,8 @@ stale wording in place. Closed entries do not accumulate in the active backlog.
 ```
 
 For partial coverage add one short sentence naming what was unavailable. No
-executive summary.
+executive summary. An empty or whitespace-only `TODO.md` does not satisfy the
+format and is an error.
 
 ## `TODO_LOG.md`
 
@@ -70,6 +71,12 @@ missing one is an error. Entries dated before it are legacy, kept verbatim and
 not checked. Without the marker every dated entry is checked but a missing line
 is only a warning, and the checker reports the absent marker; a marker whose
 date does not parse is an error and is treated as absent.
+
+An entry runs from its line to the next top-level item (dated or not) or the
+next heading, and its `Evidence:` or `Resolution:` label must carry content:
+text after the colon, or an indented continuation line right after it. A bare
+label, or a label that belongs to another entry or section, does not count. An
+empty or whitespace-only `TODO_LOG.md` is a warning.
 
 Evidence is a test name, command result, commit, PR, issue or report reference,
 not a transcript. Treat the log as append-only history: correct material
@@ -139,7 +146,9 @@ repository root:
 ```
 
 Records are written as one JSON object per line; the block above is expanded
-only for readability.
+only for readability. `source` and `conversation_id` are non-empty strings,
+`review_version` is a positive integer and `review_status` is one of the
+statuses below. Records are sorted by `source`, then `conversation_id`.
 
 ## Statuses
 
@@ -181,6 +190,27 @@ Before finishing, use the index to find skipped ranges, duplicate records,
 changed fingerprints and untracked sources; confirm every `complete` record was
 written only after reconciliation, and that partial or inaccessible coverage is
 still reported honestly.
+
+## Instruction rule block
+
+The maintenance rule lives in the repository's agent instruction file
+(`AGENTS.md`, else `CLAUDE.md`) between two marker lines:
+
+```md
+<!-- tadu:rule v1 -->
+...
+<!-- /tadu:rule -->
+```
+
+A marker counts only as a whole line, with optional surrounding whitespace, and
+never inside a fenced code block (``` or ~~~), so a marker quoted in prose or in
+an example is not a marker. A file carries either no markers or exactly one open
+marker followed by one close marker; anything else is malformed and tools leave
+the file alone. Tools replace only the text between the markers and keep the
+file's line endings. A legacy, unmarked section headed "Continuous TODO" ends at
+the next Markdown heading of any level, the next line starting with `<!--`, or
+the end of the file; replace it only when it holds nothing but the standard
+rule.
 
 ## Optional item fields (v1)
 

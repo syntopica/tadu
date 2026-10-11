@@ -7,6 +7,7 @@ from pathlib import Path
 from tadu.closed_item_pattern import CLOSED_ITEM_PATTERN
 from tadu.finding import Finding
 from tadu.has_state_legend import has_state_legend
+from tadu.read_text_exact import read_text_exact
 
 
 def check_todo_file(root: Path) -> tuple[Finding, ...]:
@@ -14,7 +15,9 @@ def check_todo_file(root: Path) -> tuple[Finding, ...]:
     path = root / "TODO.md"
     if not path.is_file():
         return (Finding("T001", "error", str(path), 0, "no TODO.md"),)
-    text = path.read_text(encoding="utf-8")
+    text = read_text_exact(path)
+    if not text.strip():
+        return (Finding("T004", "error", str(path), 0, "TODO.md is empty"),)
     findings: list[Finding] = []
     if not has_state_legend(text):
         findings.append(Finding("T002", "warning", str(path), 1, "no state legend"))

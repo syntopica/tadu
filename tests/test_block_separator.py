@@ -15,3 +15,9 @@ def test_text_with_one_newline_gets_one_more() -> None:
 
 def test_text_with_a_blank_line_gets_nothing() -> None:
     assert block_separator("# A\n\n") == ""
+
+
+def test_crlf_text_gets_crlf_separators() -> None:
+    assert block_separator("# A", "\r\n") == "\r\n\r\n"
+    assert block_separator("# A\r\n", "\r\n") == "\r\n"
+    assert block_separator("# A\r\n\r\n", "\r\n") == ""

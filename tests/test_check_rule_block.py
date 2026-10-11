@@ -42,3 +42,19 @@ def test_two_opening_markers_are_r005(tmp_path: Path) -> None:
     block = rule_block_text()
     (tmp_path / "AGENTS.md").write_text(block + "\n" + block)
     assert [f.code for f in check_rule_block(tmp_path)] == ["R005"]
+
+
+def test_inline_mention_of_the_markers_is_r003_not_a_block(tmp_path: Path) -> None:
+    (tmp_path / "AGENTS.md").write_text("Wrap the rule in `<!-- tadu:rule v1 -->` lines.\n")
+    assert [f.code for f in check_rule_block(tmp_path)] == ["R003"]
+
+
+def test_fenced_example_next_to_a_real_block_passes(tmp_path: Path) -> None:
+    fenced = "```md\n<!-- tadu:rule v0 -->\nx\n<!-- /tadu:rule -->\n```\n"
+    (tmp_path / "AGENTS.md").write_text(fenced + rule_block_text())
+    assert check_rule_block(tmp_path) == ()
+
+
+def test_crlf_block_passes(tmp_path: Path) -> None:
+    (tmp_path / "AGENTS.md").write_bytes(rule_block_text().replace("\n", "\r\n").encode())
+    assert check_rule_block(tmp_path) == ()
