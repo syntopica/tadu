@@ -11,6 +11,8 @@ Add it to `TODO.md` when absent:
 - `[x]` verified complete
 - `[-]` obsolete or superseded by a named replacement
 
+Only a top-level `[x]` or `[-]` item is closed; an indented one is a step of its open parent and stays.
+
 Mark `[~]` as soon as work lands without completion evidence. Keep `[!]` in
 `TODO.md` with the exact blocker and the smallest unblock action. Mark `[x]`
 only when implementation, validation and intent agree. Use `[-]` only when the

@@ -18,3 +18,10 @@ def test_closed_marker_is_t003_with_line(tmp_path: Path) -> None:
 def test_no_legend_is_t002(tmp_path: Path) -> None:
     (tmp_path / "TODO.md").write_text("# TODO\n\n- [ ] open\n")
     assert [f.code for f in check_todo_file(tmp_path)] == ["T002"]
+
+
+def test_indented_closed_step_under_open_parent_is_not_flagged(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        "# TODO\n\n> States: `[ ]` pending · `[~]` partial · `[!]` blocked · `[x]` done · `[-]` obsolete\n\n- [ ] parent\n  - [x] step\n"
+    )
+    assert check_todo_file(tmp_path) == ()

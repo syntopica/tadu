@@ -16,3 +16,10 @@ def test_does_not_start_at_the_title_line() -> None:
 
 def test_matches_headings_only() -> None:
     assert LEGACY_RULE_SECTION_PATTERN.search("see Continuous TODO here") is None
+
+
+def test_section_ends_at_a_comment_marker_line() -> None:
+    text = "## Continuous TODO, Work Log\nold\n<!-- BEGIN:nextjs-agent-rules -->\nkeep\n"
+    match = LEGACY_RULE_SECTION_PATTERN.search(text)
+    assert match is not None
+    assert match.group(0) == "## Continuous TODO, Work Log\nold\n"

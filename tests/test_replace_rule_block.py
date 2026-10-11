@@ -19,3 +19,9 @@ def test_legacy_left_alone_without_flag() -> None:
 
 def test_none_when_nothing_replaceable() -> None:
     assert replace_rule_block("# A\n", BLOCK, True) is None
+
+
+def test_legacy_section_keeps_a_comment_marker_that_follows_it() -> None:
+    text = "## Continuous TODO\nold\n<!-- BEGIN:nextjs-agent-rules -->\nkeep\n"
+    expected = BLOCK + "\n<!-- BEGIN:nextjs-agent-rules -->\nkeep\n"
+    assert replace_rule_block(text, BLOCK, True) == expected
