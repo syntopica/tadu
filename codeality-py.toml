@@ -12,10 +12,14 @@ test-max-file-lines = 300
 [roles]
 data = [
   "tadu/closed_item_pattern.py",
+  "tadu/doctor_checks.py",
   "tadu/index_required_keys.py",
+  "tadu/legacy_rule_heading_pattern.py",
   "tadu/log_entry_pattern.py",
   "tadu/required_log_labels.py",
   "tadu/review_statuses.py",
+  "tadu/rule_block_open_pattern.py",
+  "tadu/rule_block_version.py",
   "tadu/state_markers.py",
 ]
 registry = []
