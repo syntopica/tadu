@@ -43,7 +43,7 @@ single root file:
 
 > Searchable record of closed project work. Active work lives in `TODO.md`.
 
-<!-- tadu:log v1 -->
+<!-- tadu:log v1 since 2026-07-01 -->
 
 ## 2026
 
@@ -58,13 +58,16 @@ single root file:
   - Resolution: Superseded by the accepted Redis retention decision in ADR-12.
 ```
 
-The marker line `<!-- tadu:log v1 -->` separates legacy history from checked
-history. A repository adopting the format inserts it once, after the header,
-and keeps its existing entries verbatim above it: entries above the marker are
-legacy and are not checked for `Evidence:` or `Resolution:` lines. Entries
-below it are checked, and a missing line is an error. Without the marker every
-dated entry is checked but a missing line is only a warning, and the checker
-reports that the marker is absent.
+The marker line `<!-- tadu:log v1 since YYYY-MM-DD -->` dates the boundary
+between legacy and checked history. A repository adopting the format inserts it
+once, conventionally after the header, with the adoption date; a new log uses
+its creation date. It applies to entries dated on or after that date,
+regardless of the order the file keeps them in (newest-first and oldest-first
+logs both work): those entries need an `Evidence:` or `Resolution:` line, and a
+missing one is an error. Entries dated before it are legacy, kept verbatim and
+not checked. Without the marker every dated entry is checked but a missing line
+is only a warning, and the checker reports the absent marker; a marker whose
+date does not parse is an error and is treated as absent.
 
 Evidence is a test name, command result, commit, PR, issue or report reference,
 not a transcript. Treat the log as append-only history: correct material
