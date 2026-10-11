@@ -1,0 +1,9 @@
+interface:
+  display_name: tadu create
+  short_description: Build a tadu backlog and work log from accessible agent conversation history.
+  default_prompt:
+    Audit the accessible project history and consolidate every recoverable task into TODO.md,
+    TODO_LOG.md, and TODO_HISTORY_INDEX.jsonl without implementing the work.
+  brand_color: '#0F766E'
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,15 @@
+{
+  "name": "tadu",
+  "description": "tadu: skills that create and work a repository backlog in the tadu format.",
+  "owner": { "name": "Syntopica", "url": "https://github.com/syntopica" },
+  "plugins": [
+    {
+      "name": "tadu",
+      "source": ".",
+      "description": "Keep a repository backlog agents work through: create it from history, execute it, check it.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "keywords": ["todo", "backlog", "agents"]
+    }
+  ]
+}

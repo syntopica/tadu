@@ -1,0 +1,9 @@
+interface:
+  display_name: tadu work
+  short_description: Execute an existing tadu backlog under an approved plan and hard run caps.
+  default_prompt:
+    Reconstruct the backlog, present the execution plan for approval, then advance every safe
+    actionable item with evidence and keep TODO.md and TODO_LOG.md truthful.
+  brand_color: '#1D4ED8'
+policy:
+  allow_implicit_invocation: true

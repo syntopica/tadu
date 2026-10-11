@@ -21,9 +21,8 @@ stale wording in place. Closed entries do not accumulate in the active backlog.
 ```md
 # TODO
 
-> Consolidated from the accessible Claude, Codex, Cursor, and Antigravity
-> project history. Last reviewed: YYYY-MM-DD. History coverage: Complete |
-> Partial.
+> Consolidated from the accessible agent conversation history of this
+> project. Last reviewed: YYYY-MM-DD. History coverage: Complete | Partial.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]`
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
@@ -124,7 +123,7 @@ repository root:
 
 ```json
 {
-  "source": "codex",
+  "source": "agent-cli",
   "conversation_id": "019abc...",
   "source_ref": "optional-safe-locator",
   "source_updated_at": "2026-07-23T10:15:00Z",

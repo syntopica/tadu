@@ -19,6 +19,22 @@ Two commands, both coming in this release:
 uv tool install git+https://github.com/syntopica/tadu
 ```
 
+## Skills
+
+Two agent skills ship with the format:
+
+- `tadu-create` builds `TODO.md`, `TODO_LOG.md` and the history index from the project's agent conversation history.
+- `tadu-work` executes an existing backlog under an approved plan and run caps.
+
+In Claude Code:
+
+```text
+/plugin marketplace add syntopica/tadu
+/plugin install tadu@tadu
+```
+
+For other agents, copy `skills/<name>/` into the agent's skills directory.
+
 ## License
 
 MIT
