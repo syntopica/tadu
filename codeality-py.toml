@@ -1,0 +1,17 @@
+# Managed by codeality-py.
+schema-version = 1
+source-roots = ["tadu"]
+test-roots = ["tests"]
+respect-gitignore = true
+coverage-threshold = 65
+
+[limits]
+max-file-lines = 150
+test-max-file-lines = 300
+
+[roles]
+data = []
+registry = []
+entrypoint = ["tadu/cli.py"]
+generated = []
+namespace-init = ["tadu/__init__.py"]
