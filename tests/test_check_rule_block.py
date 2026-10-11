@@ -36,3 +36,9 @@ def test_close_before_open_is_r005(tmp_path: Path) -> None:
 def test_old_block_is_r004(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text("<!-- tadu:rule v0 -->\nx\n<!-- /tadu:rule -->\n")
     assert [f.code for f in check_rule_block(tmp_path)] == ["R004"]
+
+
+def test_two_opening_markers_are_r005(tmp_path: Path) -> None:
+    block = rule_block_text()
+    (tmp_path / "AGENTS.md").write_text(block + "\n" + block)
+    assert [f.code for f in check_rule_block(tmp_path)] == ["R005"]
