@@ -12,6 +12,7 @@ from tadu.instruction_file import instruction_file
 from tadu.read_sync_source import read_sync_source
 from tadu.replace_rule_block import replace_rule_block
 from tadu.rule_block_text import rule_block_text
+from tadu.same_ignoring_blank_lines import same_ignoring_blank_lines
 from tadu.write_file_atomically import write_file_atomically
 
 
@@ -28,7 +29,7 @@ def run_sync(path: str, file: str | None, *, write: bool, adopt_legacy: bool) ->
     after = replace_rule_block(before, block, adopt_legacy=adopt_legacy)
     if after is None:
         after = before + block_separator(before, newline) + block
-    if after == before:
+    if same_ignoring_blank_lines(after, before):
         print(f"{candidate}: up to date")
         return 0
     print(

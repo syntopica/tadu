@@ -1,4 +1,5 @@
 <!-- tadu:rule v1 -->
+
 ## Continuous TODO, Work Log, and History Coverage
 
 Maintain `TODO.md` as the active backlog and `TODO_LOG.md` as the searchable

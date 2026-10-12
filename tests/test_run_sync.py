@@ -168,3 +168,13 @@ def test_symlink_swapped_after_validation_cannot_redirect_the_write(
     assert run_sync(str(root), None, write=True, adopt_legacy=False) == 0
     assert outside.read_text() == "# Outside\n"
     assert "<!-- tadu:rule v1 -->" in (root / "real.md").read_text()
+
+
+def test_block_reformatted_with_blank_lines_is_up_to_date(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    compact = rule_block_text().replace("-->\n\n", "-->\n")
+    (tmp_path / "AGENTS.md").write_text("# A\n\n" + compact)
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
+    assert (tmp_path / "AGENTS.md").read_text() == "# A\n\n" + compact
+    assert "up to date" in capsys.readouterr().out
