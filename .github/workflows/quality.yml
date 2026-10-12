@@ -39,6 +39,11 @@ jobs:
       - name: Run the quality gate
         run: uv run codeality-py gate --json
 
+      # The gate type-checks the package only; tadu holds its tests to the
+      # same strict mypy configuration.
+      - name: Type-check the tests
+        run: uv run mypy tadu tests
+
       - name: Type-check with pyrefly, without blocking
         continue-on-error: true
         run: |
