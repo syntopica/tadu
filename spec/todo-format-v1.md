@@ -31,8 +31,10 @@ stale wording in place. Closed entries do not accumulate in the active backlog.
 > `TODO_LOG.md`.
 ```
 
-For partial coverage add one short sentence naming what was unavailable. No
-executive summary. An empty or whitespace-only `TODO.md` does not satisfy the
+For partial coverage add one short sentence naming what was unavailable. A
+backlog started without a history audit, as `tadu init` writes it, replaces the
+first quoted paragraph with one line saying it is the project's active backlog
+and claims no coverage. No executive summary. An empty or whitespace-only `TODO.md` does not satisfy the
 format and is an error.
 
 ## `TODO_LOG.md`
@@ -196,10 +198,15 @@ The maintenance rule lives in the repository's agent instruction file
 (`AGENTS.md`, else `CLAUDE.md`) between two marker lines:
 
 ```md
-<!-- tadu:rule v1 -->
+<!-- tadu:rule v2 -->
 ...
 <!-- /tadu:rule -->
 ```
+
+The number in the open marker is the rule block's version, separate from the
+format version: v2 adds the closed-entry template and the labels it requires.
+A block older than the current version is a warning until `tadu sync` rewrites
+it.
 
 A marker counts only as a whole line, with optional surrounding whitespace, and
 never inside a fenced code block (``` or ~~~), so a marker quoted in prose or in

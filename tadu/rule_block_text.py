@@ -6,5 +6,5 @@ from importlib.resources import files
 
 
 def rule_block_text() -> str:
-    """Return the v1 block, markers included, ending in a newline."""
-    return files("tadu").joinpath("rule_block_v1.md").read_text(encoding="utf-8")
+    """Return the current block, markers included, ending in a newline."""
+    return files("tadu").joinpath("rule_block_v2.md").read_text(encoding="utf-8")

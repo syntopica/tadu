@@ -65,10 +65,12 @@ ignore = [
 [lint.per-file-ignores]
 # **/ so the pattern also reaches nested test roots such as host/tests.
 "**/tests/**" = ["D", "S101", "INP001", "PLR2004"]
-# The two commands report to the terminal; print is their output channel.
+# The commands report to the terminal; print is their output channel.
 "tadu/run_doctor.py" = ["T201"]
 "tadu/run_sync.py" = ["T201"]
 "tadu/read_sync_source.py" = ["T201"]
+"tadu/run_init.py" = ["T201"]
+"tadu/create_missing_file.py" = ["T201"]
 "**/conftest.py" = ["D"]
 
 [lint.mccabe]

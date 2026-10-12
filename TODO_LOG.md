@@ -15,3 +15,22 @@
 - [x] 2026-10-12 — **Tooling:** Final-review fixes for doctor and sync.
   - Result: `sync --write` is atomic and keeps line endings and mode; the legacy section ends at any heading; rule markers count only as whole lines outside fences; empty files, bare log labels, mistyped or unsorted index records and undecodable files are reported; the README is a verified walkthrough.
   - Evidence: uv run pytest (168 passed); uv run tadu doctor . exits 0.
+
+- [x] 2026-10-12 — **Adoption:** Rule block v2 that a contributor's agent can follow without the skills.
+  - Result: The block names the `Evidence:` / `Resolution:` lines per state, gives the closed-entry template and the `## YYYY` / `### YYYY-MM` headings, links the spec and calls the skills optional; `RULE_BLOCK_VERSION` is 2, so v1 blocks report R004.
+  - Evidence: uv run codeality-py gate (all passed, 100% coverage); a Codex agent given only the synced `AGENTS.md` in a fresh repository recorded and closed one `[x]` and one `[-]` item and `tadu doctor .` exited 0.
+
+- [x] 2026-10-12 — **Adoption:** `tadu init` for a repository without a backlog.
+  - Result: Dry-run by default; adds the rule block, then creates the missing `TODO.md` and `TODO_LOG.md` exclusively, refusing a directory or dangling symlink in their place before any write.
+  - Evidence: tests/test_run_init.py; `tadu init --write` in an empty repository then `tadu doctor .` exited 0 with no output; Codex review round 2 reported no findings.
+
+- [x] 2026-10-12 — **Adoption:** Enforcement for consumer repositories.
+  - Result: `.pre-commit-hooks.yaml` ships the `tadu-doctor` hook; the README documents it and a pinned `uvx` CI step.
+  - Evidence: `uvx pre-commit try-repo <tadu> tadu-doctor --all-files` passed on a clean repository and failed with exit 1 on a stray `[x]` item.
+
+- [x] 2026-10-12 — **Documentation:** Claude Code and `AGENTS.md`.
+  - Result: The README tells Claude Code users to add a `CLAUDE.md` containing `@AGENTS.md` when tadu created `AGENTS.md`.
+  - Evidence: README.md "Start a repository" section.
+
+- [-] 2026-10-12 — **Adoption:** Recommend `TODO_LOG.md merge=union`.
+  - Resolution: Rejected: a union merge can interleave the lines of two multi-line entries and attach one entry's `Evidence:` to the other; the README says to resolve log conflicts by hand and run `tadu doctor .`.

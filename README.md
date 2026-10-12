@@ -8,10 +8,13 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 
 The format is specified in [spec/todo-format-v1.md](spec/todo-format-v1.md).
 
-Two commands:
+Three commands:
 
+- `tadu init` starts the backlog in a repository that has none.
 - `tadu doctor` checks a repository against the format and never writes.
 - `tadu sync` updates the marked rule block in an agent instruction file.
+
+Contributors need none of it: the rule block that `sync` writes into `AGENTS.md` or `CLAUDE.md` tells any agent, or any person, how to add an item and how to log closed work in a shape `doctor` accepts.
 
 ## Requirements
 
@@ -27,6 +30,20 @@ tadu --version
 ```text
 tadu 0.1.0
 ```
+
+## Start a repository
+
+`tadu init` adds the rule block (as `tadu sync` does), then creates `TODO.md` with the state legend and `TODO_LOG.md` with a log marker dated today. An existing `TODO.md` or `TODO_LOG.md` is left untouched, so it also completes a half-adopted repository; an existing rule block is updated as `sync` would. A directory or a dangling symlink in place of either file is refused before anything is written. Like `sync`, it prints what it would do and changes nothing until `--write`:
+
+```bash
+tadu init
+tadu init --write
+tadu doctor .
+```
+
+`init` writes no history index and claims no history coverage. To recover the open work buried in past agent conversations instead, use the `tadu-create` skill. `--file` selects the instruction file as it does for `sync`, and the exit status is `2` when the rule target or a backlog path is refused, in which case nothing is written.
+
+With neither `AGENTS.md` nor `CLAUDE.md` present, `init` and `sync` create `AGENTS.md`. Claude Code reads `AGENTS.md` only when its AGENTS.md support is enabled, so in a repository worked with Claude Code add a `CLAUDE.md` containing the line `@AGENTS.md`. When both files exist, tadu uses `AGENTS.md`.
 
 ## Check a repository
 
@@ -46,7 +63,7 @@ Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` w
 
 ## Write the rule block
 
-`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v1 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
+`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v2 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
 
 ```bash
 tadu sync .
@@ -58,7 +75,7 @@ tadu sync .
 @@ -1 +1,31 @@
  # Demo
 +
-+<!-- tadu:rule v1 -->
++<!-- tadu:rule v2 -->
 +
 +## Continuous TODO, Work Log, and History Coverage
 ...
@@ -81,6 +98,8 @@ AGENTS.md: up to date
 - `--file docs/rules.md` selects another instruction file, given relative to the repository root. `sync` refuses a file that resolves outside the root and exits `2`; it also exits `2` for unbalanced markers and for a file that is not valid UTF-8.
 - `--adopt-legacy` replaces an older, unmarked section headed "Continuous TODO" instead of appending a second rule. The section ends at the next Markdown heading of any level, at the next line starting with `<!--`, or at the end of the file. Use it only when that section holds nothing but the standard rule. When it holds repository-specific lines, run plain `tadu sync . --write` and keep those lines by hand under a "TODO conventions specific to this repository" heading after the block.
 
+A repository synced before the current block version gets an `R004` warning; run `tadu sync . --write` to update it. Version 2 adds the closed-entry template and names the `Evidence:` and `Resolution:` lines the log check requires.
+
 ## Adopt the log check
 
 Closed entries in `TODO_LOG.md` need an `Evidence:` (for `[x]`) or `Resolution:` (for `[-]`) line with content. Without a marker the check is only a warning, so that old history does not fail. A repository adopting the format inserts this line once, after the log header, with the adoption date:
@@ -90,6 +109,28 @@ Closed entries in `TODO_LOG.md` need an `Evidence:` (for `[x]`) or `Resolution:`
 ```
 
 Entries dated on or after that day then need proof and a missing line is an error; older entries are legacy and are not checked.
+
+## Enforce it
+
+Run `doctor` on every commit with [pre-commit](https://pre-commit.com/). Pin `rev` to a tag or commit of this repository:
+
+```yaml
+repos:
+  - repo: https://github.com/syntopica/tadu
+    rev: <tag or commit>
+    hooks:
+      - id: tadu-doctor
+```
+
+Or as a CI step, with the same pin:
+
+```bash
+uvx --from git+https://github.com/syntopica/tadu@<tag or commit> tadu doctor .
+```
+
+Both fail only on errors. Warnings, including an outdated rule block, do not block a commit.
+
+Branches that close work in the same month both append to the same section of `TODO_LOG.md` and conflict when merged. Resolve the conflict by keeping both entries whole, then run `tadu doctor .`. Do not set `merge=union` for these files: it can interleave the lines of two entries and attach one entry's `Evidence:` to the other.
 
 ## Finding codes
 

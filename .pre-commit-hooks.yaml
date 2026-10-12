@@ -1,0 +1,9 @@
+# Check the repository's tadu backlog on every commit. doctor reads the whole
+# repository, so it runs regardless of which files the commit touches.
+- id: tadu-doctor
+  name: tadu doctor
+  description: Check TODO.md, TODO_LOG.md, the history index and the rule block against the tadu format.
+  entry: tadu doctor .
+  language: python
+  pass_filenames: false
+  always_run: true

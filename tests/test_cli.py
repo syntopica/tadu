@@ -20,3 +20,9 @@ def test_sync_prints_the_diff_without_writing(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text("# A\n")
     assert main(["sync", str(tmp_path)]) == 0
     assert (tmp_path / "AGENTS.md").read_text() == "# A\n"
+
+
+def test_init_writes_the_backlog(tmp_path: Path) -> None:
+    assert main(["init", str(tmp_path), "--write"]) == 0
+    assert (tmp_path / "TODO.md").is_file()
+    assert (tmp_path / "TODO_LOG.md").is_file()
