@@ -19,9 +19,6 @@ if TYPE_CHECKING:
 def run_init(path: str, file: str | None, *, write: bool, today: date) -> int:
     """Add the rule block, then create the backlog files that are missing."""
     root = Path(path)
-    if not root.is_dir():
-        print(f"{root}: not a directory", file=sys.stderr)
-        return 2
     targets = ((root / "TODO.md", fresh_todo_text()), (root / "TODO_LOG.md", fresh_log_text(today)))
     blocked = [target for target, _ in targets if is_blocked_target(target)]
     if blocked:

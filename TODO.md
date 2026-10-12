@@ -12,4 +12,3 @@
 ## Adoption
 
 - [ ] Run `tadu sync --write` in the 13 repositories migrated to rule block v1 so their agents get the v2 entry template; until then `tadu doctor` reports R004 there.
-- [ ] `tadu sync` on a path that does not exist prints a diff and exits 0, and with `--write` fails with a traceback; refuse it with exit 2 as `tadu init` does.

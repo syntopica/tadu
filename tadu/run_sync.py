@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import difflib
+import sys
 from pathlib import Path
 
 from tadu.block_separator import block_separator
@@ -19,6 +20,9 @@ from tadu.write_file_atomically import write_file_atomically
 def run_sync(path: str, file: str | None, *, write: bool, adopt_legacy: bool) -> int:
     """Print the diff for the rule block; apply it only with write."""
     root = Path(path)
+    if not root.is_dir():
+        print(f"{root}: not a directory", file=sys.stderr)
+        return 2
     candidate = instruction_file(root, file) or root / "AGENTS.md"
     source = read_sync_source(candidate, root)
     if source is None:

@@ -178,3 +178,9 @@ def test_block_reformatted_with_blank_lines_is_up_to_date(
     run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     assert (tmp_path / "AGENTS.md").read_text() == "# A\n\n" + compact
     assert "up to date" in capsys.readouterr().out
+
+
+def test_missing_root_is_refused(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    assert run_sync(str(tmp_path / "absent"), None, write=True, adopt_legacy=False) == 2
+    assert not (tmp_path / "absent").exists()
+    assert "not a directory" in capsys.readouterr().err

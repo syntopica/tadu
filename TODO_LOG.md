@@ -34,3 +34,7 @@
 
 - [-] 2026-10-12 — **Adoption:** Recommend `TODO_LOG.md merge=union`.
   - Resolution: Rejected: a union merge can interleave the lines of two multi-line entries and attach one entry's `Evidence:` to the other; the README says to resolve log conflicts by hand and run `tadu doctor .`.
+
+- [x] 2026-10-12 — **Bugs:** `tadu sync` on a path that does not exist.
+  - Result: `sync` (and so `init`) refuses a root that is not a directory with exit 2; it used to print a diff and exit 0, and traceback with `--write`.
+  - Evidence: tests/test_run_sync.py::test_missing_root_is_refused; `tadu sync /nonexistent/x --write` prints "not a directory" and exits 2; uv run codeality-py gate all passed.
