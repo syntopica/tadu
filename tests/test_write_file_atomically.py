@@ -28,8 +28,9 @@ def test_failed_replace_leaves_the_original_and_no_temp_file(
     path = tmp_path / "a.md"
     path.write_text("original")
 
-    def refuse(source: object, destination: object) -> None:
-        raise OSError("disk full")
+    def refuse(_source: object, _destination: object) -> None:
+        message = "disk full"
+        raise OSError(message)
 
     monkeypatch.setattr(os, "replace", refuse)
     with pytest.raises(OSError, match="disk full"):

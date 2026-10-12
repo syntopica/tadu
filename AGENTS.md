@@ -6,7 +6,7 @@
 - Run the gate before committing:
 
 ```bash
-uv sync && uv run pytest -v && uv run ruff check . && uv run ruff format --check . && uv run mypy tadu && uv run codeality-py gate
+uv sync && uv run pytest -v && uv run ruff check . && uv run ruff format --check . && uv run mypy tadu tests && uv run codeality-py gate
 ```
 
 <!-- tadu:rule v1 -->

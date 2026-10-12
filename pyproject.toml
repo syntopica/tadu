@@ -21,8 +21,19 @@ include = ["tadu*"]
 tadu = ["rule_block_v1.md"]
 
 [tool.pytest.ini_options]
-addopts = "-ra"
+addopts = "-ra --strict-markers --strict-config"
+xfail_strict = true
+filterwarnings = ["error"]
 testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 100
+exclude_also = ['if __name__ == "__main__":']
 
 [tool.deptry.per_rule_ignores]
 DEP004 = ["pytest"]

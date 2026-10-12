@@ -9,20 +9,20 @@ from tadu.run_sync import run_sync
 
 def test_dry_run_does_not_write(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     (tmp_path / "AGENTS.md").write_text("# A\n")
-    assert run_sync(str(tmp_path), None, False, False) == 0
+    assert run_sync(str(tmp_path), None, write=False, adopt_legacy=False) == 0
     assert (tmp_path / "AGENTS.md").read_text() == "# A\n"
     assert "+<!-- tadu:rule v1 -->" in capsys.readouterr().out
 
 
 def test_write_appends_block(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text("# A\n")
-    run_sync(str(tmp_path), None, True, False)
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     assert "<!-- tadu:rule v1 -->" in (tmp_path / "AGENTS.md").read_text()
 
 
 def test_append_without_trailing_newline_leaves_one_blank_line(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text("# A")
-    run_sync(str(tmp_path), None, True, False)
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     text = (tmp_path / "AGENTS.md").read_text()
     assert text.startswith("# A\n\n<!-- tadu:rule v1 -->\n")
     assert "\n\n\n" not in text
@@ -30,16 +30,16 @@ def test_append_without_trailing_newline_leaves_one_blank_line(tmp_path: Path) -
 
 def test_up_to_date_file_is_reported(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     (tmp_path / "AGENTS.md").write_text("# A\n")
-    run_sync(str(tmp_path), None, True, False)
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     capsys.readouterr()
-    assert run_sync(str(tmp_path), None, True, False) == 0
+    assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     assert "up to date" in capsys.readouterr().out
 
 
 def test_explicit_file_is_used(tmp_path: Path) -> None:
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs" / "rules.md").write_text("# R\n")
-    run_sync(str(tmp_path), "docs/rules.md", True, False)
+    run_sync(str(tmp_path), "docs/rules.md", write=True, adopt_legacy=False)
     assert "<!-- tadu:rule v1 -->" in (tmp_path / "docs" / "rules.md").read_text()
 
 
@@ -51,7 +51,7 @@ def test_symlink_outside_root_is_refused(
     root = tmp_path / "repo"
     root.mkdir()
     (root / "AGENTS.md").symlink_to(outside)
-    assert run_sync(str(root), None, True, False) == 2
+    assert run_sync(str(root), None, write=True, adopt_legacy=False) == 2
     assert outside.read_text() == "# Outside\n"
     assert "refusing to write outside" in capsys.readouterr().err
 
@@ -60,7 +60,7 @@ def test_file_outside_root_is_refused(tmp_path: Path, capsys: pytest.CaptureFixt
     root = tmp_path / "repo"
     root.mkdir()
     (tmp_path / "x.md").write_text("# X\n")
-    assert run_sync(str(root), "../x.md", True, False) == 2
+    assert run_sync(str(root), "../x.md", write=True, adopt_legacy=False) == 2
     assert (tmp_path / "x.md").read_text() == "# X\n"
     assert "refusing to write outside" in capsys.readouterr().err
 
@@ -68,7 +68,7 @@ def test_file_outside_root_is_refused(tmp_path: Path, capsys: pytest.CaptureFixt
 def test_symlink_inside_root_updates_the_resolved_file(tmp_path: Path) -> None:
     (tmp_path / "CLAUDE.md").write_text("# C\n")
     (tmp_path / "AGENTS.md").symlink_to(tmp_path / "CLAUDE.md")
-    assert run_sync(str(tmp_path), None, True, False) == 0
+    assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     assert "<!-- tadu:rule v1 -->" in (tmp_path / "CLAUDE.md").read_text()
 
 
@@ -82,7 +82,7 @@ def test_malformed_markers_leave_the_file_untouched(
     ]
     for text in cases:
         (tmp_path / "AGENTS.md").write_text(text)
-        assert run_sync(str(tmp_path), None, True, True) == 2
+        assert run_sync(str(tmp_path), None, write=True, adopt_legacy=True) == 2
         assert (tmp_path / "AGENTS.md").read_text() == text
     assert "malformed tadu:rule markers; fix by hand" in capsys.readouterr().err
 
@@ -90,7 +90,7 @@ def test_malformed_markers_leave_the_file_untouched(
 def test_crlf_file_changes_only_the_block(tmp_path: Path) -> None:
     old = b"# A\r\ntext\r\n<!-- tadu:rule v0 -->\r\nold\r\n<!-- /tadu:rule -->\r\nafter\r\n"
     (tmp_path / "AGENTS.md").write_bytes(old)
-    assert run_sync(str(tmp_path), None, True, False) == 0
+    assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     written = (tmp_path / "AGENTS.md").read_bytes()
     assert written.startswith(b"# A\r\ntext\r\n<!-- tadu:rule v1 -->\r\n")
     assert written.endswith(b"<!-- /tadu:rule -->\r\nafter\r\n")
@@ -99,7 +99,7 @@ def test_crlf_file_changes_only_the_block(tmp_path: Path) -> None:
 
 def test_appended_block_uses_the_files_newline(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_bytes(b"# A\r\n")
-    run_sync(str(tmp_path), None, True, False)
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     written = (tmp_path / "AGENTS.md").read_bytes()
     assert written.startswith(b"# A\r\n\r\n<!-- tadu:rule v1 -->\r\n")
     assert b"\n" not in written.replace(b"\r\n", b"")
@@ -110,12 +110,13 @@ def test_failed_write_leaves_the_original_intact(
 ) -> None:
     (tmp_path / "AGENTS.md").write_bytes(b"# A\r\n")
 
-    def refuse(source: object, destination: object) -> None:
-        raise OSError("disk full")
+    def refuse(_source: object, _destination: object) -> None:
+        message = "disk full"
+        raise OSError(message)
 
     monkeypatch.setattr(os, "replace", refuse)
     with pytest.raises(OSError, match="disk full"):
-        run_sync(str(tmp_path), None, True, False)
+        run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     assert (tmp_path / "AGENTS.md").read_bytes() == b"# A\r\n"
     assert [entry.name for entry in tmp_path.iterdir()] == ["AGENTS.md"]
 
@@ -124,7 +125,7 @@ def test_undecodable_target_is_reported_and_not_written(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     (tmp_path / "AGENTS.md").write_bytes(b"# A \xff\n")
-    assert run_sync(str(tmp_path), None, True, False) == 2
+    assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 2
     assert (tmp_path / "AGENTS.md").read_bytes() == b"# A \xff\n"
     assert "could not be read: not valid UTF-8" in capsys.readouterr().err
 
@@ -132,7 +133,7 @@ def test_undecodable_target_is_reported_and_not_written(
 def test_inline_and_fenced_marker_examples_get_a_real_block_appended(tmp_path: Path) -> None:
     example = "Wrap it in `<!-- tadu:rule v1 -->`.\n```md\n<!-- tadu:rule v1 -->\n```\n"
     (tmp_path / "AGENTS.md").write_text(example)
-    assert run_sync(str(tmp_path), None, True, False) == 0
+    assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     text = (tmp_path / "AGENTS.md").read_text()
     assert text.startswith(example + "\n<!-- tadu:rule v1 -->\n")
 
@@ -141,7 +142,7 @@ def test_adopt_legacy_keeps_a_subsection_under_the_legacy_heading(tmp_path: Path
     (tmp_path / "AGENTS.md").write_text(
         "## Continuous TODO, Work Log\nold\n### TODO conventions specific to this repository\nkeep\n"
     )
-    run_sync(str(tmp_path), None, True, True)
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=True)
     text = (tmp_path / "AGENTS.md").read_text()
     assert "### TODO conventions specific to this repository\nkeep\n" in text
     assert "\nold\n" not in text
@@ -164,6 +165,6 @@ def test_symlink_swapped_after_validation_cannot_redirect_the_write(
         return rule_block_text()
 
     monkeypatch.setattr("tadu.run_sync.rule_block_text", swap_then_serve)
-    assert run_sync(str(root), None, True, False) == 0
+    assert run_sync(str(root), None, write=True, adopt_legacy=False) == 0
     assert outside.read_text() == "# Outside\n"
     assert "<!-- tadu:rule v1 -->" in (root / "real.md").read_text()

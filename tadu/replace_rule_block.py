@@ -7,7 +7,7 @@ from tadu.find_rule_markers import find_rule_markers
 from tadu.legacy_rule_section_pattern import LEGACY_RULE_SECTION_PATTERN
 
 
-def replace_rule_block(text: str, block: str, adopt_legacy: bool) -> str | None:
+def replace_rule_block(text: str, block: str, *, adopt_legacy: bool) -> str | None:
     """New text, or None when nothing replaceable exists."""
     markers = find_rule_markers(text)
     opens = [marker for marker in markers if marker.kind == "open"]

@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-from tadu.find_rule_markers import find_rule_markers
+from tadu.classify_rule_block import classify_rule_block
 from tadu.finding import Finding
 from tadu.has_malformed_rule_markers import has_malformed_rule_markers
 from tadu.instruction_file import instruction_file
-from tadu.legacy_rule_heading_pattern import LEGACY_RULE_HEADING_PATTERN
 from tadu.read_text_exact import read_text_exact
-from tadu.rule_block_version import RULE_BLOCK_VERSION
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def check_rule_block(root: Path) -> tuple[Finding, ...]:
@@ -22,13 +23,4 @@ def check_rule_block(root: Path) -> tuple[Finding, ...]:
     if has_malformed_rule_markers(text):
         message = "malformed rule markers; need exactly one open then one close"
         return (Finding("R005", "error", str(path), 0, message),)
-    opening = next((marker for marker in find_rule_markers(text) if marker.kind == "open"), None)
-    if opening is None:
-        if LEGACY_RULE_HEADING_PATTERN.search(text):
-            message = "legacy rule section; run sync --adopt-legacy only if it holds just the standard rule"
-            return (Finding("R002", "warning", str(path), 0, message),)
-        return (Finding("R003", "error", str(path), 0, "no TODO maintenance rule"),)
-    if opening.version < RULE_BLOCK_VERSION:
-        message = f"rule block v{opening.version}; current is v{RULE_BLOCK_VERSION}"
-        return (Finding("R004", "warning", str(path), 0, message),)
-    return ()
+    return classify_rule_block(path, text)

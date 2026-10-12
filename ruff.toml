@@ -24,20 +24,37 @@ select = [
   "PL",   # pylint: complexity, branches, statements
   "RUF",  # ruff-specific
   "D",    # docstrings; replaces interrogate
-  # bandit, curated: the full S set is intentionally noisy in tests and in
-  # subprocess-heavy code.
-  "S102", "S103", "S104", "S105", "S106", "S107", "S108",
-  "S301", "S302", "S303", "S304", "S305", "S306",
-  "S324", "S501", "S506", "S508", "S509",
-  "S608", "S609", "S612",
+  # Strict additions beyond the codeality baseline: this is a small,
+  # dependency-free tool, so every family below costs nothing to keep green.
+  "ANN",  # annotations
+  "BLE",  # blind except
+  "C90",  # mccabe complexity
+  "EM",   # exception messages
+  "FBT",  # boolean traps
+  "FIX",  # FIXME/TODO markers in code
+  "FLY",  # static joins
+  "FURB", # refurb
+  "G",    # logging format
+  "ICN",  # import conventions
+  "INP",  # implicit namespace packages
+  "ISC",  # implicit string concatenation
+  "LOG",  # logging
+  "PERF", # performance
+  "PGH",  # pygrep hooks
+  "PIE",  # misc lints
+  "PT",   # pytest style
+  "PYI",  # stub style
+  "Q",    # quotes
+  "RSE",  # raise
+  "SLF",  # private member access
+  "SLOT", # __slots__
+  "TC",   # type-checking imports
+  "TD",   # TODO comment format
+  "TID",  # tidy imports
+  "TRY",  # exception handling
+  "S",    # bandit, full set; tests relax only S101
 ]
 ignore = [
-  # Project decisions, permanent. These are commands a person runs from a
-  # terminal: print is how they report, and several import a heavy optional
-  # dependency only on the path that needs it.
-  "T201",
-  "PLC0415",
-
   # Conflicts with the formatter; keeping these on fights ruff format forever.
   "E501", "W191", "E111", "E114", "E117", "D206", "D300", "COM812", "ISC001",
   "D203",  # incompatible with D211
@@ -47,8 +64,24 @@ ignore = [
 
 [lint.per-file-ignores]
 # **/ so the pattern also reaches nested test roots such as host/tests.
-"**/tests/**" = ["D", "S101", "S105", "S106", "S108", "ARG", "PLR"]
+"**/tests/**" = ["D", "S101", "INP001", "PLR2004"]
+# The two commands report to the terminal; print is their output channel.
+"tadu/run_doctor.py" = ["T201"]
+"tadu/run_sync.py" = ["T201"]
+"tadu/read_sync_source.py" = ["T201"]
 "**/conftest.py" = ["D"]
+
+[lint.mccabe]
+max-complexity = 8
+
+[lint.pylint]
+max-args = 4
+max-branches = 8
+max-returns = 4
+max-statements = 30
+
+[lint.flake8-tidy-imports]
+ban-relative-imports = "all"
 
 [lint.pydocstyle]
 convention = "google"

@@ -7,11 +7,11 @@ FINDING = Finding("T001", "error", "a/TODO.md", 3, "boom")
 
 
 def test_text_form() -> None:
-    assert format_finding(FINDING, False) == "a/TODO.md:3: error T001 boom"
+    assert format_finding(FINDING, as_json=False) == "a/TODO.md:3: error T001 boom"
 
 
 def test_json_form() -> None:
-    assert json.loads(format_finding(FINDING, True)) == {
+    assert json.loads(format_finding(FINDING, as_json=True)) == {
         "code": "T001",
         "severity": "error",
         "path": "a/TODO.md",

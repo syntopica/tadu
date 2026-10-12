@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
-from datetime import date
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-from tadu.entry_end import entry_end
+from tadu.check_log_entries import check_log_entries
 from tadu.finding import Finding
-from tadu.has_label_line import has_label_line
-from tadu.is_legacy_entry import is_legacy_entry
-from tadu.log_entry_pattern import LOG_ENTRY_PATTERN
-from tadu.log_marker_pattern import LOG_MARKER_PATTERN
+from tadu.read_log_since import read_log_since
 from tadu.read_text_exact import read_text_exact
-from tadu.required_log_labels import REQUIRED_LOG_LABELS
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def check_log_file(root: Path) -> tuple[Finding, ...]:
@@ -26,33 +24,5 @@ def check_log_file(root: Path) -> tuple[Finding, ...]:
     if not text.strip():
         return (Finding("L006", "warning", str(path), 0, "TODO_LOG.md is empty"),)
     lines = text.splitlines()
-    findings: list[Finding] = []
-    since = None
-    for number, line in enumerate(lines, start=1):
-        if match := LOG_MARKER_PATTERN.match(line):
-            try:
-                since = date.fromisoformat(match.group(1))
-            except ValueError:
-                findings.append(
-                    Finding("L005", "error", str(path), number, "invalid tadu:log marker date")
-                )
-            break
-    severity = "error" if since else "warning"
-    if since is None:
-        message = "no <!-- tadu:log v1 since YYYY-MM-DD --> marker; entries are checked as warnings"
-        findings.append(Finding("L004", "warning", str(path), 0, message))
-    starts = [
-        (number, match.group(1), match.group(2))
-        for number, line in enumerate(lines, start=1)
-        if (match := LOG_ENTRY_PATTERN.match(line))
-    ]
-    for number, state, stamp in starts:
-        if since is not None and is_legacy_entry(stamp, since):
-            continue
-        end = entry_end(lines, number)
-        code, label = REQUIRED_LOG_LABELS[state]
-        if not has_label_line(lines[number:end], label):
-            findings.append(
-                Finding(code, severity, str(path), number, f"entry has no {label} line")
-            )
-    return tuple(findings)
+    since, marker_findings = read_log_since(lines, path)
+    return marker_findings + check_log_entries(lines, path, since)

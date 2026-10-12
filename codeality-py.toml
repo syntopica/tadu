@@ -1,13 +1,18 @@
-# Managed by codeality-py.
+# codeality-py configuration - https://github.com/syntopica/codeality
+# Tightened past the codeality baseline: full coverage, a short suite budget
+# and smaller file caps.
 schema-version = 1
 source-roots = ["tadu"]
 test-roots = ["tests"]
+import-package = "tadu"
 respect-gitignore = true
-coverage-threshold = 65
+coverage-threshold = 100
+# The suite runs in well under a second; a slow test is a design smell here.
+test-budget-seconds = 10
 
 [limits]
-max-file-lines = 150
-test-max-file-lines = 300
+max-file-lines = 80
+test-max-file-lines = 200
 
 [roles]
 data = [

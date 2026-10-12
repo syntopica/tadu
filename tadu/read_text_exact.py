@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from tadu.unreadable_file_error import UnreadableFileError
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def read_text_exact(path: Path) -> str:

@@ -6,6 +6,9 @@ import argparse
 import sys
 from importlib.metadata import version
 
+from tadu.run_doctor import run_doctor
+from tadu.run_sync import run_sync
+
 
 def main(argv: list[str] | None = None) -> int:
     """Parse the command line and dispatch to one command."""
@@ -25,14 +28,9 @@ def main(argv: list[str] | None = None) -> int:
         "--adopt-legacy", action="store_true", help="replace an unmarked legacy rule section"
     )
     args = parser.parse_args(argv)
-    # Lazy on purpose: --version and --help never load a command's dependencies.
-    from tadu.run_doctor import run_doctor
-
     if args.command == "sync":
-        from tadu.run_sync import run_sync
-
-        return run_sync(args.path, args.file, args.write, args.adopt_legacy)
-    return run_doctor(tuple(args.paths), args.json)
+        return run_sync(args.path, args.file, write=args.write, adopt_legacy=args.adopt_legacy)
+    return run_doctor(tuple(args.paths), as_json=args.json)
 
 
 if __name__ == "__main__":

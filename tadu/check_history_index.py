@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from tadu.check_index_record_fields import check_index_record_fields
 from tadu.finding import Finding
 from tadu.read_text_exact import read_text_exact
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def check_history_index(root: Path) -> tuple[Finding, ...]:
