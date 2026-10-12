@@ -46,3 +46,11 @@
 - [x] 2026-10-12 — **Release:** Publish syntopica/tadu and wire it into the Syntopica hub.
   - Result: syntopica/tadu is public; the hub lists it in its README and AGENTS.md and offers the `tadu` plugin from its marketplace (syntopica/syntopica commit 5150265).
   - Evidence: `gh repo view syntopica/tadu` reports PUBLIC; syntopica `.claude-plugin/marketplace.json` has the `tadu` entry sourced from syntopica/tadu, whose `.claude-plugin/plugin.json` ships the skills.
+
+- [x] 2026-10-12 — **Adoption:** Roll rule block v2 out to the remaining repositories under `~/p`.
+  - Result: The 19 repositories left on v1 (client organisations, Attendize and DameTicket on their checked-out branches) and `~/p` itself were synced and committed alone as `docs(agents): update the tadu rule block to v2` with each repository's usual identity (advisor-insights-hub as cristian@favish.com), then pushed. verticagtm's `AGENTS.md` is gitignored, so its update is local only. zonemirror's hook required the Prettier-reflowed block.
+  - Evidence: no `tadu:rule v1` left in any `AGENTS.md` or `CLAUDE.md` up to three levels under `~/p`; `tadu doctor` reports no rule finding in any of them; each repository is 0 commits ahead of upstream.
+
+- [x] 2026-10-12 — **Release:** Install tadu from its published sources.
+  - Result: The `tadu` plugin installs from the hub marketplace with both skills, and the CLI installs from GitHub, initialises an empty repository and passes doctor.
+  - Evidence: with an isolated `CLAUDE_CONFIG_DIR`, `claude plugin marketplace add syntopica/syntopica` and `claude plugin install tadu@syntopica` succeed and ship `skills/tadu-create` and `skills/tadu-work`; with isolated `UV_TOOL_DIR`, `uv tool install git+https://github.com/syntopica/tadu`, `tadu init . --write` in a fresh `git init` repository and `tadu doctor .` exit 0.
