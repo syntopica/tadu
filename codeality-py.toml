@@ -18,6 +18,7 @@ test-max-file-lines = 200
 data = [
   "tadu/closed_item_pattern.py",
   "tadu/doctor_checks.py",
+  "tadu/element_start_pattern.py",
   "tadu/entry_boundary_pattern.py",
   "tadu/fence_line_pattern.py",
   "tadu/index_required_keys.py",
@@ -30,6 +31,7 @@ data = [
   "tadu/rule_block_close_pattern.py",
   "tadu/rule_block_open_pattern.py",
   "tadu/rule_block_version.py",
+  "tadu/single_line_start_pattern.py",
   "tadu/state_markers.py",
 ]
 registry = []

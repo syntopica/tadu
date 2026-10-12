@@ -54,3 +54,7 @@
 - [x] 2026-10-12 — **Release:** Install tadu from its published sources.
   - Result: The `tadu` plugin installs from the hub marketplace with both skills, and the CLI installs from GitHub, initialises an empty repository and passes doctor.
   - Evidence: with an isolated `CLAUDE_CONFIG_DIR`, `claude plugin marketplace add syntopica/syntopica` and `claude plugin install tadu@syntopica` succeed and ship `skills/tadu-create` and `skills/tadu-work`; with isolated `UV_TOOL_DIR`, `uv tool install git+https://github.com/syntopica/tadu`, `tadu init . --write` in a fresh `git init` repository and `tadu doctor .` exit 0.
+
+- [x] 2026-10-12 — **Bugs:** `tadu sync` reported a Prettier-reflowed rule block as drift.
+  - Result: sync compares the file as Markdown elements (paragraphs, list items with their marker and depth, headings, comments, exact fenced lines), ignoring blank lines between elements and soft line wrapping inside them; hard line breaks and fenced blank lines still count. Decided with Codex (gpt-6-sol, read-only, two review rounds; its two findings, fenced blank lines and two-space hard breaks, fixed). `-` and `*` markers deliberately stay distinct.
+  - Evidence: tests/test_same_ignoring_wrapping.py and tests/test_run_sync.py::test_prettier_reflowed_block_is_up_to_date, whose fixture is byte-identical to zonemirror's committed block; `uv run codeality-py gate` all passed (227 tests, 100% coverage); `tadu sync` dry run says "up to date" in 22 repositories under `~/p`, zonemirror included.

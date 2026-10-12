@@ -184,3 +184,20 @@ def test_missing_root_is_refused(tmp_path: Path, capsys: pytest.CaptureFixture[s
     assert run_sync(str(tmp_path / "absent"), None, write=True, adopt_legacy=False) == 2
     assert not (tmp_path / "absent").exists()
     assert "not a directory" in capsys.readouterr().err
+
+
+def test_prettier_reflowed_block_is_up_to_date(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    reflowed = (Path(__file__).parent / "fixtures" / "rule_block_v2_prettier_100.md").read_text()
+    (tmp_path / "AGENTS.md").write_text(reflowed)
+    assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
+    assert "up to date" in capsys.readouterr().out
+    assert (tmp_path / "AGENTS.md").read_text() == reflowed
+
+
+def test_changed_word_in_reflowed_block_is_drift(tmp_path: Path) -> None:
+    reflowed = (Path(__file__).parent / "fixtures" / "rule_block_v2_prettier_100.md").read_text()
+    (tmp_path / "AGENTS.md").write_text(reflowed.replace("searchable", "readable"))
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
+    assert (tmp_path / "AGENTS.md").read_text() == rule_block_text()
