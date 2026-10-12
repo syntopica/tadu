@@ -7,4 +7,3 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
-- [ ] Publish syntopica/tadu and wire it into the Syntopica hub.

@@ -42,3 +42,7 @@
 - [x] 2026-10-12 — **Adoption:** Roll rule block v2 out to the owned repositories under `~/p`.
   - Result: 84 repositories carried the v1 block. 64 owned ones were synced, committed alone as `docs(agents): update the tadu rule block to v2` and pushed to their default branch through their own hooks; esp32-amoled/clawd-pet was already v2. 19 were left alone: 17 in client or unknown organisations (pixel-potion, VeoPlan, favish, dovaldev, DevCafeina, AutomateTexas, Contratica, zonemirror, VibraComet), plus Attendize and DameTicket, which are checked out on a non-default branch.
   - Evidence: every pushed repository has `tadu:rule v2` in its instruction file and is 0 commits ahead of upstream; doctor error count did not grow in any of them.
+
+- [x] 2026-10-12 — **Release:** Publish syntopica/tadu and wire it into the Syntopica hub.
+  - Result: syntopica/tadu is public; the hub lists it in its README and AGENTS.md and offers the `tadu` plugin from its marketplace (syntopica/syntopica commit 5150265).
+  - Evidence: `gh repo view syntopica/tadu` reports PUBLIC; syntopica `.claude-plugin/marketplace.json` has the `tadu` entry sourced from syntopica/tadu, whose `.claude-plugin/plugin.json` ships the skills.
