@@ -38,3 +38,7 @@
 - [x] 2026-10-12 — **Bugs:** `tadu sync` on a path that does not exist.
   - Result: `sync` (and so `init`) refuses a root that is not a directory with exit 2; it used to print a diff and exit 0, and traceback with `--write`.
   - Evidence: tests/test_run_sync.py::test_missing_root_is_refused; `tadu sync /nonexistent/x --write` prints "not a directory" and exits 2; uv run codeality-py gate all passed.
+
+- [x] 2026-10-12 — **Adoption:** Roll rule block v2 out to the owned repositories under `~/p`.
+  - Result: 84 repositories carried the v1 block. 64 owned ones were synced, committed alone as `docs(agents): update the tadu rule block to v2` and pushed to their default branch through their own hooks; esp32-amoled/clawd-pet was already v2. 19 were left alone: 17 in client or unknown organisations (pixel-potion, VeoPlan, favish, dovaldev, DevCafeina, AutomateTexas, Contratica, zonemirror, VibraComet), plus Attendize and DameTicket, which are checked out on a non-default branch.
+  - Evidence: every pushed repository has `tadu:rule v2` in its instruction file and is 0 commits ahead of upstream; doctor error count did not grow in any of them.

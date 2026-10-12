@@ -8,7 +8,3 @@
 > `TODO_LOG.md`.
 
 - [ ] Publish syntopica/tadu and wire it into the Syntopica hub.
-
-## Adoption
-
-- [ ] Run `tadu sync --write` in the 13 repositories migrated to rule block v1 so their agents get the v2 entry template; until then `tadu doctor` reports R004 there.
