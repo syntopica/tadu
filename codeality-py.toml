@@ -16,6 +16,8 @@ test-max-file-lines = 200
 
 [roles]
 data = [
+  "tadu/backlog_file_names.py",
+  "tadu/backlog_write_pattern.py",
   "tadu/category_prefix_pattern.py",
   "tadu/closed_item_pattern.py",
   "tadu/day_heading_pattern.py",

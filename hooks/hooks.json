@@ -1,0 +1,17 @@
+{
+  "description": "Run tadu doctor after an edit or a shell write changes a tadu backlog; never blocks.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v tadu >/dev/null 2>&1 && tadu hook claude; exit 0",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

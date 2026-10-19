@@ -80,6 +80,7 @@ ignore = [
 "tadu/prepare_close.py" = ["T201"]
 "tadu/plan_close.py" = ["T201"]
 "tadu/backlog_unchanged.py" = ["T201"]
+"tadu/hook_command.py" = ["T201"]
 "**/conftest.py" = ["D"]
 
 [lint.mccabe]

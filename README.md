@@ -8,23 +8,33 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 
 The format is specified in [spec/todo-format-v1.md](spec/todo-format-v1.md).
 
-Four commands:
+Five commands:
 
 - `tadu init` starts the backlog in a repository that has none.
 - `tadu doctor` checks a repository against the format and never writes.
 - `tadu sync` updates the marked rule block in an agent instruction file.
 - `tadu close` moves one finished item from `TODO.md` into `TODO_LOG.md`.
+- `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
 
 Contributors need none of it: the rule block that `sync` writes into `AGENTS.md` or `CLAUDE.md` tells any agent, or any person, how to add an item and how to log closed work in a shape `doctor` accepts.
 
 ## Requirements
 
-Python 3.12 or newer and [uv](https://docs.astral.sh/uv/). tadu has no runtime dependencies.
+Python 3.12 or newer. tadu has no runtime dependencies; [uv](https://docs.astral.sh/uv/) is only needed to work on tadu itself.
 
 ## Install
 
+tadu needs Python 3.12 or newer and nothing else. Install it as a command with any Python installer:
+
 ```bash
 uv tool install git+https://github.com/syntopica/tadu
+# or
+pipx install git+https://github.com/syntopica/tadu
+# or, into the current Python environment
+python3 -m pip install git+https://github.com/syntopica/tadu
+```
+
+```bash
 tadu --version
 ```
 
@@ -143,10 +153,30 @@ repos:
       - id: tadu-doctor
 ```
 
-Or as a CI step, with the same pin:
+Or as a CI step, with the same pin and either runner:
 
 ```bash
 uvx --from git+https://github.com/syntopica/tadu@<tag or commit> tadu doctor .
+pipx run --spec git+https://github.com/syntopica/tadu@<tag or commit> tadu doctor .
+```
+
+### After every agent edit, in Claude Code
+
+`tadu hook claude` reads a Claude Code `PostToolUse` event on standard input. When the tool call changed a backlog file (an `Edit` or `Write` of `TODO.md`, `TODO_LOG.md` or `TODO_HISTORY_INDEX.jsonl`, a shell command that writes one, or `tadu close --write`), it runs the doctor checks on that repository and hands any errors back to the agent as context. It prints nothing otherwise, never blocks the tool call and always exits `0`. Shell commands are matched as text and never run.
+
+The plugin below installs it. Without the plugin, add it to `.claude/settings.json` or `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [{ "type": "command", "command": "tadu hook claude", "timeout": 20 }]
+      }
+    ]
+  }
+}
 ```
 
 Both fail only on errors. Warnings, including an outdated rule block, do not block a commit.
@@ -182,7 +212,7 @@ Branches that close work in the same month both append to the same section of `T
 
 ## Skills
 
-Two agent skills ship with the format:
+Two agent skills ship with the format, and the Claude Code plugin also installs the hook above (it stays silent when `tadu` is not installed):
 
 - `tadu-create` builds `TODO.md`, `TODO_LOG.md` and the history index from the project's agent conversation history.
 - `tadu-work` executes an existing backlog under an approved plan and run caps.

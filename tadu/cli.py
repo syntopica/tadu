@@ -1,4 +1,4 @@
-"""Command-line entry point: doctor, sync, init and close."""
+"""Command-line entry point: doctor, sync, init, close and hook."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from importlib.metadata import version
 
 from tadu.add_close_parser import add_close_parser
 from tadu.close_command import close_command
+from tadu.hook_command import hook_command
 from tadu.run_doctor import run_doctor
 from tadu.run_init import run_init
 from tadu.run_sync import run_sync
@@ -38,9 +39,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     init.add_argument("--write", action="store_true", help="apply instead of printing the diff")
     add_close_parser(commands)
+    hook = commands.add_parser("hook", help="agent hooks that run doctor after a backlog change")
+    hook.add_argument("agent", choices=["claude"], help="claude: a Claude Code PostToolUse hook")
     args = parser.parse_args(argv)
-    if args.command == "close":
-        return close_command(args)
+    if args.command in ("hook", "close"):
+        return hook_command() if args.command == "hook" else close_command(args)
     if args.command == "init":
         return run_init(
             args.path, args.file, write=args.write, today=datetime.now(UTC).astimezone().date()

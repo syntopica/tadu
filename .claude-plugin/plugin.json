@@ -1,7 +1,10 @@
 {
   "name": "tadu",
-  "description": "Keep a repository backlog agents work through: create it from history, execute it, check it.",
+  "description": "Keep a repository backlog agents work through: create it from history, execute it, check it after every change.",
   "version": "0.1.0",
-  "author": { "name": "Syntopica", "url": "https://github.com/syntopica" },
+  "author": {
+    "name": "Syntopica",
+    "url": "https://github.com/syntopica"
+  },
   "skills": "./skills"
 }

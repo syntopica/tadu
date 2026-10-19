@@ -35,3 +35,11 @@ def test_close_moves_an_item(tmp_path: Path, capsys: pytest.CaptureFixture[str])
     assert main(["close", str(tmp_path), "--match", "ship", "--evidence", "e", "--write"]) == 0
     capsys.readouterr()
     assert "ship it" in (tmp_path / "TODO_LOG.md").read_text()
+
+
+def test_hook_reads_stdin(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr("sys.stdin", __import__("io").StringIO("{}"))
+    assert main(["hook", "claude"]) == 0
+    assert capsys.readouterr().out == ""
