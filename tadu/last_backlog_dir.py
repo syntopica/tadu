@@ -6,6 +6,6 @@ from tadu.backlog_write_pattern import BACKLOG_PATH_PATTERN
 
 
 def last_backlog_dir(words: list[str]) -> str | None:
-    """The directory part of the last backlog path with one, or None."""
+    """The directory part of the last backlog path, or None when it has none."""
     found = [match for word in words for match in BACKLOG_PATH_PATTERN.findall(word)]
-    return found[-1] if found else None
+    return found[-1] or None if found else None

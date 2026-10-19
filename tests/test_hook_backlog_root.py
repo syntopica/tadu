@@ -61,3 +61,12 @@ def test_writes_into_another_repository(tmp_path: Path) -> None:
     for command in (f"printf x > {there}/TODO.md", f"tadu close {there} --match a --write"):
         payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": str(here)}
         assert hook_backlog_root(payload) == there
+    copy = {"tool_name": "Bash", "tool_input": {"command": f"cp {there}/TODO.md TODO.md"}}
+    assert hook_backlog_root({**copy, "cwd": str(here)}) == here
+
+
+def test_quoted_redirect_with_spaces(tmp_path: Path) -> None:
+    there = repo(tmp_path / "r s")
+    command = f'printf x > "{there}/TODO.md"'
+    payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": "/"}
+    assert hook_backlog_root(payload) == there

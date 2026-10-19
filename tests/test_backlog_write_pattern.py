@@ -14,6 +14,7 @@ def test_backlog_names_and_writes() -> None:
     assert not SHELL_WRITE_PATTERN.search("grep -n fix TODO.md")
     assert SHELL_WRITE_PATTERN.search("echo x >> 'TODO_LOG.md'")
     assert not SHELL_WRITE_PATTERN.search("cat TODO.md > /dev/null")
+    assert SHELL_WRITE_PATTERN.search('printf x > "/r s/TODO.md"')
 
 
 def test_close_with_write_and_leading_cd() -> None:
@@ -27,4 +28,4 @@ def test_close_with_write_and_leading_cd() -> None:
 def test_backlog_paths_in_a_word() -> None:
     assert BACKLOG_PATH_PATTERN.findall(">/r s/TODO.md") == ["/r s/"]
     assert BACKLOG_PATH_PATTERN.findall("open('/d/TODO_LOG.md','w')") == ["/d/"]
-    assert not BACKLOG_PATH_PATTERN.findall("TODO.md")
+    assert BACKLOG_PATH_PATTERN.findall("TODO.md") == [""]
