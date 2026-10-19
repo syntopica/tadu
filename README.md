@@ -6,7 +6,7 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 - `TODO_LOG.md` records closed work with its evidence.
 - `TODO_HISTORY_INDEX.jsonl` is an optional index of the conversations already reviewed.
 
-The format is specified in [spec/todo-format-v1.md](spec/todo-format-v1.md).
+The format is specified in [spec/todo-format-v1.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md).
 
 Five commands:
 
