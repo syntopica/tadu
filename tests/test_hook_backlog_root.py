@@ -4,6 +4,7 @@ from tadu.hook_backlog_root import hook_backlog_root
 
 
 def repo(tmp_path: Path) -> Path:
+    tmp_path.mkdir(exist_ok=True)
     (tmp_path / "TODO.md").write_text("# TODO\n")
     return tmp_path
 
@@ -44,6 +45,19 @@ def test_shell_writes_and_closes(tmp_path: Path) -> None:
 
 def test_shell_reads_and_dry_runs_are_ignored(tmp_path: Path) -> None:
     root = repo(tmp_path)
-    for command in ("grep -n fix TODO.md", "tadu close --match a --evidence e", "git status"):
+    for command in (
+        "grep -n fix TODO.md",
+        "cat TODO.md > /dev/null",
+        "grep x TODO.md 2>&1",
+        "tadu close --match a --evidence e",
+        "git status",
+    ):
         payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": str(root)}
         assert hook_backlog_root(payload) is None
+
+
+def test_writes_into_another_repository(tmp_path: Path) -> None:
+    here, there = repo(tmp_path / "a"), repo(tmp_path / "b")
+    for command in (f"printf x > {there}/TODO.md", f"tadu close {there} --match a --write"):
+        payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": str(here)}
+        assert hook_backlog_root(payload) == there

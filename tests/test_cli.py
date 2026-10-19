@@ -40,6 +40,7 @@ def test_close_moves_an_item(tmp_path: Path, capsys: pytest.CaptureFixture[str])
 def test_hook_reads_stdin(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr("sys.stdin", __import__("io").StringIO("{}"))
+    stream = __import__("io").TextIOWrapper(__import__("io").BytesIO(b"{}"), encoding="utf-8")
+    monkeypatch.setattr("sys.stdin", stream)
     assert main(["hook", "claude"]) == 0
     assert capsys.readouterr().out == ""

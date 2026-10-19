@@ -13,6 +13,7 @@ from tadu.backlog_write_pattern import (
 )
 from tadu.nearest_backlog_root import nearest_backlog_root
 from tadu.payload_text import payload_text
+from tadu.shell_backlog_start import shell_backlog_start
 
 
 def hook_backlog_root(payload: object) -> Path | None:
@@ -28,4 +29,4 @@ def hook_backlog_root(payload: object) -> Path | None:
         return None
     lead = LEADING_CD_PATTERN.match(command)
     start = cwd / Path(lead.group(1).strip("\"'")).expanduser() if lead else cwd
-    return nearest_backlog_root(start)
+    return nearest_backlog_root(shell_backlog_start(command, start))
