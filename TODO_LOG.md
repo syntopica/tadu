@@ -58,3 +58,7 @@
 - [x] 2026-10-19 — **Adoption:** `tadu hook claude`, a Claude Code hook in the plugin, and an install that needs nothing but Python.
   - Result: `tadu hook claude` reads a PostToolUse event and reports doctor errors after an edit or a shell write to a backlog, and never blocks; `hooks/hooks.json` ships it in the plugin; the README installs with uv, pipx or pip; the rule block points at README#install; `init` and `sync` keep the block in the instruction file that already holds it.
   - Evidence: uv run codeality-py gate exits 0 (363 tests, 100% coverage); `python3 -m pip install` into a clean venv runs `tadu init --write`, `tadu doctor` and `tadu hook claude`; three Codex review rounds fixed 7 findings (stdin bytes, written path, read-only commands, quoted paths, copy destination).
+
+- [x] 2026-10-19 — **Release:** Publish tadu 0.1.0 to PyPI through trusted publishing.
+  - Result: `.github/workflows/publish.yml` builds and publishes on a `v*` tag that matches the project version, through the `pypi` environment with no token; PyPI's pending publisher for `tadu` points at syntopica/tadu, `publish.yml`, environment `pypi`; the README installs `tadu` from PyPI and keeps git for the development version.
+  - Evidence: tag v0.1.0, run 39182073151 succeeded; https://pypi.org/project/tadu/ lists tadu-0.1.0-py3-none-any.whl and tadu-0.1.0.tar.gz; `pip install tadu==0.1.0` in a clean venv and `uvx tadu@0.1.0 doctor .` both run.

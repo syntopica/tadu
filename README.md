@@ -27,12 +27,14 @@ Python 3.12 or newer. tadu has no runtime dependencies; [uv](https://docs.astral
 tadu needs Python 3.12 or newer and nothing else. Install it as a command with any Python installer:
 
 ```bash
-uv tool install git+https://github.com/syntopica/tadu
+uv tool install tadu
 # or
-pipx install git+https://github.com/syntopica/tadu
+pipx install tadu
 # or, into the current Python environment
-python3 -m pip install git+https://github.com/syntopica/tadu
+python3 -m pip install tadu
 ```
+
+The development version installs from git the same way, for example `uv tool install git+https://github.com/syntopica/tadu`.
 
 ```bash
 tadu --version
@@ -153,11 +155,11 @@ repos:
       - id: tadu-doctor
 ```
 
-Or as a CI step, with the same pin and either runner:
+Or as a CI step, pinned to a released version, with either runner:
 
 ```bash
-uvx --from git+https://github.com/syntopica/tadu@<tag or commit> tadu doctor .
-pipx run --spec git+https://github.com/syntopica/tadu@<tag or commit> tadu doctor .
+uvx tadu@<version> doctor .
+pipx run --spec tadu==<version> tadu doctor .
 ```
 
 ### After every agent edit, in Claude Code
