@@ -54,3 +54,7 @@
 - [x] 2026-10-19 — **Tooling:** `tadu close` to move a finished item into the log, and rule block v3 that tells agents to use it and to run `tadu doctor .` before committing.
   - Result: tadu close with dry-run diffs, directory lock, pre-write doctor check and refusals for ambiguous input; rule block v3 (R004 for v2); README, spec and skill copies updated
   - Evidence: uv run codeality-py gate exits 0 (332 tests, 100% coverage); three Codex review rounds fixed 8 findings, the last round left one Low fail-safe finding, logged as a TODO
+
+- [x] 2026-10-19 — **Adoption:** `tadu hook claude`, a Claude Code hook in the plugin, and an install that needs nothing but Python.
+  - Result: `tadu hook claude` reads a PostToolUse event and reports doctor errors after an edit or a shell write to a backlog, and never blocks; `hooks/hooks.json` ships it in the plugin; the README installs with uv, pipx or pip; the rule block points at README#install; `init` and `sync` keep the block in the instruction file that already holds it.
+  - Evidence: uv run codeality-py gate exits 0 (363 tests, 100% coverage); `python3 -m pip install` into a clean venv runs `tadu init --write`, `tadu doctor` and `tadu hook claude`; three Codex review rounds fixed 7 findings (stdin bytes, written path, read-only commands, quoted paths, copy destination).
