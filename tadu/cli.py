@@ -1,4 +1,4 @@
-"""Command-line entry point: doctor, sync and init."""
+"""Command-line entry point: doctor, sync, init and close."""
 
 from __future__ import annotations
 
@@ -7,6 +7,8 @@ import sys
 from datetime import UTC, datetime
 from importlib.metadata import version
 
+from tadu.add_close_parser import add_close_parser
+from tadu.close_command import close_command
 from tadu.run_doctor import run_doctor
 from tadu.run_init import run_init
 from tadu.run_sync import run_sync
@@ -35,7 +37,10 @@ def main(argv: list[str] | None = None) -> int:
         "--file", default=None, help="instruction file (default: AGENTS.md, else CLAUDE.md)"
     )
     init.add_argument("--write", action="store_true", help="apply instead of printing the diff")
+    add_close_parser(commands)
     args = parser.parse_args(argv)
+    if args.command == "close":
+        return close_command(args)
     if args.command == "init":
         return run_init(
             args.path, args.file, write=args.write, today=datetime.now(UTC).astimezone().date()

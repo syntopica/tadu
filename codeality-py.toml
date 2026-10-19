@@ -16,7 +16,9 @@ test-max-file-lines = 200
 
 [roles]
 data = [
+  "tadu/category_prefix_pattern.py",
   "tadu/closed_item_pattern.py",
+  "tadu/day_heading_pattern.py",
   "tadu/doctor_checks.py",
   "tadu/element_start_pattern.py",
   "tadu/entry_boundary_pattern.py",
@@ -26,6 +28,7 @@ data = [
   "tadu/legacy_rule_section_pattern.py",
   "tadu/log_entry_pattern.py",
   "tadu/log_marker_pattern.py",
+  "tadu/open_item_pattern.py",
   "tadu/required_log_labels.py",
   "tadu/review_statuses.py",
   "tadu/rule_block_close_pattern.py",
@@ -33,6 +36,7 @@ data = [
   "tadu/rule_block_version.py",
   "tadu/single_line_start_pattern.py",
   "tadu/state_markers.py",
+  "tadu/year_heading_pattern.py",
 ]
 registry = []
 entrypoint = ["tadu/cli.py"]

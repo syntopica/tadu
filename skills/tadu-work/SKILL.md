@@ -178,8 +178,10 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
    regressions, duplication, dead code, accidental formatting churn, and scope
    creep.
 5. When work is already complete, do not redo it: verify it and move it to the
-   log with concise evidence. When a better implementation supersedes it, name
-   the replacement and log the original as `[-]`. When blocked, exhaust safe
+   log with concise evidence, using `tadu close --match "<text>" --evidence
+   "<proof>" --write` rather than editing both files by hand. When a better
+   implementation supersedes it, name the replacement and log the original as
+   `[-]` (`--resolution`). When blocked, exhaust safe
    in-scope alternatives, record the exact blocker and smallest unblock action,
    and continue elsewhere.
 6. Checkpoint after each item or dependency wave: record the verified result or

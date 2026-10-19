@@ -62,3 +62,7 @@
 - [x] 2026-10-12 — **Adoption:** Bring the Mac mini and two missed default branches to rule block v2.
   - Result: teapartydolls and 10xjoy were checked out on feature branches, so the working-tree scan missed that their `main` still carried v1; both were synced on `main` through a temporary worktree and pushed (583ed42, 49276d4). On the Mac mini every affected repository was fast-forwarded and the pinned skills reinstalled with `pnpm run skills:bootstrap --apply` and `skills:link`.
   - Evidence: no `tadu:rule v1` in `AGENTS.md` or `CLAUDE.md` on any repository's `origin/HEAD` under `~/p`; on the Mac mini no working tree carries v1, every repository is 0 commits behind upstream, and `~/.claude/skills` format.md and rule-block.md match tadu 58fcf8f.
+
+- [x] 2026-10-19 — **Tooling:** `tadu close` to move a finished item into the log, and rule block v3 that tells agents to use it and to run `tadu doctor .` before committing.
+  - Result: tadu close with dry-run diffs, directory lock, pre-write doctor check and refusals for ambiguous input; rule block v3 (R004 for v2); README, spec and skill copies updated
+  - Evidence: uv run codeality-py gate exits 0 (332 tests, 100% coverage); three Codex review rounds (session 01a1516a-1069-7e62-90bc-e49fc470a309) fixed 8 findings, the last round left one Low fail-safe finding, logged as a TODO

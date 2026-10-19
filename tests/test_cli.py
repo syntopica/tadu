@@ -26,3 +26,12 @@ def test_init_writes_the_backlog(tmp_path: Path) -> None:
     assert main(["init", str(tmp_path), "--write"]) == 0
     assert (tmp_path / "TODO.md").is_file()
     assert (tmp_path / "TODO_LOG.md").is_file()
+
+
+def test_close_moves_an_item(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    main(["init", str(tmp_path), "--write"])
+    with (tmp_path / "TODO.md").open("a") as handle:
+        handle.write("\n- [ ] ship it\n")
+    assert main(["close", str(tmp_path), "--match", "ship", "--evidence", "e", "--write"]) == 0
+    capsys.readouterr()
+    assert "ship it" in (tmp_path / "TODO_LOG.md").read_text()

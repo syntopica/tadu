@@ -8,11 +8,12 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 
 The format is specified in [spec/todo-format-v1.md](spec/todo-format-v1.md).
 
-Three commands:
+Four commands:
 
 - `tadu init` starts the backlog in a repository that has none.
 - `tadu doctor` checks a repository against the format and never writes.
 - `tadu sync` updates the marked rule block in an agent instruction file.
+- `tadu close` moves one finished item from `TODO.md` into `TODO_LOG.md`.
 
 Contributors need none of it: the rule block that `sync` writes into `AGENTS.md` or `CLAUDE.md` tells any agent, or any person, how to add an item and how to log closed work in a shape `doctor` accepts.
 
@@ -61,9 +62,29 @@ AGENTS.md:0: error R003 no TODO maintenance rule
 
 Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` when at least one error is reported. A clean repository prints nothing. Add `--json` for one JSON object per finding. A file that cannot be read as UTF-8 produces an `E001` finding and the other checks and roots still run.
 
+## Close an item
+
+`tadu close` takes the one open item (`[ ]`, `[~]` or `[!]`, at the top level and outside fences) whose first line contains `--match`, removes it from `TODO.md` with its indented continuation lines, and writes it into `TODO_LOG.md` as a dated entry. `--evidence` logs it as `[x]`, `--resolution` as `[-]`; one of the two is required. Like `sync`, it prints the diff of both files and changes nothing until `--write`, after which it runs `doctor` on the repository and exits with its status:
+
+```bash
+tadu close --match "Fix the header" --evidence "tests/test_header.py passes" --result "The logo shows again" --write
+```
+
+```text
+- [x] 2026-10-19 — **Frontend:** Fix the header
+  - Result: The logo shows again
+  - Evidence: tests/test_header.py passes
+```
+
+- The category is `--category`, else a `**Category:**` prefix the item already has, else the `##` section the item sits in, else `General`. `--title` replaces the item's text, and `--date YYYY-MM-DD` the date (default today). Continuation lines of the item are kept under the entry, before `Result:`.
+- The entry goes under the `## YYYY` heading of its date, into the `### YYYY-MM` section, else a `###` section headed by that very day, else a new section; missing headings are created. Whether it goes at the top or the bottom of its section follows the order the log already keeps its dates in; with no clear order it is appended.
+- No match, or more than one, exits `2` and lists the candidates with their line numbers. Blank or multi-line values exit `2`. Each file keeps its own line endings; a file mixing CRLF and LF, or holding a bare CR or a Unicode line separator, is refused, and so is an item whose indentation leaves a code fence open.
+- A close whose result would give `doctor` an error the files did not already have is refused before anything is written. An item that was the last one leaves `TODO.md` with its legend.
+- `TODO_LOG.md` is written first, then `TODO.md`, each atomically, under an exclusive lock on the repository directory (POSIX) and only when neither file changed since it was read. If the second write fails, the message names the line to delete by hand.
+
 ## Write the rule block
 
-`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v2 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
+`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v3 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
 
 ```bash
 tadu sync .
@@ -75,7 +96,7 @@ tadu sync .
 @@ -1 +1,31 @@
  # Demo
 +
-+<!-- tadu:rule v2 -->
++<!-- tadu:rule v3 -->
 +
 +## Continuous TODO, Work Log, and History Coverage
 ...
@@ -98,7 +119,7 @@ AGENTS.md: up to date
 - `--file docs/rules.md` selects another instruction file, given relative to the repository root. `sync` refuses a root that is not a directory and a file that resolves outside the root, and exits `2`; it also exits `2` for unbalanced markers and for a file that is not valid UTF-8.
 - `--adopt-legacy` replaces an older, unmarked section headed "Continuous TODO" instead of appending a second rule. The section ends at the next Markdown heading of any level, at the next line starting with `<!--`, or at the end of the file. Use it only when that section holds nothing but the standard rule. When it holds repository-specific lines, run plain `tadu sync . --write` and keep those lines by hand under a "TODO conventions specific to this repository" heading after the block.
 
-A repository synced before the current block version gets an `R004` warning; run `tadu sync . --write` to update it. Version 2 adds the closed-entry template and names the `Evidence:` and `Resolution:` lines the log check requires.
+A repository synced before the current block version gets an `R004` warning; run `tadu sync . --write` to update it. Version 2 added the closed-entry template and names the `Evidence:` and `Resolution:` lines the log check requires; version 3 adds `tadu close`, tells agents to run `tadu doctor .` before committing, and says how to install tadu.
 
 ## Adopt the log check
 

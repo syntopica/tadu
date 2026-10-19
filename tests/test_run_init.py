@@ -33,14 +33,14 @@ def test_existing_backlog_is_kept(tmp_path: Path) -> None:
 def test_existing_instruction_file_gets_the_block(tmp_path: Path) -> None:
     (tmp_path / "CLAUDE.md").write_text("# Notes\n")
     run_init(str(tmp_path), None, write=True, today=TODAY)
-    assert (tmp_path / "CLAUDE.md").read_text().startswith("# Notes\n\n<!-- tadu:rule v2 -->\n")
+    assert (tmp_path / "CLAUDE.md").read_text().startswith("# Notes\n\n<!-- tadu:rule v3 -->\n")
     assert not (tmp_path / "AGENTS.md").exists()
 
 
 def test_refused_rule_target_creates_no_backlog(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    (tmp_path / "AGENTS.md").write_text("<!-- tadu:rule v2 -->\nno close\n")
+    (tmp_path / "AGENTS.md").write_text("<!-- tadu:rule v3 -->\nno close\n")
     assert run_init(str(tmp_path), None, write=True, today=TODAY) == 2
     assert not (tmp_path / "TODO.md").exists()
     assert "malformed" in capsys.readouterr().err

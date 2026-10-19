@@ -198,13 +198,15 @@ The maintenance rule lives in the repository's agent instruction file
 (`AGENTS.md`, else `CLAUDE.md`) between two marker lines:
 
 ```md
-<!-- tadu:rule v2 -->
+<!-- tadu:rule v3 -->
 ...
 <!-- /tadu:rule -->
 ```
 
 The number in the open marker is the rule block's version, separate from the
-format version: v2 adds the closed-entry template and the labels it requires.
+format version: v2 adds the closed-entry template and the labels it requires;
+v3 adds the `tadu close` command, the instruction to run `tadu doctor .` before
+committing, and an install hint.
 A block older than the current version is a warning until `tadu sync` rewrites
 it.
 

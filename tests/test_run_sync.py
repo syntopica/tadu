@@ -11,20 +11,20 @@ def test_dry_run_does_not_write(tmp_path: Path, capsys: pytest.CaptureFixture[st
     (tmp_path / "AGENTS.md").write_text("# A\n")
     assert run_sync(str(tmp_path), None, write=False, adopt_legacy=False) == 0
     assert (tmp_path / "AGENTS.md").read_text() == "# A\n"
-    assert "+<!-- tadu:rule v2 -->" in capsys.readouterr().out
+    assert "+<!-- tadu:rule v3 -->" in capsys.readouterr().out
 
 
 def test_write_appends_block(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text("# A\n")
     run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
-    assert "<!-- tadu:rule v2 -->" in (tmp_path / "AGENTS.md").read_text()
+    assert "<!-- tadu:rule v3 -->" in (tmp_path / "AGENTS.md").read_text()
 
 
 def test_append_without_trailing_newline_leaves_one_blank_line(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text("# A")
     run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     text = (tmp_path / "AGENTS.md").read_text()
-    assert text.startswith("# A\n\n<!-- tadu:rule v2 -->\n")
+    assert text.startswith("# A\n\n<!-- tadu:rule v3 -->\n")
     assert "\n\n\n" not in text
 
 
@@ -40,7 +40,7 @@ def test_explicit_file_is_used(tmp_path: Path) -> None:
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs" / "rules.md").write_text("# R\n")
     run_sync(str(tmp_path), "docs/rules.md", write=True, adopt_legacy=False)
-    assert "<!-- tadu:rule v2 -->" in (tmp_path / "docs" / "rules.md").read_text()
+    assert "<!-- tadu:rule v3 -->" in (tmp_path / "docs" / "rules.md").read_text()
 
 
 def test_symlink_outside_root_is_refused(
@@ -69,7 +69,7 @@ def test_symlink_inside_root_updates_the_resolved_file(tmp_path: Path) -> None:
     (tmp_path / "CLAUDE.md").write_text("# C\n")
     (tmp_path / "AGENTS.md").symlink_to(tmp_path / "CLAUDE.md")
     assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
-    assert "<!-- tadu:rule v2 -->" in (tmp_path / "CLAUDE.md").read_text()
+    assert "<!-- tadu:rule v3 -->" in (tmp_path / "CLAUDE.md").read_text()
 
 
 def test_malformed_markers_leave_the_file_untouched(
@@ -92,7 +92,7 @@ def test_crlf_file_changes_only_the_block(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_bytes(old)
     assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     written = (tmp_path / "AGENTS.md").read_bytes()
-    assert written.startswith(b"# A\r\ntext\r\n<!-- tadu:rule v2 -->\r\n")
+    assert written.startswith(b"# A\r\ntext\r\n<!-- tadu:rule v3 -->\r\n")
     assert written.endswith(b"<!-- /tadu:rule -->\r\nafter\r\n")
     assert b"\n" not in written.replace(b"\r\n", b"")
 
@@ -101,7 +101,7 @@ def test_appended_block_uses_the_files_newline(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_bytes(b"# A\r\n")
     run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     written = (tmp_path / "AGENTS.md").read_bytes()
-    assert written.startswith(b"# A\r\n\r\n<!-- tadu:rule v2 -->\r\n")
+    assert written.startswith(b"# A\r\n\r\n<!-- tadu:rule v3 -->\r\n")
     assert b"\n" not in written.replace(b"\r\n", b"")
 
 
@@ -135,7 +135,7 @@ def test_inline_and_fenced_marker_examples_get_a_real_block_appended(tmp_path: P
     (tmp_path / "AGENTS.md").write_text(example)
     assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     text = (tmp_path / "AGENTS.md").read_text()
-    assert text.startswith(example + "\n<!-- tadu:rule v2 -->\n")
+    assert text.startswith(example + "\n<!-- tadu:rule v3 -->\n")
 
 
 def test_adopt_legacy_keeps_a_subsection_under_the_legacy_heading(tmp_path: Path) -> None:
@@ -167,7 +167,7 @@ def test_symlink_swapped_after_validation_cannot_redirect_the_write(
     monkeypatch.setattr("tadu.run_sync.rule_block_text", swap_then_serve)
     assert run_sync(str(root), None, write=True, adopt_legacy=False) == 0
     assert outside.read_text() == "# Outside\n"
-    assert "<!-- tadu:rule v2 -->" in (root / "real.md").read_text()
+    assert "<!-- tadu:rule v3 -->" in (root / "real.md").read_text()
 
 
 def test_block_reformatted_with_blank_lines_is_up_to_date(
@@ -189,7 +189,7 @@ def test_missing_root_is_refused(tmp_path: Path, capsys: pytest.CaptureFixture[s
 def test_prettier_reflowed_block_is_up_to_date(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    reflowed = (Path(__file__).parent / "fixtures" / "rule_block_v2_prettier_100.md").read_text()
+    reflowed = (Path(__file__).parent / "fixtures" / "rule_block_v3_prettier_100.md").read_text()
     (tmp_path / "AGENTS.md").write_text(reflowed)
     assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     assert "up to date" in capsys.readouterr().out
@@ -197,7 +197,7 @@ def test_prettier_reflowed_block_is_up_to_date(
 
 
 def test_changed_word_in_reflowed_block_is_drift(tmp_path: Path) -> None:
-    reflowed = (Path(__file__).parent / "fixtures" / "rule_block_v2_prettier_100.md").read_text()
+    reflowed = (Path(__file__).parent / "fixtures" / "rule_block_v3_prettier_100.md").read_text()
     (tmp_path / "AGENTS.md").write_text(reflowed.replace("searchable", "readable"))
     run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     assert (tmp_path / "AGENTS.md").read_text() == rule_block_text()
