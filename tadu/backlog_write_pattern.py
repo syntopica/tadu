@@ -10,8 +10,7 @@ SHELL_WRITE_PATTERN = re.compile(
     r"|>\s*[\"']?[^\s;&|<>\"']*(?:TODO(?:_LOG)?\.md|TODO_HISTORY_INDEX\.jsonl)"
 )
 BACKLOG_PATH_PATTERN = re.compile(
-    r"([^\s;&|<>\"'=(]*/)(?:TODO(?:_LOG)?\.md|TODO_HISTORY_INDEX\.jsonl)"
+    r"([^;&|<>\"'=(]*/)(?:TODO(?:_LOG)?\.md|TODO_HISTORY_INDEX\.jsonl)"
 )
 TADU_CLOSE_WRITE_PATTERN = re.compile(r"\btadu\s+close\b(?=.*--write)", re.DOTALL)
-TADU_CLOSE_ROOT_PATTERN = re.compile(r"\btadu\s+close\s+([^\s;&|\-][^\s;&|]*)")
 LEADING_CD_PATTERN = re.compile(r"\s*cd\s+([^\s;&|]+)\s*(?:&&|;)")
