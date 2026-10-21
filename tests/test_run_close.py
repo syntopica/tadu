@@ -59,3 +59,16 @@ def test_failed_write_exits_2(
 def test_root_that_is_not_a_directory(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     assert run_close(str(tmp_path / "absent"), "fix", CLOSING, write=False) == 2
     assert "not a directory" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("tail", ["more detail", "closing` code span"])
+def test_lazy_continuation_refuses_without_writing(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], tail: str
+) -> None:
+    todo = f"# TODO\n\n- [ ] target\n  continued `open\n{tail}\n\n- [ ] keep\n"
+    (tmp_path / "TODO.md").write_text(todo)
+    (tmp_path / "TODO_LOG.md").write_text(LOG)
+    assert run_close(str(tmp_path), "target", CLOSING, write=True) == 2
+    assert "continuation" in capsys.readouterr().err
+    assert (tmp_path / "TODO.md").read_text() == todo
+    assert (tmp_path / "TODO_LOG.md").read_text() == LOG
