@@ -58,3 +58,8 @@ def test_fenced_example_next_to_a_real_block_passes(tmp_path: Path) -> None:
 def test_crlf_block_passes(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_bytes(rule_block_text().replace("\n", "\r\n").encode())
     assert check_rule_block(tmp_path) == ()
+
+
+def test_backtick_info_prose_does_not_hide_current_block(tmp_path: Path) -> None:
+    (tmp_path / "AGENTS.md").write_text("```a`b\n\n" + rule_block_text())
+    assert check_rule_block(tmp_path) == ()

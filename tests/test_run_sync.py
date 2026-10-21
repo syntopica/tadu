@@ -201,3 +201,10 @@ def test_changed_word_in_reflowed_block_is_drift(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text(reflowed.replace("searchable", "readable"))
     run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
     assert (tmp_path / "AGENTS.md").read_text() == rule_block_text()
+
+
+def test_backtick_info_prose_does_not_hide_existing_rule_block(tmp_path: Path) -> None:
+    original = "```a`b\n\n" + rule_block_text()
+    (tmp_path / "AGENTS.md").write_text(original)
+    assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
+    assert (tmp_path / "AGENTS.md").read_text() == original

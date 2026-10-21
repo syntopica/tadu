@@ -72,3 +72,13 @@ def test_lazy_continuation_refuses_without_writing(
     assert "continuation" in capsys.readouterr().err
     assert (tmp_path / "TODO.md").read_text() == todo
     assert (tmp_path / "TODO_LOG.md").read_text() == LOG
+
+
+def test_backtick_info_prose_does_not_refuse_close(tmp_path: Path) -> None:
+    todo = "# TODO\n\n- [ ] target\n  ```a`b\n\n- [ ] keep\n"
+    (tmp_path / "TODO.md").write_text(todo)
+    (tmp_path / "TODO_LOG.md").write_text(LOG)
+    assert run_close(str(tmp_path), "target", CLOSING, write=True) == 0
+    assert "```a`b" in (tmp_path / "TODO_LOG.md").read_text()
+    assert "```a`b" not in (tmp_path / "TODO.md").read_text()
+    assert "- [ ] keep" in (tmp_path / "TODO.md").read_text()
