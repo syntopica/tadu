@@ -8,6 +8,10 @@
 
 ### 2026-10
 
+- [x] 2026-10-21 — **CI portability:** Export the locked dependency set as a pip-compatible CI artifact.
+  - Result: The quality workflow exports all dependency groups and extras with hashes to a requirements fallback artifact before running the gate, using the existing SHA-pinned upload action. The current project and command header are omitted. Certifi alone moved to 2026.10.19 to fix GHSA-6q48-6c7w-9gw2; the shell-hook test fixture now passes a Path to its typed helper.
+  - Evidence: Frozen export contains 47 locked packages and leaves uv.lock unchanged; actionlint passes; uv sync --frozen replaces only certifi; pytest passes 363 tests, Ruff and mypy pass, and codeality-py gate including pip-audit passes.
+
 - [x] 2026-10-11 — **Tooling:** Ship doctor and sync (plan tasks 2-6).
   - Result: `tadu doctor` checks TODO.md, TODO_LOG.md, the history index and the rule block read-only; `tadu sync` rewrites only the marked rule block, dry-run by default; the tadu-create and tadu-work skills ship with the plugin manifests.
   - Evidence: uv run pytest (87 passed); uv run tadu doctor . exits 0

@@ -28,6 +28,20 @@ jobs:
       - name: Check the lockfile is current
         run: uv lock --check
 
+      - name: Export locked dependencies for pip
+        run: >-
+          uv export --frozen --format requirements.txt --all-extras --all-groups
+          --no-emit-project --no-header
+          --output-file "$RUNNER_TEMP/requirements.txt"
+
+      - name: Upload the dependency fallback
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: requirements-fallback-${{ matrix.python-version }}
+          path: ${{ runner.temp }}/requirements.txt
+          if-no-files-found: error
+          retention-days: 30
+
       # Every extra and every group: the gate audits and tests the environment
       # it runs in, and a group-only install leaves out the extras the tests
       # import.

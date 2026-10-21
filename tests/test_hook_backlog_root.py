@@ -39,7 +39,7 @@ def test_shell_writes_and_closes(tmp_path: Path) -> None:
     assert (
         hook_backlog_root(bash("tadu close --match a --evidence e --write", root / "sub")) == root
     )
-    assert hook_backlog_root(bash(f"cd {root} && sed -i '' s/a/b/ TODO.md", "/")) == root
+    assert hook_backlog_root(bash(f"cd {root} && sed -i '' s/a/b/ TODO.md", Path("/"))) == root
     assert hook_backlog_root(bash("cd sub && tadu close --match a --evidence e --write")) == root
 
 
