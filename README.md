@@ -128,7 +128,7 @@ tadu doctor --workspace .
 tadu board --workspace .
 ```
 
-`board` prints a URL such as `http://127.0.0.1:41873/?token=...` and serves one page with a column per state, filters, and for each card its `path:line`. Open the printed URL. The files are rescanned on every request. Options: `--host` (default `127.0.0.1`), `--port` (default: any free port) and `--done-days` (default 14).
+`board` prints a URL such as `http://127.0.0.1:41873/?token=...` and serves one page with a column per state, filters, and for each card its `path:line`. Open the printed URL. The files are rescanned on every request. Options: `--host` (default `127.0.0.1`), `--port` (default: any free port; port 80 also accepts the bare host, since browsers omit it) and `--done-days` (default 14).
 
 The board only reads. It writes no backlog, workspace or index file, and it cannot change a card: every request other than GET answers `405` with `Allow: GET`. Edit the `TODO.md` files, or use `tadu close`.
 
