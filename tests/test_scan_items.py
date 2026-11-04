@@ -48,3 +48,11 @@ def test_crlf_titles_and_fields_have_no_carriage_return(tmp_path: Path) -> None:
     (item,) = read_open_items(tmp_path, ".", "shop")
     assert item.title == "Fix it."
     assert item.fields.priority == "high"
+
+
+def test_wrapped_titles_feed_the_item_and_its_key() -> None:
+    lines = ["- [ ] Fix the", "  checkout.", "- [ ] Fix the", "  checkout."]
+    first, second = scan_items(lines, "shop", "TODO.md", " ")
+    assert first.title == "Fix the checkout."
+    assert first.key != second.key
+    assert scan_items(["- [ ] Fix the checkout."], "shop", "TODO.md", " ")[0].key == first.key

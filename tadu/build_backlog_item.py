@@ -18,13 +18,12 @@ def build_backlog_item(
     lines: list[str],
     fenced: list[bool],
     match: re.Match[str],
-    at: tuple[int, str, str],
+    at: tuple[int, str, str, str],
 ) -> BacklogItem:
-    """The item whose first line matched; at is (first index, path, derived key)."""
-    first, path, fallback_key = at
+    """The item whose first line matched; at is (first index, path, derived key, title)."""
+    first, path, fallback_key, title = at
     end = item_span_end(lines, first)
     fields, problems = parse_item_fields(field_values(lines, fenced, first, end))
-    title = match.group(3)
     return BacklogItem(
         key=fields.id or fallback_key,
         stable=fields.id is not None,

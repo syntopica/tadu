@@ -268,6 +268,12 @@ Rules:
   name is considered. Fields never produce errors, so adopting them cannot fail a gate.
 - `F002` is a warning for an `ID:` used by more than one open item of the same
   `TODO.md`.
+- The title of an item is the text after its marker (and after the date of a log
+  entry) joined with the lines that follow it in the same paragraph, each
+  stripped and separated by a single space. The paragraph stops at the first
+  line that is blank, not indented, inside a code fence, a nested list item
+  (`- `, `* `, `+ ` or a number followed by `.` or `)` and a space) or
+  a field line (a field name, a colon, then nothing or whitespace and text).
 - An item without an `ID:` still gets a key for `list` and `show`: `k-` and 16
   hex digits derived from its repository, file, title and the number of earlier
   items with the same title. It is flagged unstable, because it changes when
@@ -377,7 +383,7 @@ with exactly these keys:
 | `line`, `end_line` | first line of the item and end of its span |
 | `state` | the marker character: space, `~`, `!`, `x` or `-` |
 | `column` | one of the columns above |
-| `title`, `text` | the first line without its marker, and the full item text |
+| `title`, `text` | the first paragraph without its marker, and the full item text |
 | `day` | the date before the title, or `null` |
 | `priority`, `due`, `estimate` | the field value, or `null` |
 | `queue` | `backlog` or `ready`, `backlog` when absent |
