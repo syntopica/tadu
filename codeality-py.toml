@@ -27,6 +27,7 @@ data = [
   "tadu/columns.py",
   "tadu/day_heading_pattern.py",
   "tadu/default_http_port.py",
+  "tadu/display_title_limit.py",
   "tadu/doctor_checks.py",
   "tadu/element_start_pattern.py",
   "tadu/entry_boundary_pattern.py",

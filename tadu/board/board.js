@@ -60,7 +60,9 @@ function link(text, url) {
 
 function cardNode(card) {
   const node = element("article", "card");
-  node.append(element("h3", "", card.title));
+  const heading = element("h3", "", card.title);
+  heading.title = card.title;
+  node.append(heading);
   const meta = element("div", "meta");
   if (card.priority !== null) {
     meta.append(element("span", `priority-${card.priority}`, card.priority));

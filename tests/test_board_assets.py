@@ -56,3 +56,10 @@ def test_filters_and_cancelled_toggle_present() -> None:
     assert 'id="filter-label"' in page
     assert 'id="waiting-on-me"' in page
     assert 'id="show-cancelled"' in page
+
+
+def test_card_title_is_clamped_and_carries_the_full_text() -> None:
+    style = text("board.css")
+    for rule in ("-webkit-line-clamp: 3", "line-clamp: 3", "-webkit-box-orient: vertical"):
+        assert rule in style
+    assert "heading.title = card.title" in text("board.js")

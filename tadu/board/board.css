@@ -62,6 +62,11 @@ h1 {
   font-weight: 600;
   margin: 0 0 0.35rem;
   overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .meta {

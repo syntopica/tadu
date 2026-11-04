@@ -81,7 +81,7 @@ Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` w
 
 ## List and show items
 
-`tadu list` reads the open items of the repository roots given (default `.`) and prints one line per item as `repository:path:line [column] priority title`, with `-` for no priority. The title is the item's first paragraph, so a hard-wrapped item shows whole:
+`tadu list` reads the open items of the repository roots given (default `.`) and prints one line per item as `repository:path:line [column] priority title`, with `-` for no priority. The title is the item's first paragraph, so a hard-wrapped item shows whole; a title over 160 characters is cut to 157 plus `...` in this listing (`--json` and `show` stay full):
 
 ```bash
 tadu list shop
