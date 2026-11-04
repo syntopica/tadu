@@ -67,29 +67,54 @@ from tadu.fenced_lines import fenced_lines
 from tadu.field_values import field_values
 
 LINES = [
-    "- [ ] Do it.", "", "  ID: t-1", "", "  Priority: high", "  Due: 2026-11-20",
-    "  - [ ] step", "", "    Labels: nested", "", "  ```", "  Queue: ready", "  ```",
+    "- [ ] Do it.",
+    "",
+    "  ID: t-1",
+    "",
+    "  Priority: high",
+    "  Due: 2026-11-20",
+    "  - [ ] step",
+    "",
+    "    Labels: nested",
+    "",
+    "  ```",
+    "  Queue: ready",
+    "  ```",
 ]
+
 
 def test_only_paragraph_start_unfenced_two_space_fields() -> None:
     assert field_values(LINES, fenced_lines(LINES), 0, len(LINES)) == [
-        (2, "ID", "t-1"), (4, "Priority", "high"),
+        (2, "ID", "t-1"),
+        (4, "Priority", "high"),
     ]
+
 
 # tests/test_parse_item_fields.py
 def test_valid_fields_parse() -> None:
-    fields, problems = parse_item_fields([(2, "Priority", "high"), (4, "Assignees", "ana, bot"),
-                                          (6, "Due", "2026-11-20"), (8, "Queue", "ready")])
-    assert fields == ItemFields(priority="high", assignees=("ana", "bot"),
-                                due=date(2026, 11, 20), queue="ready")
+    fields, problems = parse_item_fields(
+        [
+            (2, "Priority", "high"),
+            (4, "Assignees", "ana, bot"),
+            (6, "Due", "2026-11-20"),
+            (8, "Queue", "ready"),
+        ]
+    )
+    assert fields == ItemFields(
+        priority="high", assignees=("ana", "bot"), due=date(2026, 11, 20), queue="ready"
+    )
     assert problems == ()
 
+
 def test_invalid_and_repeated_fields_are_problems() -> None:
-    fields, problems = parse_item_fields([(2, "Priority", "p1"), (4, "Queue", "ready"),
-                                          (6, "Queue", "backlog")])
+    fields, problems = parse_item_fields(
+        [(2, "Priority", "p1"), (4, "Queue", "ready"), (6, "Queue", "backlog")]
+    )
     assert fields.priority is None and fields.queue == "ready"
-    assert problems == (FieldProblem(2, "Priority is not one of urgent, high, normal, low"),
-                        FieldProblem(6, "Queue appears more than once"))
+    assert problems == (
+        FieldProblem(2, "Priority is not one of urgent, high, normal, low"),
+        FieldProblem(6, "Queue appears more than once"),
+    )
 ```
 
 Each validator test asserts one valid and one invalid value, including `check_id_value("t-55161023-f3a9-43a3-94df-589ca752fa13") is None`, an uppercase or version-1 UUID rejected, `check_estimate_value("0")` and `("1.5")` rejected, `check_due_value("2026-02-30")` rejected.
@@ -136,14 +161,31 @@ git commit -m "feat: parse optional item fields"
 ```python
 # tests/test_scan_items.py
 def test_open_items_with_fields_and_derived_keys() -> None:
-    lines = ["# TODO", "", "- [ ] Same.", "", "- [~] Same.", "", "  ID: t-55161023-f3a9-43a3-94df-589ca752fa13",
-             "", "- [ ] Same.", "  - [ ] nested step", "```", "- [ ] fenced", "```"]
+    lines = [
+        "# TODO",
+        "",
+        "- [ ] Same.",
+        "",
+        "- [~] Same.",
+        "",
+        "  ID: t-55161023-f3a9-43a3-94df-589ca752fa13",
+        "",
+        "- [ ] Same.",
+        "  - [ ] nested step",
+        "```",
+        "- [ ] fenced",
+        "```",
+    ]
     items = scan_items(lines, "shop", "TODO.md", " ~!")
     assert [(i.line, i.end_line, i.state, i.stable) for i in items] == [
-        (3, 3, " ", False), (5, 7, "~", True), (9, 10, " ", False)]
+        (3, 3, " ", False),
+        (5, 7, "~", True),
+        (9, 10, " ", False),
+    ]
     assert items[1].key == "t-55161023-f3a9-43a3-94df-589ca752fa13"
     assert items[0].key != items[2].key
     assert scan_items(lines, "shop", "TODO.md", " ~!")[0].key == items[0].key
+
 
 def test_crlf_titles_and_fields_have_no_carriage_return(tmp_path: Path) -> None:
     (tmp_path / "TODO.md").write_bytes(b"- [ ] Fix it.\r\n\r\n  Priority: high\r\n")
@@ -188,9 +230,12 @@ def test_only_checked_recent_entries(tmp_path: Path) -> None:
         "# TODO Log\n\n<!-- tadu:log v1 since 2026-10-01 -->\n\n"
         "- [x] 2026-09-30 — **A:** legacy.\n  - Evidence: old\n"
         "- [x] 2026-10-20 — **A:** recent.\n\n  ID: t-55161023-f3a9-43a3-94df-589ca752fa13\n  - Evidence: ok\n"
-        "- [-] 2026-10-02 — **A:** too old.\n  - Resolution: no\n")
+        "- [-] 2026-10-02 — **A:** too old.\n  - Resolution: no\n"
+    )
     items = read_recent_log_items(tmp_path, ".", "shop", date(2026, 10, 15))
-    assert [(i.state, i.title, i.day) for i in items] == [("x", "**A:** recent.", date(2026, 10, 20))]
+    assert [(i.state, i.title, i.day) for i in items] == [
+        ("x", "**A:** recent.", date(2026, 10, 20))
+    ]
     assert items[0].stable
 ```
 
@@ -216,10 +261,14 @@ def test_only_checked_recent_entries(tmp_path: Path) -> None:
 ```python
 def test_field_problems_are_warnings(tmp_path: Path) -> None:
     uid = "t-55161023-f3a9-43a3-94df-589ca752fa13"
-    (tmp_path / "TODO.md").write_text(f"- [ ] A.\n\n  Priority: p1\n\n  ID: {uid}\n- [ ] B.\n\n  ID: {uid}\n")
+    (tmp_path / "TODO.md").write_text(
+        f"- [ ] A.\n\n  Priority: p1\n\n  ID: {uid}\n- [ ] B.\n\n  ID: {uid}\n"
+    )
     findings = check_item_fields(tmp_path)
     assert [(f.code, f.severity, f.line) for f in findings] == [
-        ("F001", "warning", 3), ("F002", "warning", 8)]
+        ("F001", "warning", 3),
+        ("F002", "warning", 8),
+    ]
 ```
 
 Plus: `run_doctor` on a repository whose only problem is a bad field still exits `0`.
@@ -372,6 +421,7 @@ def test_wrong_host_and_wrong_token_are_refused(board: BoardServer) -> None:
     assert get(board, "/api/cards", host=board.host, token="nope").status == 403
     assert get(board, "/api/cards", host=board.host, token=None).status == 403
 
+
 def test_cards_json_and_security_headers(board: BoardServer) -> None:
     response = get(board, "/api/cards", host=board.host, token=board.token)
     assert response.status == 200
@@ -379,7 +429,9 @@ def test_cards_json_and_security_headers(board: BoardServer) -> None:
     assert response.headers["Referrer-Policy"] == "no-referrer"
     assert not any(h.lower().startswith("access-control") for h in response.headers)
 
+
 def test_cookie_set_on_index_then_accepted(board: BoardServer) -> None: ...
+
 
 def test_page_assets_never_inject_html() -> None:
     for name in ("index.html", "board.js"):
