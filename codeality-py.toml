@@ -18,6 +18,9 @@ test-max-file-lines = 200
 data = [
   "tadu/backlog_file_names.py",
   "tadu/backlog_write_pattern.py",
+  "tadu/board_asset_paths.py",
+  "tadu/board_content_types.py",
+  "tadu/board_headers.py",
   "tadu/category_prefix_pattern.py",
   "tadu/closed_item_pattern.py",
   "tadu/day_heading_pattern.py",
@@ -34,6 +37,7 @@ data = [
   "tadu/legacy_rule_section_pattern.py",
   "tadu/log_entry_pattern.py",
   "tadu/log_marker_pattern.py",
+  "tadu/loopback_hosts.py",
   "tadu/open_item_pattern.py",
   "tadu/priorities.py",
   "tadu/queues.py",

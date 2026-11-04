@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tadu board</title>
+<link rel="stylesheet" href="/board.css">
+<script src="/board.js" defer></script>
+</head>
+<body>
+<header>
+<h1>tadu board</h1>
+<p id="status">Loading...</p>
+</header>
+<form id="filters">
+<label>Repository <select id="filter-repository"></select></label>
+<label>Project <select id="filter-project"></select></label>
+<label>Organization <select id="filter-organization"></select></label>
+<label>Role <select id="filter-role"></select></label>
+<label>Assignee <select id="filter-assignee"></select></label>
+<label>Priority <select id="filter-priority"></select></label>
+<label>Label <select id="filter-label"></select></label>
+<label><input type="checkbox" id="waiting-on-me"> Waiting on me</label>
+<label><input type="checkbox" id="show-cancelled"> Show cancelled</label>
+<button type="button" id="reload">Reload</button>
+</form>
+<ul id="problems"></ul>
+<main id="board"></main>
+</body>
+</html>

@@ -1,4 +1,4 @@
-"""Command-line entry point: doctor, sync, init, close, list, show and hook."""
+"""Command-line entry point: doctor, sync, init, close, list, show, board and hook."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from importlib.metadata import version
 from typing import TYPE_CHECKING
 
+from tadu.add_board_parser import add_board_parser
 from tadu.add_close_parser import add_close_parser
 from tadu.add_doctor_parser import add_doctor_parser
 from tadu.add_init_parser import add_init_parser
@@ -16,6 +17,7 @@ from tadu.add_show_parser import add_show_parser
 from tadu.add_sync_parser import add_sync_parser
 from tadu.close_command import close_command
 from tadu.hook_command import hook_command
+from tadu.run_board import run_board
 from tadu.run_doctor import run_doctor
 from tadu.run_init import run_init
 from tadu.run_list import run_list
@@ -36,6 +38,7 @@ def main(argv: list[str] | None = None) -> int:
     add_init_parser(commands)
     add_list_parser(commands)
     add_show_parser(commands)
+    add_board_parser(commands)
     add_close_parser(commands)
     hook = commands.add_parser("hook", help="agent hooks that run doctor after a backlog change")
     hook.add_argument("agent", choices=["claude"], help="claude: a Claude Code PostToolUse hook")
@@ -47,6 +50,7 @@ def main(argv: list[str] | None = None) -> int:
         "init": lambda: run_init(args.path, args.file, write=args.write, today=today),
         "list": lambda: run_list(args, today),
         "show": lambda: run_show(args, today),
+        "board": lambda: run_board(args),
         "sync": lambda: run_sync(
             args.path, args.file, write=args.write, adopt_legacy=args.adopt_legacy
         ),
