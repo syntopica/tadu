@@ -21,3 +21,17 @@ def test_tight_list_gets_a_blank_line_before_the_next_item() -> None:
 
 def test_last_line_of_the_file() -> None:
     assert insert_id_field(["- [ ] a"], 0, "t-1") == ["- [ ] a", "", "  ID: t-1"]
+
+
+def test_id_stays_out_of_a_fence_indented_four_or_five_spaces() -> None:
+    for marker in ("```", "~~~"):
+        for indent in ("    ", "     "):
+            fence = indent + marker
+            lines = ["- [ ] a", fence, f"{indent}x", "", f"{indent}y", fence]
+            assert insert_id_field(lines, 0, "t-1") == [
+                "- [ ] a",
+                "",
+                "  ID: t-1",
+                "",
+                *lines[1:],
+            ]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from tadu.fence_marker import fence_marker
+from tadu.item_content_line import item_content_line
 
 
 def ends_inside_fence(lines: list[str]) -> bool:
@@ -13,7 +14,7 @@ def ends_inside_fence(lines: list[str]) -> bool:
     """
     fence: str | None = None
     for line in lines:
-        run = fence_marker(line[1:] if line[:1] == "\t" else line.removeprefix("  "))
+        run = fence_marker(item_content_line(line))
         if fence is None and run:
             fence = run
         elif fence is not None and run and run[0] == fence[0] and len(run) >= len(fence):

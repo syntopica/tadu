@@ -14,3 +14,10 @@ def test_after_the_first_paragraph() -> None:
 
 def test_before_a_fence() -> None:
     assert at(["- [ ] a", "  ```", "  x", "", "  ```"]) == 1
+
+
+def test_before_a_fence_indented_past_the_document_limit() -> None:
+    for marker in ("```", "~~~"):
+        for indent in ("    ", "     "):
+            fence = indent + marker
+            assert at(["- [ ] a", fence, f"{indent}x", "", f"{indent}y", fence]) == 1
