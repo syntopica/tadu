@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -48,3 +49,11 @@ def test_bad_field_alone_still_exits_zero(tmp_path: Path) -> None:
     )
     (tmp_path / "AGENTS.md").write_text("<!-- tadu:rule v0 -->\nx\n<!-- /tadu:rule -->\n")
     assert run_doctor((str(tmp_path),), as_json=False) == 0
+
+
+def test_workspace_only_runs_the_workspace_check(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert run_doctor((), as_json=True, workspace=str(tmp_path), today=date(2026, 11, 4)) == 1
+    findings = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    assert [f["code"] for f in findings] == ["W004"]

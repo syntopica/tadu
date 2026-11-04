@@ -67,6 +67,7 @@ ignore = [
 "**/tests/**" = ["D", "S101", "INP001", "PLR2004"]
 # The commands report to the terminal; print is their output channel.
 "tadu/run_doctor.py" = ["T201"]
+"tadu/doctor_command.py" = ["T201"]
 "tadu/run_sync.py" = ["T201"]
 "tadu/read_sync_source.py" = ["T201"]
 "tadu/run_init.py" = ["T201"]

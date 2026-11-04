@@ -16,9 +16,9 @@ from tadu.add_list_parser import add_list_parser
 from tadu.add_show_parser import add_show_parser
 from tadu.add_sync_parser import add_sync_parser
 from tadu.close_command import close_command
+from tadu.doctor_command import doctor_command
 from tadu.hook_command import hook_command
 from tadu.run_board import run_board
-from tadu.run_doctor import run_doctor
 from tadu.run_init import run_init
 from tadu.run_list import run_list
 from tadu.run_show import run_show
@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
         "sync": lambda: run_sync(
             args.path, args.file, write=args.write, adopt_legacy=args.adopt_legacy
         ),
-        "doctor": lambda: run_doctor(tuple(args.paths), as_json=args.json),
+        "doctor": lambda: doctor_command(args, today),
     }
     return handlers[args.command]()
 

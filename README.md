@@ -74,6 +74,8 @@ AGENTS.md:0: error R003 no TODO maintenance rule
 
 Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` when at least one error is reported. A clean repository prints nothing. Add `--json` for one JSON object per finding. A file that cannot be read as UTF-8 produces an `E001` finding and the other checks and roots still run.
 
+`tadu doctor --workspace DIR` checks the items of every repository registered in the workspace (paths are then optional; with only `--workspace`, the per-repository checks are not run). It reports unknown assignees (`W001`), IDs shared between repositories (`W002`), repositories that could not be scanned (`W003`) and an invalid workspace (`W004`, an error). Giving neither paths nor `--workspace` exits `2`.
+
 ## Close an item
 
 `tadu close` takes the one open item (`[ ]`, `[~]` or `[!]`, at the top level and outside fences) whose first line contains `--match`, removes it from `TODO.md` with its indented continuation lines, and writes it into `TODO_LOG.md` as a dated entry. `--evidence` logs it as `[x]`, `--resolution` as `[-]`; one of the two is required. Like `sync`, it prints the diff of both files and changes nothing until `--write`, after which it runs `doctor` on the repository and exits with its status:
@@ -212,6 +214,10 @@ Branches that close work in the same month both append to the same section of `T
 | R005 | error | the rule markers are not exactly one open followed by one close |
 | F001 | warning | an item field is malformed |
 | F002 | warning | an `ID:` is used by more than one open item |
+| W001 | warning | an item is assigned to someone who is not a person in the workspace |
+| W002 | warning | an `ID:` is used in more than one repository of the workspace |
+| W003 | warning | a workspace repository could not be scanned |
+| W004 | error | the workspace file or local configuration is invalid |
 | E001 | error | a file could not be read (not valid UTF-8, or an I/O error) |
 
 ## Skills

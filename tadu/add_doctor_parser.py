@@ -11,5 +11,6 @@ if TYPE_CHECKING:
 def add_doctor_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     """Add `doctor` to the subcommands."""
     doctor = commands.add_parser("doctor", help="check repositories against the tadu spec")
-    doctor.add_argument("paths", nargs="+", help="repository roots")
+    doctor.add_argument("paths", nargs="*", help="repository roots")
+    doctor.add_argument("--workspace", metavar="DIR", help="check the items of a workspace")
     doctor.add_argument("--json", action="store_true", help="one JSON object per finding")
