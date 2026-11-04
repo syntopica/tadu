@@ -44,3 +44,9 @@ def test_invalid_and_repeated_fields_are_problems() -> None:
 
 def test_no_fields_gives_defaults() -> None:
     assert parse_item_fields([]) == (ItemFields(), ())
+
+
+def test_oversized_estimate_is_a_problem() -> None:
+    fields, problems = parse_item_fields([(2, "Estimate", "9" * 5000)])
+    assert fields.estimate is None
+    assert problems == (FieldProblem(2, "Estimate is not a positive whole number of minutes"),)
