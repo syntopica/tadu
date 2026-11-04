@@ -16,6 +16,7 @@ Eight commands:
 - `tadu close` moves one finished item from `TODO.md` into `TODO_LOG.md`.
 - `tadu list` prints the items of one or more repositories, or of a workspace, as lines or JSON.
 - `tadu show` prints one item by its key.
+- `tadu id` gives open items without an `ID:` field a fresh one.
 - `tadu board` serves a read-only kanban page for a workspace.
 - `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
 
@@ -156,9 +157,20 @@ tadu close --match "Fix the header" --evidence "tests/test_header.py passes" --r
 
 - The category is `--category`, else a `**Category:**` prefix the item already has, else the `##` section the item sits in, else `General`. `--title` replaces the item's text, and `--date YYYY-MM-DD` the date (default today). Continuation lines of the item are kept under the entry, before `Result:`.
 - The entry goes under the `## YYYY` heading of its date, into the `### YYYY-MM` section, else a `###` section headed by that very day, else a new section; missing headings are created. Whether it goes at the top or the bottom of its section follows the order the log already keeps its dates in; with no clear order it is appended.
+- `--id t-...` replaces `--match` and selects the one open item whose `ID:` field has that value, so a close survives a retitled item.
 - No match, or more than one, exits `2` and lists the candidates with their line numbers. Blank or multi-line values exit `2`. Each file keeps its own line endings; a file mixing CRLF and LF, or holding a bare CR or a Unicode line separator, is refused, and so is an item whose indentation leaves a code fence open.
 - A close whose result would give `doctor` an error the files did not already have is refused before anything is written. An item that was the last one leaves `TODO.md` with its legend.
 - `TODO_LOG.md` is written first, then `TODO.md`, each atomically, under an exclusive lock on the repository directory (POSIX) and only when neither file changed since it was read. If the second write fails, the message names the line to delete by hand.
+
+## Give items an ID
+
+`tadu id` gives every open item of `TODO.md` that has no `ID:` field a fresh `t-` UUID4, written as its own paragraph right after the item's first paragraph. `--key KEY` limits it to the one item that `tadu list PATH` shows under that derived key; a key that matches no open item, or an item that already has an `ID:` (even a malformed one), exits `2`. It prints the diff and changes nothing until `--write`, after which it runs `doctor` on the repository and exits with its status:
+
+```bash
+tadu id --key k-0123456789abcdef --write
+```
+
+Line endings are kept; a file with irregular line endings, or an item with a possible unindented continuation, is refused. The write is atomic, under the same lock as `close`, and only when `TODO.md` did not change since it was read. The derived key uses the repository directory's name, as `tadu list` without `--workspace` does.
 
 ## Write the rule block
 

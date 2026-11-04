@@ -74,3 +74,11 @@
 - [x] 2026-10-21 — **Bugs:** `tadu close` refuses an item whose continuation line starts with a backtick run followed by text that holds a backtick (`` ```a`b ``), which CommonMark reads as prose, not a fence. It fails safe (exit 2, nothing written). `FENCE_LINE_PATTERN` is shared with `sync` and `doctor`, so fix it there with tests for all three.
   - Result: The shared fence pattern follows CommonMark 4.5: backtick info strings cannot contain backticks; tilde info and fence capture remain intact. Close accepts the prose, sync preserves the existing rule block, and doctor sees it. Independent review returned no findings.
   - Evidence: Four regressions failed before the fix; afterward 45 targeted tests and all 381 tests passed. The full AGENTS gate passed with 100% coverage, Ruff, mypy, codeality-py, deptry and pip-audit. Installed CLI fixtures verify sync, doctor and close.
+
+### 2026-11
+
+- [x] 2026-11-04 — **Board:** Add `tadu id --write` and `tadu close --id`.
+
+  Gives items without an `ID:` a stable one and closes by ID. Smallest next step: a command that inserts an `ID:` paragraph into one item chosen by its derived key, with `--write` as the only mutation.
+  - Result: New `tadu id [PATH] [--key KEY] [--write]` inserts a t- UUID4 ID paragraph into open items lacking one; `tadu close --id` selects the item by its ID field
+  - Evidence: uv run codeality-py gate passes (665 tests, 100% coverage); tests/test_run_id.py and tests/test_close_command.py::test_close_by_id exercise both commands

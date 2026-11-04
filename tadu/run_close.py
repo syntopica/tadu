@@ -14,16 +14,17 @@ from tadu.write_closed_backlog import write_closed_backlog
 
 if TYPE_CHECKING:
     from tadu.closing import Closing
+    from tadu.item_selector import ItemSelector
 
 
-def run_close(path: str, match: str, closing: Closing, *, write: bool) -> int:
-    """Move the one open item matching `match` to the log; print the diff, apply with write."""
+def run_close(path: str, select: ItemSelector, closing: Closing, *, write: bool) -> int:
+    """Move the one open item `select` picks to the log; print the diff, apply with write."""
     root = Path(path)
     if not root.is_dir():
         print(f"{root}: not a directory", file=sys.stderr)
         return 2
     with backlog_lock(root):
-        plan = prepare_close(root, match, closing)
+        plan = prepare_close(root, select, closing)
         if plan is None:
             return 2
         for target, before, after in (plan.log, plan.todo):

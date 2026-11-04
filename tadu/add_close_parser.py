@@ -13,7 +13,9 @@ def add_close_parser(commands: argparse._SubParsersAction[argparse.ArgumentParse
     """Add `close` to the subcommands."""
     close = commands.add_parser("close", help="move one open item from TODO.md to TODO_LOG.md")
     close.add_argument("path", nargs="?", default=".", help="repository root (default: .)")
-    close.add_argument("--match", required=True, help="text found in the item's first line")
+    item = close.add_mutually_exclusive_group(required=True)
+    item.add_argument("--match", help="text found in the item's first line")
+    item.add_argument("--id", help="the item's ID: field value")
     proof = close.add_mutually_exclusive_group(required=True)
     proof.add_argument("--evidence", help="log it as [x] with this Evidence: line")
     proof.add_argument("--resolution", help="log it as [-] with this Resolution: line")

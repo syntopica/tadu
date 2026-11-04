@@ -7,6 +7,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from tadu.close_request_error import close_request_error
+from tadu.close_selector import close_selector
 from tadu.closing import Closing
 from tadu.run_close import run_close
 
@@ -18,7 +19,8 @@ def close_command(args: argparse.Namespace) -> int:
     """Refuse empty or multi-line values with exit 2, otherwise run close."""
     proof = args.evidence if args.evidence is not None else args.resolution
     fields = (args.result, args.category, args.title, proof)
-    error = close_request_error(args.match, proof, fields)
+    wanted = args.id if args.id is not None else args.match
+    error = close_request_error(wanted, proof, fields)
     if error is not None:
         print(f"tadu close: {error}", file=sys.stderr)
         return 2
@@ -30,4 +32,5 @@ def close_command(args: argparse.Namespace) -> int:
         title=args.title,
         day=args.date or datetime.now(UTC).astimezone().date(),
     )
-    return run_close(args.path, args.match, closing, write=args.write)
+    select = close_selector(wanted, by_id=args.id is not None)
+    return run_close(args.path, select, closing, write=args.write)

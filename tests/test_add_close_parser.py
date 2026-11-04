@@ -22,3 +22,12 @@ def test_defaults_and_date() -> None:
 def test_evidence_and_resolution_exclude_each_other() -> None:
     with pytest.raises(SystemExit):
         parser().parse_args(["close", "--match", "a", "--evidence", "e", "--resolution", "r"])
+
+
+def test_id_replaces_match() -> None:
+    parsed = parser().parse_args(["close", "--id", "t-1", "--evidence", "e"])
+    assert (parsed.id, parsed.match) == ("t-1", None)
+    with pytest.raises(SystemExit):
+        parser().parse_args(["close", "--id", "t-1", "--match", "a", "--evidence", "e"])
+    with pytest.raises(SystemExit):
+        parser().parse_args(["close", "--evidence", "e"])

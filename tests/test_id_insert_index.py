@@ -1,0 +1,16 @@
+from tadu.fenced_lines import fenced_lines
+from tadu.id_insert_index import id_insert_index
+
+
+def at(lines: list[str]) -> int:
+    return id_insert_index(lines, fenced_lines(lines), 0)
+
+
+def test_after_the_first_paragraph() -> None:
+    assert at(["- [ ] a", "  wrapped", "", "  more"]) == 2
+    assert at(["- [ ] a", "- [ ] b"]) == 1
+    assert at(["- [ ] a"]) == 1
+
+
+def test_before_a_fence() -> None:
+    assert at(["- [ ] a", "  ```", "  x", "", "  ```"]) == 1

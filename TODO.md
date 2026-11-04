@@ -14,9 +14,9 @@
 - [!] **Board:** Decide who opens a company workspace's board and whether they only view or also move and edit cards.
   Blocked on the owner's decision. Decides local-only versus shared server with auth, and the write path for people who do not use agents. The read-only first version in `docs/superpowers/specs/2026-11-04-tadu-board-design.md` does not depend on it. Smallest unblock: the owner states, for the first company workspace, who uses the board and with what rights.
 
-- [ ] **Board:** Add `tadu id --write` and `tadu close --id`.
+- [ ] **Board:** Make `tadu hook claude` treat `tadu id --write` like `tadu close --write`.
 
-  Gives items without an `ID:` a stable one and closes by ID. Smallest next step: a command that inserts an `ID:` paragraph into one item chosen by its derived key, with `--write` as the only mutation.
+  `TADU_CLOSE_WRITE_PATTERN` and `close_root_word` only recognise `close`, so an agent's `tadu id --write` is not followed by the hook's doctor run (the command runs doctor itself). Smallest next step: match `tadu (close|id)` in both, with tests.
 
 - [ ] **Board:** Add one shared mutation function with lock, hash check, commit and push.
 
