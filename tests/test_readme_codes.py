@@ -14,4 +14,4 @@ def test_readme_table_lists_every_code_the_cli_can_emit() -> None:
     readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
     documented = set(re.findall(r"^\| ([A-Z]\d{3}) \|", readme, re.MULTILINE))
     assert emitted_codes() == documented
-    assert len(documented) == 28
+    assert len(documented) == 29

@@ -45,3 +45,22 @@ def test_three_items_share_an_id_and_point_at_the_first(tmp_path: Path) -> None:
         (6, f"ID {UID} is also used at line 1"),
         (9, f"ID {UID} is also used at line 1"),
     ]
+
+
+def test_f003_reports_field_lines_that_are_not_read(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        "- [ ] A.\n  Priority: high\n\n  Due:\n\n  Queue: ready\n"
+        "  Labels: x\n\n  ```\n  Due:\n  ```\n\n  Estimate: 5\n  Estimate:\n"
+    )
+    findings = check_item_fields(tmp_path)
+    assert [(f.code, f.severity, f.line, f.message) for f in findings] == [
+        ("F003", "warning", 2, "Priority is not read as a field; put a blank line before it"),
+        ("F003", "warning", 4, "Due has no value"),
+        ("F003", "warning", 7, "Labels is not read as a field; put a blank line before it"),
+        ("F003", "warning", 14, "Estimate has no value"),
+    ]
+
+
+def test_f003_ignores_recognised_fields_and_non_open_text(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text("- [ ] A.\n\n  Priority: high\n  Note: text\n")
+    assert check_item_fields(tmp_path) == ()

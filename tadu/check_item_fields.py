@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from tadu.finding import Finding
 from tadu.id_line_offset import id_line_offset
+from tadu.misplaced_field_findings import misplaced_field_findings
 from tadu.read_open_items import read_open_items
 from tadu.unreadable_file_error import UnreadableFileError
 
@@ -29,6 +30,7 @@ def check_item_fields(root: Path) -> tuple[Finding, ...]:
             Finding("F001", "warning", str(path), problem.line + 1, problem.message)
             for problem in item.problems
         )
+        findings.extend(misplaced_field_findings(str(path), item))
         uid = item.fields.id
         if uid is None:
             continue

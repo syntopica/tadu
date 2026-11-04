@@ -268,6 +268,9 @@ Rules:
   name is considered. Fields never produce errors, so adopting them cannot fail a gate.
 - `F002` is a warning for an `ID:` used by more than one open item of the same
   `TODO.md`.
+- `F003` is a warning for a line of an open item that has a field name, exactly
+  two spaces of indent and a colon, but is not read as a field: either it
+  follows text without a blank line, or its value is empty.
 - The title of an item is the text after its marker (and after the date of a log
   entry) joined with the lines that follow it in the same paragraph, each
   stripped and separated by a single space. The paragraph stops at the first
