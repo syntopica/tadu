@@ -29,11 +29,6 @@ def run_board(args: argparse.Namespace) -> int:
     except WorkspaceError as error:
         print(f"tadu board: {error}", file=sys.stderr)
         return 2
-    if args.host not in LOOPBACK_HOSTS:
-        print(
-            f"tadu board: warning: bound to {args.host}, the board is reachable from other machines",
-            file=sys.stderr,
-        )
     try:
         server = ThreadingHTTPServer((args.host, args.port), BaseHTTPRequestHandler)
     except OSError as error:
@@ -41,6 +36,12 @@ def run_board(args: argparse.Namespace) -> int:
         return 2
     with server:
         port = server.server_address[1]
+        if args.host not in LOOPBACK_HOSTS:
+            print(
+                f"tadu board: warning: listening on {args.host}; only requests whose "
+                f"Host header is {args.host}:{port} are served",
+                file=sys.stderr,
+            )
         token = secrets.token_urlsafe(32)
         hosts = allowed_hosts(args.host, port)
         state = BoardState(Path(args.workspace), args.done_days, token, hosts)

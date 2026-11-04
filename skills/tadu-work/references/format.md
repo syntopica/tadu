@@ -322,8 +322,6 @@ organization = "studio"
 
 ```toml
 version = 1
-
-[local]
 me = "ana"
 editor_url = "vscode://file/{path}:{line}"
 
@@ -331,17 +329,22 @@ editor_url = "vscode://file/{path}:{line}"
 shop = "../shop"
 ```
 
-- `[local]`: `me` is optional and must be a person of the workspace;
-  `editor_url` is an optional template where `{path}` and `{line}` are
-  replaced.
+- `me` is optional and must be a person of the workspace. `editor_url` is an
+  optional template where `{path}` and `{line}` are replaced. Both are
+  top-level keys, before any table.
 - `[paths]` maps a repository key to its checkout, relative to the workspace
   directory or absolute. Every key must be a repository of the workspace. A
   repository without a path is reported, not fatal. A missing local file is the
   same as an empty one.
 
-A malformed workspace is one error listing every problem found. A workspace
-file that is valid TOML but names an unknown repository, organization or person
-is malformed in the same way.
+In either file, an unknown top-level key or table is an error naming it: the
+workspace file allows `version`, `repository`, `project`, `organization` and
+`person`; the local file allows `version`, `me`, `editor_url` and `paths`.
+
+A malformed workspace is an error. Problems reading or parsing either file
+stop at the first one found. A workspace file that parses but names an unknown
+repository, organization or person, or repeats a key or ID, reports every such
+cross-reference problem together in one error.
 
 ## Columns
 

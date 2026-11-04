@@ -24,6 +24,7 @@ data = [
   "tadu/board_headers.py",
   "tadu/category_prefix_pattern.py",
   "tadu/closed_item_pattern.py",
+  "tadu/columns.py",
   "tadu/day_heading_pattern.py",
   "tadu/doctor_checks.py",
   "tadu/element_start_pattern.py",
@@ -36,6 +37,7 @@ data = [
   "tadu/label_pattern.py",
   "tadu/legacy_rule_heading_pattern.py",
   "tadu/legacy_rule_section_pattern.py",
+  "tadu/local_keys.py",
   "tadu/log_entry_pattern.py",
   "tadu/log_marker_pattern.py",
   "tadu/loopback_hosts.py",
@@ -48,9 +50,11 @@ data = [
   "tadu/rule_block_open_pattern.py",
   "tadu/rule_block_version.py",
   "tadu/single_line_start_pattern.py",
+  "tadu/state_columns.py",
   "tadu/state_markers.py",
   "tadu/task_id_pattern.py",
   "tadu/workspace_file_names.py",
+  "tadu/workspace_keys.py",
   "tadu/year_heading_pattern.py",
 ]
 registry = []

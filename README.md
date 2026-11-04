@@ -95,7 +95,7 @@ shop:TODO.md:14 [blocked] - **Shipping:** Wait for the carrier API key.
 
 `--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
 
-`tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Labels:` and `Queue:` fields, described in the spec; `doctor` warns about malformed ones (`F001`) and repeated IDs (`F002`).
+`tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Labels:`, `Queue:` and `Estimate:` fields, described in the spec; `doctor` warns about malformed ones (`F001`) and repeated IDs (`F002`).
 
 ## Board
 
@@ -134,11 +134,11 @@ The board only reads. It writes no backlog, workspace or index file, and it cann
 
 Who may read it:
 
-- The server checks the `Host` header against the address it is bound to and answers `421` otherwise, which defeats DNS rebinding.
+- The server checks the `Host` header against the address and port it is bound to (bound to `127.0.0.1`, it also accepts `localhost:<port>`) and answers `421` otherwise, which defeats DNS rebinding.
 - The page and its script and stylesheet need only that. The card data at `/api/cards` also needs the per-run token, given as an `X-Tadu-Token` header or a `?token=` parameter; a missing or wrong token answers `403`. The page keeps the token in `sessionStorage` and removes it from the address bar.
 - No response carries a CORS header, so another page cannot read the data. Responses send `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and a Content-Security-Policy that allows only the page's own script and style.
 - Item text is escaped, never rendered as HTML.
-- `--host` other than `127.0.0.1` or `localhost` prints a warning, because the board is then reachable from other machines, and the token is its only protection. `::1` is not supported. An invalid workspace or a port that cannot be bound exits `2`.
+- `--host` other than `127.0.0.1` or `localhost` prints a warning: the server listens on that address, but it still serves only requests whose `Host` header is exactly `<host>:<port>`, so a browser that reaches it by any other name or address gets `421`. `::1` is not supported. An invalid workspace or a port that cannot be bound exits `2`.
 
 ## Close an item
 

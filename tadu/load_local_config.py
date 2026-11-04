@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tadu.check_top_level_keys import check_top_level_keys
 from tadu.local_config import LocalConfig
+from tadu.local_keys import LOCAL_KEYS
 from tadu.optional_text import optional_text
 from tadu.parse_paths import parse_paths
 from tadu.read_toml import read_toml
@@ -23,6 +25,7 @@ def load_local_config(directory: Path, workspace: Workspace) -> LocalConfig:
     if not path.exists():
         return LocalConfig({}, None, None)
     data = read_toml(path)
+    check_top_level_keys(data, LOCAL_KEYS, path)
     me = optional_text(data, "local", "me")
     if me is not None and me not in {p.id for p in workspace.people}:
         msg = f"me: unknown person {me}"

@@ -60,3 +60,13 @@ def test_bad_values(tmp_path: Path, body: str, fragment: str) -> None:
     write(tmp_path, "version = 1\n" + body)
     with pytest.raises(WorkspaceError, match=fragment):
         load_local_config(tmp_path, workspace(tmp_path))
+
+
+@pytest.mark.parametrize(
+    ("body", "name"),
+    [('[local]\nme = "ana"\n', "local"), ("theme = 'dark'\n", "theme")],
+)
+def test_unknown_top_level_key_or_table_is_an_error(tmp_path: Path, body: str, name: str) -> None:
+    write(tmp_path, "version = 1\n" + body)
+    with pytest.raises(WorkspaceError, match=f"unknown top-level key {name}"):
+        load_local_config(tmp_path, workspace(tmp_path))

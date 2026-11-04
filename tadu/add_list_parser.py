@@ -6,12 +6,11 @@ from datetime import date
 from typing import TYPE_CHECKING
 
 from tadu.add_scope_arguments import add_scope_arguments
+from tadu.columns import COLUMNS
 from tadu.priorities import PRIORITIES
 
 if TYPE_CHECKING:
     import argparse
-
-COLUMNS = ("backlog", "ready", "in_progress", "blocked", "done", "cancelled")
 
 
 def add_list_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:

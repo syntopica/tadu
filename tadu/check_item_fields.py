@@ -7,17 +7,21 @@ from typing import TYPE_CHECKING
 from tadu.finding import Finding
 from tadu.id_line_offset import id_line_offset
 from tadu.read_open_items import read_open_items
+from tadu.unreadable_file_error import UnreadableFileError
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 
 def check_item_fields(root: Path) -> tuple[Finding, ...]:
-    """Report field problems and IDs repeated within the open items."""
+    """Report field problems and repeated IDs; an unreadable TODO.md is E001's to report."""
     path = root / "TODO.md"
     if not path.is_file():
         return ()
-    items = read_open_items(root, ".", "")
+    try:
+        items = read_open_items(root, ".", "")
+    except UnreadableFileError:
+        return ()
     findings: list[Finding] = []
     first_line: dict[str, int] = {}
     for item in items:

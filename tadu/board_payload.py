@@ -5,8 +5,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
-from tadu.add_list_parser import COLUMNS
 from tadu.card_json import card_json
+from tadu.columns import COLUMNS
 from tadu.load_cards import load_cards
 
 if TYPE_CHECKING:

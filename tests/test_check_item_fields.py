@@ -1,9 +1,6 @@
 from pathlib import Path
 
-import pytest
-
 from tadu.check_item_fields import check_item_fields
-from tadu.unreadable_file_error import UnreadableFileError
 
 UID = "t-55161023-f3a9-43a3-94df-589ca752fa13"
 
@@ -25,10 +22,9 @@ def test_absent_backlog_has_no_findings(tmp_path: Path) -> None:
     assert check_item_fields(tmp_path) == ()
 
 
-def test_unreadable_backlog_propagates(tmp_path: Path) -> None:
+def test_unreadable_backlog_is_left_to_the_todo_check(tmp_path: Path) -> None:
     (tmp_path / "TODO.md").write_bytes(b"- [ ] A \xff\n")
-    with pytest.raises(UnreadableFileError):
-        check_item_fields(tmp_path)
+    assert check_item_fields(tmp_path) == ()
 
 
 def test_f002_ignores_the_uid_in_title_and_fenced_block(tmp_path: Path) -> None:

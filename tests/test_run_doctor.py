@@ -57,3 +57,12 @@ def test_workspace_only_runs_the_workspace_check(
     assert run_doctor((), as_json=True, workspace=str(tmp_path), today=date(2026, 11, 4)) == 1
     findings = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
     assert [f["code"] for f in findings] == ["W004"]
+
+
+def test_undecodable_todo_is_reported_once(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / "TODO.md").write_bytes(b"# TODO\n- [ ] A \xff\n")
+    assert run_doctor((str(tmp_path),), as_json=True) == 1
+    findings = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    assert [f["path"] for f in findings if f["code"] == "E001"] == [str(tmp_path / "TODO.md")]

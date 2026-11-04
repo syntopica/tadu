@@ -29,7 +29,12 @@ def test_other_host_warns(
     monkeypatch.setattr(ThreadingHTTPServer, "serve_forever", interrupt)
     workspace = str(board_workspace(tmp_path))
     assert main(["board", "--workspace", workspace, "--host", "0.0.0.0"]) == 0  # noqa: S104
-    assert "reachable from other machines" in capsys.readouterr().err
+    captured = capsys.readouterr()
+    port = captured.out.partition("0.0.0.0:")[2].partition("/")[0]
+    assert captured.err == (
+        "tadu board: warning: listening on 0.0.0.0; only requests whose Host header is "
+        f"0.0.0.0:{port} are served\n"
+    )
     assert main(["board", "--workspace", workspace, "--host", "localhost"]) == 0
     assert capsys.readouterr().err == ""
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tadu.check_top_level_keys import check_top_level_keys
 from tadu.parse_organization import parse_organization
 from tadu.parse_person import parse_person
 from tadu.parse_project import parse_project
@@ -13,6 +14,7 @@ from tadu.table_rows import table_rows
 from tadu.workspace import Workspace
 from tadu.workspace_error import WorkspaceError
 from tadu.workspace_file_names import WORKSPACE_FILE
+from tadu.workspace_keys import WORKSPACE_KEYS
 from tadu.workspace_problems import workspace_problems
 
 if TYPE_CHECKING:
@@ -20,8 +22,10 @@ if TYPE_CHECKING:
 
 
 def load_workspace(directory: Path) -> Workspace:
-    """Parse the workspace file; all problems come back in one error."""
-    data = read_toml(directory / WORKSPACE_FILE)
+    """Parse the workspace file; cross-reference problems come back in one error."""
+    path = directory / WORKSPACE_FILE
+    data = read_toml(path)
+    check_top_level_keys(data, WORKSPACE_KEYS, path)
     workspace = Workspace(
         directory,
         tuple(parse_repository(r) for r in table_rows(data, "repository")),

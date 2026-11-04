@@ -137,3 +137,11 @@ def test_problems_are_joined(tmp_path: Path) -> None:
 )
 def test_malformed_shapes_name_table_and_key(tmp_path: Path, body: str, fragment: str) -> None:
     assert fragment in load_error(tmp_path, "version = 1\n" + body)
+
+
+@pytest.mark.parametrize(
+    ("text", "name"),
+    [('owner = "ana"\n' + VALID, "owner"), (VALID + '[settings]\ncolor = "red"\n', "settings")],
+)
+def test_unknown_top_level_key_or_table_is_an_error(tmp_path: Path, text: str, name: str) -> None:
+    assert f"unknown top-level key {name}" in load_error(tmp_path, text)
