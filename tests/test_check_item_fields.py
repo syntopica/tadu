@@ -29,3 +29,23 @@ def test_unreadable_backlog_propagates(tmp_path: Path) -> None:
     (tmp_path / "TODO.md").write_bytes(b"- [ ] A \xff\n")
     with pytest.raises(UnreadableFileError):
         check_item_fields(tmp_path)
+
+
+def test_f002_ignores_the_uid_in_title_and_fenced_block(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        f"- [ ] A.\n\n  ID: {UID}\n"
+        f"- [ ] Mentions {UID} here.\n\n  ```\n  {UID}\n  ```\n\n  ID: {UID}\n"
+    )
+    findings = check_item_fields(tmp_path)
+    assert [(f.code, f.line) for f in findings] == [("F002", 10)]
+
+
+def test_three_items_share_an_id_and_point_at_the_first(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        f"- [ ] A.\n\n  ID: {UID}\n- [ ] B.\n\n  ID: {UID}\n- [ ] C.\n\n  ID: {UID}\n"
+    )
+    findings = check_item_fields(tmp_path)
+    assert [(f.line, f.message) for f in findings] == [
+        (6, f"ID {UID} is also used at line 1"),
+        (9, f"ID {UID} is also used at line 1"),
+    ]

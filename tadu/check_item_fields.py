@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tadu.finding import Finding
+from tadu.id_line_offset import id_line_offset
 from tadu.read_open_items import read_open_items
 
 if TYPE_CHECKING:
@@ -30,7 +31,7 @@ def check_item_fields(root: Path) -> tuple[Finding, ...]:
         if uid not in first_line:
             first_line[uid] = item.line
             continue
-        offset = next(i for i, t in enumerate(item.text.splitlines()) if uid in t)
+        offset = id_line_offset(item.text, uid)
         message = f"ID {uid} is also used at line {first_line[uid]}"
         findings.append(Finding("F002", "warning", str(path), item.line + offset, message))
     return tuple(findings)
