@@ -34,7 +34,12 @@ def run_board(args: argparse.Namespace) -> int:
             f"tadu board: warning: bound to {args.host}, the board is reachable from other machines",
             file=sys.stderr,
         )
-    with ThreadingHTTPServer((args.host, args.port), BaseHTTPRequestHandler) as server:
+    try:
+        server = ThreadingHTTPServer((args.host, args.port), BaseHTTPRequestHandler)
+    except OSError as error:
+        print(f"tadu board: cannot listen on {args.host}:{args.port}: {error}", file=sys.stderr)
+        return 2
+    with server:
         port = server.server_address[1]
         token = secrets.token_urlsafe(32)
         hosts = allowed_hosts(args.host, port)

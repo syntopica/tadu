@@ -21,6 +21,8 @@ const FILTERS = {
   label: (card) => card.labels,
 };
 
+const TOKEN_KEY = "tadu_board_token";
+
 let payload = null;
 
 function element(tag, className, text) {
@@ -149,10 +151,29 @@ function render() {
   );
 }
 
+// The token arrives once in the printed URL; sessionStorage keeps it for this
+// tab only, and the address bar and history never hold it after the first load.
+function boardToken() {
+  const fromUrl = new URLSearchParams(window.location.search).get("token");
+  if (fromUrl) {
+    window.sessionStorage.setItem(TOKEN_KEY, fromUrl);
+    window.history.replaceState(null, "", "/");
+  }
+  return window.sessionStorage.getItem(TOKEN_KEY);
+}
+
 async function load() {
   const status = document.getElementById("status");
+  const token = boardToken();
+  if (!token) {
+    status.textContent = "No token: open the URL that `tadu board` printed.";
+    return;
+  }
   try {
-    const response = await fetch("/api/cards", { cache: "no-store" });
+    const response = await fetch("/api/cards", {
+      cache: "no-store",
+      headers: { "X-Tadu-Token": token },
+    });
     const body = await response.json();
     if (!response.ok) {
       throw new Error(body.error ?? `HTTP ${response.status}`);
@@ -167,8 +188,6 @@ async function load() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // The cookie now carries the token; keep it out of the address bar and history.
-  window.history.replaceState(null, "", "/");
   document.getElementById("filters").addEventListener("change", () => payload && render());
   document.getElementById("reload").addEventListener("click", load);
   load();

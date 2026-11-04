@@ -72,5 +72,5 @@ def send(board: BoardServer, method: str, path: str) -> Response:
     return board.request(method, f"{path}?token={board.token}", {"Host": board.host})
 
 
-def with_cookie(board: BoardServer, path: str, cookie: str) -> Response:
-    return board.request("GET", path, {"Host": board.host, "Cookie": cookie})
+def with_header(board: BoardServer, path: str, token: str) -> Response:
+    return board.request("GET", path, {"Host": board.host, "X-Tadu-Token": token})

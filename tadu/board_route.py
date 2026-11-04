@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from tadu.board_asset import board_asset
 from tadu.board_asset_paths import BOARD_ASSET_PATHS
+from tadu.board_data_path import BOARD_DATA_PATH
 from tadu.board_payload import board_payload
 from tadu.json_error import json_error
 from tadu.workspace_error import WorkspaceError
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 
 def board_route(path: str, state: BoardState, today: date) -> tuple[int, bytes, str]:
     """Status, body and content type for a path without its query string."""
-    if path == "/api/cards":
+    if path == BOARD_DATA_PATH:
         try:
             payload = board_payload(state, today)
         except WorkspaceError as error:

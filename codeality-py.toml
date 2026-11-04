@@ -20,6 +20,7 @@ data = [
   "tadu/backlog_write_pattern.py",
   "tadu/board_asset_paths.py",
   "tadu/board_content_types.py",
+  "tadu/board_data_path.py",
   "tadu/board_headers.py",
   "tadu/category_prefix_pattern.py",
   "tadu/closed_item_pattern.py",

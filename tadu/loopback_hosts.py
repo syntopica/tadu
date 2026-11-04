@@ -2,4 +2,4 @@
 
 from __future__ import annotations
 
-LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
+LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost"})

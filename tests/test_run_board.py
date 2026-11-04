@@ -39,3 +39,19 @@ def test_bad_workspace_exits_two(tmp_path: Path, capsys: pytest.CaptureFixture[s
     captured = capsys.readouterr()
     assert captured.err.startswith("tadu board: ")
     assert captured.out == ""
+
+
+def test_bind_failure_exits_two(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def refuse(*_args: object) -> None:
+        raise OSError(48, "Address already in use")
+
+    monkeypatch.setattr("tadu.run_board.ThreadingHTTPServer", refuse)
+    workspace = str(board_workspace(tmp_path))
+    assert main(["board", "--workspace", workspace, "--port", "8123"]) == 2
+    captured = capsys.readouterr()
+    assert captured.err == (
+        "tadu board: cannot listen on 127.0.0.1:8123: [Errno 48] Address already in use\n"
+    )
+    assert captured.out == ""

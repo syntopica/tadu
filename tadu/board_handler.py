@@ -9,7 +9,6 @@ from http.server import BaseHTTPRequestHandler
 from typing import TYPE_CHECKING, ClassVar, override
 
 from tadu.authorize_request import authorize_request
-from tadu.board_cookie import board_cookie
 from tadu.board_headers import BOARD_HEADERS
 from tadu.board_route import board_route
 from tadu.json_error import json_error
@@ -21,7 +20,7 @@ if TYPE_CHECKING:
 
 
 class BoardHandler(BaseHTTPRequestHandler):
-    """Checks Host, then the token, then routes; a subclass binds `state`."""
+    """Checks Host, then the token on the data path, then routes; a subclass binds `state`."""
 
     state: ClassVar[BoardState]
     server_version = "tadu"
@@ -39,16 +38,14 @@ class BoardHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         """Authorize, then serve the page, an asset or the cards."""
-        token = request_token(self.path, self.headers.get("Cookie"))
-        refusal = authorize_request(self.headers.get("Host"), token, self.state)
+        route = self.path.partition("?")[0]
+        token = request_token(self.path, self.headers.get("X-Tadu-Token"))
+        refusal = authorize_request(self.headers.get("Host"), token, route, self.state)
         if refusal is not None:
             send_board_response(self, json_error(refusal, HTTPStatus(refusal).phrase.lower()))
             return
-        route = self.path.partition("?")[0]
-        response = board_route(route, self.state, datetime.now(UTC).astimezone().date())
-        from_query = route == "/" and request_token(self.path, None) is not None
-        extra = (("Set-Cookie", board_cookie(self.state.token)),) if from_query else ()
-        send_board_response(self, response, *extra)
+        today = datetime.now(UTC).astimezone().date()
+        send_board_response(self, board_route(route, self.state, today))
 
     @override
     def end_headers(self) -> None:

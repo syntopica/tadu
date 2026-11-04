@@ -42,6 +42,10 @@ def test_links_are_checked_and_isolated() -> None:
     assert "_blank" in script
     assert "textContent" in script
     assert "/api/cards" in script
+    assert '"X-Tadu-Token": token' in script
+    assert "sessionStorage" in script
+    assert 'replaceState(null, "", "/")' in script
+    assert "cookie" not in script.lower()
 
 
 def test_filters_and_cancelled_toggle_present() -> None:
