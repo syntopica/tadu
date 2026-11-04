@@ -28,6 +28,7 @@ data = [
   "tadu/field_checks.py",
   "tadu/field_line_pattern.py",
   "tadu/index_required_keys.py",
+  "tadu/item_state_pattern.py",
   "tadu/label_pattern.py",
   "tadu/legacy_rule_heading_pattern.py",
   "tadu/legacy_rule_section_pattern.py",
