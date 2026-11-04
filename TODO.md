@@ -45,3 +45,8 @@
 - [ ] **Board:** Add saved views.
 
   Smallest next step: store a named filter set in the workspace file and select it with `--view`.
+
+- [ ] **Board:** Fix the small v0 rough edges the final review deferred.
+
+  Found in the 2026-11-04 review of the v0 change. Card titles use only an item's first line, so hard-wrapped titles are cut mid-sentence. A field line placed directly under the title, with no blank line before it, is ignored without a warning, and so is an empty `Labels:`. Workspace paths keep `..` and do not expand `~`. W001 also fires on recent closed log entries. `--port 80` is unusable because browsers omit the port from `Host`. `tests/test_entries.py` groups several modules in one test file. Smallest next step: add a doctor warning for field-like lines that do not start a paragraph, with a test.
+
