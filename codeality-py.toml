@@ -45,6 +45,7 @@ data = [
   "tadu/single_line_start_pattern.py",
   "tadu/state_markers.py",
   "tadu/task_id_pattern.py",
+  "tadu/workspace_file_names.py",
   "tadu/year_heading_pattern.py",
 ]
 registry = []
