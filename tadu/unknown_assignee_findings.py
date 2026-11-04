@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def unknown_assignee_findings(
     workspace: Workspace, local: LocalConfig, cards: tuple[Card, ...]
 ) -> tuple[Finding, ...]:
-    """One warning per card and unknown assignee."""
+    """One warning per open card and unknown assignee; finished work is history."""
     known = {person.id for person in workspace.people}
     return tuple(
         Finding(
@@ -26,6 +26,7 @@ def unknown_assignee_findings(
             f"assignee {assignee} is not a person in the workspace",
         )
         for card in cards
+        if card.column not in ("done", "cancelled")
         for assignee in card.item.fields.assignees
         if assignee not in known
     )
