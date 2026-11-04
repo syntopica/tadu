@@ -74,3 +74,11 @@
 - [x] 2026-10-21 — **Bugs:** `tadu close` refuses an item whose continuation line starts with a backtick run followed by text that holds a backtick (`` ```a`b ``), which CommonMark reads as prose, not a fence. It fails safe (exit 2, nothing written). `FENCE_LINE_PATTERN` is shared with `sync` and `doctor`, so fix it there with tests for all three.
   - Result: The shared fence pattern follows CommonMark 4.5: backtick info strings cannot contain backticks; tilde info and fence capture remain intact. Close accepts the prose, sync preserves the existing rule block, and doctor sees it. Independent review returned no findings.
   - Evidence: Four regressions failed before the fix; afterward 45 targeted tests and all 381 tests passed. The full AGENTS gate passed with 100% coverage, Ruff, mypy, codeality-py, deptry and pip-audit. Installed CLI fixtures verify sync, doctor and close.
+
+### 2026-11
+
+- [x] 2026-11-05 — **Board:** Fix the small v0 rough edges the final review deferred.
+
+  Found in the 2026-11-04 review of the v0 change. Card titles use only an item's first line, so hard-wrapped titles are cut mid-sentence. A field line placed directly under the title, with no blank line before it, is ignored without a warning, and so is an empty `Labels:`. Workspace paths keep `..` and do not expand `~`. W001 also fires on recent closed log entries. `--port 80` is unusable because browsers omit the port from `Host`. `tests/test_entries.py` groups several modules in one test file. Smallest next step: add a doctor warning for field-like lines that do not start a paragraph, with a test.
+  - Result: Six deferred board v0 rough edges fixed and reviewed, plus display truncation for long paragraph titles.
+  - Evidence: commits 6729e6a..1769b33 (title paragraph, F003, path resolution, W001 open-only, port 80 Host, per-module tests, display truncation); full codeality-py gate passes with 678 tests at 100% coverage; tadu doctor reports no F003 on atrium, busirocket and bot
