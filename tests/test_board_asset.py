@@ -8,6 +8,7 @@ from tadu.board_asset import board_asset
     [
         ("index.html", "text/html; charset=utf-8"),
         ("board.js", "text/javascript; charset=utf-8"),
+        ("filters.js", "text/javascript; charset=utf-8"),
         ("board.css", "text/css; charset=utf-8"),
     ],
 )

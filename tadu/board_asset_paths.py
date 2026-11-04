@@ -2,4 +2,9 @@
 
 from __future__ import annotations
 
-BOARD_ASSET_PATHS = {"/": "index.html", "/board.js": "board.js", "/board.css": "board.css"}
+BOARD_ASSET_PATHS = {
+    "/": "index.html",
+    "/filters.js": "filters.js",
+    "/board.js": "board.js",
+    "/board.css": "board.css",
+}

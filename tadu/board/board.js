@@ -1,5 +1,6 @@
 // tadu board: renders /api/cards. Every piece of backlog text goes through
-// textContent; no HTML is ever built from data.
+// textContent; no HTML is ever built from data. FILTER_VALUES and cardVisible
+// come from filters.js, loaded first.
 "use strict";
 
 const COLUMN_TITLES = {
@@ -11,15 +12,6 @@ const COLUMN_TITLES = {
   cancelled: "Cancelled",
 };
 const BLOCKED_SCHEMES = ["javascript:", "data:", "vbscript:"];
-const FILTERS = {
-  repository: (card) => [card.repository],
-  project: (card) => (card.project === null ? [] : [card.project]),
-  organization: (card) => card.organizations.map((entry) => entry.org),
-  role: (card) => card.organizations.map((entry) => entry.role),
-  assignee: (card) => card.assignees,
-  priority: (card) => (card.priority === null ? [] : [card.priority]),
-  label: (card) => card.labels,
-};
 
 const TOKEN_KEY = "tadu_board_token";
 
@@ -101,21 +93,20 @@ function selected(name) {
   return document.getElementById(`filter-${name}`).value;
 }
 
-function visible(card) {
-  for (const [name, values] of Object.entries(FILTERS)) {
-    const wanted = selected(name);
-    if (wanted !== "" && !values(card).includes(wanted)) {
-      return false;
-    }
+function currentChoice() {
+  const choice = {
+    waitingOnMe: document.getElementById("waiting-on-me").checked,
+    showCancelled: document.getElementById("show-cancelled").checked,
+    me: payload.me,
+  };
+  for (const name of Object.keys(FILTER_VALUES)) {
+    choice[name] = selected(name);
   }
-  if (document.getElementById("waiting-on-me").checked) {
-    return card.column === "blocked" && payload.me !== null && card.assignees.includes(payload.me);
-  }
-  return true;
+  return choice;
 }
 
 function fillFilters() {
-  for (const [name, values] of Object.entries(FILTERS)) {
+  for (const [name, values] of Object.entries(FILTER_VALUES)) {
     const select = document.getElementById(`filter-${name}`);
     const current = select.value;
     const options = [...new Set(payload.cards.flatMap(values))].sort();
@@ -133,12 +124,12 @@ function fillFilters() {
 
 function render() {
   const board = document.getElementById("board");
-  const showCancelled = document.getElementById("show-cancelled").checked;
+  const choice = currentChoice();
   board.replaceChildren();
   for (const column of payload.columns) {
     const node = element("section", "column");
-    node.classList.toggle("hidden", column === "cancelled" && !showCancelled);
-    const cards = payload.cards.filter((card) => card.column === column && visible(card));
+    node.classList.toggle("hidden", column === "cancelled" && !choice.showCancelled);
+    const cards = payload.cards.filter((card) => card.column === column && cardVisible(card, choice));
     node.append(element("h2", "", `${COLUMN_TITLES[column] ?? column} (${cards.length})`));
     for (const card of cards) {
       node.append(cardNode(card));

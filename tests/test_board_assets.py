@@ -10,7 +10,7 @@ def text(name: str) -> str:
 
 
 def test_page_assets_never_inject_html() -> None:
-    for name in ("index.html", "board.js"):
+    for name in ("index.html", "filters.js", "board.js"):
         source = text(name)
         for banned in ("innerHTML", "outerHTML", "insertAdjacentHTML", "document.write", "eval("):
             assert banned not in source
@@ -19,7 +19,8 @@ def test_page_assets_never_inject_html() -> None:
 def test_index_has_no_inline_script_or_style() -> None:
     page = text("index.html")
     assert re.findall(r"<script\b([^>]*)>(.*?)</script>", page, re.DOTALL) == [
-        (' src="/board.js" defer', "")
+        (' src="/filters.js" defer', ""),
+        (' src="/board.js" defer', ""),
     ]
     assert "style=" not in page
     assert "<style" not in page
