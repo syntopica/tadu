@@ -9,3 +9,4 @@ coverage/
 .ruff_cache/
 build/
 dist/
+.superpowers/
