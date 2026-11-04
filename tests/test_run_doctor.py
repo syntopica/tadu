@@ -40,3 +40,11 @@ def test_warnings_only_exit_zero(tmp_path: Path) -> None:
 def test_empty_backlog_exits_one(tmp_path: Path) -> None:
     (tmp_path / "TODO.md").write_text("")
     assert run_doctor((str(tmp_path),), as_json=False) == 1
+
+
+def test_bad_field_alone_still_exits_zero(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        "# TODO\n`[ ]` `[~]` `[!]` `[x]` `[-]`\n- [ ] A.\n\n  Priority: p1\n"
+    )
+    (tmp_path / "AGENTS.md").write_text("<!-- tadu:rule v0 -->\nx\n<!-- /tadu:rule -->\n")
+    assert run_doctor((str(tmp_path),), as_json=False) == 0

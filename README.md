@@ -210,6 +210,8 @@ Branches that close work in the same month both append to the same section of `T
 | R003 | error | the instruction file has no TODO maintenance rule |
 | R004 | warning | the marked rule block is older than the current version |
 | R005 | error | the rule markers are not exactly one open followed by one close |
+| F001 | warning | an item field is malformed |
+| F002 | warning | an `ID:` is used by more than one open item |
 | E001 | error | a file could not be read (not valid UTF-8, or an I/O error) |
 
 ## Skills
