@@ -223,11 +223,167 @@ rule.
 
 ## Optional item fields (v1)
 
-An item may carry two continuation lines. Neither is required.
+An open item may carry optional `Key: value` fields. Each is its own
+continuation paragraph: indented two spaces, preceded by a blank line, inside
+the item. None is required, and a file without them is as valid as before.
 
-- [ ] **Backend:** Reject duplicate webhook deliveries.
+```md
+- [ ] **Billing:** Reject duplicate webhook deliveries.
+
+  ID: t-55161023-f3a9-43a3-94df-589ca752fa13
+
+  Priority: high
+
+  Assignees: ana, bot
+
+  Due: 2026-11-20
+
+  Labels: billing, reliability
+
+  Queue: ready
 
   Done when: `pnpm test -- webhook-idempotency` passes and a replayed delivery
   returns 200 without a second row.
+```
 
-  Depends on: "Store the delivery id" in this file.
+| Field | Value |
+| ----- | ----- |
+| `ID` | `t-` followed by a lowercase UUID4, for example `t-55161023-f3a9-43a3-94df-589ca752fa13`. Generated wherever the item is created; it never changes and a copied item gets a new one. |
+| `Priority` | `urgent`, `high`, `normal` or `low`. Absent means unprioritized, not normal. |
+| `Assignees` | Comma-separated person IDs from the workspace file, at least one. Never an email or a display name. |
+| `Due` | A real calendar date written `YYYY-MM-DD`. |
+| `Labels` | Comma-separated lowercase slugs: letters and digits, with hyphens after the first character. |
+| `Queue` | `backlog` or `ready`, default `backlog`. Only an item in state `[ ]` is affected. |
+| `Estimate` | A positive whole number of minutes, 1 to 9 digits. Parsed, not shown. |
+
+Rules:
+
+- Field names are matched exactly, on a line indented exactly two spaces that
+  follows a blank line, inside the item's span and never inside a code fence. A
+  line that follows text without a blank line is not a field.
+- Any other `Key: value` paragraph, including `Done when:` and `Depends on:`, is
+  ordinary text and is kept untouched.
+- A field whose value does not match the table, or that appears a second time,
+  is ignored and `doctor` reports it as `F001`; only the first occurrence of a
+  name is considered. Fields never produce errors, so adopting them cannot fail a gate.
+- `F002` is a warning for an `ID:` used by more than one open item of the same
+  `TODO.md`.
+- An item without an `ID:` still gets a key for `list` and `show`: `k-` and 16
+  hex digits derived from its repository, file, title and the number of earlier
+  items with the same title. It is flagged unstable, because it changes when
+  the title does.
+
+## Workspaces
+
+A workspace is a directory with a shared `tadu-workspace.toml` and, beside it,
+an untracked `tadu-workspace.local.toml`. Both are TOML and both start with
+`version = 1`; any other version is an error. Together they let several
+repositories be read as one backlog.
+
+```toml
+version = 1
+
+[[repository]]
+key = "shop"
+remote = "https://github.com/acme/shop"
+backlog = "."
+
+[[project]]
+key = "storefront"
+name = "Storefront"
+repositories = ["shop"]
+roles = { client = ["acme"], agency = ["studio"] }
+
+[[organization]]
+id = "acme"
+name = "Acme"
+
+[[organization]]
+id = "studio"
+name = "Studio"
+
+[[person]]
+id = "ana"
+name = "Ana"
+organization = "studio"
+```
+
+- `[[repository]]`: `key` is required and unique. `remote` is optional and is
+  used to link a card to its line on a known forge. `backlog` is optional,
+  default `.`: the directory holding `TODO.md`, relative to the checkout and
+  without `..`, so a monorepo can register a nested backlog as its own entry.
+- `[[project]]`: `key` is required; `name` defaults to the key; `repositories`
+  lists repository keys, all of which must exist, and a repository belongs to at
+  most one project. `roles` is an inline table from a role name (any string) to
+  a list of organization IDs, all of which must exist.
+- `[[organization]]`: `id` and `name`, both required; IDs are unique.
+- `[[person]]`: `id` and `name` are required, `organization` is optional and
+  must name an organization; IDs are unique.
+
+```toml
+version = 1
+
+[local]
+me = "ana"
+editor_url = "vscode://file/{path}:{line}"
+
+[paths]
+shop = "../shop"
+```
+
+- `[local]`: `me` is optional and must be a person of the workspace;
+  `editor_url` is an optional template where `{path}` and `{line}` are
+  replaced.
+- `[paths]` maps a repository key to its checkout, relative to the workspace
+  directory or absolute. Every key must be a repository of the workspace. A
+  repository without a path is reported, not fatal. A missing local file is the
+  same as an empty one.
+
+A malformed workspace is one error listing every problem found. A workspace
+file that is valid TOML but names an unknown repository, organization or person
+is malformed in the same way.
+
+## Columns
+
+A card's column follows its state:
+
+| State | Column |
+| ----- | ------ |
+| `[ ]` without `Queue: ready` | `backlog` |
+| `[ ]` with `Queue: ready` | `ready` |
+| `[~]` | `in_progress` |
+| `[!]` | `blocked` |
+| `[x]` entry of `TODO_LOG.md` | `done` |
+| `[-]` entry of `TODO_LOG.md` | `cancelled` |
+
+Closed entries are read from `TODO_LOG.md` only when dated within the last 14
+days by default and not before the log marker. Cancelled cards are hidden unless
+asked for.
+
+## `tadu list --json`
+
+`tadu list` prints one line per card, or with `--json` one JSON object per line
+with exactly these keys:
+
+| Key | Content |
+| --- | ------- |
+| `key` | the `ID:` value, else the derived `k-` key |
+| `stable` | `true` when the key is an `ID:` |
+| `repository` | the repository key, or the directory name for a plain path |
+| `path` | the file, relative to the repository |
+| `line`, `end_line` | first line of the item and end of its span |
+| `state` | the marker character: space, `~`, `!`, `x` or `-` |
+| `column` | one of the columns above |
+| `title`, `text` | the first line without its marker, and the full item text |
+| `day` | the date before the title, or `null` |
+| `priority`, `due`, `estimate` | the field value, or `null` |
+| `queue` | `backlog` or `ready`, `backlog` when absent |
+| `assignees`, `labels` | lists |
+| `project` | the project key, or `null` |
+| `organizations` | a list of `{"role": ..., "org": ...}` |
+| `problems` | a list of `{"line": ..., "message": ...}`, lines 1-based |
+| `editor_url`, `remote_url` | a link to the line, or `null` |
+
+Filters: `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`,
+`--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` replaces
+the repository roots; giving both exits 2.

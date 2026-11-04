@@ -8,12 +8,15 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 
 The format is specified in [spec/todo-format-v1.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md).
 
-Five commands:
+Eight commands:
 
 - `tadu init` starts the backlog in a repository that has none.
 - `tadu doctor` checks a repository against the format and never writes.
 - `tadu sync` updates the marked rule block in an agent instruction file.
 - `tadu close` moves one finished item from `TODO.md` into `TODO_LOG.md`.
+- `tadu list` prints the items of one or more repositories, or of a workspace, as lines or JSON.
+- `tadu show` prints one item by its key.
+- `tadu board` serves a read-only kanban page for a workspace.
 - `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
 
 Contributors need none of it: the rule block that `sync` writes into `AGENTS.md` or `CLAUDE.md` tells any agent, or any person, how to add an item and how to log closed work in a shape `doctor` accepts.
@@ -75,6 +78,67 @@ AGENTS.md:0: error R003 no TODO maintenance rule
 Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` when at least one error is reported. A clean repository prints nothing. Add `--json` for one JSON object per finding. A file that cannot be read as UTF-8 produces an `E001` finding and the other checks and roots still run.
 
 `tadu doctor --workspace DIR` checks the items of every repository registered in the workspace (paths are then optional; with only `--workspace`, the per-repository checks are not run). It reports unknown assignees (`W001`), IDs shared between repositories (`W002`), repositories that could not be scanned (`W003`) and an invalid workspace (`W004`, an error). Giving neither paths nor `--workspace` exits `2`.
+
+## List and show items
+
+`tadu list` reads the open items of the repository roots given (default `.`) and prints one line per item as `repository:path:line [column] priority title`, with `-` for no priority:
+
+```bash
+tadu list shop
+```
+
+```text
+shop:TODO.md:6 [backlog] high **Billing:** Reject duplicate webhook deliveries.
+shop:TODO.md:12 [in_progress] - **Checkout:** Add the gift note field.
+shop:TODO.md:14 [blocked] - **Shipping:** Wait for the carrier API key.
+```
+
+`--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
+
+`tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Labels:` and `Queue:` fields, described in the spec; `doctor` warns about malformed ones (`F001`) and repeated IDs (`F002`).
+
+## Board
+
+A workspace is a directory with a `tadu-workspace.toml` shared by the people who use it and an untracked `tadu-workspace.local.toml` that says where each repository is checked out on this machine. The smallest useful one:
+
+```toml
+# tadu-workspace.toml
+version = 1
+
+[[repository]]
+key = "shop"
+
+[[person]]
+id = "ana"
+name = "Ana"
+```
+
+```toml
+# tadu-workspace.local.toml
+version = 1
+
+[paths]
+shop = "../shop"
+```
+
+Projects, organizations with roles such as client and agency, remotes and an editor link template are optional; the spec has the full shape. Then:
+
+```bash
+tadu doctor --workspace .
+tadu board --workspace .
+```
+
+`board` prints a URL such as `http://127.0.0.1:41873/?token=...` and serves one page with a column per state, filters, and for each card its `path:line`. Open the printed URL. The files are rescanned on every request. Options: `--host` (default `127.0.0.1`), `--port` (default: any free port) and `--done-days` (default 14).
+
+The board only reads. It writes no backlog, workspace or index file, and it cannot change a card: every request other than GET answers `405` with `Allow: GET`. Edit the `TODO.md` files, or use `tadu close`.
+
+Who may read it:
+
+- The server checks the `Host` header against the address it is bound to and answers `421` otherwise, which defeats DNS rebinding.
+- The page and its script and stylesheet need only that. The card data at `/api/cards` also needs the per-run token, given as an `X-Tadu-Token` header or a `?token=` parameter; a missing or wrong token answers `403`. The page keeps the token in `sessionStorage` and removes it from the address bar.
+- No response carries a CORS header, so another page cannot read the data. Responses send `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and a Content-Security-Policy that allows only the page's own script and style.
+- Item text is escaped, never rendered as HTML.
+- `--host` other than `127.0.0.1` or `localhost` prints a warning, because the board is then reachable from other machines, and the token is its only protection. `::1` is not supported. An invalid workspace or a port that cannot be bound exits `2`.
 
 ## Close an item
 
