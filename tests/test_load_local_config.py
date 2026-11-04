@@ -35,7 +35,7 @@ def test_loads_values(tmp_path: Path) -> None:
         '[paths]\nshop = "../shop"\n',
     )
     config = load_local_config(tmp_path, workspace(tmp_path))
-    assert config.paths == {"shop": tmp_path / "../shop"}
+    assert config.paths == {"shop": (tmp_path.parent / "shop").resolve()}
     assert config.me == "ana"
     assert config.editor_url == "vscode://file/{path}:{line}"
 

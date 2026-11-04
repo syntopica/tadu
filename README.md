@@ -121,7 +121,7 @@ version = 1
 shop = "../shop"
 ```
 
-Projects, organizations with roles such as client and agency, remotes and an editor link template are optional; the spec has the full shape. Then:
+Paths in `[paths]` are resolved: `~` expands and `..` is normalised. Projects, organizations with roles such as client and agency, remotes and an editor link template are optional; the spec has the full shape. Then:
 
 ```bash
 tadu doctor --workspace .

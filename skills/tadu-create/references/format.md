@@ -342,7 +342,8 @@ shop = "../shop"
   optional template where `{path}` and `{line}` are replaced. Both are
   top-level keys, before any table.
 - `[paths]` maps a repository key to its checkout, relative to the workspace
-  directory or absolute. Every key must be a repository of the workspace. A
+  directory or absolute. A leading `~` expands to the home directory, and every
+  path is resolved, so `..` segments are normalised. Every key must be a repository of the workspace. A
   repository without a path is reported, not fatal. A missing local file is the
   same as an empty one.
 
