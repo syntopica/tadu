@@ -8,7 +8,7 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 
 The format is specified in [spec/todo-format-v1.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md).
 
-Eight commands:
+Nine commands:
 
 - `tadu init` starts the backlog in a repository that has none.
 - `tadu doctor` checks a repository against the format and never writes.
@@ -16,6 +16,7 @@ Eight commands:
 - `tadu close` moves one finished item from `TODO.md` into `TODO_LOG.md`.
 - `tadu list` prints the items of one or more repositories, or of a workspace, as lines or JSON.
 - `tadu show` prints one item by its key.
+- `tadu feed` prints the recently closed items of one or more repositories, or of a workspace, as JSON.
 - `tadu board` serves a read-only kanban page for a workspace.
 - `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
 
@@ -96,6 +97,8 @@ shop:TODO.md:14 [blocked] - **Shipping:** Wait for the carrier API key.
 `--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
 
 `tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Labels:`, `Queue:` and `Estimate:` fields, described in the spec; `doctor` warns about malformed ones (`F001`) repeated IDs (`F002`) and field lines that are not read (`F003`).
+
+`tadu feed` is the recently-done feed: the done and cancelled `TODO_LOG.md` entries of the last `--done-days` days (default 14), newest first by their closing date, one JSON object per line with the same keys as `list --json`. It takes the same repository paths or `--workspace DIR`; entries closed on the same day keep their repository and log order.
 
 ## Board
 

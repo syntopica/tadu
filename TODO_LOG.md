@@ -94,3 +94,9 @@
   Smallest next step: exit quietly on `BrokenPipeError` in `run_list`, with a test that closes stdout early.
   - Result: Every command ends quietly with status 0 when its reader closes stdout early.
   - Evidence: Commit dc663c6: tests/test_quiet_broken_pipe.py reads one line of a 86 KB list and closes the pipe (exit 0, no traceback); the same scenario exits 120 without the fix; full gate 719 tests.
+
+- [x] 2026-11-05 — **Board:** Add a recently-done feed from the logs.
+
+  Smallest next step: list the closed entries of all workspace repositories, newest first, as a JSON command.
+  - Result: Added `tadu feed`: done and cancelled log entries of the given repositories or workspace, newest first, as JSON lines with the `list --json` keys.
+  - Evidence: tests/test_run_feed.py, tests/test_recently_done.py and tests/test_add_feed_parser.py pass; full gate (pytest 100% coverage, ruff, mypy, codeality-py gate) green.
