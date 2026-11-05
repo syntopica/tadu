@@ -1,0 +1,49 @@
+"""A read-only MCP server over one scope's backlog items."""
+
+from __future__ import annotations
+
+from importlib.metadata import version
+from typing import TYPE_CHECKING
+
+from mcp.server.mcpserver import MCPServer
+from mcp.types import ToolAnnotations
+
+from tadu.card_filter import CardFilter
+from tadu.columns import COLUMNS
+from tadu.mcp_list_items import mcp_list_items
+from tadu.mcp_show_item import mcp_show_item
+from tadu.priorities import PRIORITIES
+
+if TYPE_CHECKING:
+    from tadu.mcp_scope import McpScope
+
+
+def build_mcp_server(scope: McpScope) -> MCPServer[object]:
+    """Register `list_items` and `show_item`, which read the backlogs and never write."""
+    server: MCPServer[object] = MCPServer(
+        "tadu",
+        version=version("tadu"),
+        instructions="Read the open and recently closed items of tadu backlogs.",
+    )
+    read_only = ToolAnnotations(read_only_hint=True, idempotent_hint=True, open_world_hint=False)
+
+    def list_items(where: CardFilter | None = None) -> dict[str, object]:
+        """List backlog items; every criterion set in `where` must hold."""
+        return mcp_list_items(scope, where or CardFilter())
+
+    def show_item(key: str) -> dict[str, object]:
+        """Show one backlog item by the key `list_items` reports."""
+        return mcp_show_item(scope, key)
+
+    server.add_tool(
+        list_items,
+        description=(
+            "List backlog items as `tadu list --json` does, with the repositories that could "
+            "not be scanned. Every criterion set in `where` must hold. `column` is one of "
+            f"{', '.join(COLUMNS)}; `priority` one of {', '.join(PRIORITIES)}; `due_before` "
+            "is YYYY-MM-DD."
+        ),
+        annotations=read_only,
+    )
+    server.add_tool(show_item, annotations=read_only)
+    return server

@@ -8,7 +8,7 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 
 The format is specified in [spec/todo-format-v1.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md).
 
-Eight commands:
+Nine commands:
 
 - `tadu init` starts the backlog in a repository that has none.
 - `tadu doctor` checks a repository against the format and never writes.
@@ -17,13 +17,14 @@ Eight commands:
 - `tadu list` prints the items of one or more repositories, or of a workspace, as lines or JSON.
 - `tadu show` prints one item by its key.
 - `tadu board` serves a read-only kanban page for a workspace.
+- `tadu mcp` serves the same items to agents as read-only MCP tools, with the optional `mcp` extra.
 - `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
 
 Contributors need none of it: the rule block that `sync` writes into `AGENTS.md` or `CLAUDE.md` tells any agent, or any person, how to add an item and how to log closed work in a shape `doctor` accepts.
 
 ## Requirements
 
-Python 3.12 or newer. tadu has no runtime dependencies; [uv](https://docs.astral.sh/uv/) is only needed to work on tadu itself.
+Python 3.12 or newer. tadu has no runtime dependencies (`tadu mcp` alone needs the optional `mcp` extra); [uv](https://docs.astral.sh/uv/) is only needed to work on tadu itself.
 
 ## Install
 
@@ -139,6 +140,29 @@ Who may read it:
 - No response carries a CORS header, so another page cannot read the data. Responses send `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and a Content-Security-Policy that allows only the page's own script and style.
 - Item text is escaped, never rendered as HTML.
 - `--host` other than `127.0.0.1` or `localhost` prints a warning: the server listens on that address, but it still serves only requests whose `Host` header is exactly `<host>:<port>`, so a browser that reaches it by any other name or address gets `421`. `::1` is not supported. An invalid workspace or a port that cannot be bound exits `2`.
+
+## MCP tools
+
+`tadu mcp` runs a Model Context Protocol server over standard input and output, so an agent can read the same items as `list` and `show` without parsing their output. It needs the optional `mcp` extra, which core tadu does not depend on:
+
+```bash
+uv tool install 'tadu[mcp]'
+# or
+pipx install 'tadu[mcp]'
+```
+
+Without the extra, `tadu mcp` exits `2` and says how to install it. It takes the scope arguments of `list`: repository roots (default `.`), or `--workspace DIR`, and `--done-days`. The scope is fixed when the server starts; the files are rescanned on every tool call. An invalid workspace exits `2` before the server starts. For example, in Claude Code:
+
+```bash
+claude mcp add tadu -- tadu mcp --workspace ~/work/agency
+```
+
+Two tools, both annotated read-only and idempotent:
+
+- `list_items` takes an optional `where` object with the filters of `list` (`project`, `org`, `role`, `assignee`, `column`, `priority`, `label`, `due_before` and `include_cancelled`) and returns `{"items": [...], "problems": [...]}`. Each item is the object `list --json` prints; each problem names a repository that could not be scanned and why.
+- `show_item` takes a `key` and returns `{"item": ..., "matches": n}`, the first item with that key and how many share it. An unknown key is a tool error.
+
+Neither tool writes anything.
 
 ## Close an item
 

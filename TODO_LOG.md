@@ -82,3 +82,9 @@
   Found in the 2026-11-04 review of the v0 change. Card titles use only an item's first line, so hard-wrapped titles are cut mid-sentence. A field line placed directly under the title, with no blank line before it, is ignored without a warning, and so is an empty `Labels:`. Workspace paths keep `..` and do not expand `~`. W001 also fires on recent closed log entries. `--port 80` is unusable because browsers omit the port from `Host`. `tests/test_entries.py` groups several modules in one test file. Smallest next step: add a doctor warning for field-like lines that do not start a paragraph, with a test.
   - Result: Six deferred board v0 rough edges fixed and reviewed, plus display truncation for long paragraph titles.
   - Evidence: commits 6729e6a..1769b33 (title paragraph, F003, path resolution, W001 open-only, port 80 Host, per-module tests, display truncation); full codeality-py gate passes with 678 tests at 100% coverage; tadu doctor reports no F003 on atrium, busirocket and bot
+
+- [x] 2026-11-05 — **Board:** Add an MCP adapter as an optional extra.
+
+  Core keeps no dependencies. Smallest next step: expose `list` and `show` as read-only tools in an `mcp` extra.
+  - Result: 'tadu mcp' serves read-only list_items and show_item tools over stdio from the optional 'tadu[mcp]' extra (mcp>=2.3,<3); core keeps no runtime dependencies. Write tools wait for the shared mutation function item.
+  - Evidence: tests/test_build_mcp_server.py drives list_items and show_item through an in-memory MCP client; a stdio session against 'tadu mcp .' listed both tools; a core install without the extra runs 'tadu list' and 'tadu mcp' exits 2 with the install hint; full gate passes

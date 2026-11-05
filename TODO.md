@@ -22,10 +22,6 @@
 
   Used by the CLI, the board and MCP, with a recoverable journal for `close`, which writes two files. Smallest next step: extract the lock and changed-since-read check of `tadu close` into a function that takes an item ID and the file hash the caller last saw.
 
-- [ ] **Board:** Add an MCP adapter as an optional extra.
-
-  Core keeps no dependencies. Smallest next step: expose `list` and `show` as read-only tools in an `mcp` extra.
-
 - [ ] **Board:** Support cross-repository `Depends on:` by ID.
 
   Smallest next step: parse `Depends on: t-...` and show whether the target is open, in the same workspace.
