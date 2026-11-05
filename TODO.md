@@ -30,10 +30,6 @@
 
   Smallest next step: parse `Depends on: t-...` and show whether the target is open, in the same workspace.
 
-- [ ] **Board:** Add a recently-done feed from the logs.
-
-  Smallest next step: list the closed entries of all workspace repositories, newest first, as a JSON command.
-
 - [ ] **Board:** Show item history from `git log`.
 
   Smallest next step: print the commits that touched an item's line span, for one key.
