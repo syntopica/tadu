@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from tadu.load_local_config import load_local_config
 from tadu.load_workspace import load_workspace
 from tadu.path_cards import path_cards
+from tadu.resolve_dependencies import resolve_dependencies
 from tadu.workspace_cards import workspace_cards
 from tadu.workspace_error import WorkspaceError
 
@@ -27,7 +28,7 @@ def load_cards(
     cutoff = today - timedelta(days=done_days)
     if workspace is None:
         cards, problems = path_cards(paths or (".",), cutoff)
-        return cards, problems, None
+        return resolve_dependencies(cards), problems, None
     if paths:
         msg = "give repository paths or --workspace, not both"
         raise WorkspaceError(msg)
@@ -35,4 +36,4 @@ def load_cards(
     loaded = load_workspace(directory)
     local = load_local_config(directory, loaded)
     cards, problems = workspace_cards(loaded, local, cutoff)
-    return cards, problems, local
+    return resolve_dependencies(cards), problems, local

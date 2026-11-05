@@ -40,3 +40,29 @@ def test_both_rejected(tmp_path: Path) -> None:
 def test_bad_workspace(tmp_path: Path) -> None:
     with pytest.raises(WorkspaceError):
         load_cards((), str(tmp_path), 14, TODAY)
+
+
+def test_dependencies_resolve_across_workspace(tmp_path: Path) -> None:
+    target = "t-55161023-f3a9-43a3-94df-589ca752fa13"
+    for key, text in (
+        ("shop", f"- [ ] A.\n\n  Depends on: {target}\n"),
+        ("api", f"- [!] B.\n\n  ID: {target}\n"),
+    ):
+        (tmp_path / key).mkdir()
+        (tmp_path / key / "TODO.md").write_text(text)
+    (tmp_path / "tadu-workspace.toml").write_text(
+        'version = 1\n[[repository]]\nkey = "shop"\n[[repository]]\nkey = "api"\n'
+    )
+    (tmp_path / "tadu-workspace.local.toml").write_text(
+        f'version = 1\n[paths]\nshop = "{tmp_path / "shop"}"\napi = "{tmp_path / "api"}"\n'
+    )
+    cards = load_cards((), str(tmp_path), 14, TODAY)[0]
+    assert [(d.id, d.repository, d.state) for d in cards[0].dependencies] == [(target, "api", "!")]
+
+
+def test_dependencies_resolve_for_paths(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        "- [ ] A.\n\n  Depends on: t-55161023-f3a9-43a3-94df-589ca752fa13\n"
+    )
+    cards = load_cards((str(tmp_path),), None, 14, TODAY)[0]
+    assert cards[0].dependencies[0].state is None

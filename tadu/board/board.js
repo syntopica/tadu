@@ -76,6 +76,12 @@ function cardNode(card) {
   for (const label of card.labels) {
     meta.append(element("span", "label", label));
   }
+  const waiting = card.depends_on.filter((dependency) => dependency.open === true);
+  if (waiting.length > 0) {
+    const span = element("span", "waiting", `waits on ${waiting.length} open`);
+    span.title = waiting.map((dependency) => `${dependency.repository}: ${dependency.id}`).join("\n");
+    meta.append(span);
+  }
   node.append(meta);
   node.append(element("div", "location", `${card.repository}:${card.path}:${card.line}`));
   const links = element("div", "links");

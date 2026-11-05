@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class BacklogItem:
-    """An item with its key, 1-based inclusive line span and parsed fields."""
+    """An item with its key, 1-based inclusive line span, parsed fields and `Depends on:` IDs."""
 
     key: str
     stable: bool
@@ -27,3 +27,4 @@ class BacklogItem:
     text: str
     fields: ItemFields
     problems: tuple[FieldProblem, ...]
+    depends_on: tuple[str, ...] = ()

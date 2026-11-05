@@ -56,3 +56,9 @@ def test_wrapped_titles_feed_the_item_and_its_key() -> None:
     assert first.title == "Fix the checkout."
     assert first.key != second.key
     assert scan_items(["- [ ] Fix the checkout."], "shop", "TODO.md", " ")[0].key == first.key
+
+
+def test_depends_on_ids_reach_the_item() -> None:
+    lines = ["- [ ] A.", "", "  Depends on: t-55161023-f3a9-43a3-94df-589ca752fa13"]
+    (item,) = scan_items(lines, "shop", "TODO.md", " ")
+    assert item.depends_on == ("t-55161023-f3a9-43a3-94df-589ca752fa13",)

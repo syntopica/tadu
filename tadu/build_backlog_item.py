@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tadu.backlog_item import BacklogItem
+from tadu.depends_on_ids import depends_on_ids
 from tadu.field_values import field_values
 from tadu.item_span_end import item_span_end
 from tadu.parse_item_day import parse_item_day
@@ -36,4 +37,5 @@ def build_backlog_item(
         text="\n".join(lines[first:end]),
         fields=fields,
         problems=problems,
+        depends_on=depends_on_ids(lines, fenced, first, end),
     )

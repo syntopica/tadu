@@ -395,6 +395,19 @@ with exactly these keys:
 | `organizations` | a list of `{"role": ..., "org": ...}` |
 | `problems` | a list of `{"line": ..., "message": ...}`, lines 1-based |
 | `editor_url`, `remote_url` | a link to the line, or `null` |
+| `depends_on` | a list of `{"id": ..., "repository": ..., "state": ..., "column": ..., "open": ...}`, one per target ID |
+
+A `Depends on:` paragraph stays ordinary text, but `list`, `show` and the board
+read the task IDs written anywhere in it (the paragraph starts on a line
+indented exactly two spaces after a blank line, outside code fences, and runs to
+the next blank line). Other words in it are ignored, and an ID named twice
+counts once. Each ID is looked up among every card of the same run: all the
+repositories of the workspace, or all the paths given, before any filter, so a
+target in another repository resolves. `open` is `true` for a target in state
+`[ ]`, `[~]` or `[!]`, `false` for a closed one, and `null`, with `repository`,
+`state` and `column` also `null`, when no card has that ID: the target is in
+another scope, was closed before the `--done-days` window, or does not exist.
+When an ID belongs to several cards, an open one is preferred.
 
 Filters: `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`,
 `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` replaces

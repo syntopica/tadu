@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tadu.dependency_json import dependency_json
 from tadu.iso_date import iso_date
 
 if TYPE_CHECKING:
@@ -36,4 +37,5 @@ def card_json(card: Card) -> dict[str, object]:
         "problems": [{"line": p.line + 1, "message": p.message} for p in item.problems],
         "editor_url": card.editor_url,
         "remote_url": card.remote_url,
+        "depends_on": [dependency_json(d) for d in card.dependencies],
     }

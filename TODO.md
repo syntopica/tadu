@@ -26,10 +26,6 @@
 
   Core keeps no dependencies. Smallest next step: expose `list` and `show` as read-only tools in an `mcp` extra.
 
-- [ ] **Board:** Support cross-repository `Depends on:` by ID.
-
-  Smallest next step: parse `Depends on: t-...` and show whether the target is open, in the same workspace.
-
 - [ ] **Board:** Add a recently-done feed from the logs.
 
   Smallest next step: list the closed entries of all workspace repositories, newest first, as a JSON command.

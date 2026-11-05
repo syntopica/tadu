@@ -4,11 +4,13 @@ from card_samples import sample_card
 
 from tadu.card import Card
 from tadu.card_json import card_json
+from tadu.dependency import Dependency
 
 KEYS = [
     *("key", "stable", "repository", "path", "line", "end_line", "state", "column"),
     *("title", "text", "day", "priority", "assignees", "due", "labels", "queue"),
     *("estimate", "project", "organizations", "problems", "editor_url", "remote_url"),
+    "depends_on",
 ]
 
 
@@ -30,3 +32,10 @@ def test_absent_dates_are_null() -> None:
     item = replace(card.item, day=None, fields=replace(card.item.fields, due=None))
     data = card_json(Card(item, "shop", "backlog", None, (), None, None))
     assert (data["day"], data["due"], data["project"]) == (None, None, None)
+
+
+def test_dependencies() -> None:
+    card = replace(sample_card(), dependencies=(Dependency("t-1", "api", " ", "backlog"),))
+    assert card_json(card)["depends_on"] == [
+        {"id": "t-1", "repository": "api", "state": " ", "column": "backlog", "open": True}
+    ]
