@@ -45,6 +45,8 @@ data = [
   "tadu/log_entry_pattern.py",
   "tadu/log_marker_pattern.py",
   "tadu/loopback_hosts.py",
+  "tadu/mcp_column.py",
+  "tadu/mcp_priority.py",
   "tadu/open_item_pattern.py",
   "tadu/priorities.py",
   "tadu/queues.py",

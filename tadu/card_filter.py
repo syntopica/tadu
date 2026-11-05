@@ -3,16 +3,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date  # noqa: TC003
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from datetime import date
 
 
 @dataclass(frozen=True)
 class CardFilter:
-    """Optional criteria; every one that is set must hold.
-
-    The MCP adapter builds its input schema from these annotations, so `date` is imported
-    at runtime.
-    """
+    """Optional criteria; every one that is set must hold."""
 
     project: str | None = None
     org: str | None = None

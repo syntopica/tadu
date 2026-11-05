@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import anyio
+import pytest
 from mcp import Client
 from mcp.types import CallToolResult, ListToolsResult
 
@@ -72,3 +73,20 @@ def test_errors_are_tool_errors(tmp_path: Path) -> None:
     assert "no item nope" in json.dumps(unknown.model_dump(mode="json"))
     bad_date = call(scope(tmp_path), "list_items", {"where": {"due_before": "soon"}})
     assert bad_date.is_error is True
+
+
+@pytest.mark.parametrize(
+    "where",
+    [{"colum": "blocked"}, {"column": "doing"}, {"priority": "critical"}],
+)
+def test_malformed_filters_are_tool_errors(tmp_path: Path, where: dict[str, object]) -> None:
+    result = call(scope(tmp_path), "list_items", {"where": where})
+    assert result.is_error is True
+    assert result.structured_content is None
+
+
+def test_schema_lists_the_choices(tmp_path: Path) -> None:
+    schema = json.dumps(list_tools(scope(tmp_path)).tools[0].input_schema)
+    assert '"additionalProperties": false' in schema
+    assert '"in_progress"' in schema
+    assert '"urgent"' in schema

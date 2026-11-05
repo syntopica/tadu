@@ -1584,6 +1584,7 @@ default-groups = ["quality"]
 [package.optional-dependencies]
 mcp = [
     { name = "mcp" },
+    { name = "pydantic" },
 ]
 
 [package.dev-dependencies]
@@ -1592,6 +1593,7 @@ quality = [
     { name = "mcp" },
     { name = "mypy" },
     { name = "pip-audit" },
+    { name = "pydantic" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
@@ -1599,7 +1601,10 @@ quality = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "mcp", marker = "extra == 'mcp'", specifier = ">=2.3,<3" }]
+requires-dist = [
+    { name = "mcp", marker = "extra == 'mcp'", specifier = ">=2.3,<3" },
+    { name = "pydantic", marker = "extra == 'mcp'", specifier = ">=2.11,<3" },
+]
 provides-extras = ["mcp"]
 
 [package.metadata.requires-dev]
@@ -1608,6 +1613,7 @@ quality = [
     { name = "mcp", specifier = ">=2.3,<3" },
     { name = "mypy", specifier = ">=2.4,<3" },
     { name = "pip-audit", specifier = ">=2.10.1,<3" },
+    { name = "pydantic", specifier = ">=2.11,<3" },
     { name = "pytest", specifier = ">=9.1.1,<10" },
     { name = "pytest-cov", specifier = ">=7.1,<8" },
     { name = "ruff", specifier = ">=0.17,<1" },
