@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tadu.blocked_since_dates import blocked_since_dates
 from tadu.card import Card
 from tadu.editor_line_url import editor_line_url
 from tadu.forge_line_url import forge_line_url
@@ -26,7 +27,7 @@ def build_cards(  # noqa: PLR0913, PLR0917
     project: ProjectEntry | None,
     local: LocalConfig | None,
 ) -> tuple[Card, ...]:
-    """One card per item, in order, with project context and links."""
+    """One card per item, in order, with project context, links and blocked date."""
     template = local.editor_url if local else None
     remote = entry.remote if entry else None
     return tuple(
@@ -38,6 +39,7 @@ def build_cards(  # noqa: PLR0913, PLR0917
             organizations=project.roles if project else (),
             editor_url=editor_line_url(template, root / item.path, item.line),
             remote_url=forge_line_url(remote, item.path, item.line),
+            blocked_since=since,
         )
-        for item in items
+        for item, since in zip(items, blocked_since_dates(items, root), strict=True)
     )

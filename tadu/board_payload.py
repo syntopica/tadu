@@ -19,7 +19,7 @@ def board_payload(state: BoardState, today: date) -> dict[str, object]:
     """Re-scan the workspace; raise WorkspaceError when it no longer loads."""
     cards, problems, local = load_cards((), str(state.workspace), state.done_days, today)
     return {
-        "cards": [card_json(card) for card in cards],
+        "cards": [card_json(card, today) for card in cards],
         "problems": [{"repository": p.repository, "message": p.message} for p in problems],
         "me": local.me if local else None,
         "columns": list(COLUMNS),

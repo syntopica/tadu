@@ -85,6 +85,10 @@ h1 {
   color: #b35a00;
 }
 
+.age {
+  color: #b3261e;
+}
+
 .label {
   border: 1px solid rgb(127 127 127 / 40%);
   border-radius: 999px;

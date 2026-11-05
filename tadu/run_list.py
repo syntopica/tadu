@@ -30,7 +30,7 @@ def run_list(args: argparse.Namespace, today: date) -> int:
     for card in cards:
         if card_matches(card, card_filter):
             print(
-                json.dumps(card_json(card), ensure_ascii=False)
+                json.dumps(card_json(card, today), ensure_ascii=False)
                 if args.json
                 else format_card_line(card)
             )

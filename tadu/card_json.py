@@ -4,13 +4,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tadu.blocked_days import blocked_days
 from tadu.iso_date import iso_date
 
 if TYPE_CHECKING:
+    from datetime import date
+
     from tadu.card import Card
 
 
-def card_json(card: Card) -> dict[str, object]:
+def card_json(card: Card, today: date) -> dict[str, object]:
     """The card as plain dicts, lists and strings; problem lines are 1-based."""
     item, fields = card.item, card.item.fields
     return {
@@ -36,4 +39,6 @@ def card_json(card: Card) -> dict[str, object]:
         "problems": [{"line": p.line + 1, "message": p.message} for p in item.problems],
         "editor_url": card.editor_url,
         "remote_url": card.remote_url,
+        "blocked_since": iso_date(card.blocked_since),
+        "blocked_days": blocked_days(card.blocked_since, today),
     }

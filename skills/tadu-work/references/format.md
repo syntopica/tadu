@@ -396,6 +396,7 @@ with exactly these keys:
 | `organizations` | a list of `{"role": ..., "org": ...}` |
 | `problems` | a list of `{"line": ..., "message": ...}`, lines 1-based |
 | `editor_url`, `remote_url` | a link to the line, or `null` |
+| `blocked_since`, `blocked_days` | for a `[!]` item in a git checkout, the local date of the last commit to its first line and the whole days since; else `null` |
 
 Filters: `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`,
 `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` replaces

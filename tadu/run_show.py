@@ -33,5 +33,5 @@ def run_show(args: argparse.Namespace, today: date) -> int:
             f"tadu show: {args.key} matches {len(found)} items; showing the first", file=sys.stderr
         )
     first = found[0]
-    print(json.dumps(card_json(first), ensure_ascii=False) if args.json else first.item.text)
+    print(json.dumps(card_json(first, today), ensure_ascii=False) if args.json else first.item.text)
     return 0

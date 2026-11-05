@@ -73,6 +73,11 @@ function cardNode(card) {
   if (card.due !== null) {
     meta.append(element("span", "", `due ${card.due}`));
   }
+  if (card.blocked_days !== null) {
+    const age = element("span", "age", `blocked ${card.blocked_days}d`);
+    age.title = `blocked since ${card.blocked_since}, the last commit to its first line`;
+    meta.append(age);
+  }
   for (const label of card.labels) {
     meta.append(element("span", "label", label));
   }

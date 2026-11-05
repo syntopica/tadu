@@ -38,10 +38,6 @@
 
   Smallest next step: print the commits that touched an item's line span, for one key.
 
-- [ ] **Board:** Age blocked items.
-
-  Smallest next step: derive the days an item has been `[!]` from `git log` and show it on the card.
-
 - [ ] **Board:** Add saved views.
 
   Smallest next step: store a named filter set in the workspace file and select it with `--view`.
