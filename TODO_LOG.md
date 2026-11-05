@@ -82,3 +82,9 @@
   Found in the 2026-11-04 review of the v0 change. Card titles use only an item's first line, so hard-wrapped titles are cut mid-sentence. A field line placed directly under the title, with no blank line before it, is ignored without a warning, and so is an empty `Labels:`. Workspace paths keep `..` and do not expand `~`. W001 also fires on recent closed log entries. `--port 80` is unusable because browsers omit the port from `Host`. `tests/test_entries.py` groups several modules in one test file. Smallest next step: add a doctor warning for field-like lines that do not start a paragraph, with a test.
   - Result: Six deferred board v0 rough edges fixed and reviewed, plus display truncation for long paragraph titles.
   - Evidence: commits 6729e6a..1769b33 (title paragraph, F003, path resolution, W001 open-only, port 80 Host, per-module tests, display truncation); full codeality-py gate passes with 678 tests at 100% coverage; tadu doctor reports no F003 on atrium, busirocket and bot
+
+- [x] 2026-11-05 — **Board:** Add a recently-done feed from the logs.
+
+  Smallest next step: list the closed entries of all workspace repositories, newest first, as a JSON command.
+  - Result: Added `tadu feed`: done and cancelled log entries of the given repositories or workspace, newest first, as JSON lines with the `list --json` keys.
+  - Evidence: tests/test_run_feed.py, tests/test_recently_done.py and tests/test_add_feed_parser.py pass; full gate (pytest 100% coverage, ruff, mypy, codeality-py gate) green.
