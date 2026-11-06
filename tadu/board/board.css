@@ -672,13 +672,18 @@ body.detail-open .main {
   font-weight: 600;
 }
 
-.popover-grid select {
+.popover-grid select,
+.popover-grid input {
   height: 34px;
   padding: 0 8px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--surface);
   font-weight: 400;
+}
+
+.popover-grid input.invalid {
+  border-color: var(--blocked, #e5484d);
 }
 
 .popover-checks {

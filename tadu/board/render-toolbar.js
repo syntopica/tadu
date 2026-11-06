@@ -1,8 +1,10 @@
 import { activeChips } from "./active-chips.js";
 import { distinctValues } from "./distinct-values.js";
+import { fillChoice } from "./fill-choice.js";
 import { fillSelect } from "./fill-select.js";
 import { isPhone } from "./is-phone.js";
 import { PRIORITY_TITLES } from "./priority-titles.js";
+import { SEARCHABLE_FILTERS } from "./searchable-filters.js";
 
 // Bring the static controls in line with the store: scope, filters, group,
 // sort, layout and the portfolio toolbar.
@@ -18,26 +20,40 @@ export function renderToolbar(store) {
     [["", "All projects"], ...projects],
     store.filters.project,
   );
-  for (const name of ["repository", "organization", "role", "assignee", "label"]) {
-    const values = distinctValues(cards, name).map((value) => [value, value]);
-    fillSelect(
+  for (const name of SEARCHABLE_FILTERS) {
+    fillChoice(
       document.getElementById(`filter-${name}`),
-      [["", "Any"], ...values],
+      distinctValues(cards, name),
       store.filters[name],
     );
   }
+  fillSelect(
+    document.getElementById("filter-role"),
+    [
+      ["", "Any"],
+      ...distinctValues(cards, "role").map((value) => [value, value]),
+    ],
+    store.filters.role,
+  );
   const priorities = Object.entries(PRIORITY_TITLES);
   fillSelect(
     document.getElementById("filter-priority"),
     [["", "Any"], ...priorities],
     store.filters.priority,
   );
-  for (const name of ["unassigned", "noPriority", "waitingOnMe", "showCancelled"]) {
+  for (const name of [
+    "unassigned",
+    "noPriority",
+    "waitingOnMe",
+    "showCancelled",
+  ]) {
     document.getElementById(`filter-${name}`).checked = store.filters[name];
   }
   document.getElementById("filter-waitingOnMe").disabled = !store.payload?.me;
   document.getElementById("show-empty").checked = store.showEmpty;
-  const count = activeChips(store.filters).filter((chip) => chip.name !== "column").length;
+  const count = activeChips(store.filters).filter(
+    (chip) => chip.name !== "column",
+  ).length;
   const badge = document.getElementById("filters-count");
   badge.hidden = count === 0;
   badge.textContent = String(count);
@@ -63,7 +79,9 @@ export function renderToolbar(store) {
     ...(store.view === "done" ? [["closed", "Closing day"]] : []),
   ];
   fillSelect(document.getElementById("sort"), sorts, store.sort);
-  document.getElementById("layout-list").setAttribute("aria-pressed", String(!board));
+  document
+    .getElementById("layout-list")
+    .setAttribute("aria-pressed", String(!board));
   document
     .getElementById("layout-board")
     .setAttribute("aria-pressed", String(store.view === "board"));

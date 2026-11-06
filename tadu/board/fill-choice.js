@@ -1,0 +1,18 @@
+import { el } from "./el.js";
+
+// Offer `values` as the suggestions of a typed filter field and show `value`,
+// unless the person is typing in it right now.
+export function fillChoice(input, values, value) {
+  const list = document.getElementById(input.getAttribute("list"));
+  list.replaceChildren(
+    ...values.map((offered) => {
+      const option = el("option");
+      option.value = offered;
+      return option;
+    }),
+  );
+  if (document.activeElement !== input) {
+    input.value = value;
+    input.classList.remove("invalid");
+  }
+}

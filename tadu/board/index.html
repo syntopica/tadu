@@ -66,12 +66,12 @@
 <button type="button" class="tool-button" id="filters-button" aria-expanded="false" aria-controls="filters-popover"><span data-icon="filter"></span>Filters<span class="count" id="filters-count" hidden></span><span data-icon="chevronDown"></span></button>
 <div class="popover" id="filters-popover" role="dialog" aria-label="Filters" hidden>
 <div class="popover-grid">
-<label>Repository<select id="filter-repository"></select></label>
-<label>Organization<select id="filter-organization"></select></label>
+<label>Repository<input id="filter-repository" type="search" list="filter-repository-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-repository-options"></datalist></label>
+<label>Organization<input id="filter-organization" type="search" list="filter-organization-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-organization-options"></datalist></label>
 <label>Role<select id="filter-role"></select></label>
-<label>Assignee<select id="filter-assignee"></select></label>
+<label>Assignee<input id="filter-assignee" type="search" list="filter-assignee-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-assignee-options"></datalist></label>
 <label>Priority<select id="filter-priority"></select></label>
-<label>Label<select id="filter-label"></select></label>
+<label>Label<input id="filter-label" type="search" list="filter-label-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-label-options"></datalist></label>
 </div>
 <div class="popover-checks">
 <label><input type="checkbox" id="filter-unassigned"> Unassigned</label>

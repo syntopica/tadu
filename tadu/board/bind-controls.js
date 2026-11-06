@@ -1,8 +1,10 @@
+import { commitChoice } from "./commit-choice.js";
 import { debounce } from "./debounce.js";
 import { applyTheme } from "./apply-theme.js";
 import { loadBoard } from "./load-board.js";
 import { nextTheme } from "./next-theme.js";
 import { requestRender } from "./request-render.js";
+import { SEARCHABLE_FILTERS } from "./searchable-filters.js";
 import { setView } from "./set-view.js";
 import { snapshotView } from "./snapshot-view.js";
 import { storeSavedViews } from "./store-saved-views.js";
@@ -15,7 +17,9 @@ export function bindControls(store) {
     store.text = value;
     requestRender();
   }, 120);
-  byId("search").addEventListener("input", (event) => search(event.target.value));
+  byId("search").addEventListener("input", (event) =>
+    search(event.target.value),
+  );
   const portfolioSearch = debounce((value) => {
     store.portfolio.text = value;
     requestRender();
@@ -30,13 +34,23 @@ export function bindControls(store) {
     store.filters = { ...store.filters, project: event.target.value };
     requestRender();
   });
-  for (const name of ["repository", "organization", "role", "assignee", "priority", "label"]) {
+  for (const name of ["role", "priority"]) {
     byId(`filter-${name}`).addEventListener("change", (event) => {
       store.filters = { ...store.filters, [name]: event.target.value };
       requestRender();
     });
   }
-  for (const name of ["unassigned", "noPriority", "waitingOnMe", "showCancelled"]) {
+  for (const name of SEARCHABLE_FILTERS) {
+    const input = byId(`filter-${name}`);
+    input.addEventListener("input", () => commitChoice(name, input, false));
+    input.addEventListener("change", () => commitChoice(name, input, true));
+  }
+  for (const name of [
+    "unassigned",
+    "noPriority",
+    "waitingOnMe",
+    "showCancelled",
+  ]) {
     byId(`filter-${name}`).addEventListener("change", (event) => {
       store.filters = { ...store.filters, [name]: event.target.checked };
       requestRender();
@@ -63,8 +77,14 @@ export function bindControls(store) {
     store.sort = event.target.value;
     requestRender();
   });
-  byId("layout-list").addEventListener("click", () => store.view === "board" && setView("all"));
-  byId("layout-board").addEventListener("click", () => store.view !== "board" && setView("board"));
+  byId("layout-list").addEventListener(
+    "click",
+    () => store.view === "board" && setView("all"),
+  );
+  byId("layout-board").addEventListener(
+    "click",
+    () => store.view !== "board" && setView("board"),
+  );
   byId("portfolio-group").addEventListener("change", (event) => {
     store.portfolio.groupBy = event.target.value;
     store.portfolio.collapsed = new Set();
@@ -96,7 +116,10 @@ export function bindControls(store) {
     if (name === "" || !store.payload) {
       return;
     }
-    store.saved = [...store.saved.filter((saved) => saved.name !== name), snapshotView(name)];
+    store.saved = [
+      ...store.saved.filter((saved) => saved.name !== name),
+      snapshotView(name),
+    ];
     storeSavedViews(store.saved, store.payload.workspace_id);
     byId("save-view-name").value = "";
     requestRender();
