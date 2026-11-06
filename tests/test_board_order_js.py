@@ -6,7 +6,7 @@ from board_js import board_js, js_card
 CARDS = [
     js_card("backlog", key="a", repository="b-repo", line=9, title="beta"),
     js_card("blocked", key="b", priority="low", due="2026-12-01", title="Alpha"),
-    js_card("in_progress", key="c", priority="urgent", assignees=["bo"], title="gamma"),
+    js_card("in_progress", key="c", priority="urgent", assignees=["bo", "ana"], title="gamma"),
     js_card("backlog", key="d", priority="low", due="2026-11-10", project=None, title="delta"),
     js_card("done", key="e", repository="a-repo", day="2026-11-02", title="eps"),
     js_card("done", key="f", day="2026-11-05", line=3, title="zeta"),
@@ -77,7 +77,11 @@ def test_groups(results: dict[str, object]) -> None:
         ["Low", ["b", "d"]],
         ["No priority", ["a", "e", "f", "g"]],
     ]
-    assert assignee == [["bo", ["c"]], ["Unassigned", ["a", "b", "d", "e", "f", "g"]]]
+    assert assignee == [
+        ["ana", ["c"]],
+        ["bo", ["c"]],
+        ["Unassigned", ["a", "b", "d", "e", "f", "g"]],
+    ]
     assert day == [
         ["2026-11-05", ["f"]],
         ["2026-11-02", ["e"]],

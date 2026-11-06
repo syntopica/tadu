@@ -7,6 +7,7 @@ from tadu.board_asset_name_pattern import BOARD_ASSET_NAME_PATTERN
 BOARD = files("tadu") / "board"
 FILES = sorted(p.name for p in BOARD.iterdir() if not p.name.startswith("."))
 SCRIPTS = [name for name in FILES if name.endswith(".js")]
+DECLARATION = re.compile(r"^(export )?(async )?(function|const|let|var|class) ", re.MULTILINE)
 IMPORT = re.compile(r'^import \{ (\w+) \} from "\./([a-z0-9-]+\.js)";$', re.MULTILINE)
 
 
@@ -50,6 +51,7 @@ def test_modules_export_one_unit_and_import_only_siblings() -> None:
     for name in SCRIPTS:
         source = text(name)
         assert len(re.findall(r"^export ", source, re.MULTILINE)) == 1, name
+        assert len(DECLARATION.findall(source)) == 1, name
         imports = re.findall(r"^import .*$", source, re.MULTILINE)
         assert len(imports) == len(IMPORT.findall(source)), name
         for unit, module in IMPORT.findall(source):

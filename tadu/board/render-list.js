@@ -29,7 +29,9 @@ export function renderList(store, sets, content) {
   spacer.setAttribute("role", "list");
   spacer.style.setProperty("--list-height", `${offsets[offsets.length - 1]}px`);
   content.replaceChildren(spacer);
-  store.navKeys = rows.filter((row) => row.kind === "card").map((row) => row.card.key);
+  store.navKeys = [
+    ...new Set(rows.filter((row) => row.kind === "card").map((row) => row.card.key)),
+  ];
   store.list = { rows, offsets, spacer, start: -1, end: -1, dirty: true };
   renderListWindow(store, store.list);
 }

@@ -9,6 +9,7 @@ TITLES = [
     "** spaced** and ``",
     "",
     "**Fix `a` now** b",
+    "`a**b` and **c**",
 ]
 URLS = [
     "https://example.com/x",
@@ -71,10 +72,14 @@ def test_inline_markdown_tokens(results: dict[str, object]) -> None:
         [{"kind": "text", "text": "** spaced** and ``", "strong": False}],
         [],
         [
-            {"kind": "text", "text": "Fix ", "strong": True},
-            {"kind": "code", "text": "a", "strong": True},
-            {"kind": "text", "text": " now", "strong": True},
-            {"kind": "text", "text": " b", "strong": False},
+            {"kind": "text", "text": "**Fix ", "strong": False},
+            {"kind": "code", "text": "a", "strong": False},
+            {"kind": "text", "text": " now** b", "strong": False},
+        ],
+        [
+            {"kind": "code", "text": "a**b", "strong": False},
+            {"kind": "text", "text": " and ", "strong": False},
+            {"kind": "text", "text": "c", "strong": True},
         ],
     ]
 

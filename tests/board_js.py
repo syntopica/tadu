@@ -21,9 +21,11 @@ def board_js(script: str) -> object:
     done = subprocess.run(  # noqa: S603
         [node, "--input-type=module", "-e", PRELUDE + script, BOARD],
         capture_output=True,
-        check=True,
+        check=False,
         text=True,
     )
+    if done.returncode != 0:
+        pytest.fail(done.stderr)
     return json.loads(done.stdout)
 
 

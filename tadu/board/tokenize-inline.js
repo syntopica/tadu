@@ -1,17 +1,16 @@
-import { tokenizeCode } from "./tokenize-code.js";
+import { tokenizeBold } from "./tokenize-bold.js";
 
 // Inline Markdown of a title as tokens {kind: "text" | "code", text, strong}.
-// Only **bold** and `code` are recognised, code also inside bold; anything
-// else, unmatched markers included, stays literal text.
+// Code spans are found first and kept verbatim, then **bold** only in the
+// text between them; anything else, unmatched markers included, is literal.
 export function tokenizeInline(source) {
-  const pattern = /\*\*(?=\S)(.+?)\*\*/g;
   const tokens = [];
   let last = 0;
-  for (const match of source.matchAll(pattern)) {
-    tokens.push(...tokenizeCode(source.slice(last, match.index), false));
-    tokens.push(...tokenizeCode(match[1], true));
+  for (const match of source.matchAll(/`([^`]+)`/g)) {
+    tokens.push(...tokenizeBold(source.slice(last, match.index)));
+    tokens.push({ kind: "code", text: match[1], strong: false });
     last = match.index + match[0].length;
   }
-  tokens.push(...tokenizeCode(source.slice(last), false));
+  tokens.push(...tokenizeBold(source.slice(last)));
   return tokens;
 }
