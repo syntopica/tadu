@@ -18,6 +18,7 @@ from tadu.add_sync_parser import add_sync_parser
 from tadu.close_command import close_command
 from tadu.doctor_command import doctor_command
 from tadu.hook_command import hook_command
+from tadu.quiet_broken_pipe import quiet_broken_pipe
 from tadu.run_board import run_board
 from tadu.run_init import run_init
 from tadu.run_list import run_list
@@ -56,7 +57,7 @@ def main(argv: list[str] | None = None) -> int:
         ),
         "doctor": lambda: doctor_command(args, today),
     }
-    return handlers[args.command]()
+    return quiet_broken_pipe(handlers[args.command])
 
 
 if __name__ == "__main__":
