@@ -88,3 +88,9 @@
   Smallest next step: the owner picks a direction (owner decision, 2026-11-06). Direction 1 is Linear-like (sidebar views, capped kanban columns, portfolio table, phone blocked list, detail panel: `mockup-1`, `-5`, `-6`, `-7`); direction 2 is denser, with every filter in the sidebar (`mockup-3`, `-4`). Then redesign `tadu/board/` to it, rendering inline Markdown as text styling.
   - Result: Direction 1 of the ChatGPT redesign shipped; the board binds a stable per-workspace port and keeps saved views per workspace.
   - Evidence: Commits e492956..74c34e0 on main: ES-module board with My work, All work, Blocked, Portfolio, Done and Board views, capped columns, virtualized list, detail panel, phone layout; gate 714 tests and 100% coverage; independent review fixed in round 1; checked live in Orca on 97 repositories and 5,503 items.
+
+- [x] 2026-11-06 — **CLI:** `tadu list --json | head -1` ends with a `BrokenPipeError` traceback (seen 2026-11-06).
+
+  Smallest next step: exit quietly on `BrokenPipeError` in `run_list`, with a test that closes stdout early.
+  - Result: Every command ends quietly with status 0 when its reader closes stdout early.
+  - Evidence: Commit dc663c6: tests/test_quiet_broken_pipe.py reads one line of a 86 KB list and closes the pipe (exit 0, no traceback); the same scenario exits 120 without the fix; full gate 719 tests.

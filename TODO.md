@@ -46,7 +46,3 @@
 
   Smallest next step: store a named filter set in the workspace file and select it with `--view`.
 
-
-- [ ] **CLI:** `tadu list --json | head -1` ends with a `BrokenPipeError` traceback (seen 2026-11-06).
-
-  Smallest next step: exit quietly on `BrokenPipeError` in `run_list`, with a test that closes stdout early.
