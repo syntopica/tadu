@@ -54,7 +54,7 @@ out({
   ],
   order: [summaryOrder(columns, false), summaryOrder(["backlog", "blocked", "done"], true)],
   themes: ["auto", "light", "dark", "bogus"].map(nextTheme),
-  plural: [plural(1, "warning"), plural(1200, "warning"), plural(0, "item")],
+  plural: [plural(1, "warning"), plural(1200, "warning"), plural(0, "item"), plural(3, "repository")],
   distinct: [distinctValues(cards, "label"), distinctValues(cards, "project")],
   chips: activeChips(filters).map((chip) => chip.label),
   projects: projectKeys(cards),
@@ -87,7 +87,7 @@ def test_columns_and_navigation(results: dict[str, object]) -> None:
 
 
 def test_labels_and_values(results: dict[str, object]) -> None:
-    assert results["plural"] == ["1 warning", "1,200 warnings", "0 items"]
+    assert results["plural"] == ["1 warning", "1,200 warnings", "0 items", "3 repositories"]
     assert results["distinct"] == [["api", "ux"], ["a", "b"]]
     assert results["chips"] == [
         "Repository: shop",

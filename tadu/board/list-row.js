@@ -38,7 +38,7 @@ export function listRow(card, selected, me) {
   }
   row.append(
     el("span", "row-rule"),
-    metaPart("branch", place, "row-place"),
+    metaPart(card.project === null ? "repo" : "branch", place, "row-place"),
     title,
     facts,
     side,

@@ -9,7 +9,7 @@ export function detailField(label, iconName, value) {
     description.append(icon(iconName));
   }
   if (typeof value === "string") {
-    description.append(el("span", value === "—" ? "muted" : "", value));
+    description.append(el("span", value === "—" ? "field-text muted" : "field-text", value));
   } else {
     description.append(...value);
   }

@@ -14,14 +14,14 @@ export function renderHead(store, sets) {
     store.view === "all" && column !== "" ? `${title}: ${COLUMN_TITLES[column]}` : title;
   document.title = `${title} · tadu`;
   const cards = store.cards;
-  const repositories = new Set(cards.map((card) => card.repository)).size;
-  const total = store.view === "portfolio" ? cards.length : sets.total;
+  const repositories = plural(new Set(cards.map((card) => card.repository)).size, "repository");
+  const total = sets.total;
   const filtered = sets.shown.length !== total && store.view !== "portfolio";
   const items = filtered
-    ? `${formatCount(sets.shown.length)} shown of ${formatCount(total)} items`
-    : `${formatCount(total)} items`;
+    ? `${formatCount(sets.shown.length)} shown of ${plural(total, "item")}`
+    : plural(total, "item");
   document.getElementById("page-subtitle").textContent = payload
-    ? `${formatCount(repositories)} repositories · ${items}`
+    ? `${repositories} · ${items}`
     : "";
   const updated = store.loading
     ? "Reloading..."

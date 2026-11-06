@@ -39,7 +39,7 @@
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --sidebar-width: 232px;
-  --detail-width: min(560px, 42vw);
+  --detail-width: min(520px, 40vw);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -331,6 +331,38 @@ body.detail-open .main {
 @media (min-width: 1280px) {
   body.detail-open .main {
     margin-right: var(--detail-width);
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  body.detail-open .app {
+    --sidebar-width: 190px;
+  }
+
+  body.detail-open .board {
+    grid-auto-columns: minmax(165px, 1fr);
+    gap: 10px;
+  }
+
+  body.detail-open .summary {
+    grid-auto-columns: minmax(120px, 1fr);
+    gap: 8px;
+  }
+
+  body.detail-open .summary-chip {
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 13.5px;
+  }
+
+  body.detail-open .summary-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body.detail-open .search kbd,
+  body.detail-open .summary-chip .muted {
+    display: none;
   }
 }
 
@@ -804,6 +836,7 @@ body.detail-open .main {
 }
 
 .column {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -943,6 +976,25 @@ body.detail-open .main {
 
 .meta-file {
   flex: none;
+}
+
+@container (max-width: 270px) {
+  .meta-project ~ .meta-repo {
+    display: none;
+  }
+}
+
+@container (max-width: 220px) {
+  .column-head h2 {
+    overflow: hidden;
+    font-size: 15.5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .column-head {
+    gap: 6px;
+  }
 }
 
 .badges {
@@ -1567,6 +1619,11 @@ body.detail-open .main {
   overflow-wrap: anywhere;
 }
 
+.field-text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .fields dd > .icon {
   width: 16px;
   height: 16px;
@@ -1911,6 +1968,41 @@ body.detail-open .main {
 
   #portfolio-toolbar {
     flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  #portfolio-toolbar .search {
+    flex-basis: 100%;
+  }
+
+  #portfolio-toolbar .tool-button {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 40px;
+    padding: 0 8px;
+    gap: 4px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  #portfolio-toolbar .tool-button > span:first-child {
+    display: none;
+  }
+
+  #portfolio-toolbar .tool-button select {
+    min-width: 0;
+  }
+
+  .stats {
+    gap: 8px;
+  }
+
+  .stat {
+    padding: 12px;
+  }
+
+  .stat strong {
+    font-size: 22px;
   }
 
   .summary {
@@ -2013,7 +2105,7 @@ body.detail-open .main {
   }
 
   .stats {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .prow {
@@ -2035,7 +2127,8 @@ body.detail-open .main {
     padding-left: 24px;
   }
 
-  .panel-sort {
+  .panel-sort,
+  .prow .role {
     display: none;
   }
 
