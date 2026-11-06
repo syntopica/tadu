@@ -327,6 +327,18 @@ organization = "studio"
 - `[[organization]]`: `id` and `name`, both required; IDs are unique.
 - `[[person]]`: `id` and `name` are required, `organization` is optional and
   must name an organization; IDs are unique.
+- `[[view]]`: a saved filter set. `name` is required and unique. The optional
+  keys are the `tadu list` filters: `project`, `org`, `assignee` (each must name
+  a registered project, organization or person), `role` and `label` (strings),
+  `column` and `priority` (one of the allowed values), `due_before` (a TOML
+  date) and `include_cancelled` (a boolean). Any other key is an error.
+
+```toml
+[[view]]
+name = "waiting-on-ana"
+assignee = "ana"
+column = "blocked"
+```
 
 ```toml
 version = 1
@@ -347,8 +359,8 @@ shop = "../shop"
   same as an empty one.
 
 In either file, an unknown top-level key or table is an error naming it: the
-workspace file allows `version`, `repository`, `project`, `organization` and
-`person`; the local file allows `version`, `me`, `editor_url` and `paths`.
+workspace file allows `version`, `repository`, `project`, `organization`,
+`person` and `view`; the local file allows `version`, `me`, `editor_url` and `paths`.
 
 A malformed workspace is an error. Problems reading or parsing either file
 stop at the first one found. A workspace file that parses but names an unknown
@@ -398,4 +410,6 @@ with exactly these keys:
 
 Filters: `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`,
 `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` replaces
-the repository roots; giving both exits 2.
+the repository roots; giving both exits 2. `--view NAME` starts from the named `[[view]]` of
+the workspace and needs `--workspace`; a filter flag given beside it replaces
+that criterion, and an unknown view exits 2.

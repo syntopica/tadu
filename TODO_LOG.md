@@ -82,3 +82,9 @@
   Found in the 2026-11-04 review of the v0 change. Card titles use only an item's first line, so hard-wrapped titles are cut mid-sentence. A field line placed directly under the title, with no blank line before it, is ignored without a warning, and so is an empty `Labels:`. Workspace paths keep `..` and do not expand `~`. W001 also fires on recent closed log entries. `--port 80` is unusable because browsers omit the port from `Host`. `tests/test_entries.py` groups several modules in one test file. Smallest next step: add a doctor warning for field-like lines that do not start a paragraph, with a test.
   - Result: Six deferred board v0 rough edges fixed and reviewed, plus display truncation for long paragraph titles.
   - Evidence: commits 6729e6a..1769b33 (title paragraph, F003, path resolution, W001 open-only, port 80 Host, per-module tests, display truncation); full codeality-py gate passes with 678 tests at 100% coverage; tadu doctor reports no F003 on atrium, busirocket and bot
+
+- [x] 2026-11-06 — **Board:** Add saved views.
+
+  Smallest next step: store a named filter set in the workspace file and select it with `--view`.
+  - Result: Workspace files accept [[view]] tables (name plus the list filter keys, validated) and tadu list --workspace DIR --view NAME applies one; flags given beside it override the view. Spec and README document it. The board UI does not offer views yet; the parked redesign (sidebar views) can read Workspace.views.
+  - Evidence: uv run pytest: 712 passed at 100% coverage, incl. tests/test_run_list.py view cases, tests/test_parse_view.py, tests/test_view_problems.py; ruff, mypy and codeality-py gate clean.

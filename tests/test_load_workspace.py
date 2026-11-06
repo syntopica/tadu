@@ -1,12 +1,15 @@
+from datetime import date
 from pathlib import Path
 
 import pytest
 
+from tadu.card_filter import CardFilter
 from tadu.load_workspace import load_workspace
 from tadu.organization_entry import OrganizationEntry
 from tadu.person_entry import PersonEntry
 from tadu.project_entry import ProjectEntry
 from tadu.repository_entry import RepositoryEntry
+from tadu.view_entry import ViewEntry
 from tadu.workspace_error import WorkspaceError
 
 VALID = """
@@ -84,6 +87,22 @@ def test_minimal_defaults(tmp_path: Path) -> None:
     )
     workspace = load_workspace(tmp_path)
     assert workspace.projects == (ProjectEntry("p", "p", ("shop",), ()),)
+
+
+def test_views(tmp_path: Path) -> None:
+    write(
+        tmp_path,
+        'version = 1\n[[person]]\nid = "ana"\nname = "Ana"\n'
+        '[[view]]\nname = "mine"\nassignee = "ana"\ndue_before = 2026-12-01\n',
+    )
+    assert load_workspace(tmp_path).views == (
+        ViewEntry("mine", CardFilter(assignee="ana", due_before=date(2026, 12, 1))),
+    )
+
+
+def test_view_with_unknown_person(tmp_path: Path) -> None:
+    message = load_error(tmp_path, 'version = 1\n[[view]]\nname = "x"\nassignee = "ghost"\n')
+    assert message == "view x: unknown assignee ghost"
 
 
 def test_empty_workspace(tmp_path: Path) -> None:

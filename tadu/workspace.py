@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from tadu.person_entry import PersonEntry
     from tadu.project_entry import ProjectEntry
     from tadu.repository_entry import RepositoryEntry
+    from tadu.view_entry import ViewEntry
 
 
 @dataclass(frozen=True)
@@ -23,3 +24,4 @@ class Workspace:
     projects: tuple[ProjectEntry, ...]
     organizations: tuple[OrganizationEntry, ...]
     people: tuple[PersonEntry, ...]
+    views: tuple[ViewEntry, ...] = ()

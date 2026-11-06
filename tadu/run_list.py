@@ -12,6 +12,7 @@ from tadu.filter_from_args import filter_from_args
 from tadu.format_card_line import format_card_line
 from tadu.load_cards import load_cards
 from tadu.print_problems import print_problems
+from tadu.view_filter import view_filter
 from tadu.workspace_error import WorkspaceError
 
 if TYPE_CHECKING:
@@ -22,11 +23,12 @@ if TYPE_CHECKING:
 def run_list(args: argparse.Namespace, today: date) -> int:
     """Print the matching cards; problems go to stderr and do not change the exit code."""
     try:
+        base = view_filter(args.workspace, args.view)
         cards, problems, _ = load_cards(tuple(args.paths), args.workspace, args.done_days, today)
     except WorkspaceError as error:
         print(f"tadu list: {error}", file=sys.stderr)
         return 2
-    card_filter = filter_from_args(args)
+    card_filter = filter_from_args(args, base)
     for card in cards:
         if card_matches(card, card_filter):
             print(
