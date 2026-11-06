@@ -19,6 +19,7 @@ export const store = {
   index: null,
   hash: null,
   storedWhere: "",
+  storedView: "",
   favourites: [],
   recent: [],
   picker: null,

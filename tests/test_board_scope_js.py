@@ -10,6 +10,7 @@ const { placeCards } = await load("place-cards.js");
 const { cleanWhere } = await load("clean-where.js");
 const { cleanWhereList } = await load("clean-where-list.js");
 const { initialWhere } = await load("initial-where.js");
+const { initialView } = await load("initial-view.js");
 const { whereParts } = await load("where-parts.js");
 const { whereCounts } = await load("where-counts.js");
 const { parseHash } = await load("parse-hash.js");
@@ -44,6 +45,11 @@ out({
   ],
   list: cleanWhereList([w("pp"), w("pp"), w(), w("ghost"), w("", "tele")], index),
   listJunk: cleanWhereList("x", index),
+  views: [
+    initialView("portfolio", "done", ["portfolio", "done"], "board"),
+    initialView(null, "done", ["portfolio", "done"], "board"),
+    initialView("nope", "gone", ["portfolio", "done"], "board"),
+  ],
   initial: [
     initialWhere(parseHash("#project=joy"), w("br"), index),
     initialWhere(parseHash(""), w("br"), index),
@@ -134,6 +140,7 @@ def test_clean_where_keeps_levels_consistent(results: dict[str, object]) -> None
     assert results["list"] == [w("pp"), w("br", "tele")]
     assert results["listJunk"] == []
     assert results["initial"] == [w("pp", "joy"), w("br"), w()]
+    assert results["views"] == ["portfolio", "done", "board"]
 
 
 def test_labels_and_counts(results: dict[str, object]) -> None:

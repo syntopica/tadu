@@ -3,7 +3,7 @@ import { storageKey } from "./storage-key.js";
 import { writeStored } from "./write-stored.js";
 
 // Keep the URL hash on the current scope and view, so the address reopens
-// them, and remember the scope for the next visit to this workspace.
+// them, and remember the scope and view for the next visit to this workspace.
 export function syncLocation(store) {
   if (!store.payload) {
     return;
@@ -16,5 +16,9 @@ export function syncLocation(store) {
   if (stored !== store.storedWhere) {
     store.storedWhere = stored;
     writeStored(storageKey("scope", store.payload.workspace_id), store.where);
+  }
+  if (store.view !== store.storedView) {
+    store.storedView = store.view;
+    writeStored(storageKey("view", store.payload.workspace_id), store.view);
   }
 }
