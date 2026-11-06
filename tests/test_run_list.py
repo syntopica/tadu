@@ -1,7 +1,10 @@
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
+from closed_pipe import ClosedPipe
 
 from tadu.cli import main
 
@@ -53,3 +56,25 @@ def test_done_days_window(tmp_path: Path, capsys: pytest.CaptureFixture[str]) ->
     assert capsys.readouterr().out == ""
     assert main(["list", str(root), "--column", "done", "--done-days", "99999"]) == 0
     assert "[done]" in capsys.readouterr().out
+
+
+def test_reader_closing_early_is_quiet(tmp_path: Path) -> None:
+    root = tmp_path / "big"
+    root.mkdir()
+    # Enough output to overflow the pipe buffer, so writes fail once the reader closes.
+    (root / "TODO.md").write_text("".join(f"- [ ] Item {n}.\n\n" for n in range(400)))
+    command = [sys.executable, "-m", "tadu.cli", "list", str(root), "--json"]
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:  # noqa: S603
+        assert process.stdout is not None
+        assert process.stderr is not None
+        assert json.loads(process.stdout.readline())["title"] == "Item 0."
+        process.stdout.close()
+        err = process.stderr.read()
+    assert process.returncode == 0
+    assert err == b""
+
+
+def test_broken_pipe_exits_zero_in_process(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    with (tmp_path / "out").open("w") as target:
+        monkeypatch.setattr(sys, "stdout", ClosedPipe(target.fileno()))
+        assert main(["list", str(repo(tmp_path)), "--json"]) == 0

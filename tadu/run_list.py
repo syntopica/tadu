@@ -12,6 +12,7 @@ from tadu.filter_from_args import filter_from_args
 from tadu.format_card_line import format_card_line
 from tadu.load_cards import load_cards
 from tadu.print_problems import print_problems
+from tadu.silence_stdout import silence_stdout
 from tadu.workspace_error import WorkspaceError
 
 if TYPE_CHECKING:
@@ -27,12 +28,17 @@ def run_list(args: argparse.Namespace, today: date) -> int:
         print(f"tadu list: {error}", file=sys.stderr)
         return 2
     card_filter = filter_from_args(args)
-    for card in cards:
-        if card_matches(card, card_filter):
-            print(
-                json.dumps(card_json(card), ensure_ascii=False)
-                if args.json
-                else format_card_line(card)
-            )
+    try:
+        for card in cards:
+            if card_matches(card, card_filter):
+                print(
+                    json.dumps(card_json(card), ensure_ascii=False)
+                    if args.json
+                    else format_card_line(card)
+                )
+        sys.stdout.flush()
+    except BrokenPipeError:
+        # The reader closed early (`tadu list | head -1`): that is not an error.
+        silence_stdout()
     print_problems("list", problems)
     return 0

@@ -82,3 +82,9 @@
   Found in the 2026-11-04 review of the v0 change. Card titles use only an item's first line, so hard-wrapped titles are cut mid-sentence. A field line placed directly under the title, with no blank line before it, is ignored without a warning, and so is an empty `Labels:`. Workspace paths keep `..` and do not expand `~`. W001 also fires on recent closed log entries. `--port 80` is unusable because browsers omit the port from `Host`. `tests/test_entries.py` groups several modules in one test file. Smallest next step: add a doctor warning for field-like lines that do not start a paragraph, with a test.
   - Result: Six deferred board v0 rough edges fixed and reviewed, plus display truncation for long paragraph titles.
   - Evidence: commits 6729e6a..1769b33 (title paragraph, F003, path resolution, W001 open-only, port 80 Host, per-module tests, display truncation); full codeality-py gate passes with 678 tests at 100% coverage; tadu doctor reports no F003 on atrium, busirocket and bot
+
+- [x] 2026-11-06 — **CLI:** `tadu list --json | head -1` ends with a `BrokenPipeError` traceback (seen 2026-11-06).
+
+  Smallest next step: exit quietly on `BrokenPipeError` in `run_list`, with a test that closes stdout early.
+  - Result: run_list flushes stdout inside a BrokenPipeError guard and points stdout at the null device, so a reader closing early exits 0 with no traceback.
+  - Evidence: tests/test_run_list.py::test_reader_closing_early_is_quiet fails before the fix and passes after; 'uv run tadu list <repo> --json | head -1' exits 0 with empty stderr; codeality-py gate green.
