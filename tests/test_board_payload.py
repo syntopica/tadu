@@ -27,6 +27,18 @@ def test_cards_me_columns_and_time(tmp_path: Path) -> None:
     assert payload["columns"] == ["backlog", "ready", "in_progress", "blocked", "done", "cancelled"]
     assert payload["done_days"] == 14
     assert payload["workspace_id"] == workspace_id(tmp_path)
+    assert payload["workspace"] == {
+        "organizations": [{"id": "acme", "name": "Acme"}],
+        "projects": [
+            {
+                "key": "storefront",
+                "name": "storefront",
+                "repositories": ["shop"],
+                "roles": [{"role": "client", "org": "acme"}],
+            }
+        ],
+        "repositories": [{"key": "shop"}],
+    }
     assert str(payload["generated_at"]).startswith("20")
 
 
@@ -44,3 +56,19 @@ def test_rescans_and_reports_problems(tmp_path: Path) -> None:
 def test_bad_workspace_raises(tmp_path: Path) -> None:
     with pytest.raises(WorkspaceError):
         board_payload(state(tmp_path), TODAY)
+
+
+def test_workspace_without_projects(tmp_path: Path) -> None:
+    repo = tmp_path / "solo"
+    repo.mkdir()
+    (repo / "TODO.md").write_text("- [ ] Only item.\n")
+    (tmp_path / "tadu-workspace.toml").write_text('version = 1\n[[repository]]\nkey = "solo"\n')
+    (tmp_path / "tadu-workspace.local.toml").write_text(f'version = 1\n[paths]\nsolo = "{repo}"\n')
+    payload = board_payload(state(tmp_path), TODAY)
+    assert payload["me"] is None
+    assert [c["project"] for c in payload["cards"]] == [None]  # type: ignore[attr-defined]
+    assert payload["workspace"] == {
+        "organizations": [],
+        "projects": [],
+        "repositories": [{"key": "solo"}],
+    }
