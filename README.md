@@ -128,16 +128,18 @@ tadu doctor --workspace .
 tadu board --workspace .
 ```
 
-`board` prints a URL such as `http://127.0.0.1:41873/?token=...` and serves one page with a column per state, filters, and for each card its `path:line`. Open the printed URL. The files are rescanned on every request. Options: `--host` (default `127.0.0.1`), `--port` (default: any free port; port 80 also accepts the bare host, since browsers omit it) and `--done-days` (default 14).
+`board` prints a URL such as `http://127.0.0.1:41873/?token=...`; open it. The files are rescanned on every request and on Reload. Options: `--host` (default `127.0.0.1`), `--port` (default: any free port; port 80 also accepts the bare host, since browsers omit it) and `--done-days` (default 14).
+
+The page has six views in its sidebar: My work (open items assigned to `me`), All work, Blocked (all, blocked for me, unassigned), Portfolio (counts per organization or project, then per repository), Done (closed in the window, by day) and Board (a column per state, at most 30 cards each, with a link to the full list). A search box, a filters popover with removable chips, grouping and sorting apply to every list; lists draw only the rows on screen, so a workspace of thousands of items stays fast. Clicking an item opens its detail: full text, location, ID, fields, parse warnings and the links to the editor and the forge. Keys: `/` or Cmd/Ctrl-K search, J and K move, Enter opens the detail, E opens the editor, Esc closes. Saved views and the light or dark theme are kept in the browser's `localStorage`; under 720 px the page becomes a list with a bottom bar.
 
 The board only reads. It writes no backlog, workspace or index file, and it cannot change a card: every request other than GET answers `405` with `Allow: GET`. Edit the `TODO.md` files, or use `tadu close`.
 
 Who may read it:
 
 - The server checks the `Host` header against the address and port it is bound to (bound to `127.0.0.1`, it also accepts `localhost:<port>`) and answers `421` otherwise, which defeats DNS rebinding.
-- The page and its script and stylesheet need only that. The card data at `/api/cards` also needs the per-run token, given as an `X-Tadu-Token` header or a `?token=` parameter; a missing or wrong token answers `403`. The page keeps the token in `sessionStorage` and removes it from the address bar.
+- The page and its scripts and stylesheet need only that; the server serves only files directly inside its own `board` directory. The card data at `/api/cards` also needs the per-run token, given as an `X-Tadu-Token` header or a `?token=` parameter; a missing or wrong token answers `403`. The page keeps the token in `sessionStorage` and removes it from the address bar.
 - No response carries a CORS header, so another page cannot read the data. Responses send `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and a Content-Security-Policy that allows only the page's own script and style.
-- Item text is escaped, never rendered as HTML.
+- Item text is escaped, never rendered as HTML: only `**bold**` and `` `code` `` in titles are styled, built as elements holding plain text.
 - `--host` other than `127.0.0.1` or `localhost` prints a warning: the server listens on that address, but it still serves only requests whose `Host` header is exactly `<host>:<port>`, so a browser that reaches it by any other name or address gets `421`. `::1` is not supported. An invalid workspace or a port that cannot be bound exits `2`.
 
 ## Close an item
