@@ -10,7 +10,7 @@ import { setView } from "./set-view.js";
 import { boardColumns } from "./board-columns.js";
 
 // The kanban: one column per shown state, each drawing at most
-// BOARD_COLUMN_CAP cards and linking to the full list.
+// BOARD_COLUMN_CAP cards and, when it holds more, linking to the full list.
 export function renderBoard(store, sets, content) {
   const counts = columnCounts(sets.shown, store.payload.columns);
   let columns = boardColumns(
@@ -42,7 +42,7 @@ export function renderBoard(store, sets, content) {
       list.append(el("p", "empty", "Nothing here."));
     }
     node.append(head, list);
-    if (cards.length > 0) {
+    if (cards.length > BOARD_COLUMN_CAP) {
       const more = el("button", "column-more");
       more.type = "button";
       more.append(

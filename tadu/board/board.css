@@ -339,29 +339,20 @@ body.detail-open .main {
     --sidebar-width: 190px;
   }
 
-  body.detail-open .board {
-    grid-auto-columns: minmax(165px, 1fr);
-    gap: 10px;
-  }
-
   body.detail-open .summary {
-    grid-auto-columns: minmax(120px, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
   }
 
   body.detail-open .summary-chip {
-    min-width: 0;
-    padding: 0 10px;
-    font-size: 13.5px;
+    flex: 1 1 auto;
+    height: 42px;
+    padding: 0 12px;
+    font-size: 15px;
   }
 
-  body.detail-open .summary-label {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  body.detail-open .search kbd,
-  body.detail-open .summary-chip .muted {
+  body.detail-open .search kbd {
     display: none;
   }
 }
@@ -828,7 +819,7 @@ body.detail-open .main {
 /* Board */
 .board {
   display: grid;
-  grid-auto-columns: minmax(230px, 1fr);
+  grid-auto-columns: minmax(240px, 1fr);
   grid-auto-flow: column;
   gap: 14px;
   overflow-x: auto;
@@ -942,7 +933,7 @@ body.detail-open .main {
 
 .meta {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   gap: 2px 10px;
   min-width: 0;
@@ -969,18 +960,24 @@ body.detail-open .main {
   text-overflow: ellipsis;
 }
 
-.meta-project,
-.meta-repo {
+.meta-place {
   flex: 0 1 auto;
+  min-width: min(7em, 100%);
+}
+
+.meta-repo {
+  display: none;
+  flex: 0 1 auto;
+  min-width: min(7em, 100%);
 }
 
 .meta-file {
   flex: none;
 }
 
-@container (max-width: 270px) {
-  .meta-project ~ .meta-repo {
-    display: none;
+@container (min-width: 320px) {
+  .meta-repo {
+    display: inline-flex;
   }
 }
 
@@ -1513,6 +1510,7 @@ body.detail-open .main {
 
 /* Detail */
 .detail {
+  container: detail / inline-size;
   position: fixed;
   top: 0;
   right: 0;
@@ -1622,6 +1620,22 @@ body.detail-open .main {
 .field-text {
   flex: 1 1 0;
   min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nowrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+@container detail (max-width: 460px) {
+  .fields-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .fields dd > .icon {

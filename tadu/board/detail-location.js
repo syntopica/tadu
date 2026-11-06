@@ -11,8 +11,12 @@ export function detailLocation(card) {
     where.append(metaPart("folder", card.project));
   }
   const location = locationLabel(card);
-  where.append(metaPart("branch", card.repository), metaPart("file", location));
-  where.append(copyButton(`${card.repository}:${location}`, "Copy location"));
+  const file = el("span", "nowrap");
+  file.append(
+    metaPart("file", location),
+    copyButton(`${card.repository}:${location}`, "Copy location"),
+  );
+  where.append(metaPart("branch", card.repository), file);
   const id = el("div", "detail-id");
   const short = shortId(card);
   if (short === null) {
