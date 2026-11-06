@@ -4,6 +4,7 @@ import { icon } from "./icon.js";
 import { inlineTitle } from "./inline-title.js";
 import { locationLabel } from "./location-label.js";
 import { metaPart } from "./meta-part.js";
+import { placeLabel } from "./place-label.js";
 import { priorityBadge } from "./priority-badge.js";
 import { statePill } from "./state-pill.js";
 
@@ -14,7 +15,8 @@ export function listRow(card, selected, me) {
   row.type = "button";
   row.dataset.key = card.key;
   row.classList.toggle("selected", selected);
-  const place = card.project === null ? card.repository : `${card.project} / ${card.repository}`;
+  const owner = placeLabel(card);
+  const place = owner === "" ? card.repository : `${owner} › ${card.repository}`;
   const title = el("span", "row-title");
   title.title = card.title;
   title.append(inlineTitle(card.title));
@@ -38,7 +40,7 @@ export function listRow(card, selected, me) {
   }
   row.append(
     el("span", "row-rule"),
-    metaPart(card.project === null ? "repo" : "branch", place, "row-place"),
+    metaPart(owner === "" ? "repo" : "building", place, "row-place"),
     title,
     facts,
     side,

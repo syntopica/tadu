@@ -30,7 +30,7 @@ def board_js(script: str) -> object:
 
 
 def js_card(column: str = "backlog", **values: object) -> dict[str, object]:
-    """A card as /api/cards sends it, with the given fields replaced."""
+    """A card as the page holds it (the payload's fields plus its place), with fields replaced."""
     base: dict[str, object] = {
         "key": "k-0001",
         "stable": False,
@@ -57,5 +57,6 @@ def js_card(column: str = "backlog", **values: object) -> dict[str, object]:
         "problems": [],
         "editor_url": None,
         "remote_url": None,
+        "place": {"companies": [], "company": "", "project": "storefront", "relations": []},
     }
     return base | values

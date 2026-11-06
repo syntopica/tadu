@@ -1,20 +1,20 @@
 import { el } from "./el.js";
 import { locationLabel } from "./location-label.js";
 import { metaPart } from "./meta-part.js";
+import { placeLabel } from "./place-label.js";
 
-// Where a card lives: one place name (the project, else the repository),
-// the repository too when the column has room, and "TODO.md:61-69" in full.
+// Where a card lives: "Company › Project" on a line of its own, then the
+// repository when the column has room and "TODO.md:61-69" in full; the
+// tooltip carries all of it.
 export function metaRow(card) {
   const row = el("span", "meta");
   const location = locationLabel(card);
-  const where = card.project === null ? card.repository : `${card.project} / ${card.repository}`;
-  row.title = `${where} · ${location}`;
-  if (card.project === null) {
-    row.append(metaPart("repo", card.repository, "meta-place"));
-  } else {
-    row.append(metaPart("branch", card.project, "meta-place"));
-    row.append(metaPart("repo", card.repository, "meta-repo"));
+  const owner = placeLabel(card);
+  row.title = `${owner === "" ? "" : `${owner} › `}${card.repository} · ${location}`;
+  if (owner !== "") {
+    row.append(metaPart("building", owner, "meta-place"));
   }
+  row.append(metaPart("repo", card.repository, owner === "" ? "meta-only-repo" : "meta-repo"));
   row.append(metaPart("file", location, "meta-file"));
   return row;
 }

@@ -1,4 +1,5 @@
 import { DEFAULT_FILTERS } from "./default-filters.js";
+import { EMPTY_WHERE } from "./empty-where.js";
 
 // The page's one mutable state. Renderers read it; actions change it and
 // call requestRender().
@@ -14,6 +15,14 @@ export const store = {
   text: "",
   filters: { ...DEFAULT_FILTERS },
   scope: "all",
+  where: { ...EMPTY_WHERE },
+  index: null,
+  hash: null,
+  storedWhere: "",
+  favourites: [],
+  recent: [],
+  picker: null,
+  sideOpen: new Set(),
   beforeDrill: null,
   group: "state",
   sort: "priority",
@@ -25,10 +34,10 @@ export const store = {
   navKeys: [],
   portfolio: {
     text: "",
-    groupBy: "organization",
-    role: "",
+    groupBy: "company",
     state: "",
     collapsed: new Set(),
+    expanded: new Set(),
   },
   saved: [],
   theme: "auto",

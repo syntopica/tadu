@@ -1,14 +1,18 @@
+import { companyNav } from "./company-nav.js";
 import { el } from "./el.js";
 import { icon } from "./icon.js";
 import { navItem } from "./nav-item.js";
-import { projectKeys } from "./project-keys.js";
 import { requestRender } from "./request-render.js";
 import { restoreView } from "./restore-view.js";
+import { sameWhere } from "./same-where.js";
 import { setView } from "./set-view.js";
+import { setWhere } from "./set-where.js";
 import { storeSavedViews } from "./store-saved-views.js";
 import { VIEW_TITLES } from "./view-titles.js";
+import { whereParts } from "./where-parts.js";
 
-// Views, one quick entry per project, saved views and the theme label.
+// Views, starred scopes, the companies with their projects, the recent
+// scopes, saved views and the theme label.
 export function renderSidebar(store) {
   document.getElementById("sidebar").classList.toggle("open", store.navOpen);
   document
@@ -18,28 +22,45 @@ export function renderSidebar(store) {
         navItem(title, iconName, store.view === view, () => setView(view)),
       ),
     );
-  const projects = projectKeys(store.cards);
-  document.getElementById("projects-section").hidden = projects.length === 0;
-  document.getElementById("nav-projects").replaceChildren(
-    ...projects.map((key) =>
-      navItem(key, "branch", store.filters.project === key, () => {
-        store.filters = { ...store.filters, project: store.filters.project === key ? "" : key };
-        if (store.view === "portfolio") {
-          setView("all");
+  const index = store.index;
+  const scopes = (list, iconName) =>
+    list.map((where) =>
+      navItem(
+        whereParts(where, index)
+          .map((part) => part.label)
+          .join(" › "),
+        iconName,
+        sameWhere(where, store.where),
+        () => setWhere(where),
+      ),
+    );
+  const favourites = index ? store.favourites : [];
+  document.getElementById("favourites-section").hidden = favourites.length === 0;
+  document.getElementById("nav-favourites").replaceChildren(...scopes(favourites, "star"));
+  const recent = index ? store.recent : [];
+  document.getElementById("recent-section").hidden = recent.length === 0;
+  document.getElementById("nav-recent").replaceChildren(...scopes(recent, "clock"));
+  const companies = index?.companies ?? [];
+  document.getElementById("companies-section").hidden = companies.length === 0;
+  document.getElementById("nav-companies").replaceChildren(
+    ...companies.map((company) =>
+      companyNav(company, store, () => {
+        if (!store.sideOpen.delete(company.id)) {
+          store.sideOpen.add(company.id);
         }
         requestRender();
       }),
     ),
   );
   document.getElementById("nav-saved").replaceChildren(
-    ...store.saved.map((saved, index) => {
+    ...store.saved.map((saved, at) => {
       const item = el("div", "saved-item");
       const remove = el("button", "icon-button small");
       remove.type = "button";
       remove.setAttribute("aria-label", `Remove saved view ${saved.name}`);
       remove.append(icon("close"));
       remove.addEventListener("click", () => {
-        store.saved = store.saved.filter((_, at) => at !== index);
+        store.saved = store.saved.filter((_, other) => other !== at);
         storeSavedViews(store.saved, store.payload.workspace_id);
         requestRender();
       });

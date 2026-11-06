@@ -3,15 +3,17 @@ import { DEFAULT_FILTERS } from "./default-filters.js";
 import { portfolioCards } from "./portfolio-cards.js";
 import { selectCards } from "./select-cards.js";
 
-// The card sets one render needs: `board` (every state, for the summary
-// chips), `view` (the current view before the state filter) and `shown`
-// (what the page lists, sorted), and `total`, what it would list with no
-// search, scope or filters. In the portfolio, `shown` and `total` are the
-// cards its stat cards count, with and without its filters.
+// The card sets one render needs, all inside the chosen scope
+// (`store.where`): `board` (every state, for the summary chips), `view`
+// (the current view before the state filter) and `shown` (what the page
+// lists, sorted), and `total`, what it would list with no search or
+// filters. In the portfolio, `shown` and `total` are the cards its stat
+// cards count, with and without its state filter.
 export function currentSets(store) {
   const base = {
     filters: store.filters,
     scope: store.scope,
+    where: store.where,
     me: store.payload?.me ?? null,
     text: store.text,
   };
@@ -35,9 +37,8 @@ export function currentSets(store) {
     (card) => column === "" || card.column === column,
   ).length;
   if (store.view === "portfolio") {
-    const all = { state: "", role: "" };
-    const counted = portfolioCards(store.cards, store.portfolio, store.filters.project);
-    return { board, view, shown: counted, total: portfolioCards(store.cards, all, "").length };
+    const counted = portfolioCards(store.cards, store.portfolio.state, store.where);
+    return { board, view, shown: counted, total: portfolioCards(store.cards, "", store.where).length };
   }
   return { board, view, shown, total };
 }

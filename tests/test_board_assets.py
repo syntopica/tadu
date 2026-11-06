@@ -81,7 +81,7 @@ def test_links_are_checked_and_isolated() -> None:
     assert "textContent" in scripts
     assert '"X-Tadu-Token": token' in scripts
     assert "sessionStorage" in scripts
-    assert 'replaceState(null, "", "/")' in scripts
+    assert 'replaceState(null, "", `/${window.location.hash}`)' in text("board-token.js")
     assert "cookie" not in scripts.lower()
     assert "anchor.href = url" in text("external-link.js")
     assert 'anchor.rel = "noopener noreferrer"' in text("external-link.js")

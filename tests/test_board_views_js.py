@@ -8,13 +8,12 @@ ACCESS_REFUSED = (
     " (the token is missing or from an earlier run)."
 )
 DEFAULTS = {
-    "repository": "",
-    "project": "",
     "organization": "",
     "role": "",
     "assignee": "",
     "priority": "",
     "label": "",
+    "dueBefore": "",
     "unassigned": False,
     "noPriority": False,
     "waitingOnMe": False,
@@ -44,8 +43,9 @@ const store = (changes) => ({
   text: "",
   filters: { ...DEFAULT_FILTERS },
   scope: "all",
+  where: { company: "", project: "", repository: "" },
   sort: "priority",
-  portfolio: { groupBy: "organization", role: "", state: "" },
+  portfolio: { groupBy: "company", state: "" },
   ...changes,
 });
 const sets = (changes) => {
@@ -57,7 +57,8 @@ out({
   board: sets({}),
   column: sets({ filters: { ...DEFAULT_FILTERS, column: "backlog" } }),
   searched: sets({ view: "all", text: "beta" }),
-  portfolio: sets({ view: "portfolio", portfolio: { groupBy: "organization", role: "", state: "done" } }),
+  portfolio: sets({ view: "portfolio", portfolio: { groupBy: "company", state: "done" } }),
+  scoped: sets({ view: "all", where: { company: "", project: "", repository: "api" } }),
   cleaned: [
     cleanSavedView(null),
     cleanSavedView({ name: "  " }),
@@ -69,11 +70,13 @@ out({
       scope: "mine",
       group: "assignee",
       sort: "due",
-      filters: { repository: "api", unassigned: "yes", extra: 1 },
+      filters: { repository: "api", project: "crm", label: "ux", unassigned: "yes", extra: 1 },
     }),
+    cleanSavedView({ name: "Scoped", where: { company: "pp", project: 3 }, filters: { project: "x" } }),
   ],
   existing: [
-    existingFilters({ ...DEFAULT_FILTERS, repository: "api", project: "gone", priority: "P9", column: "x" }, cards, columns),
+    existingFilters({ ...DEFAULT_FILTERS, label: "gone", priority: "P9", dueBefore: "soon", column: "x" }, cards, columns),
+    existingFilters({ ...DEFAULT_FILTERS, dueBefore: "2026-12-01" }, cards, columns),
     existingFilters({ ...DEFAULT_FILTERS, assignee: "ana", priority: "high", column: "done" }, cards, columns),
   ],
   errors: [
@@ -97,6 +100,7 @@ def test_current_sets(results: dict[str, object]) -> None:
     assert results["column"] == [4, 4, ["b", "a"], 2]
     assert results["searched"] == [1, 1, ["b"], 3]
     assert results["portfolio"] == [4, 4, ["d"], 4]
+    assert results["scoped"] == [1, 1, ["b"], 1]
 
 
 def test_clean_saved_view(results: dict[str, object]) -> None:
@@ -107,16 +111,19 @@ def test_clean_saved_view(results: dict[str, object]) -> None:
         "name": "Mine ".ljust(40, "x"),
         "view": "board",
         "text": "",
-        "filters": {**DEFAULTS, "repository": "api"},
+        "filters": {**DEFAULTS, "label": "ux"},
+        "where": {"company": "", "project": "crm", "repository": "api"},
         "scope": "mine",
         "group": "assignee",
         "sort": "due",
     }
+    assert cleaned[4]["where"] == {"company": "pp", "project": "", "repository": ""}
 
 
 def test_existing_filters_and_errors(results: dict[str, object]) -> None:
     assert results["existing"] == [
-        {**DEFAULTS, "repository": "api"},
+        DEFAULTS,
+        {**DEFAULTS, "dueBefore": "2026-12-01"},
         {**DEFAULTS, "assignee": "ana", "priority": "high", "column": "done"},
     ]
     assert results["errors"] == [

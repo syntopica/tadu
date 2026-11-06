@@ -1,24 +1,25 @@
-import { drillFromPortfolio } from "./drill-from-portfolio.js";
+import { companyCard } from "./company-card.js";
+import { companyTree } from "./company-tree.js";
 import { el } from "./el.js";
 import { filterTree } from "./filter-tree.js";
-import { formatCount } from "./format-count.js";
-import { portfolioChildRow } from "./portfolio-child-row.js";
-import { portfolioGroupRow } from "./portfolio-group-row.js";
+import { isPhone } from "./is-phone.js";
+import { plural } from "./plural.js";
 import { portfolioCards } from "./portfolio-cards.js";
-import { portfolioTarget } from "./portfolio-target.js";
-import { portfolioTree } from "./portfolio-tree.js";
+import { portfolioDrill } from "./portfolio-drill.js";
+import { portfolioRow } from "./portfolio-row.js";
+import { relationTree } from "./relation-tree.js";
 import { requestRender } from "./request-render.js";
 import { statCard } from "./stat-card.js";
 import { treeTotals } from "./tree-totals.js";
+import { whereCounts } from "./where-counts.js";
 
-// Stat cards and the table of organizations (or projects) with their counts.
+// Stat cards and the tree of the scope: Company > Project > Repository by
+// ownership, or a relation's organizations over their projects; on a phone,
+// one card per company. Companies start open, projects folded.
 export function renderPortfolio(store, content) {
-  const { groupBy, role, state, text, collapsed } = store.portfolio;
-  const cards = portfolioCards(
-    store.cards,
-    store.portfolio,
-    store.filters.project,
-  );
+  const { groupBy, state, text, collapsed, expanded } = store.portfolio;
+  const index = store.index;
+  const cards = portfolioCards(store.cards, state, store.where);
   const totals = treeTotals(cards);
   const days = store.payload.done_days;
   const stats = el("div", "stats");
@@ -29,80 +30,70 @@ export function renderPortfolio(store, content) {
     statCard(totals.blocked, "Blocked", "blocked"),
     statCard(totals.done, `Done · last ${days} days`, "done"),
   );
-  const tree = filterTree(portfolioTree(cards, groupBy, role), text);
-  const organizations = new Set(
-    cards.flatMap((card) => card.organizations.map((entry) => entry.org)),
+  const role = groupBy.startsWith("role:") ? groupBy.slice(5) : "";
+  const keepEmpty = state === "";
+  const rows = filterTree(
+    role !== "" && index.roles.includes(role)
+      ? relationTree(cards, index, store.where, role, keepEmpty)
+      : companyTree(cards, index, store.where, keepEmpty),
+    text,
   );
-  const projects = new Set(
-    cards.map((card) => card.project).filter((key) => key !== null),
-  );
+  const flip = (set, key) => () => {
+    if (!set.delete(key)) {
+      set.add(key);
+    }
+    requestRender();
+  };
+  const drill = (node) => portfolioDrill(node, state);
+  store.navKeys = [];
+  if (isPhone()) {
+    const groups =
+      rows.length > 0 && rows[0].kind === "repository"
+        ? [{ kind: "company", label: "Repositories", children: rows, buckets: totals, projects: 0, repositories: rows.length, relations: [] }]
+        : rows;
+    content.replaceChildren(
+      stats,
+      ...groups.map((group) =>
+        companyCard(group, expanded.has(`all:${group.key}`), drill, flip(expanded, `all:${group.key}`)),
+      ),
+      ...(groups.length === 0 ? [el("p", "empty-state", "Nothing matches.")] : []),
+    );
+    return;
+  }
   const panel = el("section", "panel");
   const head = el("header", "panel-head");
-  const heading = el(
-    "h2",
-    "",
-    groupBy === "organization"
-      ? "Projects by organization"
-      : "Repositories by project",
-  );
+  const structured = index.companies.length > 0;
+  const heading = role !== "" ? `Projects by ${role}` : structured ? "Companies" : "Repositories";
   head.append(
-    heading,
-    el(
-      "span",
-      "muted",
-      `${formatCount(organizations.size)} organizations · ${formatCount(projects.size)} projects`,
-    ),
+    el("h2", "", heading),
+    el("span", "muted", [...whereCounts(store.where, index), plural(totals.total, "item")].join(" · ")),
     el("span", "muted panel-sort", "Sorted by total, largest first"),
   );
   const table = el("div", "ptable");
   table.setAttribute("role", "table");
   const columns = el("div", "prow prow-head");
   columns.setAttribute("role", "row");
-  const first =
-    groupBy === "organization"
-      ? "Organization / project"
-      : "Project / repository";
-  for (const label of [
-    first,
-    "Total",
-    "Backlog",
-    "In progress",
-    "Blocked",
-    `Done ${days}d`,
-    "",
-  ]) {
+  const first = role !== "" ? `${role} / project / repository` : structured ? "Company / project / repository" : "Repository";
+  for (const label of [first, "Total", "Backlog", "In progress", "Blocked", `Done ${days}d`, ""]) {
     columns.append(el("span", "num", label));
   }
   table.append(columns);
-  for (const row of tree) {
-    const closed = collapsed.has(row.key);
-    table.append(
-      portfolioGroupRow(row, closed, groupBy, () => {
-        if (closed) {
-          collapsed.delete(row.key);
-        } else {
-          collapsed.add(row.key);
-        }
-        requestRender();
-      }),
-    );
-    if (!closed) {
-      for (const child of row.children) {
-        table.append(
-          portfolioChildRow(child, (blocked) => {
-            const target = blocked
-              ? { view: "blocked", column: "" }
-              : portfolioTarget(state);
-            drillFromPortfolio(child.filter, target.view, target.column);
-          }),
-        );
-      }
+  const searching = text.trim() !== "";
+  const walk = (node, depth) => {
+    const open =
+      depth === 0
+        ? !collapsed.has(node.key)
+        : searching || store.where.project !== "" || expanded.has(node.key);
+    const set = depth === 0 ? collapsed : expanded;
+    table.append(portfolioRow(node, depth, { open, onToggle: flip(set, node.key), onOpen: drill(node) }));
+    if (open) {
+      node.children.forEach((child) => walk(child, depth + 1));
     }
-  }
-  if (tree.length === 0) {
+  };
+  rows.forEach((row) => walk(row, 0));
+  if (rows.length === 0) {
     table.append(el("p", "empty", "Nothing matches."));
   }
   panel.append(head, table);
-  store.navKeys = [];
   content.replaceChildren(stats, panel);
 }

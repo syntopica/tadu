@@ -13,9 +13,17 @@
 <aside class="sidebar" id="sidebar" aria-label="Navigation">
 <div class="brand">tadu</div>
 <nav class="nav" id="nav-views" aria-label="Views"></nav>
-<section class="nav-section" id="projects-section" hidden>
-<h2 class="nav-heading">Projects</h2>
-<div class="nav" id="nav-projects"></div>
+<section class="nav-section" id="favourites-section" hidden>
+<h2 class="nav-heading">Starred</h2>
+<div class="nav" id="nav-favourites"></div>
+</section>
+<section class="nav-section" id="companies-section" hidden>
+<h2 class="nav-heading">Companies</h2>
+<div class="nav" id="nav-companies"></div>
+</section>
+<section class="nav-section" id="recent-section" hidden>
+<h2 class="nav-heading">Recent</h2>
+<div class="nav" id="nav-recent"></div>
 </section>
 <section class="nav-section">
 <h2 class="nav-heading">Saved views</h2>
@@ -39,7 +47,12 @@
 </header>
 
 <header class="topbar">
-<label class="scope-select"><span data-icon="layers"></span><select id="scope-project" aria-label="Project"></select><span data-icon="chevronDown"></span></label>
+<div class="scope-bar" role="group" aria-label="Scope">
+<button type="button" class="scope-trigger" data-picker="company" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="building"></span><span class="scope-title">Company:</span><span class="picker-value"></span><span data-icon="chevronDown"></span></button>
+<button type="button" class="scope-trigger" data-picker="project" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="folder"></span><span class="scope-title">Project:</span><span class="picker-value"></span><span data-icon="chevronDown"></span></button>
+<button type="button" class="scope-trigger" data-picker="repository" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="repo"></span><span class="scope-title">Repository:</span><span class="picker-value"></span><span data-icon="chevronDown"></span></button>
+<button type="button" class="icon-button" id="favourite" aria-pressed="false" aria-label="Star this scope" title="Star this scope" hidden><span data-icon="star"></span></button>
+</div>
 <div class="topbar-status">
 <button type="button" class="notice-button" id="problems-button" aria-expanded="false" aria-controls="problems-panel" hidden><span data-icon="alert"></span><span id="problems-label"></span></button>
 <span class="updated" id="updated" role="status">Loading...</span>
@@ -64,14 +77,25 @@
 <span class="divider"></span>
 <div class="popover-anchor">
 <button type="button" class="tool-button" id="filters-button" aria-expanded="false" aria-controls="filters-popover"><span data-icon="filter"></span>Filters<span class="count" id="filters-count" hidden></span><span data-icon="chevronDown"></span></button>
-<div class="popover" id="filters-popover" role="dialog" aria-label="Filters" hidden>
+<div class="popover" id="filters-popover" role="dialog" aria-labelledby="filters-title" hidden>
+<div class="popover-head"><h2 id="filters-title"><span data-icon="filter"></span>Scope &amp; filters</h2><button type="button" class="link-button" id="clear-all">Clear all</button></div>
+<div id="popover-scope">
+<h3 class="popover-section">Scope <span>(where to look)</span></h3>
+<div class="popover-grid scope-grid">
+<div class="field"><span class="field-label">Company</span><button type="button" class="scope-trigger field-trigger" data-picker="company" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="building"></span><span class="picker-value"></span><span data-icon="chevronDown"></span></button></div>
+<div class="field"><span class="field-label">Project</span><button type="button" class="scope-trigger field-trigger" data-picker="project" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="folder"></span><span class="picker-value"></span><span data-icon="chevronDown"></span></button></div>
+<div class="field"><span class="field-label">Repository</span><button type="button" class="scope-trigger field-trigger" data-picker="repository" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="repo"></span><span class="picker-value"></span><span data-icon="chevronDown"></span></button></div>
+</div>
+</div>
+<h3 class="popover-section">Filters <span>(narrow the results)</span></h3>
 <div class="popover-grid">
-<label>Repository<input id="filter-repository" type="search" list="filter-repository-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-repository-options"></datalist></label>
-<label>Organization<input id="filter-organization" type="search" list="filter-organization-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-organization-options"></datalist></label>
-<label>Role<select id="filter-role"></select></label>
 <label>Assignee<input id="filter-assignee" type="search" list="filter-assignee-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-assignee-options"></datalist></label>
 <label>Priority<select id="filter-priority"></select></label>
 <label>Label<input id="filter-label" type="search" list="filter-label-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-label-options"></datalist></label>
+<label>State<select id="filter-column"></select></label>
+<label>Due before<input id="filter-dueBefore" type="date"></label>
+<label>Role<select id="filter-role"></select></label>
+<label>Organization<input id="filter-organization" type="search" list="filter-organization-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-organization-options"></datalist></label>
 </div>
 <div class="popover-checks">
 <label><input type="checkbox" id="filter-unassigned"> Unassigned</label>
@@ -92,9 +116,8 @@
 </div>
 
 <div class="toolbar" id="portfolio-toolbar" hidden>
-<label class="search"><span data-icon="search"></span><input id="portfolio-search" type="search" placeholder="Search projects, organizations or repositories..." aria-label="Search projects, organizations or repositories" autocomplete="off" spellcheck="false"></label>
-<label class="tool-button select-tool accent"><span data-icon="layers"></span>Group: <select id="portfolio-group" aria-label="Group by"><option value="organization">Organization</option><option value="project">Project</option></select><span data-icon="chevronDown"></span></label>
-<label class="tool-button select-tool"><span data-icon="user"></span>Role: <select id="portfolio-role" aria-label="Role"></select><span data-icon="chevronDown"></span></label>
+<label class="search"><span data-icon="search"></span><input id="portfolio-search" type="search" placeholder="Search companies, projects or repositories..." aria-label="Search companies, projects or repositories" autocomplete="off" spellcheck="false"></label>
+<label class="tool-button select-tool accent"><span data-icon="layers"></span>Group: <select id="portfolio-group" aria-label="Group by"></select><span data-icon="chevronDown"></span></label>
 <label class="tool-button select-tool"><span data-icon="done"></span>State: <select id="portfolio-state" aria-label="State"><option value="">All</option><option value="backlog">Backlog</option><option value="in_progress">In progress</option><option value="blocked">Blocked</option><option value="done">Done</option></select><span data-icon="chevronDown"></span></label>
 </div>
 
@@ -106,6 +129,10 @@
 
 <aside class="detail" id="detail" aria-label="Item detail" hidden></aside>
 <nav class="bottom-nav" id="bottom-nav" aria-label="Views"></nav>
+<div class="picker" id="picker" role="dialog" aria-label="Choose a scope" hidden>
+<label class="picker-search"><span data-icon="search"></span><input id="picker-input" type="search" role="combobox" aria-expanded="true" aria-controls="picker-list" aria-autocomplete="list" aria-label="Search" autocomplete="off" spellcheck="false"></label>
+<ul class="picker-list" id="picker-list" role="listbox" aria-label="Choices"></ul>
+</div>
 </div>
 </body>
 </html>

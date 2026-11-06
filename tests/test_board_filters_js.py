@@ -4,13 +4,12 @@ import pytest
 from board_js import board_js, js_card
 
 NONE: dict[str, object] = {
-    "repository": "",
-    "project": "",
     "organization": "",
     "role": "",
     "assignee": "",
     "priority": "",
     "label": "",
+    "dueBefore": "",
     "unassigned": False,
     "noPriority": False,
     "waitingOnMe": False,
@@ -26,11 +25,10 @@ VISIBLE: list[tuple[dict[str, object], dict[str, object]]] = [
     (js_card(organizations=[]), {"organization": "studio"}),
     (js_card(), {"role": "client"}),
     (js_card(), {"role": "owner"}),
-    (
-        js_card(assignees=["ana"]),
-        {"repository": "shop", "project": "storefront", "assignee": "ana"},
-    ),
-    (js_card(project=None), {"project": "storefront"}),
+    (js_card(assignees=["ana"]), {"assignee": "ana"}),
+    (js_card(due="2026-11-03"), {"dueBefore": "2026-11-04"}),
+    (js_card(due="2026-11-04"), {"dueBefore": "2026-11-04"}),
+    (js_card(), {"dueBefore": "2026-11-04"}),
     (js_card(priority="high", labels=["ux"]), {"priority": "high", "label": "ux"}),
     (js_card(), {"label": "ux"}),
     (js_card("blocked", assignees=["ana"]), {"waitingOnMe": True, "me": "ana"}),
@@ -44,22 +42,27 @@ VISIBLE: list[tuple[dict[str, object], dict[str, object]]] = [
     (js_card(priority="low"), {"noPriority": True}),
     (js_card(), {"noPriority": True}),
 ]
+PIXEL = {"companies": ["pp"], "company": "Pixel Potion", "project": "CRM", "relations": []}
+LOOSE = {"companies": [], "company": "", "project": "", "relations": []}
 CARDS = [
     js_card("backlog", key="a", title="Fix **login**", assignees=["ana"]),
     js_card("blocked", key="b", repository="api", labels=["infra"]),
     js_card("blocked", key="c", assignees=["ana"]),
     js_card("done", key="d", day="2026-11-01"),
     js_card("cancelled", key="e"),
+    js_card("backlog", key="f", project="crm", place=PIXEL),
+    js_card("backlog", key="g", project=None, place=LOOSE),
 ]
 SCRIPT = """
 const { cardVisible } = await load("card-visible.js");
 const { selectCards } = await load("select-cards.js");
 const { searchText } = await load("search-text.js");
 const { matchesQuery } = await load("matches-query.js");
+const { EMPTY_WHERE: EMPTY } = await load("empty-where.js");
 const [visible, cards, filters] = ARGS;
 const texts = new Map(cards.map((card) => [card, searchText(card)]));
 const pick = (view, extra = {}) =>
-  selectCards(cards, texts, { view, filters, scope: "all", me: "ana", text: "", ...extra })
+  selectCards(cards, texts, { view, filters, scope: "all", where: EMPTY, me: "ana", text: "", ...extra })
     .map((card) => card.key);
 out({
   visible: visible.map(([card, choice]) => cardVisible(card, choice)),
@@ -73,7 +76,12 @@ out({
     done: pick("done"),
     board: pick("board"),
     boardCancelled: pick("board", { filters: { ...filters, showCancelled: true } }),
-    nobody: selectCards(cards, texts, { view: "mine", filters, scope: "all", me: null, text: "" }),
+    nobody: selectCards(cards, texts, { view: "mine", filters, scope: "all", where: EMPTY, me: null, text: "" }),
+    whereRepo: pick("board", { where: { ...EMPTY, repository: "api" } }),
+    whereProject: pick("board", { where: { ...EMPTY, project: "crm" } }),
+    whereCompany: pick("board", { where: { ...EMPTY, company: "pp" } }),
+    whereNone: pick("board", { where: { ...EMPTY, company: "-", project: "-" } }),
+    searchPlace: pick("board", { text: "pixel" }),
     search: pick("board", { text: "LOGIN fix" }),
     searchRepo: pick("board", { text: "api infra" }),
     searchNone: pick("board", { text: "nothing" }),
@@ -95,7 +103,7 @@ def results() -> dict[str, object]:
 def test_card_visible(results: dict[str, object]) -> None:
     assert results["visible"] == [
         *(False, True, True, False, False, True, False),
-        *(True, False, True, False),
+        *(True, True, False, False, True, False),
         *(True, False, False, False),
         *(False, True),
         *(False, True, False, True),
@@ -105,15 +113,20 @@ def test_card_visible(results: dict[str, object]) -> None:
 def test_views_and_scopes(results: dict[str, object]) -> None:
     assert results["views"] == {
         "mine": ["a", "c"],
-        "all": ["a", "b", "c"],
-        "allDone": ["a", "b", "c", "d"],
+        "all": ["a", "b", "c", "f", "g"],
+        "allDone": ["a", "b", "c", "d", "f", "g"],
         "blocked": ["b", "c"],
         "blockedMine": ["c"],
         "blockedUnassigned": ["b"],
         "done": ["d"],
-        "board": ["a", "b", "c", "d"],
-        "boardCancelled": ["a", "b", "c", "d", "e"],
+        "board": ["a", "b", "c", "d", "f", "g"],
+        "boardCancelled": ["a", "b", "c", "d", "e", "f", "g"],
         "nobody": [],
+        "whereRepo": ["b"],
+        "whereProject": ["f"],
+        "whereCompany": ["f"],
+        "whereNone": ["g"],
+        "searchPlace": ["f"],
         "search": ["a"],
         "searchRepo": ["b"],
         "searchNone": [],

@@ -9,10 +9,14 @@ import { STATE_ORDER } from "./state-order.js";
 // that a card with several assignees is in each assignee's group.
 export function groupValues(card, group) {
   switch (group) {
+    case "company":
+      return card.place.company === ""
+        ? [{ key: "", label: "No company", order: LAST_ORDER }]
+        : [{ key: card.place.company, label: card.place.company, order: card.place.company }];
     case "project":
       return card.project === null
         ? [{ key: "", label: "No project", order: LAST_ORDER }]
-        : [{ key: card.project, label: card.project, order: card.project }];
+        : [{ key: card.project, label: card.place.project, order: card.place.project }];
     case "repository":
       return [{ key: card.repository, label: card.repository, order: card.repository }];
     case "priority":

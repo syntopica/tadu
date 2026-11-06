@@ -1,15 +1,19 @@
 import { closeDetail } from "./close-detail.js";
+import { closePicker } from "./close-picker.js";
 import { nextKey } from "./next-key.js";
 import { openDetail } from "./open-detail.js";
 import { openEditor } from "./open-editor.js";
+import { openPicker } from "./open-picker.js";
 import { requestRender } from "./request-render.js";
 import { revealKey } from "./reveal-key.js";
 import { togglePopover } from "./toggle-popover.js";
 import { typingTarget } from "./typing-target.js";
 
-// Keyboard: "/" and Cmd/Ctrl-K search, J/K move, Enter opens the detail,
-// E opens the editor, Esc closes popovers and the detail.
+// Keyboard: "/" and Cmd/Ctrl-K search, G then S opens the scope switcher,
+// J/K move, Enter opens the detail, E opens the editor, Esc closes pickers,
+// popovers and the detail.
 export function bindKeys(store) {
+  let pressedG = 0;
   document.addEventListener("keydown", (event) => {
     const searchId = store.view === "portfolio" ? "portfolio-search" : "search";
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -18,7 +22,9 @@ export function bindKeys(store) {
       return;
     }
     if (event.key === "Escape") {
-      if (!document.getElementById("filters-popover").hidden) {
+      if (store.picker !== null) {
+        closePicker(true);
+      } else if (!document.getElementById("filters-popover").hidden) {
         togglePopover(false);
         document.getElementById("filters-button").focus();
       } else if (store.navOpen) {
@@ -35,7 +41,12 @@ export function bindKeys(store) {
       return;
     }
     const key = event.key.toLowerCase();
-    if (event.key === "/") {
+    const afterG = Date.now() - pressedG < 1000;
+    pressedG = key === "g" ? Date.now() : 0;
+    if (key === "s" && afterG) {
+      event.preventDefault();
+      openPicker("switcher", null);
+    } else if (event.key === "/") {
       event.preventDefault();
       document.getElementById(searchId).focus();
     } else if (key === "j" || key === "k") {

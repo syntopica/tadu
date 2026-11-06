@@ -1,4 +1,6 @@
 import { commitChoice } from "./commit-choice.js";
+import { DEFAULT_FILTERS } from "./default-filters.js";
+import { EMPTY_WHERE } from "./empty-where.js";
 import { debounce } from "./debounce.js";
 import { applyTheme } from "./apply-theme.js";
 import { loadBoard } from "./load-board.js";
@@ -6,9 +8,13 @@ import { nextTheme } from "./next-theme.js";
 import { requestRender } from "./request-render.js";
 import { SEARCHABLE_FILTERS } from "./searchable-filters.js";
 import { setView } from "./set-view.js";
+import { setWhere } from "./set-where.js";
 import { snapshotView } from "./snapshot-view.js";
+import { storageKey } from "./storage-key.js";
 import { storeSavedViews } from "./store-saved-views.js";
+import { toggleFavourite } from "./toggle-favourite.js";
 import { togglePopover } from "./toggle-popover.js";
+import { writeStored } from "./write-stored.js";
 
 // Wire the static controls of index.html to the store.
 export function bindControls(store) {
@@ -30,11 +36,7 @@ export function bindControls(store) {
   byId("phone-search").addEventListener("click", () =>
     byId(store.view === "portfolio" ? "portfolio-search" : "search").focus(),
   );
-  byId("scope-project").addEventListener("change", (event) => {
-    store.filters = { ...store.filters, project: event.target.value };
-    requestRender();
-  });
-  for (const name of ["role", "priority"]) {
+  for (const name of ["role", "priority", "column", "dueBefore"]) {
     byId(`filter-${name}`).addEventListener("change", (event) => {
       store.filters = { ...store.filters, [name]: event.target.value };
       requestRender();
@@ -64,7 +66,7 @@ export function bindControls(store) {
     togglePopover(byId("filters-popover").hidden),
   );
   document.addEventListener("click", (event) => {
-    if (!event.target.closest?.(".popover-anchor")) {
+    if (!event.target.closest?.(".popover-anchor, #picker")) {
       togglePopover(false);
     }
   });
@@ -88,10 +90,17 @@ export function bindControls(store) {
   byId("portfolio-group").addEventListener("change", (event) => {
     store.portfolio.groupBy = event.target.value;
     store.portfolio.collapsed = new Set();
+    store.portfolio.expanded = new Set();
     requestRender();
   });
-  byId("portfolio-role").addEventListener("change", (event) => {
-    store.portfolio.role = event.target.value;
+  byId("clear-all").addEventListener("click", () => {
+    store.filters = { ...DEFAULT_FILTERS };
+    store.showEmpty = false;
+    setWhere(EMPTY_WHERE);
+  });
+  byId("favourite").addEventListener("click", () => {
+    store.favourites = toggleFavourite(store.favourites, store.where);
+    writeStored(storageKey("favourites", store.payload.workspace_id), store.favourites);
     requestRender();
   });
   byId("portfolio-state").addEventListener("change", (event) => {

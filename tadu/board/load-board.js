@@ -1,9 +1,8 @@
+import { adoptPayload } from "./adopt-payload.js";
 import { boardToken } from "./board-token.js";
 import { fetchCards } from "./fetch-cards.js";
 import { loadErrorText } from "./load-error-text.js";
-import { loadSavedViews } from "./load-saved-views.js";
 import { requestRender } from "./request-render.js";
-import { searchText } from "./search-text.js";
 import { store } from "./store.js";
 
 // Fetch the cards and index them once. A failed reload keeps the old data
@@ -25,13 +24,7 @@ export async function loadBoard() {
     if (request !== store.requests) {
       return;
     }
-    if (payload.workspace_id !== store.payload?.workspace_id) {
-      store.saved = loadSavedViews(payload.workspace_id);
-    }
-    store.payload = payload;
-    store.cards = payload.cards;
-    store.texts = new Map(payload.cards.map((card) => [card, searchText(card)]));
-    store.byKey = new Map(payload.cards.map((card) => [card.key, card]));
+    adoptPayload(store, payload);
     store.error = "";
   } catch (error) {
     if (request === store.requests) {

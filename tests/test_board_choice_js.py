@@ -9,14 +9,14 @@ SCRIPT = """
 const { resolveChoice } = await load("resolve-choice.js");
 const { restoreDrill } = await load("restore-drill.js");
 const [values, typed] = ARGS;
-const before = { filters: { repository: "" }, text: "fix", scope: "mine" };
+const before = { filters: { role: "" }, text: "fix", scope: "mine", where: { company: "pp" } };
 const drilled = {
-  filters: { repository: "shop" }, text: "", scope: "all", beforeDrill: before,
+  filters: { role: "client" }, text: "", scope: "all", where: { company: "x" }, beforeDrill: before,
 };
 restoreDrill(drilled);
-const untouched = { filters: { repository: "x" }, text: "t", scope: "all", beforeDrill: null };
+const untouched = { filters: { role: "x" }, text: "t", scope: "all", where: {}, beforeDrill: null };
 restoreDrill(untouched);
-const twice = { ...drilled, filters: { repository: "other" } };
+const twice = { ...drilled, filters: { role: "other" } };
 restoreDrill(twice);
 out({
   choices: typed.map((text) => resolveChoice(text, values)),
@@ -53,15 +53,17 @@ def test_returning_to_portfolio_restores_what_the_drill_down_replaced(
     results: dict[str, object],
 ) -> None:
     assert results["drilled"] == {
-        "filters": {"repository": ""},
+        "filters": {"role": ""},
         "text": "fix",
         "scope": "mine",
+        "where": {"company": "pp"},
         "beforeDrill": None,
     }
     assert results["untouched"] == {
-        "filters": {"repository": "x"},
+        "filters": {"role": "x"},
         "text": "t",
         "scope": "all",
+        "where": {},
         "beforeDrill": None,
     }
-    assert results["twice"] == {"repository": "other"}
+    assert results["twice"] == {"role": "other"}

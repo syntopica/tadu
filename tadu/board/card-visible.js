@@ -2,8 +2,9 @@ import { FILTER_VALUES } from "./filter-values.js";
 import { matchesOrganization } from "./matches-organization.js";
 import { SINGLE_FILTERS } from "./single-filters.js";
 
-// `choice` holds each filter's selected value ("" for any), the toggles
-// unassigned, noPriority, waitingOnMe and showCancelled, and me (or null).
+// `choice` holds each filter's selected value ("" for any), a due date the
+// item must fall before ("" for any), the toggles unassigned, noPriority,
+// waitingOnMe and showCancelled, and me (or null).
 export function cardVisible(card, choice) {
   if (card.column === "cancelled" && !choice.showCancelled) {
     return false;
@@ -14,6 +15,9 @@ export function cardVisible(card, choice) {
     }
   }
   if (!matchesOrganization(card, choice.organization, choice.role)) {
+    return false;
+  }
+  if (choice.dueBefore !== "" && (card.due === null || card.due >= choice.dueBefore)) {
     return false;
   }
   if (choice.unassigned && card.assignees.length > 0) {
