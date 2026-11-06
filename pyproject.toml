@@ -22,7 +22,7 @@ build-backend = "setuptools.build_meta"
 include = ["tadu*"]
 
 [tool.setuptools.package-data]
-tadu = ["rule_block_v3.md", "board/*"]
+tadu = ["rule_block_v3.md", "board/*.html", "board/*.js", "board/*.css"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"

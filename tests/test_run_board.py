@@ -5,6 +5,7 @@ import pytest
 from board_workspace import board_workspace
 
 from tadu.cli import main
+from tadu.workspace_port import workspace_port
 
 
 def interrupt(_server: ThreadingHTTPServer, _poll_interval: float = 0.5) -> None:
@@ -18,9 +19,12 @@ def test_prints_url_and_stops_on_interrupt(
     assert main(["board", "--workspace", str(board_workspace(tmp_path))]) == 0
     captured = capsys.readouterr()
     url = captured.out.strip()
-    assert url.startswith("http://127.0.0.1:")
+    port = workspace_port(tmp_path)
+    if captured.err == "":
+        assert url.startswith(f"http://127.0.0.1:{port}/?token=")
+    else:
+        assert captured.err == f"tadu board: port {port} is busy; using any free port\n"
     assert len(url.partition("?token=")[2]) >= 43
-    assert captured.err == ""
 
 
 def test_other_host_warns(
@@ -28,14 +32,15 @@ def test_other_host_warns(
 ) -> None:
     monkeypatch.setattr(ThreadingHTTPServer, "serve_forever", interrupt)
     workspace = str(board_workspace(tmp_path))
-    assert main(["board", "--workspace", workspace, "--host", "0.0.0.0"]) == 0  # noqa: S104
+    argv = ["board", "--workspace", workspace, "--port", "0"]
+    assert main([*argv, "--host", "0.0.0.0"]) == 0  # noqa: S104
     captured = capsys.readouterr()
     port = captured.out.partition("0.0.0.0:")[2].partition("/")[0]
     assert captured.err == (
         "tadu board: warning: listening on 0.0.0.0; only requests whose Host header is "
         f"0.0.0.0:{port} are served\n"
     )
-    assert main(["board", "--workspace", workspace, "--host", "localhost"]) == 0
+    assert main([*argv, "--host", "localhost"]) == 0
     assert capsys.readouterr().err == ""
 
 
@@ -52,7 +57,7 @@ def test_bind_failure_exits_two(
     def refuse(*_args: object) -> None:
         raise OSError(48, "Address already in use")
 
-    monkeypatch.setattr("tadu.run_board.ThreadingHTTPServer", refuse)
+    monkeypatch.setattr("tadu.bind_board_server.ThreadingHTTPServer", refuse)
     workspace = str(board_workspace(tmp_path))
     assert main(["board", "--workspace", workspace, "--port", "8123"]) == 2
     captured = capsys.readouterr()

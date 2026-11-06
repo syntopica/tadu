@@ -7,6 +7,7 @@ from board_workspace import board_workspace
 from tadu.board_payload import board_payload
 from tadu.board_state import BoardState
 from tadu.workspace_error import WorkspaceError
+from tadu.workspace_id import workspace_id
 
 TODAY = date(2026, 11, 4)
 
@@ -25,6 +26,7 @@ def test_cards_me_columns_and_time(tmp_path: Path) -> None:
     assert payload["problems"] == []
     assert payload["columns"] == ["backlog", "ready", "in_progress", "blocked", "done", "cancelled"]
     assert payload["done_days"] == 14
+    assert payload["workspace_id"] == workspace_id(tmp_path)
     assert str(payload["generated_at"]).startswith("20")
 
 

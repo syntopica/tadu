@@ -16,7 +16,11 @@ def add_board_parser(commands: argparse._SubParsersAction[argparse.ArgumentParse
     board.add_argument("--workspace", required=True, help="directory holding tadu-workspace.toml")
     board.add_argument("--host", default="127.0.0.1", help="address to bind (default: 127.0.0.1)")
     board.add_argument(
-        "--port", type=non_negative_int, default=0, help="port to bind (default: 0, any free port)"
+        "--port",
+        type=non_negative_int,
+        default=None,
+        help="port to bind; 0 for any free port (default: one derived from the workspace path, "
+        "or any free port when that one is busy)",
     )
     board.add_argument(
         "--done-days",

@@ -79,6 +79,7 @@ ignore = [
 "tadu/run_list.py" = ["T201"]
 "tadu/run_show.py" = ["T201"]
 "tadu/run_board.py" = ["T201"]
+"tadu/bind_board_server.py" = ["T201"]
 "tadu/print_problems.py" = ["T201"]
 "tadu/print_diff.py" = ["T201"]
 "tadu/read_backlog.py" = ["T201"]

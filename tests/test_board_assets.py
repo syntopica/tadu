@@ -5,7 +5,8 @@ from tadu.board_asset import board_asset
 from tadu.board_asset_name_pattern import BOARD_ASSET_NAME_PATTERN
 
 BOARD = files("tadu") / "board"
-SCRIPTS = sorted(p.name for p in BOARD.iterdir() if p.name.endswith(".js"))
+FILES = sorted(p.name for p in BOARD.iterdir() if not p.name.startswith("."))
+SCRIPTS = [name for name in FILES if name.endswith(".js")]
 IMPORT = re.compile(r'^import \{ (\w+) \} from "\./([a-z0-9-]+\.js)";$', re.MULTILINE)
 
 
@@ -21,8 +22,9 @@ def every_script() -> str:
 
 def test_every_file_is_served() -> None:
     assert len(SCRIPTS) > 50
-    for path in BOARD.iterdir():
-        assert BOARD_ASSET_NAME_PATTERN.fullmatch(path.name), path.name
+    for name in FILES:
+        assert BOARD_ASSET_NAME_PATTERN.fullmatch(name), name
+    assert board_asset(".DS_Store") is None
 
 
 def test_page_assets_never_inject_html() -> None:

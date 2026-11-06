@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from tadu.card_json import card_json
 from tadu.columns import COLUMNS
 from tadu.load_cards import load_cards
+from tadu.workspace_id import workspace_id
 
 if TYPE_CHECKING:
     from datetime import date
@@ -24,5 +25,6 @@ def board_payload(state: BoardState, today: date) -> dict[str, object]:
         "me": local.me if local else None,
         "columns": list(COLUMNS),
         "done_days": state.done_days,
+        "workspace_id": workspace_id(state.workspace),
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
     }

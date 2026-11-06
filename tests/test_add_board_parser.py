@@ -16,7 +16,7 @@ def test_defaults() -> None:
     assert (parsed.workspace, parsed.host, parsed.port, parsed.done_days) == (
         "w",
         "127.0.0.1",
-        0,
+        None,
         14,
     )
 
@@ -26,6 +26,7 @@ def test_options() -> None:
         ["board", "--workspace", "w", "--host", "::1", "--port", "8123", "--done-days", "3"]
     )
     assert (parsed.host, parsed.port, parsed.done_days) == ("::1", 8123, 3)
+    assert parser().parse_args(["board", "--workspace", "w", "--port", "0"]).port == 0
 
 
 @pytest.mark.parametrize(

@@ -6,16 +6,17 @@ import secrets
 import sys
 from contextlib import suppress
 from datetime import UTC, datetime
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tadu.allowed_hosts import allowed_hosts
+from tadu.bind_board_server import bind_board_server
 from tadu.board_state import BoardState
 from tadu.load_cards import load_cards
 from tadu.loopback_hosts import LOOPBACK_HOSTS
 from tadu.make_board_handler import make_board_handler
 from tadu.workspace_error import WorkspaceError
+from tadu.workspace_port import workspace_port
 
 if TYPE_CHECKING:
     import argparse
@@ -29,10 +30,11 @@ def run_board(args: argparse.Namespace) -> int:
     except WorkspaceError as error:
         print(f"tadu board: {error}", file=sys.stderr)
         return 2
+    port = workspace_port(args.workspace) if args.port is None else args.port
     try:
-        server = ThreadingHTTPServer((args.host, args.port), BaseHTTPRequestHandler)
+        server = bind_board_server(args.host, port, fallback=args.port is None)
     except OSError as error:
-        print(f"tadu board: cannot listen on {args.host}:{args.port}: {error}", file=sys.stderr)
+        print(f"tadu board: cannot listen on {args.host}:{port}: {error}", file=sys.stderr)
         return 2
     with server:
         port = server.server_address[1]
