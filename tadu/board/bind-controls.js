@@ -93,11 +93,11 @@ export function bindControls(store) {
   byId("save-view-form").addEventListener("submit", (event) => {
     event.preventDefault();
     const name = byId("save-view-name").value.trim();
-    if (name === "") {
+    if (name === "" || !store.payload) {
       return;
     }
     store.saved = [...store.saved.filter((saved) => saved.name !== name), snapshotView(name)];
-    storeSavedViews(store.saved);
+    storeSavedViews(store.saved, store.payload.workspace_id);
     byId("save-view-name").value = "";
     requestRender();
   });

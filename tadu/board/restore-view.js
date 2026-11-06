@@ -1,15 +1,21 @@
-import { DEFAULT_FILTERS } from "./default-filters.js";
+import { cleanSavedView } from "./clean-saved-view.js";
+import { existingFilters } from "./existing-filters.js";
 import { requestRender } from "./request-render.js";
 import { store } from "./store.js";
 
-// Put a saved view back on the page.
+// Put a saved view back on the page, keeping only filter values the current
+// data still offers.
 export function restoreView(saved) {
-  store.view = saved.view ?? "board";
-  store.text = saved.text ?? "";
-  store.filters = { ...DEFAULT_FILTERS, ...saved.filters };
-  store.scope = saved.scope ?? "all";
-  store.group = saved.group ?? "state";
-  store.sort = saved.sort ?? "priority";
+  const view = cleanSavedView(saved);
+  if (view === null) {
+    return;
+  }
+  store.view = view.view;
+  store.text = view.text;
+  store.filters = existingFilters(view.filters, store.cards, store.payload?.columns ?? []);
+  store.scope = view.scope;
+  store.group = view.group;
+  store.sort = view.sort;
   store.collapsed = new Set();
   store.navOpen = false;
   document.getElementById("search").value = store.text;

@@ -3,7 +3,6 @@ import { bindControls } from "./bind-controls.js";
 import { bindKeys } from "./bind-keys.js";
 import { fillIcons } from "./fill-icons.js";
 import { loadBoard } from "./load-board.js";
-import { loadSavedViews } from "./load-saved-views.js";
 import { openDetail } from "./open-detail.js";
 import { renderApp } from "./render-app.js";
 import { renderListWindow } from "./render-list-window.js";
@@ -16,7 +15,6 @@ import { storedTheme } from "./stored-theme.js";
 export function start() {
   store.theme = storedTheme();
   applyTheme(store.theme);
-  store.saved = loadSavedViews();
   const mac = /Mac|iPhone|iPad/.test(navigator.platform);
   document.getElementById("search-key").textContent = mac ? "⌘ K" : "Ctrl K";
   fillIcons(document);

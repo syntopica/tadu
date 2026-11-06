@@ -2,6 +2,7 @@
 
 - One top-level unit per source file, with one responsibility. Split helpers into their own modules and import them explicitly.
 - Each module has its own test file under `tests/`.
+- Exception: the board's pure JavaScript modules (`tadu/board/*.js`) are tested in batches, one `tests/test_board_<theme>_js.py` per group of related modules, each running a single `node` process through a module-scoped fixture. Every node spawn costs time against the 10 s test budget in `codeality-py.toml`, so add a new module's checks to the batch for its theme instead of a file of its own.
 - Write everything in English: code, comments, docs and commit messages.
 - Run the gate before committing:
 

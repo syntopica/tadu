@@ -40,7 +40,7 @@ export function renderSidebar(store) {
       remove.append(icon("close"));
       remove.addEventListener("click", () => {
         store.saved = store.saved.filter((_, at) => at !== index);
-        storeSavedViews(store.saved);
+        storeSavedViews(store.saved, store.payload.workspace_id);
         requestRender();
       });
       item.append(

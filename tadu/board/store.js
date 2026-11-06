@@ -9,6 +9,7 @@ export const store = {
   byKey: new Map(),
   error: "",
   loading: false,
+  requests: 0,
   view: "board",
   text: "",
   filters: { ...DEFAULT_FILTERS },
