@@ -11,7 +11,11 @@ export function portfolioPlaces(card, groupBy, role) {
     const group = { key: "none", label: "No project", roles: [], filter: null, last: true };
     return [{ group, child: { ...repository, filter: { repository: card.repository } } }];
   }
-  const project = { key: `p:${card.project}`, label: card.project, filter: { project: card.project } };
+  const project = {
+    key: `p:${card.project}`,
+    label: card.project,
+    filter: { project: card.project },
+  };
   if (groupBy === "project") {
     const roles = entries.map((entry) => `${entry.org} · ${entry.role}`);
     const filter = { project: card.project, repository: card.repository };

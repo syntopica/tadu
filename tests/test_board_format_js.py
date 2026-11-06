@@ -8,6 +8,7 @@ TITLES = [
     "plain **unclosed and `open",
     "** spaced** and ``",
     "",
+    "**Fix `a` now** b",
 ]
 URLS = [
     "https://example.com/x",
@@ -61,14 +62,20 @@ def results() -> dict[str, object]:
 def test_inline_markdown_tokens(results: dict[str, object]) -> None:
     assert results["tokens"] == [
         [
-            {"kind": "strong", "text": "Board:"},
-            {"kind": "text", "text": " fix "},
-            {"kind": "code", "text": "card.py"},
-            {"kind": "text", "text": " now"},
+            {"kind": "text", "text": "Board:", "strong": True},
+            {"kind": "text", "text": " fix ", "strong": False},
+            {"kind": "code", "text": "card.py", "strong": False},
+            {"kind": "text", "text": " now", "strong": False},
         ],
-        [{"kind": "text", "text": "plain **unclosed and `open"}],
-        [{"kind": "text", "text": "** spaced** and ``"}],
+        [{"kind": "text", "text": "plain **unclosed and `open", "strong": False}],
+        [{"kind": "text", "text": "** spaced** and ``", "strong": False}],
         [],
+        [
+            {"kind": "text", "text": "Fix ", "strong": True},
+            {"kind": "code", "text": "a", "strong": True},
+            {"kind": "text", "text": " now", "strong": True},
+            {"kind": "text", "text": " b", "strong": False},
+        ],
     ]
 
 

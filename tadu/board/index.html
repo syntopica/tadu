@@ -3,29 +3,109 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tadu board</title>
+<meta name="color-scheme" content="light dark">
+<title>tadu</title>
 <link rel="stylesheet" href="/board.css">
-<script src="/filters.js" defer></script>
-<script src="/board.js" defer></script>
+<script type="module" src="/app.js"></script>
 </head>
 <body>
-<header>
-<h1>tadu board</h1>
-<p id="status">Loading...</p>
-</header>
-<form id="filters">
-<label>Repository <select id="filter-repository"></select></label>
-<label>Project <select id="filter-project"></select></label>
-<label>Organization <select id="filter-organization"></select></label>
-<label>Role <select id="filter-role"></select></label>
-<label>Assignee <select id="filter-assignee"></select></label>
-<label>Priority <select id="filter-priority"></select></label>
-<label>Label <select id="filter-label"></select></label>
-<label><input type="checkbox" id="waiting-on-me"> Waiting on me</label>
-<label><input type="checkbox" id="show-cancelled"> Show cancelled</label>
-<button type="button" id="reload">Reload</button>
+<div class="app">
+<aside class="sidebar" id="sidebar" aria-label="Navigation">
+<div class="brand">tadu</div>
+<nav class="nav" id="nav-views" aria-label="Views"></nav>
+<section class="nav-section" id="projects-section" hidden>
+<h2 class="nav-heading">Projects</h2>
+<div class="nav" id="nav-projects"></div>
+</section>
+<section class="nav-section">
+<h2 class="nav-heading">Saved views</h2>
+<div class="nav" id="nav-saved"></div>
+<form class="save-view" id="save-view-form">
+<input id="save-view-name" type="text" maxlength="40" placeholder="Name the current view" aria-label="Name for the saved view" autocomplete="off">
+<button type="submit" class="icon-button" aria-label="Save the current view" title="Save the current view"><span data-icon="plus"></span></button>
 </form>
-<ul id="problems"></ul>
-<main id="board"></main>
+</section>
+<div class="sidebar-foot">
+<p class="read-only" title="tadu board never changes a file: edit TODO.md in your editor."><span data-icon="info"></span> Read only</p>
+<button type="button" class="nav-item theme-toggle" id="theme-toggle"><span data-icon="sun"></span><span id="theme-label">Theme: Auto</span></button>
+</div>
+</aside>
+
+<div class="main" id="main">
+<header class="phone-top">
+<span class="brand">tadu</span>
+<span class="pill">Read only</span>
+<button type="button" class="icon-button" id="phone-search" aria-label="Search"><span data-icon="search"></span></button>
+</header>
+
+<header class="topbar">
+<label class="scope-select"><span data-icon="layers"></span><select id="scope-project" aria-label="Project"></select><span data-icon="chevronDown"></span></label>
+<div class="topbar-status">
+<button type="button" class="notice-button" id="problems-button" aria-expanded="false" aria-controls="problems-panel" hidden><span data-icon="alert"></span><span id="problems-label"></span></button>
+<span class="updated" id="updated" role="status">Loading...</span>
+<button type="button" class="icon-button" id="reload" aria-label="Reload from the files" title="Reload from the files"><span data-icon="refresh"></span></button>
+</div>
+</header>
+<div class="notice-panel" id="problems-panel" hidden></div>
+
+<div class="page-head">
+<div>
+<h1 id="page-title">Board</h1>
+<p class="subtitle" id="page-subtitle"></p>
+</div>
+<div class="head-status">
+<span class="updated" id="updated-phone"></span>
+<button type="button" class="icon-button" id="reload-phone" aria-label="Reload from the files"><span data-icon="refresh"></span></button>
+</div>
+</div>
+
+<div class="toolbar" id="toolbar">
+<label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Search tasks, projects or repositories..." aria-label="Search tasks, projects or repositories" autocomplete="off" spellcheck="false"><kbd id="search-key">Ctrl K</kbd></label>
+<span class="divider"></span>
+<div class="popover-anchor">
+<button type="button" class="tool-button" id="filters-button" aria-expanded="false" aria-controls="filters-popover"><span data-icon="filter"></span>Filters<span class="count" id="filters-count" hidden></span><span data-icon="chevronDown"></span></button>
+<div class="popover" id="filters-popover" role="dialog" aria-label="Filters" hidden>
+<div class="popover-grid">
+<label>Repository<select id="filter-repository"></select></label>
+<label>Organization<select id="filter-organization"></select></label>
+<label>Role<select id="filter-role"></select></label>
+<label>Assignee<select id="filter-assignee"></select></label>
+<label>Priority<select id="filter-priority"></select></label>
+<label>Label<select id="filter-label"></select></label>
+</div>
+<div class="popover-checks">
+<label><input type="checkbox" id="filter-unassigned"> Unassigned</label>
+<label><input type="checkbox" id="filter-noPriority"> No priority</label>
+<label><input type="checkbox" id="filter-waitingOnMe"> Waiting on me</label>
+<label><input type="checkbox" id="filter-showCancelled"> Show cancelled</label>
+<label><input type="checkbox" id="show-empty"> Show empty columns</label>
+</div>
+</div>
+</div>
+<label class="tool-button select-tool" id="group-tool">Group: <select id="group" aria-label="Group by"></select><span data-icon="chevronDown"></span></label>
+<label class="tool-button select-tool" id="sort-tool">Sort: <select id="sort" aria-label="Sort by"></select><span data-icon="chevronDown"></span></label>
+<span class="divider"></span>
+<div class="segmented" role="group" aria-label="Layout">
+<button type="button" id="layout-list" aria-pressed="false"><span data-icon="list"></span>List</button>
+<button type="button" id="layout-board" aria-pressed="true"><span data-icon="columns"></span>Board</button>
+</div>
+</div>
+
+<div class="toolbar" id="portfolio-toolbar" hidden>
+<label class="search"><span data-icon="search"></span><input id="portfolio-search" type="search" placeholder="Search projects, organizations or repositories..." aria-label="Search projects, organizations or repositories" autocomplete="off" spellcheck="false"></label>
+<label class="tool-button select-tool accent"><span data-icon="layers"></span>Group: <select id="portfolio-group" aria-label="Group by"><option value="organization">Organization</option><option value="project">Project</option></select><span data-icon="chevronDown"></span></label>
+<label class="tool-button select-tool"><span data-icon="user"></span>Role: <select id="portfolio-role" aria-label="Role"></select><span data-icon="chevronDown"></span></label>
+<label class="tool-button select-tool"><span data-icon="done"></span>State: <select id="portfolio-state" aria-label="State"><option value="">All</option><option value="backlog">Backlog</option><option value="in_progress">In progress</option><option value="blocked">Blocked</option><option value="done">Done</option></select><span data-icon="chevronDown"></span></label>
+</div>
+
+<div class="chips" id="active-chips" hidden></div>
+<div class="summary" id="summary"></div>
+<div class="list-head" id="list-head" hidden></div>
+<main class="content" id="content" tabindex="-1"></main>
+</div>
+
+<aside class="detail" id="detail" aria-label="Item detail" hidden></aside>
+<nav class="bottom-nav" id="bottom-nav" aria-label="Views"></nav>
+</div>
 </body>
 </html>

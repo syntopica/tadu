@@ -16,8 +16,8 @@ def state(workspace: Path) -> BoardState:
 
 def test_index_and_assets(tmp_path: Path) -> None:
     assert board_route("/", state(tmp_path), TODAY)[::2] == (200, "text/html; charset=utf-8")
-    assert board_route("/board.js", state(tmp_path), TODAY)[2].startswith("text/javascript")
-    assert board_route("/filters.js", state(tmp_path), TODAY)[2].startswith("text/javascript")
+    assert board_route("/app.js", state(tmp_path), TODAY)[2].startswith("text/javascript")
+    assert board_route("/card-visible.js", state(tmp_path), TODAY)[2].startswith("text/javascript")
     assert board_route("/board.css", state(tmp_path), TODAY)[2].startswith("text/css")
 
 

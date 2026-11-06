@@ -11,7 +11,12 @@ export function portfolioTree(cards, groupBy, role) {
   for (const card of cards) {
     for (const { group, child } of portfolioPlaces(card, groupBy, role)) {
       if (!groups.has(group.key)) {
-        groups.set(group.key, { ...group, roles: [], buckets: emptyBuckets(), children: new Map() });
+        groups.set(group.key, {
+          ...group,
+          roles: [],
+          buckets: emptyBuckets(),
+          children: new Map(),
+        });
       }
       const row = groups.get(group.key);
       mergeRoles(row.roles, group.roles);
