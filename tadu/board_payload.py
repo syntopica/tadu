@@ -23,5 +23,6 @@ def board_payload(state: BoardState, today: date) -> dict[str, object]:
         "problems": [{"repository": p.repository, "message": p.message} for p in problems],
         "me": local.me if local else None,
         "columns": list(COLUMNS),
+        "done_days": state.done_days,
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
     }

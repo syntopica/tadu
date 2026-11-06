@@ -9,7 +9,7 @@ from board_workspace import board_workspace
 
 from tadu.board_headers import BOARD_HEADERS
 
-ASSETS = ("/", "/filters.js", "/board.js", "/board.css")
+ASSETS = ("/", "/board.js", "/filters.js", "/board.css")
 
 
 @pytest.fixture

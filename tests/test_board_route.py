@@ -34,5 +34,12 @@ def test_workspace_error_is_500_json(tmp_path: Path) -> None:
 
 
 def test_unknown_paths(tmp_path: Path) -> None:
-    for path in ("/index.html", "/api", "/board.css/", "/../pyproject.toml"):
+    for path in (
+        "/index.html",
+        "/api",
+        "/board.css/",
+        "/../pyproject.toml",
+        "/missing.js",
+        "/a/b.js",
+    ):
         assert board_route(path, state(tmp_path), TODAY)[0] == 404

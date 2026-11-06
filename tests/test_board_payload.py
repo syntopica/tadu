@@ -24,6 +24,7 @@ def test_cards_me_columns_and_time(tmp_path: Path) -> None:
     assert payload["me"] == "ana"
     assert payload["problems"] == []
     assert payload["columns"] == ["backlog", "ready", "in_progress", "blocked", "done", "cancelled"]
+    assert payload["done_days"] == 14
     assert str(payload["generated_at"]).startswith("20")
 
 
