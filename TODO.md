@@ -47,10 +47,6 @@
   Smallest next step: store a named filter set in the workspace file and select it with `--view`.
 
 
-- [!] **Board:** Make the page usable at real scale. On 2026-11-06 a workspace over 100 repositories gave 5,471 cards: the page rendered every card (293,880 px tall), titles showed raw Markdown such as `**UX / UI:**`, and the owner judged the design not good enough. A ChatGPT redesign proposal is under review in `.codeality-ui/propose/2026-11-06-0110/`.
-
-  Smallest next step: the owner picks a direction (owner decision, 2026-11-06). Direction 1 is Linear-like (sidebar views, capped kanban columns, portfolio table, phone blocked list, detail panel: `mockup-1`, `-5`, `-6`, `-7`); direction 2 is denser, with every filter in the sidebar (`mockup-3`, `-4`). Then redesign `tadu/board/` to it, rendering inline Markdown as text styling.
-
 - [ ] **CLI:** `tadu list --json | head -1` ends with a `BrokenPipeError` traceback (seen 2026-11-06).
 
   Smallest next step: exit quietly on `BrokenPipeError` in `run_list`, with a test that closes stdout early.
