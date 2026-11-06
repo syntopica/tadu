@@ -1,4 +1,4 @@
-import { applyFilter } from "./apply-filter.js";
+import { drillFromPortfolio } from "./drill-from-portfolio.js";
 import { el } from "./el.js";
 import { filterTree } from "./filter-tree.js";
 import { formatCount } from "./format-count.js";
@@ -14,7 +14,11 @@ import { treeTotals } from "./tree-totals.js";
 // Stat cards and the table of organizations (or projects) with their counts.
 export function renderPortfolio(store, content) {
   const { groupBy, role, state, text, collapsed } = store.portfolio;
-  const cards = portfolioCards(store.cards, store.portfolio, store.filters.project);
+  const cards = portfolioCards(
+    store.cards,
+    store.portfolio,
+    store.filters.project,
+  );
   const totals = treeTotals(cards);
   const days = store.payload.done_days;
   const stats = el("div", "stats");
@@ -29,13 +33,17 @@ export function renderPortfolio(store, content) {
   const organizations = new Set(
     cards.flatMap((card) => card.organizations.map((entry) => entry.org)),
   );
-  const projects = new Set(cards.map((card) => card.project).filter((key) => key !== null));
+  const projects = new Set(
+    cards.map((card) => card.project).filter((key) => key !== null),
+  );
   const panel = el("section", "panel");
   const head = el("header", "panel-head");
   const heading = el(
     "h2",
     "",
-    groupBy === "organization" ? "Projects by organization" : "Repositories by project",
+    groupBy === "organization"
+      ? "Projects by organization"
+      : "Repositories by project",
   );
   head.append(
     heading,
@@ -50,8 +58,19 @@ export function renderPortfolio(store, content) {
   table.setAttribute("role", "table");
   const columns = el("div", "prow prow-head");
   columns.setAttribute("role", "row");
-  const first = groupBy === "organization" ? "Organization / project" : "Project / repository";
-  for (const label of [first, "Total", "Backlog", "In progress", "Blocked", `Done ${days}d`, ""]) {
+  const first =
+    groupBy === "organization"
+      ? "Organization / project"
+      : "Project / repository";
+  for (const label of [
+    first,
+    "Total",
+    "Backlog",
+    "In progress",
+    "Blocked",
+    `Done ${days}d`,
+    "",
+  ]) {
     columns.append(el("span", "num", label));
   }
   table.append(columns);
@@ -71,8 +90,10 @@ export function renderPortfolio(store, content) {
       for (const child of row.children) {
         table.append(
           portfolioChildRow(child, (blocked) => {
-            const target = blocked ? { view: "blocked", column: "" } : portfolioTarget(state);
-            applyFilter(child.filter, target.view, target.column);
+            const target = blocked
+              ? { view: "blocked", column: "" }
+              : portfolioTarget(state);
+            drillFromPortfolio(child.filter, target.view, target.column);
           }),
         );
       }

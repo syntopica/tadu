@@ -5,8 +5,13 @@ import { store } from "./store.js";
 // Replace the filters with `filter` (keeping the cancelled toggle) and show
 // `view`, narrowed to `column` when one is given.
 export function applyFilter(filter, view, column = "") {
-  store.filters = { ...DEFAULT_FILTERS, showCancelled: store.filters.showCancelled, ...filter };
+  store.filters = {
+    ...DEFAULT_FILTERS,
+    showCancelled: store.filters.showCancelled,
+    ...filter,
+  };
   store.text = "";
+  document.getElementById("search").value = "";
   store.scope = "all";
   setView(view, column);
 }
