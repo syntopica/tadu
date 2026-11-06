@@ -18,6 +18,6 @@ export function portfolioGroupRow(row, closed, groupBy, onToggle) {
     ...roleBadges(row.roles),
   );
   toggle.addEventListener("click", onToggle);
-  node.append(toggle, ...portfolioCells(row.buckets, null), el("span", "prow-end"));
+  node.append(toggle, ...portfolioCells(row.buckets, row.label, null), el("span", "prow-end"));
   return node;
 }

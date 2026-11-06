@@ -4,6 +4,8 @@ import { filterTree } from "./filter-tree.js";
 import { formatCount } from "./format-count.js";
 import { portfolioChildRow } from "./portfolio-child-row.js";
 import { portfolioGroupRow } from "./portfolio-group-row.js";
+import { portfolioCards } from "./portfolio-cards.js";
+import { portfolioTarget } from "./portfolio-target.js";
 import { portfolioTree } from "./portfolio-tree.js";
 import { requestRender } from "./request-render.js";
 import { statCard } from "./stat-card.js";
@@ -12,13 +14,7 @@ import { treeTotals } from "./tree-totals.js";
 // Stat cards and the table of organizations (or projects) with their counts.
 export function renderPortfolio(store, content) {
   const { groupBy, role, state, text, collapsed } = store.portfolio;
-  const project = store.filters.project;
-  const cards = store.cards.filter(
-    (card) =>
-      (state === "" || card.column === state || (state === "backlog" && card.column === "ready")) &&
-      (project === "" || card.project === project) &&
-      (role === "" || card.organizations.some((entry) => entry.role === role)),
-  );
+  const cards = portfolioCards(store.cards, store.portfolio, store.filters.project);
   const totals = treeTotals(cards);
   const days = store.payload.done_days;
   const stats = el("div", "stats");
@@ -74,7 +70,10 @@ export function renderPortfolio(store, content) {
     if (!closed) {
       for (const child of row.children) {
         table.append(
-          portfolioChildRow(child, (view) => applyFilter({ ...row.filter, ...child.filter }, view)),
+          portfolioChildRow(child, (blocked) => {
+            const target = blocked ? { view: "blocked", column: "" } : portfolioTarget(state);
+            applyFilter(child.filter, target.view, target.column);
+          }),
         );
       }
     }

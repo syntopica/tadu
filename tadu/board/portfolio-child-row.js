@@ -3,24 +3,25 @@ import { icon } from "./icon.js";
 import { portfolioCells } from "./portfolio-cells.js";
 import { roleBadges } from "./role-badges.js";
 
-// A project or repository row; it opens All work, its blocked count the
-// Blocked view, both filtered to it.
+// A project or repository row; it opens the list of the cards it counts,
+// its blocked count the Blocked view of those cards. `onOpen(blocked)`.
 export function portfolioChildRow(child, onOpen) {
   const node = el("div", "prow prow-child");
   node.setAttribute("role", "row");
   const open = el("button", "prow-open");
   open.type = "button";
   open.append(
-    icon(child.filter.project && !child.filter.repository ? "folder" : "repo"),
+    icon(child.filter.repository ? "repo" : "folder"),
     el("span", "prow-name", child.label),
     ...roleBadges(child.roles),
   );
-  open.addEventListener("click", () => onOpen("all"));
+  open.setAttribute("aria-label", `Open the items of ${child.label}`);
+  open.addEventListener("click", () => onOpen(false));
   const go = el("button", "icon-button small prow-end");
   go.type = "button";
-  go.setAttribute("aria-label", `Open ${child.label}`);
+  go.setAttribute("aria-label", `Open the items of ${child.label}`);
   go.append(icon("chevronRight"));
-  go.addEventListener("click", () => onOpen("all"));
-  node.append(open, ...portfolioCells(child.buckets, () => onOpen("blocked")), go);
+  go.addEventListener("click", () => onOpen(false));
+  node.append(open, ...portfolioCells(child.buckets, child.label, () => onOpen(true)), go);
   return node;
 }

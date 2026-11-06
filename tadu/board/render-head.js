@@ -16,7 +16,7 @@ export function renderHead(store, sets) {
   const cards = store.cards;
   const repositories = plural(new Set(cards.map((card) => card.repository)).size, "repository");
   const total = sets.total;
-  const filtered = sets.shown.length !== total && store.view !== "portfolio";
+  const filtered = sets.shown.length !== total;
   const items = filtered
     ? `${formatCount(sets.shown.length)} shown of ${plural(total, "item")}`
     : plural(total, "item");
