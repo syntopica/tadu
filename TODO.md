@@ -18,9 +18,11 @@
 
   Gives items without an `ID:` a stable one and closes by ID. Smallest next step: a command that inserts an `ID:` paragraph into one item chosen by its derived key, with `--write` as the only mutation.
 
-- [ ] **Board:** Add one shared mutation function with lock, hash check, commit and push.
+- [~] **Board:** Add one shared mutation function with lock, hash check, commit and push.
 
   Used by the CLI, the board and MCP, with a recoverable journal for `close`, which writes two files. Smallest next step: extract the lock and changed-since-read check of `tadu close` into a function that takes an item ID and the file hash the caller last saw.
+
+  Progress: `tadu/mutate_todo.py` locks, checks the caller's `text_hash` of TODO.md, writes atomically and optionally commits that one file (`commit_file`); tests in `tests/test_mutate_todo.py`. Remains: push (owner policy parked: per-repository setting), the item-ID mutation on top, moving `tadu close` onto it with its two-file journal, and wiring the CLI/board/MCP.
 
 - [ ] **Board:** Add an MCP adapter as an optional extra.
 
