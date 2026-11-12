@@ -11,10 +11,9 @@ if TYPE_CHECKING:
 
 def item_history(root: Path, path: str, line: int, end_line: int) -> str | None:
     """One `hash date author subject` line per commit; None when git cannot answer."""
-    command = [
-        "git",
-        "-C",
-        str(root),
+    git = ["git", "-C", str(root)]
+    log = [
+        *git,
         "log",
         "--no-patch",
         "--date=short",
@@ -22,7 +21,13 @@ def item_history(root: Path, path: str, line: int, end_line: int) -> str | None:
         f"-L{line},{end_line}:{path}",
     ]
     try:
-        done = subprocess.run(command, capture_output=True, text=True, check=False)  # noqa: S603
+        committed = subprocess.run(  # noqa: S603
+            [*git, "show", f"HEAD:./{path}"], capture_output=True, check=False
+        )
+        # git log -L reads line numbers against HEAD, so only an unmodified file maps safely.
+        if committed.returncode != 0 or committed.stdout != (root / path).read_bytes():
+            return None
+        done = subprocess.run(log, capture_output=True, text=True, check=False)  # noqa: S603
     except OSError:
         return None
     return done.stdout if done.returncode == 0 else None
