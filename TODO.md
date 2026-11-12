@@ -30,10 +30,6 @@
 
   Smallest next step: parse `Depends on: t-...` and show whether the target is open, in the same workspace.
 
-- [ ] **Board:** Show item history from `git log`.
-
-  Smallest next step: print the commits that touched an item's line span, for one key.
-
 - [ ] **Board:** Age blocked items.
 
   Smallest next step: derive the days an item has been `[!]` from `git log` and show it on the card.

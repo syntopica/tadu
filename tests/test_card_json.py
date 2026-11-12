@@ -1,4 +1,5 @@
 from dataclasses import replace
+from pathlib import Path
 
 from card_samples import sample_card
 
@@ -28,5 +29,5 @@ def test_values() -> None:
 def test_absent_dates_are_null() -> None:
     card = sample_card()
     item = replace(card.item, day=None, fields=replace(card.item.fields, due=None))
-    data = card_json(Card(item, "shop", "backlog", None, (), None, None))
+    data = card_json(Card(item, "shop", Path(), "backlog", None, (), None, None))
     assert (data["day"], data["due"], data["project"]) == (None, None, None)

@@ -33,6 +33,7 @@ def build_cards(  # noqa: PLR0913, PLR0917
         Card(
             item=item,
             repository=repository,
+            root=root,
             column=item_column(item.state, item.fields.queue),
             project=project.key if project else None,
             organizations=project.roles if project else (),

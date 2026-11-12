@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from tadu.backlog_item import BacklogItem
 
 
@@ -15,6 +17,7 @@ class Card:
 
     item: BacklogItem
     repository: str
+    root: Path
     column: str
     project: str | None
     organizations: tuple[tuple[str, str], ...]

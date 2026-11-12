@@ -100,3 +100,9 @@
   Smallest next step: list the closed entries of all workspace repositories, newest first, as a JSON command.
   - Result: Added `tadu feed`: done and cancelled log entries of the given repositories or workspace, newest first, as JSON lines with the `list --json` keys.
   - Evidence: tests/test_run_feed.py, tests/test_recently_done.py and tests/test_add_feed_parser.py pass; full gate (pytest 100% coverage, ruff, mypy, codeality-py gate) green.
+
+- [x] 2026-11-12 — **Board:** Show item history from `git log`.
+
+  Smallest next step: print the commits that touched an item's line span, for one key.
+  - Result: tadu show --history prints the commits that touched the item's line span via git log -L
+  - Evidence: tadu show KEY --history; tests/test_run_show.py and tests/test_item_history.py pass, gate green

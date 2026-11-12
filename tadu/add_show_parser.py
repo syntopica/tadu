@@ -16,3 +16,6 @@ def add_show_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser
     show.add_argument("key", help="item key")
     add_scope_arguments(show)
     show.add_argument("--json", action="store_true", help="print the item as JSON")
+    show.add_argument(
+        "--history", action="store_true", help="print the git commits that touched the item"
+    )

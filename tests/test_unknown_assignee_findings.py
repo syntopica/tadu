@@ -17,7 +17,7 @@ def card_in(column: str, state: str) -> Card:
     item = replace(
         base.item, state=state, day=date(2026, 11, 1), fields=ItemFields(assignees=("bob",))
     )
-    return Card(item, "shop", column, None, (), None, None)
+    return Card(item, "shop", Path(), column, None, (), None, None)
 
 
 def findings_for(*cards: Card) -> tuple[str, ...]:

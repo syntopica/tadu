@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from tadu.card_json import card_json
 from tadu.load_cards import load_cards
+from tadu.print_item_history import print_item_history
 from tadu.print_problems import print_problems
 from tadu.workspace_error import WorkspaceError
 
@@ -33,5 +34,7 @@ def run_show(args: argparse.Namespace, today: date) -> int:
             f"tadu show: {args.key} matches {len(found)} items; showing the first", file=sys.stderr
         )
     first = found[0]
+    if args.history:
+        return print_item_history(first)
     print(json.dumps(card_json(first), ensure_ascii=False) if args.json else first.item.text)
     return 0

@@ -1,4 +1,5 @@
 import json
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -51,3 +52,27 @@ def test_problem_and_workspace_error(tmp_path: Path, capsys: pytest.CaptureFixtu
     assert "tadu show: gone: " in capsys.readouterr().err
     assert main(["show", "k", "--workspace", str(tmp_path)]) == 2
     assert capsys.readouterr().err.startswith("tadu show: ")
+
+
+def test_history(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    root = repo(tmp_path)
+    git = ["git", "-C", str(root), "-c", "user.name=T", "-c", "user.email=t@example.com"]
+    subprocess.run(  # noqa: S603
+        [*git, "init", "-q"], check=True
+    )
+    subprocess.run(  # noqa: S603
+        [*git, "add", "."], check=True
+    )
+    subprocess.run(  # noqa: S603
+        [*git, "commit", "-qm", "add item"], check=True
+    )
+    key = first_key(root, capsys)
+    assert main(["show", key, str(root), "--history"]) == 0
+    assert capsys.readouterr().out.endswith(" T add item\n")
+
+
+def test_history_without_git(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    root = repo(tmp_path)
+    key = first_key(root, capsys)
+    assert main(["show", key, str(root), "--history"]) == 1
+    assert "no git history" in capsys.readouterr().err

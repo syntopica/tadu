@@ -1,4 +1,5 @@
 from datetime import date
+from pathlib import Path
 
 from tadu.backlog_item import BacklogItem
 from tadu.card import Card
@@ -28,4 +29,4 @@ def sample_card() -> Card:
         ),
         problems=(FieldProblem(4, "bad"),),
     )
-    return Card(item, "shop", "backlog", "storefront", (("client", "acme"),), "e", "r")
+    return Card(item, "shop", Path(), "backlog", "storefront", (("client", "acme"),), "e", "r")
