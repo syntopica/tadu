@@ -106,3 +106,9 @@
   Smallest next step: store a named filter set in the workspace file and select it with `--view`.
   - Result: Workspace files hold [[view]] tables (name plus the list filters), validated on load, and tadu list --view NAME applies one with explicit flags overriding it; spec and README document it.
   - Evidence: uv run codeality-py gate exits 0 (pytest with 100% coverage, ruff, mypy); tests/test_run_list.py::test_view_selects_a_saved_filter_and_flags_win; tadu list --workspace on a scratch workspace with --view printed only the urgent item.
+
+- [x] 2026-11-13 — **Board:** Show the workspace file's saved views in the board sidebar.
+
+  `[[view]]` tables are read by `tadu list --view` only; the board keeps its own views in the browser's `localStorage`. Smallest next step: send the workspace views with the board payload and list them under Views, read-only.
+  - Result: Board payload carries views; the sidebar lists them read-only under Workspace views.
+  - Evidence: tests/test_board_payload.py::test_sends_the_workspace_views, tests/test_view_summary.py; full gate green

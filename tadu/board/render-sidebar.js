@@ -10,6 +10,7 @@ import { setWhere } from "./set-where.js";
 import { storeSavedViews } from "./store-saved-views.js";
 import { VIEW_TITLES } from "./view-titles.js";
 import { whereParts } from "./where-parts.js";
+import { workspaceViewItem } from "./workspace-view-item.js";
 
 // Views, starred scopes, the companies with their projects, the recent
 // scopes, saved views and the theme label.
@@ -51,6 +52,11 @@ export function renderSidebar(store) {
         requestRender();
       }),
     ),
+  );
+  const views = store.payload?.views ?? [];
+  document.getElementById("workspace-views-section").hidden = views.length === 0;
+  document.getElementById("nav-workspace-views").replaceChildren(
+    ...views.map(workspaceViewItem),
   );
   document.getElementById("nav-saved").replaceChildren(
     ...store.saved.map((saved, at) => {

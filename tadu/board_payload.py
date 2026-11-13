@@ -9,6 +9,7 @@ from tadu.card_json import card_json
 from tadu.columns import COLUMNS
 from tadu.load_local_config import load_local_config
 from tadu.load_workspace import load_workspace
+from tadu.view_summary import view_summary
 from tadu.workspace_cards import workspace_cards
 from tadu.workspace_id import workspace_id
 from tadu.workspace_structure import workspace_structure
@@ -33,5 +34,6 @@ def board_payload(state: BoardState, today: date) -> dict[str, object]:
         "done_days": state.done_days,
         "workspace_id": workspace_id(state.workspace),
         "workspace": workspace_structure(loaded),
+        "views": [view_summary(view) for view in loaded.views],
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
     }
