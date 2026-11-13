@@ -42,6 +42,14 @@ def test_cards_me_columns_and_time(tmp_path: Path) -> None:
     assert str(payload["generated_at"]).startswith("20")
 
 
+def test_sends_the_workspace_views(tmp_path: Path) -> None:
+    workspace = board_workspace(tmp_path)
+    with (workspace / "tadu-workspace.toml").open("a") as file:
+        file.write('[[view]]\nname = "hot"\npriority = "high"\n')
+    payload = board_payload(state(workspace), TODAY)
+    assert payload["views"] == [{"name": "hot", "criteria": "priority=high"}]
+
+
 def test_rescans_and_reports_problems(tmp_path: Path) -> None:
     workspace = board_workspace(tmp_path)
     (tmp_path / "shop" / "TODO.md").unlink()

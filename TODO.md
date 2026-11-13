@@ -38,7 +38,3 @@
 
   Smallest next step: derive the days an item has been `[!]` from `git log` and show it on the card.
 
-- [ ] **Board:** Show the workspace file's saved views in the board sidebar.
-
-  `[[view]]` tables are read by `tadu list --view` only; the board keeps its own views in the browser's `localStorage`. Smallest next step: send the workspace views with the board payload and list them under Views, read-only.
-

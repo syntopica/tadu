@@ -52,6 +52,16 @@ export function renderSidebar(store) {
       }),
     ),
   );
+  const views = store.payload?.views ?? [];
+  document.getElementById("workspace-views-section").hidden = views.length === 0;
+  document.getElementById("nav-workspace-views").replaceChildren(
+    ...views.map((view) => {
+      const item = navItem(view.name, "bookmark", false, () => {});
+      item.title = view.criteria === "" ? "No criteria" : view.criteria;
+      item.disabled = true;
+      return item;
+    }),
+  );
   document.getElementById("nav-saved").replaceChildren(
     ...store.saved.map((saved, at) => {
       const item = el("div", "saved-item");
