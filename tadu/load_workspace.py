@@ -9,6 +9,7 @@ from tadu.parse_organization import parse_organization
 from tadu.parse_person import parse_person
 from tadu.parse_project import parse_project
 from tadu.parse_repository import parse_repository
+from tadu.parse_view import parse_view
 from tadu.read_toml import read_toml
 from tadu.table_rows import table_rows
 from tadu.workspace import Workspace
@@ -32,6 +33,7 @@ def load_workspace(directory: Path) -> Workspace:
         tuple(parse_project(r) for r in table_rows(data, "project")),
         tuple(parse_organization(r) for r in table_rows(data, "organization")),
         tuple(parse_person(r) for r in table_rows(data, "person")),
+        tuple(parse_view(r) for r in table_rows(data, "view")),
     )
     problems = workspace_problems(workspace)
     if problems:

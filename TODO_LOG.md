@@ -100,3 +100,9 @@
   Smallest next step: list the closed entries of all workspace repositories, newest first, as a JSON command.
   - Result: Added `tadu feed`: done and cancelled log entries of the given repositories or workspace, newest first, as JSON lines with the `list --json` keys.
   - Evidence: tests/test_run_feed.py, tests/test_recently_done.py and tests/test_add_feed_parser.py pass; full gate (pytest 100% coverage, ruff, mypy, codeality-py gate) green.
+
+- [x] 2026-11-13 — **Board:** Add saved views.
+
+  Smallest next step: store a named filter set in the workspace file and select it with `--view`.
+  - Result: Workspace files hold [[view]] tables (name plus the list filters), validated on load, and tadu list --view NAME applies one with explicit flags overriding it; spec and README document it.
+  - Evidence: uv run codeality-py gate exits 0 (pytest with 100% coverage, ruff, mypy); tests/test_run_list.py::test_view_selects_a_saved_filter_and_flags_win; tadu list --workspace on a scratch workspace with --view printed only the urgent item.

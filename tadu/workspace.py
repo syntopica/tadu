@@ -12,14 +12,16 @@ if TYPE_CHECKING:
     from tadu.person_entry import PersonEntry
     from tadu.project_entry import ProjectEntry
     from tadu.repository_entry import RepositoryEntry
+    from tadu.view_entry import ViewEntry
 
 
 @dataclass(frozen=True)
 class Workspace:
-    """The directory it was loaded from and everything it registers."""
+    """The directory it was loaded from, everything it registers and its saved views."""
 
     root: Path
     repositories: tuple[RepositoryEntry, ...]
     projects: tuple[ProjectEntry, ...]
     organizations: tuple[OrganizationEntry, ...]
     people: tuple[PersonEntry, ...]
+    views: tuple[ViewEntry, ...] = ()
