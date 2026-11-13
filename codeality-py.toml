@@ -58,6 +58,7 @@ data = [
   "tadu/state_markers.py",
   "tadu/task_id_pattern.py",
   "tadu/workspace_file_names.py",
+  "tadu/view_keys.py",
   "tadu/workspace_keys.py",
   "tadu/year_heading_pattern.py",
 ]

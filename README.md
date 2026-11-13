@@ -94,7 +94,7 @@ shop:TODO.md:12 [in_progress] - **Checkout:** Add the gift note field.
 shop:TODO.md:14 [blocked] - **Shipping:** Wait for the carrier API key.
 ```
 
-`--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
+`--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. `--view NAME` applies a saved view of the workspace (see below); filter flags given beside it win, and it needs `--workspace`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
 
 `tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Labels:`, `Queue:` and `Estimate:` fields, described in the spec; `doctor` warns about malformed ones (`F001`) repeated IDs (`F002`) and field lines that are not read (`F003`).
 
@@ -124,7 +124,7 @@ version = 1
 shop = "../shop"
 ```
 
-Paths in `[paths]` are resolved: `~` expands and `..` is normalised. Projects, organizations with roles such as client and agency, remotes and an editor link template are optional; the spec has the full shape. Then:
+Paths in `[paths]` are resolved: `~` expands and `..` is normalised. Projects, organizations with roles such as client and agency, remotes and an editor link template are optional; the spec has the full shape. A `[[view]]` table saves a named filter set (with the `list` filter names, `due_before` as a TOML date), such as `name = "my-urgent"`, `assignee = "ana"` and `priority = "urgent"`, for `tadu list --workspace . --view my-urgent`. Then:
 
 ```bash
 tadu doctor --workspace .

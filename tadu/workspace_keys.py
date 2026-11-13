@@ -2,4 +2,4 @@
 
 from __future__ import annotations
 
-WORKSPACE_KEYS = frozenset({"version", "repository", "project", "organization", "person"})
+WORKSPACE_KEYS = frozenset({"version", "repository", "project", "organization", "person", "view"})

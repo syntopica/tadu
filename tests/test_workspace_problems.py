@@ -1,9 +1,11 @@
 from pathlib import Path
 
+from tadu.card_filter import CardFilter
 from tadu.organization_entry import OrganizationEntry
 from tadu.person_entry import PersonEntry
 from tadu.project_entry import ProjectEntry
 from tadu.repository_entry import RepositoryEntry
+from tadu.view_entry import ViewEntry
 from tadu.workspace import Workspace
 from tadu.workspace_problems import workspace_problems
 
@@ -68,3 +70,12 @@ def test_person_names_unknown_organization() -> None:
 
 def test_person_without_organization_is_fine() -> None:
     assert workspace_problems(make(people=(PersonEntry("ana", "Ana", None),))) == []
+
+
+def test_duplicate_view_name_and_unknown_reference() -> None:
+    views = (ViewEntry("v", CardFilter()), ViewEntry("v", CardFilter(org="ghost")))
+    workspace = Workspace(Path(), (), (), (), (), views)
+    assert workspace_problems(workspace) == [
+        "duplicate view name: v",
+        "view v: unknown org ghost",
+    ]

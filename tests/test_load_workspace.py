@@ -145,3 +145,11 @@ def test_malformed_shapes_name_table_and_key(tmp_path: Path, body: str, fragment
 )
 def test_unknown_top_level_key_or_table_is_an_error(tmp_path: Path, text: str, name: str) -> None:
     assert f"unknown top-level key {name}" in load_error(tmp_path, text)
+
+
+def test_views_are_loaded_and_checked(tmp_path: Path) -> None:
+    write(tmp_path, VALID + '[[view]]\nname = "mine"\nassignee = "ana"\ndue_before = 2026-12-31\n')
+    (view,) = load_workspace(tmp_path).views
+    assert (view.name, view.card_filter.assignee) == ("mine", "ana")
+    message = load_error(tmp_path, VALID + '[[view]]\nname = "v"\n[[view]]\nname = "v"\n')
+    assert message == "duplicate view name: v"

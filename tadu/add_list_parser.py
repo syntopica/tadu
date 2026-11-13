@@ -17,6 +17,7 @@ def add_list_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser
     """Add `list` to the subcommands."""
     listing = commands.add_parser("list", help="print backlog items as lines or JSON")
     add_scope_arguments(listing)
+    listing.add_argument("--view", help="saved view of the workspace; flags given beside it win")
     listing.add_argument("--json", action="store_true", help="one JSON object per item")
     listing.add_argument("--project", help="project id")
     listing.add_argument("--org", help="organization id")

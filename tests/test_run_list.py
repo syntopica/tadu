@@ -53,3 +53,27 @@ def test_done_days_window(tmp_path: Path, capsys: pytest.CaptureFixture[str]) ->
     assert capsys.readouterr().out == ""
     assert main(["list", str(root), "--column", "done", "--done-days", "99999"]) == 0
     assert "[done]" in capsys.readouterr().out
+
+
+def test_view_selects_a_saved_filter_and_flags_win(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    repo(tmp_path)
+    (tmp_path / "tadu-workspace.toml").write_text(
+        'version = 1\n[[repository]]\nkey = "shop"\n[[view]]\nname = "hot"\npriority = "high"\n'
+    )
+    (tmp_path / "tadu-workspace.local.toml").write_text('version = 1\n[paths]\nshop = "shop"\n')
+    workspace = ["list", "--workspace", str(tmp_path), "--view", "hot"]
+    assert main(workspace) == 0
+    assert capsys.readouterr().out == "shop:TODO.md:1 [backlog] high A.\n"
+    assert main([*workspace, "--priority", "low"]) == 0
+    assert capsys.readouterr().out == ""
+    assert main([*workspace[:-1], "cold"]) == 2
+    assert capsys.readouterr().err == "tadu list: unknown view cold (views: hot)\n"
+
+
+def test_view_without_workspace_exits_two(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(["list", str(repo(tmp_path)), "--view", "hot"]) == 2
+    assert capsys.readouterr().err == "tadu list: --view needs --workspace\n"

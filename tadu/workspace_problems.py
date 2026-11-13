@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from tadu.duplicate_problems import duplicate_problems
 from tadu.person_problems import person_problems
 from tadu.project_problems import project_problems
+from tadu.view_problems import view_problems
 
 if TYPE_CHECKING:
     from tadu.workspace import Workspace
@@ -18,6 +19,8 @@ def workspace_problems(workspace: Workspace) -> list[str]:
         *duplicate_problems("repository key", (r.key for r in workspace.repositories)),
         *duplicate_problems("organization id", (o.id for o in workspace.organizations)),
         *duplicate_problems("person id", (p.id for p in workspace.people)),
+        *duplicate_problems("view name", (v.name for v in workspace.views)),
         *project_problems(workspace),
         *person_problems(workspace),
+        *view_problems(workspace),
     ]
