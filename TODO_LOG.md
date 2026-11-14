@@ -112,3 +112,9 @@
   `[[view]]` tables are read by `tadu list --view` only; the board keeps its own views in the browser's `localStorage`. Smallest next step: send the workspace views with the board payload and list them under Views, read-only.
   - Result: Board payload carries views; the sidebar lists them read-only under Workspace views.
   - Evidence: tests/test_board_payload.py::test_sends_the_workspace_views, tests/test_view_summary.py; full gate green
+
+- [x] 2026-11-14 — **Compatibility:** `tests/test_board_handler.py::test_log_omits_the_query` fails on Python 3.12 although `requires-python` is `>=3.12`.
+
+  On 3.12.8 the malformed request `GET /?token=... HTTP/9 junk` gets an HTML error body without the `HTTP/1.0 400` status line the test expects; the test passes on 3.13, 3.14 and 3.15 (checked 2026-11-14 in a clean copy). Smallest next step: decide whether to raise `requires-python` to `>=3.13` or make the assertion accept the 3.12 response, and add 3.12 to the CI matrix if it stays supported.
+  - Result: The malformed-request assertion no longer requires a status line, which 3.12's http.server omits (it replies HTTP/0.9-style); the query-omitted-from-log assertions are unchanged.
+  - Evidence: uv run --python 3.12 and 3.15 pytest: 770 passed each; ruff, mypy and codeality-py gate green

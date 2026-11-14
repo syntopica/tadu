@@ -11,10 +11,6 @@
 
 ## Compatibility
 
-- [ ] **Compatibility:** `tests/test_board_handler.py::test_log_omits_the_query` fails on Python 3.12 although `requires-python` is `>=3.12`.
-
-  On 3.12.8 the malformed request `GET /?token=... HTTP/9 junk` gets an HTML error body without the `HTTP/1.0 400` status line the test expects; the test passes on 3.13, 3.14 and 3.15 (checked 2026-11-14 in a clean copy). Smallest next step: decide whether to raise `requires-python` to `>=3.13` or make the assertion accept the 3.12 response, and add 3.12 to the CI matrix if it stays supported.
-
 ## Board
 
 - [!] **Board:** Decide who opens a company workspace's board and whether they only view or also move and edit cards.
