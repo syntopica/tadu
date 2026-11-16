@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tadu.category_prefix_pattern import CATEGORY_PREFIX_PATTERN
+from tadu.item_date_prefix_pattern import ITEM_DATE_PREFIX_PATTERN
 from tadu.open_item_pattern import OPEN_ITEM_PATTERN
 from tadu.required_log_labels import REQUIRED_LOG_LABELS
 
@@ -15,6 +16,7 @@ if TYPE_CHECKING:
 def render_log_entry(item: list[str], closing: Closing, section: str | None) -> list[str]:
     """The entry lines: the item's text and continuation kept, then Result and the proof line."""
     text = closing.title or OPEN_ITEM_PATTERN.sub("", item[0], count=1).strip()
+    text = ITEM_DATE_PREFIX_PATTERN.sub("", text, count=1)
     prefix = CATEGORY_PREFIX_PATTERN.match(text)
     if closing.category or prefix is None:
         bare = text[prefix.end() :] if prefix else text

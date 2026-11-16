@@ -37,3 +37,8 @@ def test_explicit_category_replaces_the_prefix_and_title_the_text() -> None:
 def test_resolution_for_an_obsolete_item() -> None:
     dropped = Closing("-", "superseded", None, None, None, DAY)
     assert render_log_entry(["- [ ] a"], dropped, None)[-1] == "  - Resolution: superseded"
+
+
+def test_item_with_its_own_date_and_category_keeps_the_category() -> None:
+    item = ["- [ ] 2026-10-18 — **Coverage:** a"]
+    assert render_log_entry(item, closing(), "Section")[0] == "- [x] 2026-10-19 — **Coverage:** a"

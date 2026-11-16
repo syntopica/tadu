@@ -112,3 +112,9 @@
   `[[view]]` tables are read by `tadu list --view` only; the board keeps its own views in the browser's `localStorage`. Smallest next step: send the workspace views with the board payload and list them under Views, read-only.
   - Result: Board payload carries views; the sidebar lists them read-only under Workspace views.
   - Evidence: tests/test_board_payload.py::test_sends_the_workspace_views, tests/test_view_summary.py; full gate green
+
+- [x] 2026-11-16 — **Close:** `tadu close` turns the section heading into the category when the closed item already carries its own date and bold category.
+
+  In teleporte-web on 2026-11-16, closing `- [ ] 2026-11-16 — **Coverage database hardening (final review minors):** ...`, listed under `## Mailbox and chat pass (2026-11-15)`, wrote `- [x] 2026-11-16 — **Mailbox and chat pass (2026-11-15):** 2026-11-16 — **Coverage database hardening ...`. The same shape is in that repo's TODO_LOG.md at lines 332, 341, 1550 and 1581, and `tadu doctor` passes it. Smallest next step: a failing test that closes such an item, then reuse the item's own date and category instead of prefixing the heading.
+  - Result: render_log_entry strips the item's own leading date when a bold category follows, so the heading no longer prefixes it.
+  - Evidence: uv run pytest: 771 passed incl. test_item_with_its_own_date_and_category_keeps_the_category; ruff and mypy clean
