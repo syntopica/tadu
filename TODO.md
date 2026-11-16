@@ -15,6 +15,12 @@
 
   On 3.12.8 the malformed request `GET /?token=... HTTP/9 junk` gets an HTML error body without the `HTTP/1.0 400` status line the test expects; the test passes on 3.13, 3.14 and 3.15 (checked 2026-11-14 in a clean copy). Smallest next step: decide whether to raise `requires-python` to `>=3.13` or make the assertion accept the 3.12 response, and add 3.12 to the CI matrix if it stays supported.
 
+## Close
+
+- [ ] **Close:** `tadu close` turns the section heading into the category when the closed item already carries its own date and bold category.
+
+  In teleporte-web on 2026-11-16, closing `- [ ] 2026-11-16 — **Coverage database hardening (final review minors):** ...`, listed under `## Mailbox and chat pass (2026-11-15)`, wrote `- [x] 2026-11-16 — **Mailbox and chat pass (2026-11-15):** 2026-11-16 — **Coverage database hardening ...`. The same shape is in that repo's TODO_LOG.md at lines 332, 341, 1550 and 1581, and `tadu doctor` passes it. Smallest next step: a failing test that closes such an item, then reuse the item's own date and category instead of prefixing the heading.
+
 ## Board
 
 - [!] **Board:** Decide who opens a company workspace's board and whether they only view or also move and edit cards.
