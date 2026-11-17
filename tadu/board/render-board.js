@@ -7,6 +7,7 @@ import { el } from "./el.js";
 import { formatCount } from "./format-count.js";
 import { icon } from "./icon.js";
 import { setView } from "./set-view.js";
+import { shownBadges } from "./shown-badges.js";
 import { boardColumns } from "./board-columns.js";
 
 // The kanban: one column per shown state, each drawing at most
@@ -24,6 +25,7 @@ export function renderBoard(store, sets, content) {
   }
   const board = el("div", "board");
   const keys = [];
+  const shown = shownBadges("state", store.filters);
   for (const column of columns) {
     const cards = sets.shown.filter((card) => card.column === column);
     const node = el("section", `column state-${column}`);
@@ -35,7 +37,7 @@ export function renderBoard(store, sets, content) {
     );
     const list = el("div", "column-cards");
     for (const card of cards.slice(0, BOARD_COLUMN_CAP)) {
-      list.append(boardCard(card, store.selected === card.key));
+      list.append(boardCard(card, store.selected === card.key, shown));
       keys.push(card.key);
     }
     if (cards.length === 0) {

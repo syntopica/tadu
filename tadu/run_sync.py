@@ -14,11 +14,11 @@ from tadu.read_sync_source import read_sync_source
 from tadu.replace_rule_block import replace_rule_block
 from tadu.rule_block_text import rule_block_text
 from tadu.same_ignoring_wrapping import same_ignoring_wrapping
-from tadu.write_file_atomically import write_file_atomically
+from tadu.write_if_unchanged import write_if_unchanged
 
 
 def run_sync(path: str, file: str | None, *, write: bool, adopt_legacy: bool) -> int:
-    """Print the diff for the rule block; apply it only with write."""
+    """Print the diff for the rule block; apply it only with write, to the text that was read."""
     root = Path(path)
     if not root.is_dir():
         print(f"{root}: not a directory", file=sys.stderr)
@@ -46,6 +46,4 @@ def run_sync(path: str, file: str | None, *, write: bool, adopt_legacy: bool) ->
             )
         )
     )
-    if write:
-        write_file_atomically(target, after)
-    return 0
+    return 2 if write and not write_if_unchanged(target, before, after) else 0

@@ -27,6 +27,7 @@ def scan_items(
             continue
         title = item_title(lines, fenced, index, match.group(3))
         occurrence = seen.get(title, 0)
+        # keys: counts the items of each title; replacing the count is the point.
         seen[title] = occurrence + 1
         if match.group(1) in states:
             key = derived_key(repository, path, title, occurrence)

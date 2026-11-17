@@ -199,7 +199,7 @@ The maintenance rule lives in the repository's agent instruction file
 (`AGENTS.md`, else `CLAUDE.md`) between two marker lines:
 
 ```md
-<!-- tadu:rule v3 -->
+<!-- tadu:rule v4 -->
 ...
 <!-- /tadu:rule -->
 ```
@@ -207,7 +207,9 @@ The maintenance rule lives in the repository's agent instruction file
 The number in the open marker is the rule block's version, separate from the
 format version: v2 adds the closed-entry template and the labels it requires;
 v3 adds the `tadu close` command, the instruction to run `tadu doctor .` before
-committing, and an install hint.
+committing, and an install hint; v4 adds item kinds and the `next`, `inbox`,
+`urgent`, `add` and `mark` commands, with recording a decision instead of
+waiting for one.
 A block older than the current version is a warning until `tadu sync` rewrites
 it.
 
@@ -251,9 +253,12 @@ the item. None is required, and a file without them is as valid as before.
 | `ID` | `t-` followed by a lowercase UUID4, for example `t-55161023-f3a9-43a3-94df-589ca752fa13`. Generated wherever the item is created; it never changes and a copied item gets a new one. |
 | `Priority` | `urgent`, `high`, `normal` or `low`. Absent means unprioritized, not normal. |
 | `Assignees` | Comma-separated person IDs from the workspace file, at least one. Never an email or a display name. |
-| `Due` | A real calendar date written `YYYY-MM-DD`. |
+| `Due` | A real calendar date written `YYYY-MM-DD`: the deadline. |
+| `Check on` | A real calendar date written `YYYY-MM-DD`: when to look at the item again, to follow it up or verify it. Not a deadline. |
+| `Not before` | A real calendar date written `YYYY-MM-DD`: the item cannot be started before this day. |
 | `Labels` | Comma-separated lowercase slugs: letters and digits, with hyphens after the first character. |
 | `Queue` | `backlog` or `ready`, default `backlog`. Only an item in state `[ ]` is affected. |
+| `Kind` | `task`, `decision`, `waiting` or `later`: what the next move on the item is, described under Item kinds. Absent means unclassified, not task. |
 | `Estimate` | A positive whole number of minutes, 1 to 9 digits. Parsed, not shown. |
 
 Rules:
@@ -271,6 +276,11 @@ Rules:
 - `F003` is a warning for a line of an open item that has a field name, exactly
   two spaces of indent and a colon, but is not read as a field: either it
   follows text without a blank line, or its value is empty.
+- `F004` is a warning for fields of an open item that contradict each other or
+  its state: `Not before:` or `Check on:` after `Due:`, an item in progress
+  (`[~]`) whose `Not before:` is still ahead or whose `Kind:` is `later`, and
+  `Queue: ready` on a `waiting` or `later` item. A blocked item (`[!]`) may be
+  of any kind, so its state never contradicts a kind.
 - The title of an item is the text after its marker (and after the date of a log
   entry) joined with the lines that follow it in the same paragraph, each
   stripped and separated by a single space. The paragraph stops at the first
@@ -281,6 +291,61 @@ Rules:
   hex digits derived from its repository, file, title and the number of earlier
   items with the same title. It is flagged unstable, because it changes when
   the title does.
+
+## Item kinds
+
+`Kind:` tells apart the items you can act on from those you cannot act on
+yet. It is independent of the state marker: it does not change the item's
+state or column, and an item of any kind can be `[ ]`, `[~]` or `[!]`. An item
+without `Kind:` is unclassified: tools never guess a kind from its text, and
+`--kind unclassified` lists the items still to sort.
+
+| Kind | The item is | Write in it | It closes when |
+| ---- | ----------- | ----------- | -------------- |
+| `task` | work you can do yourself | what to do and how to check it | the work is done and validated |
+| `decision` | a choice that must be made before work can go on | the options, and who decides in `Assignees:` when known | the choice is made; the entry's `Result:` states it and `Evidence:` says where it is recorded |
+| `waiting` | something another person or organization owes | who owes what, and since when | it arrives, or you stop waiting (`[-]` with the reason) |
+| `later` | not actionable now, kept to look at again | what to check and what would make it actionable | it becomes work, or it no longer matters (`[-]`) |
+
+Three dates keep their own meaning on any kind. `Due:` is the deadline.
+`Check on:` is when to look at the item again: to chase a `waiting` item, to
+revisit a `later` one, or to verify a task. `Not before:` is the day before
+which the item cannot be started; until then the tools that pick work leave it
+out. `--check-before` lists what has a check date before a day.
+
+```md
+- [ ] **Shipping:** Choose between the carrier's REST and SOAP APIs.
+
+  Kind: decision
+
+  Assignees: ana
+
+- [!] **Shipping:** Carrier sends the production API key (asked 2026-11-02).
+
+  Kind: waiting
+
+  Check on: 2026-11-09
+
+  Due: 2026-11-20
+
+- [ ] **Billing:** Check whether the retry volume has dropped after the fix.
+
+  Kind: later
+
+  Check on: 2026-12-01
+
+- [ ] **Billing:** Move the invoices to the new VAT rate.
+
+  Kind: task
+
+  Not before: 2027-01-01
+```
+
+When a `later` item becomes actionable, or a decision turns into the work it
+chose, change its `Kind:` to `task` or remove the line instead of adding a
+second item. Work that a `decision` or `waiting` item holds up stays a `task`
+marked `[!]`, naming that item as its blocker; a `waiting` item may itself be
+`[!]` when nothing can move until it arrives.
 
 ## Workspaces
 
@@ -329,11 +394,11 @@ organization = "studio"
 - `[[person]]`: `id` and `name` are required, `organization` is optional and
   must name an organization; IDs are unique.
 - `[[view]]`: a saved filter set. `name` is required and unique; the optional
-  `project`, `org`, `role`, `assignee`, `column`, `priority`, `label`,
-  `due_before` (a TOML date) and `include_cancelled` (a boolean) are the
+  `project`, `org`, `role`, `assignee`, `column`, `priority`, `kind`, `label`,
+  `due_before` and `check_before` (TOML dates), `include_cancelled` and `open` (booleans) are the
   criteria of the `tadu list` filters of the same names. `project`, `org` and
   `assignee` must name a project, organization or person of the workspace, and
-  `column` and `priority` take the values the flags accept. Any other key is an
+  `column`, `priority` and `kind` take the values the flags accept. Any other key is an
   error.
 
 ```toml
@@ -403,8 +468,9 @@ with exactly these keys:
 | `column` | one of the columns above |
 | `title`, `text` | the first paragraph without its marker, and the full item text |
 | `day` | the date before the title, or `null` |
-| `priority`, `due`, `estimate` | the field value, or `null` |
+| `priority`, `due`, `check_on`, `not_before`, `estimate` | the field value, or `null` |
 | `queue` | `backlog` or `ready`, `backlog` when absent |
+| `kind` | `task`, `decision`, `waiting` or `later`, `null` when absent (unclassified) |
 | `assignees`, `labels` | lists |
 | `project` | the project key, or `null` |
 | `organizations` | a list of `{"role": ..., "org": ...}` |
@@ -412,7 +478,8 @@ with exactly these keys:
 | `editor_url`, `remote_url` | a link to the line, or `null` |
 
 Filters: `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`,
-`--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` replaces
+`--kind` (a kind or `unclassified`), `--label`, `--due-before`, `--check-before`,
+`--include-cancelled` and `--open`. `--workspace DIR` replaces
 the repository roots; giving both exits 2. `--view NAME` starts from the workspace's saved
 view of that name, and every filter flag given beside it replaces the view's
 criterion; it needs `--workspace`, and an unknown name exits 2.

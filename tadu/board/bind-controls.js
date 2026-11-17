@@ -36,7 +36,7 @@ export function bindControls(store) {
   byId("phone-search").addEventListener("click", () =>
     byId(store.view === "portfolio" ? "portfolio-search" : "search").focus(),
   );
-  for (const name of ["role", "priority", "column", "dueBefore"]) {
+  for (const name of ["role", "priority", "kind", "column", "dueBefore"]) {
     byId(`filter-${name}`).addEventListener("change", (event) => {
       store.filters = { ...store.filters, [name]: event.target.value };
       requestRender();

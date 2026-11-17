@@ -17,9 +17,11 @@ def test_reads_every_criterion() -> None:
         "assignee": "ana",
         "column": "blocked",
         "priority": "urgent",
+        "kind": "later",
         "label": "bug",
         "due_before": date(2026, 12, 31),
         "include_cancelled": True,
+        "open": True,
     }
     assert parse_view(row) == ViewEntry(
         "urgent",
@@ -30,9 +32,11 @@ def test_reads_every_criterion() -> None:
             "ana",
             "blocked",
             "urgent",
+            "later",
             "bug",
             date(2026, 12, 31),
             include_cancelled=True,
+            open=True,
         ),
     )
 
@@ -47,6 +51,7 @@ def test_name_only_is_an_empty_filter() -> None:
         ({}, "view: name must be a string"),
         ({"name": "x", "colour": "red"}, "view: unknown key colour"),
         ({"name": "x", "priority": "soon"}, "view: priority must be one of"),
+        ({"name": "x", "kind": "someday"}, "view: kind must be one of"),
     ],
 )
 def test_bad_rows_are_errors(row: dict[str, object], fragment: str) -> None:

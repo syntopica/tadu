@@ -8,17 +8,23 @@ tadu is a backlog format for repositories that coding agents maintain, plus the 
 
 The format is specified in [spec/todo-format-v1.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md).
 
-Nine commands:
+Fifteen commands:
 
 - `tadu init` starts the backlog in a repository that has none.
 - `tadu doctor` checks a repository against the format and never writes.
 - `tadu sync` updates the marked rule block in an agent instruction file.
+- `tadu add` puts one new item into `TODO.md`, such as a decision for a person.
+- `tadu mark` sets an open item's state: blocked with its blocker named, open again, or in progress.
 - `tadu close` moves one finished item from `TODO.md` into `TODO_LOG.md`.
 - `tadu list` prints the items of one or more repositories, or of a workspace, as lines or JSON.
 - `tadu show` prints one item by its key.
+- `tadu next` lists the tasks an agent can do now without a person.
+- `tadu inbox` lists what waits on a person: decisions, follow-ups and checks whose day has come, their blocked tasks.
+- `tadu urgent` lists what is urgent, high priority or due soon, by who has to act.
 - `tadu feed` prints the recently closed items of one or more repositories, or of a workspace, as JSON.
 - `tadu board` serves a read-only kanban page for a workspace.
 - `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
+- `tadu mcp` serves `next`, `inbox`, `urgent`, `list`, `show`, `add`, `mark` and `close` as tools an agent sees without any instruction file.
 
 Contributors need none of it: the rule block that `sync` writes into `AGENTS.md` or `CLAUDE.md` tells any agent, or any person, how to add an item and how to log closed work in a shape `doctor` accepts.
 
@@ -45,7 +51,7 @@ tadu --version
 ```
 
 ```text
-tadu 0.1.0
+tadu 0.2.0
 ```
 
 ## Start a repository
@@ -82,23 +88,133 @@ Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` w
 
 ## List and show items
 
-`tadu list` reads the open items of the repository roots given (default `.`) and prints one line per item as `repository:path:line [column] priority title`, with `-` for no priority. The title is the item's first paragraph, so a hard-wrapped item shows whole; a title over 160 characters is cut to 157 plus `...` in this listing (`--json` and `show` stay full):
+`tadu list` reads the open items of the repository roots given (default `.`) and prints one line per item as `repository:path:line [column] priority title`, with `-` for no priority; an item with a `Kind:` shows it in the brackets, as `[backlog/decision]`, so a backlog without kinds prints exactly as before. The title is the item's first paragraph, so a hard-wrapped item shows whole; a title over 160 characters is cut to 157 plus `...` in this listing (`--json` and `show` stay full):
 
 ```bash
 tadu list shop
 ```
 
 ```text
-shop:TODO.md:6 [backlog] high **Billing:** Reject duplicate webhook deliveries.
-shop:TODO.md:12 [in_progress] - **Checkout:** Add the gift note field.
-shop:TODO.md:14 [blocked] - **Shipping:** Wait for the carrier API key.
+shop:TODO.md:10 [backlog] high **Checkout:** Reject duplicate webhook deliveries.
+shop:TODO.md:14 [in_progress] - **Checkout:** Add the gift note field.
+shop:TODO.md:16 [backlog/decision] high **Checkout:** Decide whether guest checkout keeps the phone field mandatory.
+shop:TODO.md:26 [blocked] high **Shipping:** Switch to live carrier rates.
+shop:TODO.md:34 [backlog/decision] - **Shipping:** Choose REST or SOAP for the carrier integration.
+shop:TODO.md:38 [backlog/waiting] - **Shipping:** Carrier sends the production API key.
+shop:TODO.md:48 [backlog/later] - **Billing:** Check whether retries dropped after the fix.
+shop:TODO.md:54 [backlog/task] - **Billing:** Move invoices to the new VAT rate.
 ```
 
-`--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. `--view NAME` applies a saved view of the workspace (see below); filter flags given beside it win, and it needs `--workspace`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
+The kind tells the work you can do apart from the rest: `Kind: task` for work you can do, `Kind: decision` for a choice that must be made, `Kind: waiting` for something another person or organization owes, `Kind: later` for something not to do now. An item without `Kind:` is unclassified; tadu never guesses a kind from the text, and `--kind unclassified` lists what is left to sort. Three dates keep apart what used to share `Due:`: `Due:` is the deadline, `Check on:` the day to look at the item again (chase it, revisit it, verify it) and `Not before:` the day before which it cannot start. The kind never changes an item's state or column, and a blocked `[!]` item may be of any kind; the spec's Item kinds section says what to write in each. `--kind` and `--check-before` filter on them, and `next`, `inbox` and `urgent` (below) read them to say who has to act.
 
-`tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Labels:`, `Queue:` and `Estimate:` fields, described in the spec; `doctor` warns about malformed ones (`F001`) repeated IDs (`F002`) and field lines that are not read (`F003`).
+`--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--kind` (a kind or `unclassified`), `--label`, `--due-before`, `--check-before`, `--include-cancelled` and `--open`, which keeps only open items. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. A path is named by its directory, unless another path given has a directory of the same name: then both are named by their full path, so `~/acme/api` and `~/globex/api` never look alike. A directory given twice is read once. `--view NAME` applies a saved view of the workspace (see below); filter flags given beside it win, and it needs `--workspace`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
+
+`tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Check on:`, `Not before:`, `Labels:`, `Queue:`, `Kind:` and `Estimate:` fields, described in the spec; `doctor` warns about malformed ones (`F001`), repeated IDs (`F002`), field lines that are not read (`F003`) and fields that contradict each other or the item's state (`F004`), such as `Not before:` after `Due:` or `Kind: later` on an item in progress.
 
 `tadu feed` is the recently-done feed: the done and cancelled `TODO_LOG.md` entries of the last `--done-days` days (default 14), newest first by their closing date, one JSON object per line with the same keys as `list --json`. It takes the same repository paths or `--workspace DIR`; entries closed on the same day keep their repository and log order.
+
+## Ask what to do next
+
+Three commands answer what people ask of an agent. Each reads open items only, most pressing first (priority, then the earliest date, then started before ready before backlog), takes repository paths or `--workspace DIR` and `--json`, and prints items as `list` does. On standard error each says what else is open and which command lists it, so an agent that runs one finds the others.
+
+| Request | Command | Lists |
+| ------- | ------- | ----- |
+| "Work alone, I'll be away" | `tadu next` | tasks and unclassified items that are not blocked, not before their `Not before:` day and not assigned only to someone else |
+| "What's waiting for me?", "I'm here" | `tadu inbox` | decisions, `waiting` and `later` items whose `Check on:` day or `Due:` deadline has come, any other item whose `Check on:` day has come, and the person's blocked tasks |
+| "What's urgent?" | `tadu urgent` | items of urgent or high priority, and items whose `Due:` or `Check on:` is tomorrow or earlier (`--days N` widens the window) |
+
+```bash
+tadu inbox shop --person ana
+```
+
+```text
+Decide: choices a person must make
+shop:TODO.md:16 [backlog/decision] high **Checkout:** Decide whether guest checkout keeps the phone field mandatory.
+shop:TODO.md:34 [backlog/decision] - **Shipping:** Choose REST or SOAP for the carrier integration.
+
+Chase: waiting on others, follow-up due
+shop:TODO.md:38 [backlog/waiting] - **Shipping:** Carrier sends the production API key.
+
+Check: items whose check date has come
+shop:TODO.md:48 [backlog/later] - **Billing:** Check whether retries dropped after the fix.
+
+Blocked: tasks that cannot go on
+shop:TODO.md:26 [blocked] high **Shipping:** Switch to live carrier rates.
+```
+
+The same backlog answers the three questions directly: what depends on me is `tadu inbox --person ana` (or the workspace's `me`), what waits on others is `tadu list --kind waiting`, and what to check is the inbox's Check section or `tadu list --check-before <day>`. `tadu next` leaves out the VAT task until its `Not before:` day.
+
+`inbox` and `urgent` group items under headings that say who acts: Do, Decide, Chase, Check and Blocked; with `--json` each object adds a `section` key (`do`, `decide`, `chase`, `check` or `blocked`) to the `list` keys. `next` and `inbox` act for `--person ID`, else the workspace's `me`: an item assigned only to others is left out and an unassigned one is anyone's. Without a person every item counts, and the inbox has no blocked tasks, since nobody is named on them.
+
+An agent working alone takes its work from `next`. When it meets a question only a person can answer, it records the question with `tadu add --kind decision` and the options as notes, blocks the task with `tadu mark --state blocked --note` naming the decision and goes on with the next task; `inbox` shows the decision when the person is back, and once it is closed `tadu mark --state open` reopens the task.
+
+## Add an item
+
+`tadu add` writes one new open item into `TODO.md`: last in its `## --category` section (created at the end of the file when missing, and the title gets the `**Category:**` prefix), else at the end. Like `close`, it prints the diff and changes nothing until `--write`, after which it runs `doctor`:
+
+```bash
+tadu add --title "Raise the acquirer limit or split large charges." --category Checkout \
+  --kind decision --priority urgent \
+  --note "Raising the limit needs a contract change; splitting ships today." --write
+```
+
+```text
+- [ ] **Checkout:** Raise the acquirer limit or split large charges.
+
+  ID: t-636b2853-f622-4fd9-accd-34ce0ce32741
+
+  Kind: decision
+
+  Priority: urgent
+
+  Raising the limit needs a contract change; splitting ships today.
+```
+
+The item gets a new `ID:` unless `--no-id`, then the fields given (`--kind`, `--priority`, `--assignees`, `--due`, `--check-on`, `--not-before`, `--labels`, `--queue`, `--estimate`; without `--kind` the item is left unclassified), then one paragraph per `--note`. A value the fields table does not allow, a blank or multi-line argument, a category containing `*` and a note that would read as a field, a list item or a fence exit `2` before anything is written. A `TODO.md` with irregular line endings or an unclosed fence is refused, and so is a change that would give `doctor` an error; the write is atomic, under the same lock as `close`, and only when the file did not change since it was read.
+
+## Change an item's state
+
+`tadu mark` sets the state of the one open item whose first line contains `--match`: `--state blocked` (`[!]`), `open` (`[ ]`) or `in_progress` (`[~]`). `--note` adds a paragraph at the end of the item, and blocking needs one, since a blocked item names its blocker. It prints the diff and writes only with `--write`, with the same checks, lock and refusals as `add`; no match or more than one exits `2` and lists the candidates.
+
+```bash
+tadu mark --match "over 10,000 EUR" --state blocked \
+  --note 'Blocked on the decision "Raise the acquirer limit or split large charges".' --write
+tadu mark --match "over 10,000 EUR" --state open --note "Decided: split charges above 10,000 EUR." --write
+```
+
+## Agent tools over MCP
+
+`tadu mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server on standard input and output, with no dependencies. An agent connected to it sees eight tools with their descriptions and a short usage note, so it needs no rule in `AGENTS.md` or `CLAUDE.md` to know when to use them:
+
+| Tool | Does | Writes |
+| ---- | ---- | ------ |
+| `next`, `inbox`, `urgent` | what the commands of the same name print | no |
+| `list`, `show` | the `list` filters (`kind`, `priority`, `column`, `assignee`, `label`, `due_before`, `check_before`, `open`) and one item by key | no |
+| `add` | `tadu add --write` | `TODO.md` |
+| `mark` | `tadu mark --write` | `TODO.md` |
+| `close` | `tadu close --write` with `evidence` or `resolution` | `TODO.md` and `TODO_LOG.md` |
+
+Each call runs the tadu command of that name, so a tool answers exactly as the command line does, checks included; a refused call comes back as a tool error with the command's message. The server reads the repository it starts in, the roots it is given, or `--workspace DIR`. `add`, `mark` and `close` write to exactly one repository: the only one the server reads, or the one named by `repository`, which is the name items show (the workspace key, the directory name, or the full path of directories that share a name) or an absolute path. A directory name two repositories share and a relative path never choose one; the call fails and lists the repositories by full path.
+
+In Claude Code, for one project:
+
+```bash
+claude mcp add tadu -- tadu mcp
+```
+
+or in the project's `.mcp.json`, with `"args": ["mcp", "--workspace", "/path/to/workspace"]` to serve a workspace:
+
+```json
+{ "mcpServers": { "tadu": { "command": "tadu", "args": ["mcp"] } } }
+```
+
+In Codex, in `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.tadu]
+command = "tadu"
+args = ["mcp"]
+```
 
 ## Board
 
@@ -139,7 +255,7 @@ Every view, and every count on the page, shows one scope: a company, one of its 
 
 Portfolio counts the scope as a tree, Company > Project > Repository, where each project appears once under the company that owns it and every row sums distinct repositories; Group: Client lists the projects under their client organizations instead. A row's name opens its items in its scope, its blocked count the Blocked view of them. Cards and rows name their company, project and repository; under 720 px the portfolio becomes one card per company.
 
-A search box, a filters popover (assignee, priority, label, state, due before, role, organization and the toggles) with removable chips, grouping and sorting apply to every list; lists draw only the rows on screen, so a workspace of thousands of items stays fast. Clicking an item opens its detail: full text, company, project, repository and relations, location, ID, fields, parse warnings and the links to the editor and the forge. Keys: `/` or Cmd/Ctrl-K search, G then S opens the scope switcher (type to find a company, project or repository, arrows and Enter to choose), J and K move, Enter opens the detail, E opens the editor, Esc closes. Saved views (with their scope), starred and recent scopes and the light or dark theme are kept in the browser's `localStorage`; under 720 px the page becomes a list with a bottom bar.
+A search box, a filters popover (assignee, priority, kind, label, state, due before, role, organization and the toggles, where Waiting on me shows what `tadu inbox` lists for `me`) with removable chips, grouping and sorting apply to every list; a decision, waiting or later item carries a badge saying so and a `Check on:` day shows beside the due date, and Group: Kind splits any list into tasks, decisions, waiting on others and later (grouped or filtered by kind, the headings or the chip name the kind and the badges are left out); lists draw only the rows on screen, so a workspace of thousands of items stays fast. Clicking an item opens its detail: full text, company, project, repository and relations, location, ID, fields, parse warnings and the links to the editor and the forge. Keys: `/` or Cmd/Ctrl-K search, G then S opens the scope switcher (type to find a company, project or repository, arrows and Enter to choose), J and K move, Enter opens the detail, E opens the editor, Esc closes. Saved views (with their scope), starred and recent scopes and the light or dark theme are kept in the browser's `localStorage`; under 720 px the page becomes a list with a bottom bar.
 
 The board only reads. It writes no backlog, workspace or index file, and it cannot change a card: every request other than GET answers `405` with `Allow: GET`. Edit the `TODO.md` files, or use `tadu close`.
 
@@ -173,7 +289,7 @@ tadu close --match "Fix the header" --evidence "tests/test_header.py passes" --r
 
 ## Write the rule block
 
-`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v3 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
+`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v4 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
 
 ```bash
 tadu sync .
@@ -182,10 +298,10 @@ tadu sync .
 ```text
 --- AGENTS.md
 +++ AGENTS.md
-@@ -1 +1,31 @@
+@@ -1 +1,59 @@
  # Demo
 +
-+<!-- tadu:rule v3 -->
++<!-- tadu:rule v4 -->
 +
 +## Continuous TODO, Work Log, and History Coverage
 ...
@@ -203,12 +319,12 @@ tadu sync .
 AGENTS.md: up to date
 ```
 
-- The write goes to a temporary file in the same directory that then replaces the target, so a failure never leaves a half-written file. Line endings (LF or CRLF) and file mode are kept, and only the text between the markers changes. A block that differs from the current one only in blank lines or soft line wrapping, as a Markdown formatter such as Prettier with `proseWrap` leaves it, counts as up to date; a changed word, list item, heading, hard line break or fenced line is still drift.
+- The write goes to a temporary file in the same directory that then replaces the target, so a failure never leaves a half-written file, and only when the file still holds what `sync` read: an edit made meanwhile is kept and `sync` exits `2` (a file that did not exist is created only if it still does not). Line endings (LF or CRLF) and file mode are kept, and only the text between the markers changes. A block that differs from the current one only in blank lines or soft line wrapping, as a Markdown formatter such as Prettier with `proseWrap` leaves it, counts as up to date; a changed word, list item, heading, hard line break or fenced line is still drift.
 - Markers count only when they are a whole line outside a fenced code block, so quoting them in prose or in an example is safe.
 - `--file docs/rules.md` selects another instruction file, given relative to the repository root. `sync` refuses a root that is not a directory and a file that resolves outside the root, and exits `2`; it also exits `2` for unbalanced markers and for a file that is not valid UTF-8.
 - `--adopt-legacy` replaces an older, unmarked section headed "Continuous TODO" instead of appending a second rule. The section ends at the next Markdown heading of any level, at the next line starting with `<!--`, or at the end of the file. Use it only when that section holds nothing but the standard rule. When it holds repository-specific lines, run plain `tadu sync . --write` and keep those lines by hand under a "TODO conventions specific to this repository" heading after the block.
 
-A repository synced before the current block version gets an `R004` warning; run `tadu sync . --write` to update it. Version 2 added the closed-entry template and names the `Evidence:` and `Resolution:` lines the log check requires; version 3 adds `tadu close`, tells agents to run `tadu doctor .` before committing, and says how to install tadu.
+A repository synced before the current block version gets an `R004` warning; run `tadu sync . --write` to update it. Version 2 added the closed-entry template and names the `Evidence:` and `Resolution:` lines the log check requires; version 3 adds `tadu close`, tells agents to run `tadu doctor .` before committing, and says how to install tadu; version 4 adds item kinds and `next`, `inbox`, `urgent`, `add` and `mark`, so an agent working alone records a decision for a person instead of waiting for one.
 
 ## Adopt the log check
 
@@ -290,6 +406,7 @@ Branches that close work in the same month both append to the same section of `T
 | F001 | warning | an item field is malformed |
 | F002 | warning | an `ID:` is used by more than one open item |
 | F003 | warning | a field line of an open item is not read: no blank line before it, or no value |
+| F004 | warning | fields of an open item contradict each other or its state, such as `Not before:` after `Due:` |
 | W001 | warning | an open item is assigned to someone who is not a person in the workspace |
 | W002 | warning | an `ID:` is used in more than one repository of the workspace |
 | W003 | warning | a workspace repository could not be scanned |

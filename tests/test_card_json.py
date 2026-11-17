@@ -7,8 +7,9 @@ from tadu.card_json import card_json
 
 KEYS = [
     *("key", "stable", "repository", "path", "line", "end_line", "state", "column"),
-    *("title", "text", "day", "priority", "assignees", "due", "labels", "queue"),
-    *("estimate", "project", "organizations", "problems", "editor_url", "remote_url"),
+    *("title", "text", "day", "priority", "assignees", "due", "check_on", "not_before"),
+    *("labels", "queue"),
+    *("kind", "estimate", "project", "organizations", "problems", "editor_url", "remote_url"),
 ]
 
 
@@ -23,6 +24,7 @@ def test_values() -> None:
     assert (data["day"], data["due"]) == ("2026-11-01", "2026-12-01")
     assert (data["assignees"], data["labels"]) == (["ana"], ["x"])
     assert data["text"] == "<b>T</b>"
+    assert (data["queue"], data["kind"]) == ("ready", "decision")
 
 
 def test_absent_dates_are_null() -> None:

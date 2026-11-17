@@ -9,7 +9,7 @@ def test_unchanged_and_changed(tmp_path: Path, capsys: pytest.CaptureFixture[str
     (tmp_path / "TODO.md").write_text("t\n")
     assert backlog_unchanged((tmp_path / "TODO.md", "t\n"))
     assert not backlog_unchanged((tmp_path / "TODO.md", "old\n"))
-    assert "changed while closing" in capsys.readouterr().err
+    assert "changed since tadu read it; nothing written, run again" in capsys.readouterr().err
 
 
 def test_unreadable_file_writes_nothing(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:

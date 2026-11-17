@@ -80,3 +80,28 @@ def test_workspace_without_projects(tmp_path: Path) -> None:
         "projects": [],
         "repositories": [{"key": "solo"}],
     }
+
+
+def test_waiting_on_me_is_the_inbox_of_me(tmp_path: Path) -> None:
+    workspace = board_workspace(tmp_path)
+    (tmp_path / "shop" / "TODO.md").write_text(
+        "- [ ] Pick a carrier.\n\n  Kind: decision\n\n"
+        "- [ ] Ship it.\n\n  Assignees: ana\n\n"
+        "- [!] Go live.\n\n  Assignees: ana\n\n"
+        "- [ ] Bo's call.\n\n  Kind: decision\n\n  Assignees: bo\n\n"
+        "- [ ] Look again.\n\n  Kind: later\n\n  Due: 2026-12-01\n"
+    )
+    payload = board_payload(state(workspace), TODAY)
+    cards = payload["cards"]
+    assert isinstance(cards, list)
+    assert [c["waiting_on_me"] for c in cards] == [True, False, True, False, False]
+
+
+def test_nobody_waits_without_me(tmp_path: Path) -> None:
+    workspace = board_workspace(tmp_path)
+    local = tmp_path / "tadu-workspace.local.toml"
+    local.write_text(local.read_text().replace('me = "ana"\n', ""))
+    (tmp_path / "shop" / "TODO.md").write_text("- [ ] Pick.\n\n  Kind: decision\n")
+    cards = board_payload(state(workspace), TODAY)["cards"]
+    assert isinstance(cards, list)
+    assert [c["waiting_on_me"] for c in cards] == [False]

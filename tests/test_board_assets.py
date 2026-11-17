@@ -1,4 +1,5 @@
 import re
+from functools import cache
 from importlib.resources import files
 
 from tadu.board_asset import board_asset
@@ -9,8 +10,10 @@ FILES = sorted(p.name for p in BOARD.iterdir() if not p.name.startswith("."))
 SCRIPTS = [name for name in FILES if name.endswith(".js")]
 DECLARATION = re.compile(r"^(export )?(async )?(function|const|let|var|class) ", re.MULTILINE)
 IMPORT = re.compile(r'^import \{ (\w+) \} from "\./([a-z0-9-]+\.js)";$', re.MULTILINE)
+EXPORTED = re.compile(r"^export (?:async )?(?:function|const) (\w+)\b", re.MULTILINE)
 
 
+@cache
 def text(name: str) -> str:
     asset = board_asset(name)
     assert asset is not None
@@ -55,9 +58,7 @@ def test_modules_export_one_unit_and_import_only_siblings() -> None:
         imports = re.findall(r"^import .*$", source, re.MULTILINE)
         assert len(imports) == len(IMPORT.findall(source)), name
         for unit, module in IMPORT.findall(source):
-            assert re.search(
-                rf"^export (async )?(function|const) {unit}\b", text(module), re.MULTILINE
-            )
+            assert unit in EXPORTED.findall(text(module)), (name, unit, module)
 
 
 def test_no_external_resources() -> None:

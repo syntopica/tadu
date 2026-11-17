@@ -12,6 +12,7 @@ DEFAULTS = {
     "role": "",
     "assignee": "",
     "priority": "",
+    "kind": "",
     "label": "",
     "dueBefore": "",
     "unassigned": False,
@@ -75,9 +76,9 @@ out({
     cleanSavedView({ name: "Scoped", where: { company: "pp", project: 3 }, filters: { project: "x" } }),
   ],
   existing: [
-    existingFilters({ ...DEFAULT_FILTERS, label: "gone", priority: "P9", dueBefore: "soon", column: "x" }, cards, columns),
+    existingFilters({ ...DEFAULT_FILTERS, label: "gone", priority: "P9", kind: "someday", dueBefore: "soon", column: "x" }, cards, columns),
     existingFilters({ ...DEFAULT_FILTERS, dueBefore: "2026-12-01" }, cards, columns),
-    existingFilters({ ...DEFAULT_FILTERS, assignee: "ana", priority: "high", column: "done" }, cards, columns),
+    existingFilters({ ...DEFAULT_FILTERS, assignee: "ana", priority: "high", kind: "waiting", column: "done" }, cards, columns),
   ],
   errors: [
     loadErrorText(Object.assign(new Error("no"), { status: 403 }), false),
@@ -124,7 +125,7 @@ def test_existing_filters_and_errors(results: dict[str, object]) -> None:
     assert results["existing"] == [
         DEFAULTS,
         {**DEFAULTS, "dueBefore": "2026-12-01"},
-        {**DEFAULTS, "assignee": "ana", "priority": "high", "column": "done"},
+        {**DEFAULTS, "assignee": "ana", "priority": "high", "kind": "waiting", "column": "done"},
     ]
     assert results["errors"] == [
         ACCESS_REFUSED,

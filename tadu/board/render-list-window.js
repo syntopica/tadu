@@ -1,6 +1,7 @@
 import { groupRow } from "./group-row.js";
 import { listRow } from "./list-row.js";
 import { requestRender } from "./request-render.js";
+import { shownBadges } from "./shown-badges.js";
 import { visibleWindow } from "./visible-window.js";
 
 // Draw only the rows that cover the viewport, absolutely positioned inside
@@ -16,6 +17,7 @@ export function renderListWindow(store, list) {
   list.end = end;
   list.dirty = false;
   const me = store.payload?.me ?? null;
+  const shown = shownBadges(store.group, store.filters);
   const nodes = [];
   for (let index = start; index < end; index += 1) {
     const row = rows[index];
@@ -29,7 +31,7 @@ export function renderListWindow(store, list) {
             }
             requestRender();
           })
-        : listRow(row.card, store.selected === row.card.key, me);
+        : listRow(row.card, store.selected === row.card.key, me, shown);
     node.classList.add("virtual");
     node.style.setProperty("--row-top", `${offsets[index]}px`);
     node.style.setProperty("--row-height", `${offsets[index + 1] - offsets[index]}px`);

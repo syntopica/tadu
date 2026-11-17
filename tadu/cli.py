@@ -1,4 +1,4 @@
-"""Command-line entry point: doctor, sync, init, close, list, show, feed, board and hook."""
+"""Command-line entry point: doctor, sync, init, close, list, show, next, inbox, urgent, add, mark, feed, board, hook, mcp."""
 
 from __future__ import annotations
 
@@ -8,24 +8,34 @@ from datetime import UTC, datetime
 from importlib.metadata import version
 from typing import TYPE_CHECKING
 
+from tadu.add_add_parser import add_add_parser
+from tadu.add_attention_parsers import add_attention_parsers
 from tadu.add_board_parser import add_board_parser
 from tadu.add_close_parser import add_close_parser
+from tadu.add_command import add_command
 from tadu.add_doctor_parser import add_doctor_parser
 from tadu.add_feed_parser import add_feed_parser
 from tadu.add_init_parser import add_init_parser
 from tadu.add_list_parser import add_list_parser
+from tadu.add_mark_parser import add_mark_parser
+from tadu.add_mcp_parser import add_mcp_parser
 from tadu.add_show_parser import add_show_parser
 from tadu.add_sync_parser import add_sync_parser
 from tadu.close_command import close_command
 from tadu.doctor_command import doctor_command
 from tadu.hook_command import hook_command
+from tadu.mark_command import mark_command
 from tadu.quiet_broken_pipe import quiet_broken_pipe
 from tadu.run_board import run_board
 from tadu.run_feed import run_feed
+from tadu.run_inbox import run_inbox
 from tadu.run_init import run_init
 from tadu.run_list import run_list
+from tadu.run_mcp import run_mcp
+from tadu.run_next import run_next
 from tadu.run_show import run_show
 from tadu.run_sync import run_sync
+from tadu.run_urgent import run_urgent
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -41,9 +51,13 @@ def main(argv: list[str] | None = None) -> int:
     add_init_parser(commands)
     add_list_parser(commands)
     add_show_parser(commands)
+    add_attention_parsers(commands)
     add_feed_parser(commands)
     add_board_parser(commands)
     add_close_parser(commands)
+    add_add_parser(commands)
+    add_mark_parser(commands)
+    add_mcp_parser(commands)
     hook = commands.add_parser("hook", help="agent hooks that run doctor after a backlog change")
     hook.add_argument("agent", choices=["claude"], help="claude: a Claude Code PostToolUse hook")
     args = parser.parse_args(argv)
@@ -51,9 +65,15 @@ def main(argv: list[str] | None = None) -> int:
     handlers: dict[str, Callable[[], int]] = {
         "hook": hook_command,
         "close": lambda: close_command(args),
+        "add": lambda: add_command(args),
+        "mark": lambda: mark_command(args),
+        "mcp": lambda: run_mcp(args, main),
         "init": lambda: run_init(args.path, args.file, write=args.write, today=today),
         "list": lambda: run_list(args, today),
         "show": lambda: run_show(args, today),
+        "next": lambda: run_next(args, today),
+        "inbox": lambda: run_inbox(args, today),
+        "urgent": lambda: run_urgent(args, today),
         "feed": lambda: run_feed(args, today),
         "board": lambda: run_board(args),
         "sync": lambda: run_sync(

@@ -12,9 +12,12 @@ from tadu.check_todo_file import check_todo_file
 
 def backlog_errors(todo: str, log: str) -> Counter[str]:
     """Count each error code the TODO.md and TODO_LOG.md checks find in these texts."""
+    # writes: a throwaway copy in a private temporary directory, removed on exit, so
+    #   doctor can check a text that is not on disk yet.
     with tempfile.TemporaryDirectory() as scratch:
         root = Path(scratch)
         for name, text in (("TODO.md", todo), ("TODO_LOG.md", log)):
+            # writes: into the temporary directory above.
             with (root / name).open("w", encoding="utf-8", newline="") as handle:
                 handle.write(text)
         findings = check_todo_file(root) + check_log_file(root)

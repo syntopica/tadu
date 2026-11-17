@@ -20,5 +20,6 @@ def backlog_unchanged(*files: tuple[Path, str]) -> bool:
         print(f"{error.path}: {error}; nothing written", file=sys.stderr)
         return False
     if changed:
-        print(f"{files[0][0].parent}: backlog changed while closing; run again", file=sys.stderr)
+        names = ", ".join(str(path) for path, _ in files)
+        print(f"{names}: changed since tadu read it; nothing written, run again", file=sys.stderr)
     return not changed

@@ -21,6 +21,7 @@ def quiet_broken_pipe(run: Callable[[], int]) -> int:
         status = run()
         sys.stdout.flush()
     except BrokenPipeError:
+        # writes: points stdout at /dev/null after the reader went away; no file changes.
         os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
         return 0
     return status

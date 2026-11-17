@@ -46,8 +46,11 @@ def js_card(column: str = "backlog", **values: object) -> dict[str, object]:
         "priority": None,
         "assignees": [],
         "due": None,
+        "check_on": None,
+        "not_before": None,
         "labels": [],
         "queue": None,
+        "kind": None,
         "estimate": None,
         "project": "storefront",
         "organizations": [

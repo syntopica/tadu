@@ -5,6 +5,7 @@ from __future__ import annotations
 from tadu.card_filter import CardFilter
 from tadu.check_row_keys import check_row_keys
 from tadu.columns import COLUMNS
+from tadu.kind_filters import KIND_FILTERS
 from tadu.optional_choice import optional_choice
 from tadu.optional_date import optional_date
 from tadu.optional_flag import optional_flag
@@ -27,8 +28,11 @@ def parse_view(row: dict[str, object]) -> ViewEntry:
             assignee=optional_text(row, "view", "assignee"),
             column=optional_choice(row, "view", "column", COLUMNS),
             priority=optional_choice(row, "view", "priority", PRIORITIES),
+            kind=optional_choice(row, "view", "kind", KIND_FILTERS),
             label=optional_text(row, "view", "label"),
             due_before=optional_date(row, "view", "due_before"),
+            check_before=optional_date(row, "view", "check_before"),
             include_cancelled=optional_flag(row, "view", "include_cancelled"),
+            open=optional_flag(row, "view", "open"),
         ),
     )

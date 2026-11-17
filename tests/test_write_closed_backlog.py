@@ -23,7 +23,7 @@ def test_a_file_changed_since_read_is_not_overwritten(
     todo, log = files(tmp_path)
     assert not write_closed_backlog((todo, "old\n", "T\n"), (log, "l\n", "L\n"), 3)
     assert log.read_text() == "l\n"
-    assert "changed while closing" in capsys.readouterr().err
+    assert "changed since tadu read it; nothing written, run again" in capsys.readouterr().err
 
 
 def test_failed_backlog_write_says_how_to_finish(

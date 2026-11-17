@@ -1,4 +1,5 @@
 import { distinctValues } from "./distinct-values.js";
+import { KIND_FILTER_TITLES } from "./kind-filter-titles.js";
 import { PRIORITY_TITLES } from "./priority-titles.js";
 
 // Filters with every value the current data no longer offers reset to ""
@@ -12,6 +13,9 @@ export function existingFilters(filters, cards, columns) {
   }
   if (!(result.priority in PRIORITY_TITLES)) {
     result.priority = "";
+  }
+  if (!(result.kind in KIND_FILTER_TITLES)) {
+    result.kind = "";
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(result.dueBefore)) {
     result.dueBefore = "";

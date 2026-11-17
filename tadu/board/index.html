@@ -13,6 +13,10 @@
 <aside class="sidebar" id="sidebar" aria-label="Navigation">
 <div class="brand">tadu</div>
 <nav class="nav" id="nav-views" aria-label="Views"></nav>
+<section class="nav-section" id="attention-section" hidden>
+<h2 class="nav-heading">Needs a person</h2>
+<div class="nav" id="nav-attention"></div>
+</section>
 <section class="nav-section" id="favourites-section" hidden>
 <h2 class="nav-heading">Starred</h2>
 <div class="nav" id="nav-favourites"></div>
@@ -95,6 +99,7 @@
 <div class="popover-grid">
 <label>Assignee<input id="filter-assignee" type="search" list="filter-assignee-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-assignee-options"></datalist></label>
 <label>Priority<select id="filter-priority"></select></label>
+<label>Kind<select id="filter-kind"></select></label>
 <label>Label<input id="filter-label" type="search" list="filter-label-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-label-options"></datalist></label>
 <label>State<select id="filter-column"></select></label>
 <label>Due before<input id="filter-dueBefore" type="date"></label>

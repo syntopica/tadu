@@ -14,7 +14,7 @@ tadu keeps one plain-text backlog (`TODO.md`, with closed work in `TODO_LOG.md`)
 
 Title (first paragraph of the item, often long, may contain inline Markdown such as `**Bold:**` category prefixes and `code`), full text, repository key, file path and line span, state (`[ ]` open, `[~]` in progress/unverified, `[!]` blocked, `[x]` done, `[-]` cancelled), column (Backlog, Ready, In progress, Blocked, Done in the last 14 days, Cancelled hidden), optional ID, priority (urgent/high/normal/low or none), assignees (person IDs), due date, labels, project, organizations with roles (client, agency, company...), closing date for done items, parse problems, an editor link and a link to the line on the remote forge.
 
-Workspace data: repositories, projects that group repositories, organizations with roles per project, people, and who "me" is ("Waiting on me" = assigned to me and blocked).
+Workspace data: repositories, projects that group repositories, organizations with roles per project, people, and who "me" is ("Waiting on me" = what `tadu inbox` lists for me: decisions, due follow-ups and checks, and my blocked tasks).
 
 ## Screens
 

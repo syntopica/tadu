@@ -16,10 +16,13 @@ def card_matches(card: Card, card_filter: CardFilter) -> bool:
         card_filter.project in (None, card.project),
         card_filter.column in (None, card.column),
         card_filter.priority in (None, fields.priority),
+        card_filter.kind in (None, fields.kind or "unclassified"),
         card_filter.assignee is None or card_filter.assignee in fields.assignees,
         card_filter.label is None or card_filter.label in fields.labels,
         card_filter.due_before is None
         or (fields.due is not None and fields.due < card_filter.due_before),
+        card_filter.check_before is None
+        or (fields.check_on is not None and fields.check_on < card_filter.check_before),
         (card_filter.role is None and card_filter.org is None)
         or any(
             card_filter.role in (None, role) and card_filter.org in (None, org)
@@ -28,5 +31,6 @@ def card_matches(card: Card, card_filter: CardFilter) -> bool:
         card.column != "cancelled"
         or card_filter.include_cancelled
         or card_filter.column == "cancelled",
+        not card_filter.open or card.item.state not in "x-",
     )
     return all(checks)

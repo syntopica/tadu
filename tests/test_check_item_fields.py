@@ -64,3 +64,14 @@ def test_f003_reports_field_lines_that_are_not_read(tmp_path: Path) -> None:
 def test_f003_ignores_recognised_fields_and_non_open_text(tmp_path: Path) -> None:
     (tmp_path / "TODO.md").write_text("- [ ] A.\n\n  Priority: high\n  Note: text\n")
     assert check_item_fields(tmp_path) == ()
+
+
+def test_kind_is_checked_like_the_other_fields(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        "- [ ] A.\n\n  Kind: someday\n\n- [ ] B.\n  Kind: waiting\n\n- [ ] C.\n\n  Kind: later\n"
+    )
+    findings = check_item_fields(tmp_path)
+    assert [(f.code, f.line, f.message) for f in findings] == [
+        ("F001", 3, "Kind is not one of task, decision, waiting, later"),
+        ("F003", 6, "Kind is not read as a field; put a blank line before it"),
+    ]

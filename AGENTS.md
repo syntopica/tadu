@@ -10,7 +10,7 @@
 uv sync && uv run pytest -v && uv run ruff check . && uv run ruff format --check . && uv run mypy tadu tests && uv run codeality-py gate
 ```
 
-<!-- tadu:rule v3 -->
+<!-- tadu:rule v4 -->
 
 ## Continuous TODO, Work Log, and History Coverage
 
@@ -27,6 +27,16 @@ parsing unchanged conversations more than once.
 - Use `[ ]` pending, `[~]` partial or unverified, `[!]` blocked, `[x]` verified
   complete, `[-]` obsolete or superseded. Keep blockers in `TODO.md` and name
   the smallest action required to unblock them.
+- Give an item a `Kind:` field when it is clear what it is: `task` for work
+  you can do, `decision` for a choice a person must make, `waiting` for
+  something someone else owes, `later` for something not to do now. Leave it
+  out when unclear. `Due:` is the deadline, `Check on:` the day to look at the
+  item again and `Not before:` the day before which it cannot start.
+- Take work with `tadu next`; `tadu inbox` lists what waits on a person and
+  `tadu urgent` what is urgent. When only a person can answer a question while
+  you work alone, record it with `tadu add --kind decision`, block the task it
+  holds up with `tadu mark --state blocked --note "<blocker>"`, and go on with
+  the next task.
 - When work becomes `[x]` or `[-]`, remove it from `TODO.md` and add a dated
   entry to `TODO_LOG.md` under `## YYYY` and `### YYYY-MM` headings, in the
   shape below. An `[x]` entry needs an `Evidence:` line and a `[-]` entry a
@@ -49,7 +59,8 @@ parsing unchanged conversations more than once.
 
 Close an item with `tadu close --match "<text>" --evidence "<proof>" --write`
 (`--resolution` for `[-]`, `--result` for the Result line); it moves the item
-and writes the entry in this shape. Run `tadu doctor .` after changing these
+and writes the entry in this shape. `add`, `mark` and `close` print a diff and
+write only with `--write`; a connected `tadu mcp` server offers the same tools. Run `tadu doctor .` after changing these
 files and before committing. If `tadu` is not on PATH, install it as
 https://github.com/syntopica/tadu#install describes, or report that it is
 missing. Format: tadu spec v1,

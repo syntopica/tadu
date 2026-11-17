@@ -4,6 +4,7 @@ import { distinctValues } from "./distinct-values.js";
 import { fillChoice } from "./fill-choice.js";
 import { fillSelect } from "./fill-select.js";
 import { isPhone } from "./is-phone.js";
+import { KIND_FILTER_TITLES } from "./kind-filter-titles.js";
 import { PRIORITY_TITLES } from "./priority-titles.js";
 import { SEARCHABLE_FILTERS } from "./searchable-filters.js";
 
@@ -34,6 +35,11 @@ export function renderToolbar(store) {
     [["", "Any"], ...Object.entries(PRIORITY_TITLES)],
     store.filters.priority,
   );
+  fillSelect(
+    document.getElementById("filter-kind"),
+    [["", "Any"], ...Object.entries(KIND_FILTER_TITLES)],
+    store.filters.kind,
+  );
   const columns = (store.payload?.columns ?? []).map((column) => [column, COLUMN_TITLES[column]]);
   fillSelect(document.getElementById("filter-column"), [["", "Any"], ...columns], store.filters.column);
   document.getElementById("filter-dueBefore").value = store.filters.dueBefore;
@@ -52,6 +58,7 @@ export function renderToolbar(store) {
     ...(companies ? [["company", "Company"], ["project", "Project"]] : []),
     ["repository", "Repository"],
     ["priority", "Priority"],
+    ["kind", "Kind"],
     ["assignee", "Assignee"],
     ...(store.view === "done" ? [["day", "Closing day"]] : []),
   ];

@@ -11,8 +11,11 @@ VIEW_KEYS = frozenset(
         "assignee",
         "column",
         "priority",
+        "kind",
         "label",
         "due_before",
+        "check_before",
         "include_cancelled",
+        "open",
     }
 )

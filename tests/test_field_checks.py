@@ -1,7 +1,7 @@
 from tadu.field_checks import FIELD_CHECKS
 
 
-def test_keys_are_the_seven_field_names() -> None:
+def test_keys_are_the_ten_field_names() -> None:
     assert set(FIELD_CHECKS) == {
         "ID",
         "Priority",
@@ -9,5 +9,8 @@ def test_keys_are_the_seven_field_names() -> None:
         "Due",
         "Labels",
         "Queue",
+        "Kind",
+        "Check on",
+        "Not before",
         "Estimate",
     }
