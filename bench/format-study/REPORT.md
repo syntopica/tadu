@@ -785,7 +785,7 @@ now sees the first 100 items only; it should use `--limit 0` or, better, the fil
 | speed | open-work queries 0.2–0.3 s at any tested size; closing 0.6 s; with the cache, whole-history commands 1.0–1.4 s at 27,500 tasks (format 1: 1.2–1.5 s) |
 | migrate only after agreement | agreed on 2026-11-17; this repository's backlog is now format 2 (10 open, 23 closed tasks, 9 categories) |
 
-Still open: an independent live run by a clean-context agent (section 7 and 10.6).
+Done: an independent clean-context run (section 10.8).
 
 ### 10.6 Live run: a real model as the agent (M, fresh data)
 
@@ -859,3 +859,20 @@ Design choices:
 
 Tested end to end: `set`, `close`, a hand edit and a `git checkout` back are each visible on the very
 next command. The result is in the table in 10.3.
+
+### 10.8 Live run by clean-context agents (M, seed 20261118, 2026-11-17)
+
+Two fresh subagents with no study context, one per arm, each confined to its prepared workspace
+(`gen.py --seed 20261118`, `live_eval.py prepare --arm prose|tadu2`), scored by `live_eval.py score`.
+Answers: [`results/live/clean-context/`](results/live/clean-context/).
+
+| M: 600 open / 6,000 closed | mean recall | mean precision | tool calls | subagent tokens |
+|---|---:|---:|---:|---:|
+| **today:** read TODO.md, grep the log | 0.80 | 0.89 | 17 | 69,053 |
+| **built tadu, format 2** | 1.00 | 0.99 | 9 | 58,529 |
+
+- Prose misses: T1 urgent+high 0.79, T4 open bugs 0.95, T5 high-priority UI bugs 0.00 (1 true item, answered "none"),
+  T7 related 0.70, T8 history 0.72. The agent judged priority, bug and UI from prose and said its matching was heuristic.
+- tadu2 misses: only T8 precision 0.91 (55 answered for 50 true), no recall loss.
+- Token totals include each subagent's own overhead, so the 1.2x gap understates the context gap measured in 10.6; the call count (17 vs 9) and the accuracy gap are the result.
+- One run per arm; no variance estimate.

@@ -2,12 +2,17 @@
   "tadu": 2,
   "id": "t-8fc7dcf3-2938-413f-b25f-b1dfe16c6c8d",
   "title": "Run the live agent evaluation of format 2 with a clean-context agent",
-  "state": "in_progress",
+  "state": "done",
   "category": "agent-ergonomics",
   "type": "test",
   "priority": "high",
   "started": "2026-11-17",
   "notes": [
     "The building assistant ran both arms at M on fresh data (REPORT section 10.6): both scored 1.00, the prose arm at 3 times the tokens, and that reader had seen the generator's phrasing. An independent agent has not run it. Smallest next step: prepare `--scale M` (and L) for `prose` and `tadu2` with `live_eval.py`, run a fresh agent in both, score both."
+  ],
+  "closed": "2026-11-17",
+  "result": "Run the live agent evaluation of format 2 with a clean-context agent",
+  "evidence": [
+    "bench/format-study/REPORT.md 10.8: clean-context run at M, prose recall 0.80 / precision 0.89 vs tadu2 1.00 / 0.99"
   ]
 }
