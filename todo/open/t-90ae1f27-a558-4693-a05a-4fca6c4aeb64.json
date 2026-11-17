@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-90ae1f27-a558-4693-a05a-4fca6c4aeb64",
+  "title": "Make tadu migrate produce a doctor-clean backlog from legacy TODO_LOG entries",
+  "state": "pending",
+  "category": "tooling",
+  "type": "bug",
+  "priority": "normal",
+  "created": "2026-11-17",
+  "notes": [
+    "Trial on copies of 73 owned repos: 64 migrate to a backlog with J003 errors (a done task needs closed/result/evidence, titles over 200 characters, an open task with closed). 9 migrated clean. Smallest next step: let migrate fill legacy closed entries (closed from the log date or the migration date, a legacy evidence marker) and cut long titles into notes, then migrate the rest of ~/p."
+  ]
+}
