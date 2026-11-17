@@ -5,8 +5,8 @@ from __future__ import annotations
 import re
 
 from tadu.fenced_lines import fenced_lines
-from tadu.item_span_end import item_span_end
 from tadu.item_state_pattern import ITEM_STATE_PATTERN
+from tadu.lazy_item_span_end import lazy_item_span_end
 
 
 def v1_item_blocks(lines: list[str]) -> tuple[tuple[tuple[str, ...], str | None], ...]:
@@ -24,5 +24,5 @@ def v1_item_blocks(lines: list[str]) -> tuple[tuple[tuple[str, ...], str | None]
             heading = line[3:].strip()
             section = None if re.fullmatch(r"\d{4}", heading) else heading or None
         elif ITEM_STATE_PATTERN.match(line):
-            blocks.append((tuple(lines[index : item_span_end(lines, index)]), section))
+            blocks.append((tuple(lines[index : lazy_item_span_end(lines, index)]), section))
     return tuple(blocks)

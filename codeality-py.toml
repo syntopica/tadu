@@ -24,6 +24,7 @@ data = [
   "tadu/board_data_path.py",
   "tadu/board_headers.py",
   "tadu/category_prefix_pattern.py",
+  "tadu/category_prefix_words.py",
   "tadu/closed_item_pattern.py",
   "tadu/columns.py",
   "tadu/day_heading_pattern.py",

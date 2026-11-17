@@ -4,16 +4,19 @@ from __future__ import annotations
 
 import re
 
+from tadu.is_category_prefix import is_category_prefix
 from tadu.item_state_pattern import ITEM_STATE_PATTERN
 from tadu.legacy_closing_fields import legacy_closing_fields
+from tadu.open_bullet_notes import open_bullet_notes
 from tadu.read_v1_continuation import read_v1_continuation
 from tadu.split_blocker import split_blocker
-from tadu.split_bold_title import split_bold_title
+from tadu.split_bold_title import BOLD_LEAD, split_bold_title
 from tadu.split_long_title import split_long_title
 from tadu.stable_task_id import stable_task_id
 from tadu.task_defaults import DEFAULT_TASK_TYPES, UNKNOWN_CATEGORY, UNKNOWN_PRIORITY, UNKNOWN_TYPE
 from tadu.task_format_version import TASK_FORMAT_VERSION
 from tadu.unique_in_order import unique_in_order
+from tadu.v1_head import v1_head
 
 STATES = {" ": "pending", "~": "in_progress", "!": "blocked", "x": "done", "-": "cancelled"}
 CATEGORY = re.compile(r"^\*\*([^*\n]+):\*\* ")
@@ -30,11 +33,18 @@ def v1_task(
     match = ITEM_STATE_PATTERN.match(block[0])
     marker, day, text = match.groups() if match else (" ", None, block[0])
     prefix = CATEGORY.match(text)
+    if prefix and not is_category_prefix(prefix.group(1)):
+        prefix = None
     shown = prefix.group(1) if prefix else section or "General"
-    bold_title, bold_rest = split_bold_title((text[prefix.end() :] if prefix else text).strip())
-    title, lead = split_long_title(bold_title)
+    body = (text[prefix.end() :] if prefix else text).strip()
+    # a bold lead is the title, so the line it starts wraps into the notes as one paragraph
+    body, rest = v1_head(body, block[1:]) if BOLD_LEAD.match(body) else (body, block[1:])
+    bold_title, bold_rest = split_bold_title(body)
+    title, lead = split_long_title(bold_title.removesuffix(":"))
     lead = " ".join(part for part in (lead, bold_rest) if part)
-    parts = read_v1_continuation(block[1:])
+    parts = read_v1_continuation(rest)
+    kept = open_bullet_notes(parts.bullets) if marker in " ~!" else []
+    parts.notes += ([""] if parts.notes and kept else []) + kept
     notes = [lead, *([""] if parts.notes else []), *parts.notes] if lead else parts.notes
     fields, bullets, state = parts.fields, parts.bullets, STATES[marker]
     labels = [label.strip() for label in fields.get("Labels", "").split(",") if label.strip()]
