@@ -42,6 +42,7 @@ data = [
   "tadu/kinds.py",
   "tadu/index_required_keys.py",
   "tadu/item_cache_settings.py",
+  "tadu/item_date_prefix_pattern.py",
   "tadu/item_state_pattern.py",
   "tadu/label_pattern.py",
   "tadu/legacy_rule_heading_pattern.py",
