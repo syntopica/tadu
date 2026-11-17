@@ -7,7 +7,7 @@ from tadu.rule_block_text import rule_block_text
 
 def test_block_is_marked_and_ends_in_newline() -> None:
     text = rule_block_text()
-    assert text.startswith("<!-- tadu:rule v3 -->\n")
+    assert text.startswith("<!-- tadu:rule v4 -->\n")
     assert text.endswith("<!-- /tadu:rule -->\n")
     assert RULE_BLOCK_OPEN_PATTERN.match(text.splitlines()[0]) is not None
     assert "## Continuous TODO, Work Log, and History Coverage" in text
@@ -32,3 +32,18 @@ def test_block_names_the_required_labels_and_the_spec() -> None:
     assert "`[x]` entry needs an `Evidence:` line" in text
     assert "`[-]` entry a\n  `Resolution:` line" in text
     assert "https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md" in text
+    assert "https://github.com/syntopica/tadu/blob/main/spec/todo-format-v2.md" in text
+
+
+def test_block_teaches_querying_and_the_task_commands() -> None:
+    text = " ".join(rule_block_text().split())
+    for phrase in (
+        "Do not read the backlog files whole",
+        "tadu similar",
+        "tadu ready",
+        "never edit task files by hand",
+        "tadu claim ID --as agent:<name>",
+        "--duplicate-of ID",
+        "Never put secrets in the backlog",
+    ):
+        assert phrase in text

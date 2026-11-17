@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-0c532e21-0e57-4ba4-9cac-ee97aa535acb",
+  "title": "`tadu hook claude`, a Claude Code hook in the plugin, and an install that needs nothing but Python",
+  "state": "done",
+  "category": "adoption",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-19",
+  "result": "`tadu hook claude` reads a PostToolUse event and reports doctor errors after an edit or a shell write to a backlog, and never blocks; `hooks/hooks.json` ships it in the plugin; the README installs with uv, pipx or pip; the rule block points at README#install; `init` and `sync` keep the block in the instruction file that already holds it.",
+  "evidence": [
+    "uv run codeality-py gate exits 0 (363 tests, 100% coverage); `python3 -m pip install` into a clean venv runs `tadu init --write`, `tadu doctor` and `tadu hook claude`; three Codex review rounds fixed 7 findings (stdin bytes, written path, read-only commands, quoted paths, copy destination)."
+  ]
+}

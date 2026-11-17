@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-9bd20c4e-5e74-4fb1-86a6-7b45193f31e3",
+  "title": "`tadu list --json | head -1` ends with a `BrokenPipeError` traceback (seen 2026-11-06)",
+  "state": "done",
+  "category": "cli",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Smallest next step: exit quietly on `BrokenPipeError` in `run_list`, with a test that closes stdout early."
+  ],
+  "closed": "2026-11-06",
+  "result": "Every command ends quietly with status 0 when its reader closes stdout early.",
+  "evidence": [
+    "Commit dc663c6: tests/test_quiet_broken_pipe.py reads one line of a 86 KB list and closes the pipe (exit 0, no traceback); the same scenario exits 120 without the fix; full gate 719 tests."
+  ]
+}

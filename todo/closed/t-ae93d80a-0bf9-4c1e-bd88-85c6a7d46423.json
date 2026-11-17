@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-ae93d80a-0bf9-4c1e-bd88-85c6a7d46423",
+  "title": "Enforcement for consumer repositories",
+  "state": "done",
+  "category": "adoption",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "`.pre-commit-hooks.yaml` ships the `tadu-doctor` hook; the README documents it and a pinned `uvx` CI step.",
+  "evidence": [
+    "`uvx pre-commit try-repo <tadu> tadu-doctor --all-files` passed on a clean repository and failed with exit 1 on a stray `[x]` item."
+  ]
+}

@@ -1,0 +1,13 @@
+{"tool": "bash", "args": ["cat PROMPT.md TASKS.md; sed -n 1,12p AGENTS.md; ls todo; tadu list --help | sed -n 1,12p"], "tokens": 623, "ms": 620, "chars": 2285}
+{"tool": "bash", "args": ["sed -n 13,200p AGENTS.md; cat todo/tadu.json"], "tokens": 963, "ms": 55, "chars": 3533}
+{"tool": "bash", "args": ["tadu list --open --min-priority high --sort priority"], "tokens": 2470, "ms": 526, "chars": 9065}
+{"tool": "bash", "args": ["tadu list --open --due-before 2026-11-23 --sort due"], "tokens": 1634, "ms": 520, "chars": 5996}
+{"tool": "bash", "args": ["tadu list --open --category ui --sort priority"], "tokens": 2641, "ms": 608, "chars": 9694}
+{"tool": "bash", "args": ["tadu list --open --type bug --sort priority"], "tokens": 2793, "ms": 435, "chars": 10249}
+{"tool": "bash", "args": ["tadu list --open --type bug --sort priority --offset 100"], "tokens": 1605, "ms": 399, "chars": 5889}
+{"tool": "bash", "args": ["tadu list --open --category ui --type bug --min-priority high; echo; tadu list --open --column blocked --limit 0 | wc -l"], "tokens": 260, "ms": 907, "chars": 956}
+{"tool": "bash", "args": ["tadu list --open --column blocked"], "tokens": 2148, "ms": 423, "chars": 7884}
+{"tool": "bash", "args": ["tadu list --open --text \"csv import|spreadsheet import|bulk upload\"; tadu show t-1a7e0305 | grep -A3 labels"], "tokens": 332, "ms": 2406, "chars": 1218}
+{"tool": "bash", "args": ["tadu list --open --label csv-import; echo; tadu list --history --include-cancelled --label csv-import --sort closed --limit 0 | grep -v -E \"\\[(backlog|ready|in_progress|blocked)\\]\""], "tokens": 1725, "ms": 1769, "chars": 6329}
+{"tool": "bash", "args": ["tadu list --open --due-before 2026-11-16 --sort due | wc -l; echo \"(same items as the first 37 lines of the T2 list above)\""], "tokens": 50, "ms": 382, "chars": 185}
+{"tool": "bash", "args": ["L=\"tadu list --limit 0\"; s() { sed -E \"s/^[^:]*:(t-[0-9a-f]+) \\[[a-z_]+\\] [a-z-]+ (due [0-9-]+ )?/- \\1 /\"; }\n{ echo \"## T1\"; $L --open --min-priority high | s; echo; echo \"## T2\"; $L --open --due-before 2026-11-23 | s; echo;\n  echo \"## T3\"; $L --open --category ui | s; echo; echo \"## T4\"; $L --open --type bug | s; echo;\n  echo \"## T5\"; $L --open --category ui --type bug --min-priority high | s; echo; echo \"## T6\"; $L --open --column blocked | s; echo;\n  echo \"## T7\"; $L --open --label csv-import | s; echo;\n  echo \"## T8\"; $L --history --include-cancelled --label csv-import | grep -E \"\\[(done|cancelled)\\]\" | s; echo;\n  echo \"## T9\"; $L --open --due-before 2026-11-16 | s; } > ANSWERS.md; grep -c \"^- t-\" ANSWERS.md; sed -n 1,3p ANSWERS.md"], "tokens": 246, "ms": 5033, "chars": 901}

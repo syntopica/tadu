@@ -1,0 +1,182 @@
+[
+ {
+  "scale": "M",
+  "policy": "keep",
+  "files": 6600,
+  "git_mb": 3.01574,
+  "clone_ms": 2137.493569000071,
+  "history_query_ms": 626.6654810006003,
+  "closed_tasks_queryable": 6000,
+  "closed_total": 6000,
+  "dup_of_closed_found": 18,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "M",
+  "policy": "delete-30d",
+  "files": 944,
+  "git_mb": 2.337541,
+  "clone_ms": 663.4277739995014,
+  "history_query_ms": 109.40129299888213,
+  "closed_tasks_queryable": 344,
+  "closed_total": 6000,
+  "dup_of_closed_found": 0,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "M",
+  "policy": "compact-30d",
+  "files": 946,
+  "git_mb": 2.671817,
+  "clone_ms": 717.3546789999818,
+  "history_query_ms": 225.20786499990209,
+  "closed_tasks_queryable": 6000,
+  "closed_total": 6000,
+  "dup_of_closed_found": 18,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "M",
+  "policy": "archive-born",
+  "files": 946,
+  "git_mb": 0.799415,
+  "clone_ms": 1298.3566719994997,
+  "history_query_ms": 263.7862689989561,
+  "closed_tasks_queryable": 6000,
+  "closed_total": 6000,
+  "dup_of_closed_found": 18,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "L",
+  "policy": "keep",
+  "files": 27500,
+  "git_mb": 12.504025,
+  "clone_ms": 10174.073277999923,
+  "history_query_ms": 1696.0582969986717,
+  "closed_tasks_queryable": 25000,
+  "closed_total": 25000,
+  "dup_of_closed_found": 19,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "L",
+  "policy": "delete-30d",
+  "files": 3008,
+  "git_mb": 9.564605,
+  "clone_ms": 4037.465641999006,
+  "history_query_ms": 457.00464000037755,
+  "closed_tasks_queryable": 508,
+  "closed_total": 25000,
+  "dup_of_closed_found": 0,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "L",
+  "policy": "compact-30d",
+  "files": 3013,
+  "git_mb": 10.992446,
+  "clone_ms": 2918.053188999693,
+  "history_query_ms": 703.2948980013316,
+  "closed_tasks_queryable": 25000,
+  "closed_total": 25000,
+  "dup_of_closed_found": 19,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "L",
+  "policy": "archive-born",
+  "files": 3013,
+  "git_mb": 2.844361,
+  "clone_ms": 3298.3714000001783,
+  "history_query_ms": 1484.1580920001434,
+  "closed_tasks_queryable": 25000,
+  "closed_total": 25000,
+  "dup_of_closed_found": 19,
+  "dup_of_closed_total": 20
+ },
+ {
+  "scale": "M",
+  "layout": "json: keep closed files",
+  "files_now": 6600,
+  "git_mb": 3.697304,
+  "bytes_per_task": 560.1975757575758
+ },
+ {
+  "scale": "M",
+  "layout": "json: delete after 30d",
+  "files_now": 944,
+  "git_mb": 1.987602,
+  "bytes_per_task": 301.15181818181816
+ },
+ {
+  "scale": "M",
+  "layout": "json: compact after 30d",
+  "files_now": 946,
+  "git_mb": 2.321032,
+  "bytes_per_task": 351.67151515151517
+ },
+ {
+  "scale": "M",
+  "layout": "json: archive at close",
+  "files_now": 602,
+  "git_mb": 2.224981,
+  "bytes_per_task": 337.11833333333334
+ },
+ {
+  "scale": "M",
+  "layout": "hybrid (md files + TODO_LOG.md)",
+  "files_now": 601,
+  "git_mb": 2.129329,
+  "bytes_per_task": 322.62560606060606
+ },
+ {
+  "scale": "M",
+  "layout": "single TODO.md + TODO_LOG.md",
+  "files_now": 2,
+  "git_mb": 0.672325,
+  "bytes_per_task": 101.86742424242425
+ },
+ {
+  "scale": "L",
+  "layout": "json: keep closed files",
+  "files_now": 27500,
+  "git_mb": 15.937955,
+  "bytes_per_task": 579.562
+ },
+ {
+  "scale": "L",
+  "layout": "json: delete after 30d",
+  "files_now": 3008,
+  "git_mb": 7.890596,
+  "bytes_per_task": 286.9307636363636
+ },
+ {
+  "scale": "L",
+  "layout": "json: compact after 30d",
+  "files_now": 3013,
+  "git_mb": 9.30826,
+  "bytes_per_task": 338.4821818181818
+ },
+ {
+  "scale": "L",
+  "layout": "json: archive at close",
+  "files_now": 2505,
+  "git_mb": 9.168644,
+  "bytes_per_task": 333.4052363636364
+ },
+ {
+  "scale": "L",
+  "layout": "hybrid (md files + TODO_LOG.md)",
+  "files_now": 2501,
+  "git_mb": 8.780968,
+  "bytes_per_task": 319.3079272727273
+ },
+ {
+  "scale": "L",
+  "layout": "single TODO.md + TODO_LOG.md",
+  "files_now": 2,
+  "git_mb": 2.659144,
+  "bytes_per_task": 96.69614545454546
+ }
+]

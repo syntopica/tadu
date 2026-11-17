@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-148fce1b-5536-4be9-9619-047caee85396",
+  "title": "Add an MCP adapter as an optional extra",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "low",
+  "notes": [
+    "Core keeps no dependencies. Smallest next step: expose `list` and `show` as read-only tools in an `mcp` extra."
+  ]
+}

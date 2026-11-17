@@ -1,0 +1,7 @@
+# Study scripts, not part of the tadu package: the package's strict rules do not apply here.
+line-length = 120
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "B"]
+ignore = ["E501", "E731"]

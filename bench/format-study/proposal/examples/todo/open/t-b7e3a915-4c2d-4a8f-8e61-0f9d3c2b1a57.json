@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-b7e3a915-4c2d-4a8f-8e61-0f9d3c2b1a57",
+  "title": "Decide who opens a company workspace's board and whether they only view or also move and edit cards",
+  "state": "blocked",
+  "category": "board",
+  "type": "decision",
+  "priority": "high",
+  "created": "2026-11-04",
+  "blocker": "The owner's decision: local-only versus a shared server with auth, and the write path for people who do not use agents.",
+  "unblock": "The owner states, for the first company workspace, who uses the board and with what rights.",
+  "notes": [
+    "The read-only first version in docs/superpowers/specs/2026-11-04-tadu-board-design.md does not depend on it."
+  ]
+}

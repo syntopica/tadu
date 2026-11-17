@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-c6cb62cb-0bfe-4c95-b368-46eee5cf29be",
+  "title": "Support cross-repository `Depends on:` by ID",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "low",
+  "notes": [
+    "Smallest next step: parse `Depends on: t-...` and show whether the target is open, in the same workspace."
+  ]
+}

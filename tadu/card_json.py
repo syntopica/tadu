@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 def card_json(card: Card) -> dict[str, object]:
     """The card as plain dicts, lists and strings; problem lines are 1-based."""
-    item, fields = card.item, card.item.fields
+    item, fields, extras = card.item, card.item.fields, card.item.extras
     return {
         "key": item.key,
         "stable": item.stable,
@@ -31,6 +31,12 @@ def card_json(card: Card) -> dict[str, object]:
         "labels": list(fields.labels),
         "queue": fields.queue,
         "estimate": fields.estimate,
+        "category": extras.category,
+        "type": extras.task_type,
+        "milestone": extras.milestone,
+        "defer_until": iso_date(extras.defer_until),
+        "started": iso_date(extras.started),
+        "relations": [{"kind": kind, "key": key} for kind, key in extras.relations],
         "project": card.project,
         "organizations": [{"role": r, "org": o} for r, o in card.organizations],
         "problems": [{"line": p.line + 1, "message": p.message} for p in item.problems],

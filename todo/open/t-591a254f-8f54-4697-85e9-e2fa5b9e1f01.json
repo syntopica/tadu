@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-591a254f-8f54-4697-85e9-e2fa5b9e1f01",
+  "title": "Add `tadu id --write` and `tadu close --id`",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "notes": [
+    "Gives items without an `ID:` a stable one and closes by ID. Smallest next step: a command that inserts an `ID:` paragraph into one item chosen by its derived key, with `--write` as the only mutation."
+  ]
+}

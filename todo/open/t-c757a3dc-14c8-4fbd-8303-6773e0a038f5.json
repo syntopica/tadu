@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-c757a3dc-14c8-4fbd-8303-6773e0a038f5",
+  "title": "Add one shared mutation function with lock, hash check, commit and push",
+  "state": "pending",
+  "category": "board",
+  "type": "refactor",
+  "priority": "normal",
+  "notes": [
+    "Used by the CLI, the board and MCP, with a recoverable journal for `close`, which writes two files. Smallest next step: extract the lock and changed-since-read check of `tadu close` into a function that takes an item ID and the file hash the caller last saw."
+  ]
+}

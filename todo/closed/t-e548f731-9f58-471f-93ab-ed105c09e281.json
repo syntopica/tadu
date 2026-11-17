@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-e548f731-9f58-471f-93ab-ed105c09e281",
+  "title": "`tadu close` to move a finished item into the log, and rule block v3 that tells agents to use it and to run `tadu doctor .` before committing",
+  "state": "done",
+  "category": "tooling",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-19",
+  "result": "tadu close with dry-run diffs, directory lock, pre-write doctor check and refusals for ambiguous input; rule block v3 (R004 for v2); README, spec and skill copies updated",
+  "evidence": [
+    "uv run codeality-py gate exits 0 (332 tests, 100% coverage); three Codex review rounds fixed 8 findings, the last round left one Low fail-safe finding, logged as a TODO"
+  ]
+}

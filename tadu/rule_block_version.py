@@ -2,4 +2,4 @@
 
 from __future__ import annotations
 
-RULE_BLOCK_VERSION = 3
+RULE_BLOCK_VERSION = 4

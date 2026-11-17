@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-712e8a34-fef6-4f43-a5ff-d45cd214881d",
+  "title": "Decide whether to migrate this repository's backlog to format 2",
+  "state": "done",
+  "category": "agent-ergonomics",
+  "type": "chore",
+  "priority": "high",
+  "blocker": "Blocked on the owner's decision after reviewing `bench/format-study/REPORT.md` section 10. `tadu migrate .` (dry run) plans 10 open and 23 closed task files in 9 categories.",
+  "unblock": "The owner approves or rejects the migration.",
+  "closed": "2026-11-17",
+  "result": "This repository's backlog is format 2 (todo/).",
+  "evidence": [
+    "The owner approved adopting format 2 on 2026-11-17; tadu migrate --write converted this backlog (10 open, 23 closed tasks, 9 categories) and tadu doctor reports no errors."
+  ]
+}

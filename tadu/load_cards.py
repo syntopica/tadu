@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import date, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -13,8 +13,6 @@ from tadu.workspace_cards import workspace_cards
 from tadu.workspace_error import WorkspaceError
 
 if TYPE_CHECKING:
-    from datetime import date
-
     from tadu.card import Card
     from tadu.local_config import LocalConfig
     from tadu.scan_problem import ScanProblem
@@ -23,8 +21,11 @@ if TYPE_CHECKING:
 def load_cards(
     paths: tuple[str, ...], workspace: str | None, done_days: int, today: date
 ) -> tuple[tuple[Card, ...], tuple[ScanProblem, ...], LocalConfig | None]:
-    """Read repository roots or a workspace; raise WorkspaceError on a bad scope."""
-    cutoff = today - timedelta(days=done_days)
+    """Read repository roots or a workspace; raise WorkspaceError on a bad scope.
+
+    A negative done_days asks for open items only, so no closed ones are read.
+    """
+    cutoff = date.max if done_days < 0 else today - timedelta(days=done_days)
     if workspace is None:
         cards, problems = path_cards(paths or (".",), cutoff)
         return cards, problems, None

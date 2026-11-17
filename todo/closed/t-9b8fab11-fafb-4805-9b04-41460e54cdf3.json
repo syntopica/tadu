@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-9b8fab11-fafb-4805-9b04-41460e54cdf3",
+  "title": "Install tadu from its published sources",
+  "state": "done",
+  "category": "release",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "The `tadu` plugin installs from the hub marketplace with both skills, and the CLI installs from GitHub, initialises an empty repository and passes doctor.",
+  "evidence": [
+    "with an isolated `CLAUDE_CONFIG_DIR`, `claude plugin marketplace add syntopica/syntopica` and `claude plugin install tadu@syntopica` succeed and ship `skills/tadu-create` and `skills/tadu-work`; with isolated `UV_TOOL_DIR`, `uv tool install git+https://github.com/syntopica/tadu`, `tadu init . --write` in a fresh `git init` repository and `tadu doctor .` exit 0."
+  ]
+}

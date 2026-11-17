@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-0184b58b-0df7-4d68-839d-167a782f9f2c",
+  "title": "`tadu init` for a repository without a backlog",
+  "state": "done",
+  "category": "adoption",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "Dry-run by default; adds the rule block, then creates the missing `TODO.md` and `TODO_LOG.md` exclusively, refusing a directory or dangling symlink in their place before any write.",
+  "evidence": [
+    "tests/test_run_init.py; `tadu init --write` in an empty repository then `tadu doctor .` exited 0 with no output; Codex review round 2 reported no findings."
+  ]
+}

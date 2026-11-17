@@ -1,0 +1,882 @@
+{
+ "diff": [
+  {
+   "format": "md_fields",
+   "op": "add",
+   "added": 10,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 168,
+   "diff_text": "diff --git a/TODO.md b/TODO.md\nindex 2f9ac24..20d9513 100644\n--- a/TODO.md\n+++ b/TODO.md\n@@ -627,6 +627,16 @@\n \n   A contributor opened a draft PR but it stalled on review feedback.\n \n+- [ ] **Auth:** New task 900 for password reset.\n+\n+  ID: t-c386bbc4-cd61-4e30-98f1-6adf91b7584a\n+\n+  Priority: normal\n+\n+  Labels: feature\n+\n+  Added on a branch.\n+\n ## Billing\n \n - [ ] **Billing:** Replace the hand-rolled payment retries state machine during onboarding.\n"
+  },
+  {
+   "format": "md_fields",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 99,
+   "diff_text": "diff --git a/TODO.md b/TODO.md\nindex 20d9513..f660004 100644\n--- a/TODO.md\n+++ b/TODO.md\n@@ -571,7 +571,7 @@\n \n   ID: t-831d03bf-9b2b-46c0-816b-ee06f92e2339\n \n-  Priority: normal\n+  Priority: urgent\n \n   Labels: docs\n \n"
+  },
+  {
+   "format": "md_fields",
+   "op": "edit_body",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 110,
+   "diff_text": "diff --git a/TODO.md b/TODO.md\nindex f660004..64acf11 100644\n--- a/TODO.md\n+++ b/TODO.md\n@@ -813,7 +813,7 @@\n \n   Labels: bug, team-invites\n \n-  Came up in the design review; the current behaviour confuses new users.\n+  Reworded on branch 2.\n \n - [~] **Notifications:** Write a how-to for notification preferences local setup for invited users.\n \n"
+  },
+  {
+   "format": "md_fields",
+   "op": "close",
+   "added": 15,
+   "removed": 12,
+   "binary": false,
+   "diff_tokens": 510,
+   "diff_text": "diff --git a/TODO.md b/TODO.md\nindex 64acf11..fb4fde9 100644\n--- a/TODO.md\n+++ b/TODO.md\n@@ -579,18 +579,6 @@\n \n   Smallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\n \n-- [ ] **Auth:** Fix token refresh rendering off-screen on small screens.\n-\n-  ID: t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\n-\n-  Due: 2026-11-29\n-\n-  Labels: bug\n-\n-  Reported by a customer on the enterprise plan; the support ticket has a screen recording.\n-\n-  Done when: the token refresh behaves as described and CI is green.\n-\n - [!] **Auth:** Add CSRF protection to token refresh (saved searches).\n \n   ID: t-cd751e08-023a-40a2-aed5-1b127f1d490e\ndiff --git a/TODO_LOG.md b/TODO_LOG.md\nindex 65fa591..6b5b912 100644\n--- a/TODO_LOG.md\n+++ b/TODO_LOG.md\n@@ -8,6 +8,21 @@\n \n ### 2026-11\n \n+- [x] 2026-11-16 \u2014 **Auth:** Fix token refresh rendering off-screen on small screens.\n+\n+  ID: t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\n+\n+  Due: 2026-11-29\n+\n+  Labels: bug\n+\n+  Reported by a customer on the enterprise plan; the support ticket has a screen recording.\n+\n+  Done when: the token refresh behaves as described and CI is green.\n+\n+  - Result: Done as described.\n+  - Evidence: proof 3\n+\n - [x] 2026-11-15 \u2014 **UI:** Remove dead code from theme switcher for EU tenants.\n \n   ID: t-9714e577-ff10-441c-8e58-385cdfe94c8b\n"
+  },
+  {
+   "format": "jsonl",
+   "op": "add",
+   "added": 1,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 507,
+   "diff_text": "diff --git a/TODO.jsonl b/TODO.jsonl\nindex 4a76c85..aa131cb 100644\n--- a/TODO.jsonl\n+++ b/TODO.jsonl\n@@ -118,3 +118,4 @@\n {\"id\": \"t-63975459-ccef-41e2-a6a9-e369581f51b0\", \"state\": \"pending\", \"title\": \"Write a how-to for request validator upgrade steps on first load.\", \"category\": \"api\", \"labels\": [\"docs\"], \"priority\": \"low\", \"due\": null, \"queue\": \"backlog\", \"body\": \"Seen in production logs several times a day since the last release.\\n\\nDone when: the request validator behaves as described and CI is green.\"}\n {\"id\": \"t-4c67e570-4757-410f-a488-a04b6cf4c2f0\", \"state\": \"in_progress\", \"title\": \"Let users pick CSV export from version header in the mobile app.\", \"category\": \"api\", \"labels\": [\"feature\"], \"priority\": \"normal\", \"due\": null, \"queue\": \"backlog\", \"body\": \"A contributor opened a draft PR but it stalled on review feedback.\"}\n {\"id\": \"t-efaab9b7-feac-4a93-a3c9-d9abdd2cefb8\", \"state\": \"pending\", \"title\": \"Add a copy-to-clipboard action to preview deployments for API clients.\", \"category\": \"ci\", \"labels\": [\"feature\"], \"priority\": \"normal\", \"due\": \"2026-10-27\", \"queue\": \"ready\", \"body\": \"Came up in the design review; the current behaviour confuses new users.\\n\\nDone when: the preview deployments behaves as described and CI is green.\"}\n+{\"id\": \"t-c386bbc4-cd61-4e30-98f1-6adf91b7584a\", \"state\": \"pending\", \"title\": \"New task 900 for password reset.\", \"category\": \"auth\", \"labels\": [\"feature\"], \"priority\": \"normal\", \"due\": null, \"queue\": \"backlog\", \"body\": \"Added on a branch.\"}\n"
+  },
+  {
+   "format": "jsonl",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 1084,
+   "diff_text": "diff --git a/TODO.jsonl b/TODO.jsonl\nindex aa131cb..cec8859 100644\n--- a/TODO.jsonl\n+++ b/TODO.jsonl\n@@ -9,7 +9,7 @@\n {\"id\": \"t-7a605a91-3306-48a1-8009-3492b6246771\", \"state\": \"blocked\", \"title\": \"Empty states is ignoring the user's locale.\", \"category\": \"ui\", \"labels\": [\"bug\"], \"priority\": \"normal\", \"due\": null, \"queue\": \"backlog\", \"body\": \"Blocked until the security review signs off. Smallest unblock: ask the owner today.\\n\\nMentioned twice in the last retro; it slows every release down.\\n\\nSmallest next step: check whether the upstream fix is already released in `src/web/components/empty_states.ts`.\"}\n {\"id\": \"t-fc8e80b3-6f0e-4289-a3a5-ef88ef02090b\", \"state\": \"in_progress\", \"title\": \"Fix the deadlock in date picker.\", \"category\": \"ui\", \"labels\": [\"bug\"], \"priority\": \"low\", \"due\": null, \"queue\": \"backlog\", \"body\": \"The previous attempt was reverted because it broke the staging smoke test.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/web/components/date_picker.ts`.\\n\\nDone when: the date picker behaves as described and CI is green.\"}\n {\"id\": \"t-c6aa7d55-0101-4811-9bca-3cb72ee0289d\", \"state\": \"in_progress\", \"title\": \"Rename the password reset config keys.\", \"category\": \"auth\", \"labels\": [\"chore\"], \"priority\": \"normal\", \"due\": \"2026-12-25\", \"queue\": \"backlog\", \"body\": \"A contributor opened a draft PR but it stalled on review feedback.\"}\n-{\"id\": \"t-831d03bf-9b2b-46c0-816b-ee06f92e2339\", \"state\": \"pending\", \"title\": \"Document invoice PDF local setup.\", \"category\": \"billing\", \"labels\": [\"docs\"], \"priority\": \"normal\", \"due\": null, \"queue\": \"backlog\", \"body\": \"The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\"}\n+{\"id\": \"t-831d03bf-9b2b-46c0-816b-ee06f92e2339\", \"state\": \"pending\", \"title\": \"Document invoice PDF local setup.\", \"category\": \"billing\", \"labels\": [\"docs\"], \"priority\": \"urgent\", \"due\": null, \"queue\": \"backlog\", \"body\": \"The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\"}\n {\"id\": \"t-3836e865-77bd-491f-b7b1-03df23231e1e\", \"state\": \"in_progress\", \"title\": \"Fix dependency cache dropping the last item as part of the inviting teammates.\", \"category\": \"ci\", \"labels\": [\"bug\", \"team-invites\"], \"priority\": \"normal\", \"due\": \"2026-12-27\", \"queue\": \"backlog\", \"body\": \"Came up in the design review; the current behaviour confuses new users.\"}\n {\"id\": \"t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\", \"state\": \"pending\", \"title\": \"Fix token refresh rendering off-screen on small screens.\", \"category\": \"auth\", \"labels\": [\"bug\"], \"priority\": null, \"due\": \"2026-11-29\", \"queue\": \"backlog\", \"body\": \"Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.\"}\n {\"id\": \"t-a26aa0ae-044f-4574-b037-afc644d82a53\", \"state\": \"pending\", \"title\": \"Add tests for nightly build error states.\", \"category\": \"ci\", \"labels\": [\"test\"], \"priority\": null, \"due\": null, \"queue\": \"backlog\", \"body\": \"The previous attempt was reverted because it broke the staging smoke test.\\n\\nSmallest next step: add logging around the failing call in `.github/workflows/nightly_build.ts`.\"}\n"
+  },
+  {
+   "format": "jsonl",
+   "op": "edit_body",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 1066,
+   "diff_text": "diff --git a/TODO.jsonl b/TODO.jsonl\nindex cec8859..6b3da31 100644\n--- a/TODO.jsonl\n+++ b/TODO.jsonl\n@@ -10,7 +10,7 @@\n {\"id\": \"t-fc8e80b3-6f0e-4289-a3a5-ef88ef02090b\", \"state\": \"in_progress\", \"title\": \"Fix the deadlock in date picker.\", \"category\": \"ui\", \"labels\": [\"bug\"], \"priority\": \"low\", \"due\": null, \"queue\": \"backlog\", \"body\": \"The previous attempt was reverted because it broke the staging smoke test.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/web/components/date_picker.ts`.\\n\\nDone when: the date picker behaves as described and CI is green.\"}\n {\"id\": \"t-c6aa7d55-0101-4811-9bca-3cb72ee0289d\", \"state\": \"in_progress\", \"title\": \"Rename the password reset config keys.\", \"category\": \"auth\", \"labels\": [\"chore\"], \"priority\": \"normal\", \"due\": \"2026-12-25\", \"queue\": \"backlog\", \"body\": \"A contributor opened a draft PR but it stalled on review feedback.\"}\n {\"id\": \"t-831d03bf-9b2b-46c0-816b-ee06f92e2339\", \"state\": \"pending\", \"title\": \"Document invoice PDF local setup.\", \"category\": \"billing\", \"labels\": [\"docs\"], \"priority\": \"urgent\", \"due\": null, \"queue\": \"backlog\", \"body\": \"The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\"}\n-{\"id\": \"t-3836e865-77bd-491f-b7b1-03df23231e1e\", \"state\": \"in_progress\", \"title\": \"Fix dependency cache dropping the last item as part of the inviting teammates.\", \"category\": \"ci\", \"labels\": [\"bug\", \"team-invites\"], \"priority\": \"normal\", \"due\": \"2026-12-27\", \"queue\": \"backlog\", \"body\": \"Came up in the design review; the current behaviour confuses new users.\"}\n+{\"id\": \"t-3836e865-77bd-491f-b7b1-03df23231e1e\", \"state\": \"in_progress\", \"title\": \"Fix dependency cache dropping the last item as part of the inviting teammates.\", \"category\": \"ci\", \"labels\": [\"bug\", \"team-invites\"], \"priority\": \"normal\", \"due\": \"2026-12-27\", \"queue\": \"backlog\", \"body\": \"Came up in the design review; the current behaviour confuses new users.\\n\\nReworded on branch 2.\"}\n {\"id\": \"t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\", \"state\": \"pending\", \"title\": \"Fix token refresh rendering off-screen on small screens.\", \"category\": \"auth\", \"labels\": [\"bug\"], \"priority\": null, \"due\": \"2026-11-29\", \"queue\": \"backlog\", \"body\": \"Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.\"}\n {\"id\": \"t-a26aa0ae-044f-4574-b037-afc644d82a53\", \"state\": \"pending\", \"title\": \"Add tests for nightly build error states.\", \"category\": \"ci\", \"labels\": [\"test\"], \"priority\": null, \"due\": null, \"queue\": \"backlog\", \"body\": \"The previous attempt was reverted because it broke the staging smoke test.\\n\\nSmallest next step: add logging around the failing call in `.github/workflows/nightly_build.ts`.\"}\n {\"id\": \"t-8005ce74-7218-48ff-8a3a-df9934b3ff60\", \"state\": \"pending\", \"title\": \"Speed up ranking cold start after login.\", \"category\": \"search\", \"labels\": [\"perf\"], \"priority\": \"low\", \"due\": null, \"queue\": \"backlog\", \"body\": \"Needed before the next partner demo, which uses this flow end to end.\\n\\nSmallest next step: write a failing test that reproduces it in `src/search/ranking.ts`.\"}\n"
+  },
+  {
+   "format": "jsonl",
+   "op": "close",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 1534,
+   "diff_text": "diff --git a/TODO.jsonl b/TODO.jsonl\nindex 6b3da31..8fd3b93 100644\n--- a/TODO.jsonl\n+++ b/TODO.jsonl\n@@ -11,7 +11,6 @@\n {\"id\": \"t-c6aa7d55-0101-4811-9bca-3cb72ee0289d\", \"state\": \"in_progress\", \"title\": \"Rename the password reset config keys.\", \"category\": \"auth\", \"labels\": [\"chore\"], \"priority\": \"normal\", \"due\": \"2026-12-25\", \"queue\": \"backlog\", \"body\": \"A contributor opened a draft PR but it stalled on review feedback.\"}\n {\"id\": \"t-831d03bf-9b2b-46c0-816b-ee06f92e2339\", \"state\": \"pending\", \"title\": \"Document invoice PDF local setup.\", \"category\": \"billing\", \"labels\": [\"docs\"], \"priority\": \"urgent\", \"due\": null, \"queue\": \"backlog\", \"body\": \"The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\"}\n {\"id\": \"t-3836e865-77bd-491f-b7b1-03df23231e1e\", \"state\": \"in_progress\", \"title\": \"Fix dependency cache dropping the last item as part of the inviting teammates.\", \"category\": \"ci\", \"labels\": [\"bug\", \"team-invites\"], \"priority\": \"normal\", \"due\": \"2026-12-27\", \"queue\": \"backlog\", \"body\": \"Came up in the design review; the current behaviour confuses new users.\\n\\nReworded on branch 2.\"}\n-{\"id\": \"t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\", \"state\": \"pending\", \"title\": \"Fix token refresh rendering off-screen on small screens.\", \"category\": \"auth\", \"labels\": [\"bug\"], \"priority\": null, \"due\": \"2026-11-29\", \"queue\": \"backlog\", \"body\": \"Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.\"}\n {\"id\": \"t-a26aa0ae-044f-4574-b037-afc644d82a53\", \"state\": \"pending\", \"title\": \"Add tests for nightly build error states.\", \"category\": \"ci\", \"labels\": [\"test\"], \"priority\": null, \"due\": null, \"queue\": \"backlog\", \"body\": \"The previous attempt was reverted because it broke the staging smoke test.\\n\\nSmallest next step: add logging around the failing call in `.github/workflows/nightly_build.ts`.\"}\n {\"id\": \"t-8005ce74-7218-48ff-8a3a-df9934b3ff60\", \"state\": \"pending\", \"title\": \"Speed up ranking cold start after login.\", \"category\": \"search\", \"labels\": [\"perf\"], \"priority\": \"low\", \"due\": null, \"queue\": \"backlog\", \"body\": \"Needed before the next partner demo, which uses this flow end to end.\\n\\nSmallest next step: write a failing test that reproduces it in `src/search/ranking.ts`.\"}\n {\"id\": \"t-fb5c9d56-58f9-4dea-bd4b-d030679a44dd\", \"state\": \"pending\", \"title\": \"Profile plan upgrade cold start for the churn emails.\", \"category\": \"billing\", \"labels\": [\"perf\", \"retention-emails\"], \"priority\": \"low\", \"due\": \"2026-11-27\", \"queue\": \"ready\", \"body\": \"Product asked for this after the last customer interviews.\\n\\nSmallest next step: add logging around the failing call in `src/billing/plan_upgrade.ts`.\"}\ndiff --git a/TODO_LOG.jsonl b/TODO_LOG.jsonl\nindex d8b9db7..b27ec14 100644\n--- a/TODO_LOG.jsonl\n+++ b/TODO_LOG.jsonl\n@@ -598,3 +598,4 @@\n {\"id\": \"t-51b239b3-9305-4072-9203-7e79c3fa968e\", \"state\": \"done\", \"title\": \"Cache idempotency keys results to cut p95 latency during onboarding.\", \"category\": \"api\", \"labels\": [\"perf\"], \"priority\": \"normal\", \"closed\": \"2026-07-19\", \"result\": \"The idempotency keys now handles the case and shows a clear message.\", \"evidence\": \"Load test shows p95 down from 840 ms to 210 ms (report in PR #2635).\", \"files\": [\"src/api/routes/idempotency_keys.ts\"]}\n {\"id\": \"t-6c4f176d-01ff-4c51-8b31-0f404542c5ce\", \"state\": \"done\", \"title\": \"Support per-tenant limits in idempotency keys in read-only mode.\", \"category\": \"api\", \"labels\": [\"feature\"], \"priority\": \"normal\", \"closed\": \"2026-07-19\", \"result\": \"Idempotency keys behaves as specified; the old workaround is gone.\", \"evidence\": \"Load test shows p95 down from 840 ms to 210 ms (report in PR #2952).\", \"files\": [\"src/api/routes/idempotency_keys.ts\"]}\n {\"id\": \"t-f2414719-6871-40d6-96dc-22c6a8d46b1b\", \"state\": \"done\", \"title\": \"Support keyboard navigation in connection pool in read-only mode.\", \""
+  },
+  {
+   "format": "json",
+   "op": "add",
+   "added": 13,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 245,
+   "diff_text": "diff --git a/TODO.json b/TODO.json\nindex 353e909..e190a38 100644\n--- a/TODO.json\n+++ b/TODO.json\n@@ -1589,5 +1589,18 @@\n     \"due\": \"2026-10-27\",\n     \"queue\": \"ready\",\n     \"body\": \"Came up in the design review; the current behaviour confuses new users.\\n\\nDone when: the preview deployments behaves as described and CI is green.\"\n+  },\n+  {\n+    \"id\": \"t-c386bbc4-cd61-4e30-98f1-6adf91b7584a\",\n+    \"state\": \"pending\",\n+    \"title\": \"New task 900 for password reset.\",\n+    \"category\": \"auth\",\n+    \"labels\": [\n+      \"feature\"\n+    ],\n+    \"priority\": \"normal\",\n+    \"due\": null,\n+    \"queue\": \"backlog\",\n+    \"body\": \"Added on a branch.\"\n   }\n ]\n"
+  },
+  {
+   "format": "json",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 143,
+   "diff_text": "diff --git a/TODO.json b/TODO.json\nindex e190a38..f01c3f7 100644\n--- a/TODO.json\n+++ b/TODO.json\n@@ -151,7 +151,7 @@\n     \"labels\": [\n       \"docs\"\n     ],\n-    \"priority\": \"normal\",\n+    \"priority\": \"urgent\",\n     \"due\": null,\n     \"queue\": \"backlog\",\n     \"body\": \"The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\"\n"
+  },
+  {
+   "format": "json",
+   "op": "edit_body",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 172,
+   "diff_text": "diff --git a/TODO.json b/TODO.json\nindex f01c3f7..8044248 100644\n--- a/TODO.json\n+++ b/TODO.json\n@@ -168,7 +168,7 @@\n     \"priority\": \"normal\",\n     \"due\": \"2026-12-27\",\n     \"queue\": \"backlog\",\n-    \"body\": \"Came up in the design review; the current behaviour confuses new users.\"\n+    \"body\": \"Came up in the design review; the current behaviour confuses new users.\\n\\nReworded on branch 2.\"\n   },\n   {\n     \"id\": \"t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\",\n"
+  },
+  {
+   "format": "json",
+   "op": "close",
+   "added": 13,
+   "removed": 13,
+   "binary": false,
+   "diff_tokens": 543,
+   "diff_text": "diff --git a/TODO.json b/TODO.json\nindex 8044248..2e5b7aa 100644\n--- a/TODO.json\n+++ b/TODO.json\n@@ -170,19 +170,6 @@\n     \"queue\": \"backlog\",\n     \"body\": \"Came up in the design review; the current behaviour confuses new users.\\n\\nReworded on branch 2.\"\n   },\n-  {\n-    \"id\": \"t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\",\n-    \"state\": \"pending\",\n-    \"title\": \"Fix token refresh rendering off-screen on small screens.\",\n-    \"category\": \"auth\",\n-    \"labels\": [\n-      \"bug\"\n-    ],\n-    \"priority\": null,\n-    \"due\": \"2026-11-29\",\n-    \"queue\": \"backlog\",\n-    \"body\": \"Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.\"\n-  },\n   {\n     \"id\": \"t-a26aa0ae-044f-4574-b037-afc644d82a53\",\n     \"state\": \"pending\",\ndiff --git a/TODO_LOG.json b/TODO_LOG.json\nindex 0e65007..8b79cbf 100644\n--- a/TODO_LOG.json\n+++ b/TODO_LOG.json\n@@ -1,4 +1,17 @@\n [\n+  {\n+    \"id\": \"t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\",\n+    \"state\": \"done\",\n+    \"title\": \"Fix token refresh rendering off-screen on small screens.\",\n+    \"category\": \"auth\",\n+    \"labels\": [\n+      \"bug\"\n+    ],\n+    \"priority\": null,\n+    \"closed\": \"2026-11-16\",\n+    \"result\": \"Done as described.\",\n+    \"evidence\": \"proof 3\"\n+  },\n   {\n     \"id\": \"t-9714e577-ff10-441c-8e58-385cdfe94c8b\",\n     \"state\": \"done\",\n"
+  },
+  {
+   "format": "sqlite",
+   "op": "add",
+   "added": 0,
+   "removed": 0,
+   "binary": true,
+   "diff_tokens": 45,
+   "diff_text": "diff --git a/todo.db b/todo.db\nindex b6040f5..3e6ac6d 100644\nBinary files a/todo.db and b/todo.db differ\n"
+  },
+  {
+   "format": "sqlite",
+   "op": "set_priority",
+   "added": 0,
+   "removed": 0,
+   "binary": true,
+   "diff_tokens": 44,
+   "diff_text": "diff --git a/todo.db b/todo.db\nindex 3e6ac6d..ab3f762 100644\nBinary files a/todo.db and b/todo.db differ\n"
+  },
+  {
+   "format": "sqlite",
+   "op": "edit_body",
+   "added": 0,
+   "removed": 0,
+   "binary": true,
+   "diff_tokens": 44,
+   "diff_text": "diff --git a/todo.db b/todo.db\nindex ab3f762..a9c01a5 100644\nBinary files a/todo.db and b/todo.db differ\n"
+  },
+  {
+   "format": "sqlite",
+   "op": "close",
+   "added": 0,
+   "removed": 0,
+   "binary": true,
+   "diff_tokens": 43,
+   "diff_text": "diff --git a/todo.db b/todo.db\nindex a9c01a5..5665477 100644\nBinary files a/todo.db and b/todo.db differ\n"
+  },
+  {
+   "format": "json_dir",
+   "op": "add",
+   "added": 12,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 254,
+   "diff_text": "diff --git a/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.json b/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.json\nnew file mode 100644\nindex 0000000..efc3503\n--- /dev/null\n+++ b/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.json\n@@ -0,0 +1,12 @@\n+{\n+  \"id\": \"t-c386bbc4-cd61-4e30-98f1-6adf91b7584a\",\n+  \"state\": \"pending\",\n+  \"title\": \"New task 900 for password reset.\",\n+  \"category\": \"auth\",\n+  \"labels\": [\n+    \"feature\"\n+  ],\n+  \"priority\": \"normal\",\n+  \"queue\": \"backlog\",\n+  \"body\": \"Added on a branch.\"\n+}\n"
+  },
+  {
+   "format": "json_dir",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 247,
+   "diff_text": "diff --git a/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.json b/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.json\nindex 1b5e68e..5541c42 100644\n--- a/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.json\n+++ b/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.json\n@@ -6,7 +6,7 @@\n   \"labels\": [\n     \"docs\"\n   ],\n-  \"priority\": \"normal\",\n+  \"priority\": \"urgent\",\n   \"queue\": \"backlog\",\n   \"body\": \"The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\"\n }\n"
+  },
+  {
+   "format": "json_dir",
+   "op": "edit_body",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 242,
+   "diff_text": "diff --git a/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.json b/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.json\nindex b6c8a11..234ca5c 100644\n--- a/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.json\n+++ b/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.json\n@@ -10,5 +10,5 @@\n   \"priority\": \"normal\",\n   \"due\": \"2026-12-27\",\n   \"queue\": \"backlog\",\n-  \"body\": \"Came up in the design review; the current behaviour confuses new users.\"\n+  \"body\": \"Came up in the design review; the current behaviour confuses new users.\\n\\nReworded on branch 2.\"\n }\n"
+  },
+  {
+   "format": "json_dir",
+   "op": "close",
+   "added": 4,
+   "removed": 3,
+   "binary": false,
+   "diff_tokens": 440,
+   "diff_text": "diff --git a/todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.json b/done/2026-11/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.json\nsimilarity index 76%\nrename from todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.json\nrename to done/2026-11/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.json\nindex b41c4ab..a844286 100644\n--- a/todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.json\n+++ b/done/2026-11/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.json\n@@ -1,12 +1,13 @@\n {\n   \"id\": \"t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\",\n-  \"state\": \"pending\",\n+  \"state\": \"done\",\n   \"title\": \"Fix token refresh rendering off-screen on small screens.\",\n   \"category\": \"auth\",\n   \"labels\": [\n     \"bug\"\n   ],\n-  \"due\": \"2026-11-29\",\n-  \"queue\": \"backlog\",\n+  \"closed\": \"2026-11-16\",\n+  \"result\": \"Done as described.\",\n+  \"evidence\": \"proof 3\",\n   \"body\": \"Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.\"\n }\n"
+  },
+  {
+   "format": "md_dir",
+   "op": "add",
+   "added": 11,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 218,
+   "diff_text": "diff --git a/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.md b/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.md\nnew file mode 100644\nindex 0000000..c23338c\n--- /dev/null\n+++ b/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.md\n@@ -0,0 +1,11 @@\n+---\n+id: t-c386bbc4-cd61-4e30-98f1-6adf91b7584a\n+state: pending\n+title: New task 900 for password reset.\n+category: auth\n+priority: normal\n+queue: backlog\n+labels: [feature]\n+---\n+\n+Added on a branch.\n"
+  },
+  {
+   "format": "md_dir",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 229,
+   "diff_text": "diff --git a/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md b/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md\nindex e960a17..a7a043d 100644\n--- a/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md\n+++ b/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md\n@@ -3,7 +3,7 @@ id: t-831d03bf-9b2b-46c0-816b-ee06f92e2339\n state: pending\n title: Document invoice PDF local setup.\n category: billing\n-priority: normal\n+priority: urgent\n queue: backlog\n labels: [docs]\n ---\n"
+  },
+  {
+   "format": "md_dir",
+   "op": "edit_body",
+   "added": 2,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 195,
+   "diff_text": "diff --git a/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md b/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md\nindex 757336f..4dfb06e 100644\n--- a/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md\n+++ b/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md\n@@ -10,3 +10,5 @@ labels: [bug, team-invites]\n ---\n \n Came up in the design review; the current behaviour confuses new users.\n+\n+Reworded on branch 2.\n"
+  },
+  {
+   "format": "md_dir",
+   "op": "close",
+   "added": 10,
+   "removed": 3,
+   "binary": false,
+   "diff_tokens": 406,
+   "diff_text": "diff --git a/todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md b/done/2026-11/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md\nsimilarity index 78%\nrename from todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md\nrename to done/2026-11/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md\nindex a873c67..fcdafe4 100644\n--- a/todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md\n+++ b/done/2026-11/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md\n@@ -1,13 +1,20 @@\n ---\n id: t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\n-state: pending\n+state: done\n title: Fix token refresh rendering off-screen on small screens.\n category: auth\n-due: 2026-11-29\n-queue: backlog\n+closed: 2026-11-16\n labels: [bug]\n ---\n \n Reported by a customer on the enterprise plan; the support ticket has a screen recording.\n \n Done when: the token refresh behaves as described and CI is green.\n+\n+## Result\n+\n+Done as described.\n+\n+## Evidence\n+\n+proof 3\n"
+  },
+  {
+   "format": "rec",
+   "op": "add",
+   "added": 9,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 226,
+   "diff_text": "diff --git a/tasks.rec b/tasks.rec\nindex db5e18c..33d29f1 100644\n--- a/tasks.rec\n+++ b/tasks.rec\n@@ -5595,6 +5595,15 @@ Closed: 2026-07-27\n Result: Added the missing guard in navigation menu and a regression test.\n Evidence: `pytest tests/test_navigation-menu.py` passes (12 tests).\n \n+Id: t-c386bbc4-cd61-4e30-98f1-6adf91b7584a\n+State: pending\n+Title: New task 900 for password reset.\n+Category: auth\n+Label: feature\n+Priority: normal\n+Queue: backlog\n+Body: Added on a branch.\n+\n Id: t-c3b240f9-77a7-4f35-ba90-e3514868e88a\n State: done\n Title: Replace the hand-rolled push notifications state machine.\n"
+  },
+  {
+   "format": "rec",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 109,
+   "diff_text": "diff --git a/tasks.rec b/tasks.rec\nindex 33d29f1..f2b767e 100644\n--- a/tasks.rec\n+++ b/tasks.rec\n@@ -3823,7 +3823,7 @@ State: pending\n Title: Document invoice PDF local setup.\n Category: billing\n Label: docs\n-Priority: normal\n+Priority: urgent\n Queue: backlog\n Body: The on-call engineer flagged it in the weekly incident review.\n +\n"
+  },
+  {
+   "format": "rec",
+   "op": "edit_body",
+   "added": 2,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 133,
+   "diff_text": "diff --git a/tasks.rec b/tasks.rec\nindex f2b767e..d44b5eb 100644\n--- a/tasks.rec\n+++ b/tasks.rec\n@@ -1648,6 +1648,8 @@ Priority: normal\n Due: 2026-12-27\n Queue: backlog\n Body: Came up in the design review; the current behaviour confuses new users.\n++\n++ Reworded on branch 2.\n \n Id: t-3938902d-6e57-4eb8-899c-9ce4700286a0\n State: done\n"
+  },
+  {
+   "format": "rec",
+   "op": "close",
+   "added": 4,
+   "removed": 3,
+   "binary": false,
+   "diff_tokens": 227,
+   "diff_text": "diff --git a/tasks.rec b/tasks.rec\nindex d44b5eb..2030ffa 100644\n--- a/tasks.rec\n+++ b/tasks.rec\n@@ -5782,12 +5782,13 @@ Result: The role permissions now handles the case and shows a clear message.\n Evidence: Commit 530a19a; manual check in the browser on staging.\n \n Id: t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\n-State: pending\n+State: done\n Title: Fix token refresh rendering off-screen on small screens.\n Category: auth\n Label: bug\n-Due: 2026-11-29\n-Queue: backlog\n+Closed: 2026-11-16\n+Result: Done as described.\n+Evidence: proof 3\n Body: Reported by a customer on the enterprise plan; the support ticket has a screen recording.\n +\n + Done when: the token refresh behaves as described and CI is green.\n"
+  },
+  {
+   "format": "csv",
+   "op": "add",
+   "added": 2,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 923,
+   "diff_text": "diff --git a/task_labels.csv b/task_labels.csv\nindex 117c21c..3fbb360 100644\n--- a/task_labels.csv\n+++ b/task_labels.csv\n@@ -699,6 +699,7 @@ t-c17e77a4-7758-449f-903e-3a049e807e42,postgres-17\n t-c2cdf789-acdb-497d-9236-d0fd3fa2581d,invoice-redesign\n t-c2cdf789-acdb-497d-9236-d0fd3fa2581d,security\n t-c31fd5b1-cad2-41ac-bc97-40e6a14d1c2c,refactor\n+t-c386bbc4-cd61-4e30-98f1-6adf91b7584a,feature\n t-c3b240f9-77a7-4f35-ba90-e3514868e88a,refactor\n t-c3c17bdd-c345-4b15-a6ec-30b5dd3fb285,bug\n t-c41dd084-8801-4f09-b681-42022bc415c1,bug\ndiff --git a/tasks.csv b/tasks.csv\nindex 7ce3599..206ba57 100644\n--- a/tasks.csv\n+++ b/tasks.csv\n@@ -557,6 +557,7 @@ t-c134daa0-1611-487d-9c05-acb8747bc082,done,Split tenant partitioning into small\n t-c17e77a4-7758-449f-903e-3a049e807e42,done,Add a retry button to session expiry as part of the database upgrade.,auth,,,,2026-08-02,The session expiry now handles the case and shows a clear message.,`pytest tests/test_session-expiry.py` passes (12 tests).,,\n t-c2cdf789-acdb-497d-9236-d0fd3fa2581d,done,Audit base Docker image for privilege escalation for the new invoice layout in the legacy view.,infra,normal,,,2026-10-09,Replaced the ad-hoc code in base Docker image with the shared helper.,Commit 01cef9c; manual check in the browser on staging.,,\n t-c31fd5b1-cad2-41ac-bc97-40e6a14d1c2c,done,Extract navigation menu logic into a shared module.,ui,high,,,2026-07-27,Added the missing guard in navigation menu and a regression test.,`pytest tests/test_navigation-menu.py` passes (12 tests).,,\n+t-c386bbc4-cd61-4e30-98f1-6adf91b7584a,pending,New task 900 for password reset.,auth,normal,,backlog,,,,,Added on a branch.\n t-c3b240f9-77a7-4f35-ba90-e3514868e88a,done,Replace the hand-rolled push notifications state machine.,notifications,normal,,,2026-08-25,The push notifications now handles the case and shows a clear message.,Load test shows p95 down from 840 ms to 210 ms (report in PR #4649).,,\n t-c3c17bdd-c345-4b15-a6ec-30b5dd3fb285,cancelled,Fix idempotency keys rendering off-screen on small screens for API clients.,api,normal,,,2026-07-21,,,Duplicate of an earlier entry closed the same week.,\n t-c41dd084-8801-4f09-b681-42022bc415c1,done,Fix pagination sorting dates as strings (status page) for EU tenants.,api,normal,,,2026-09-29,Added the missing guard in pagination and a regression test.,`pnpm test -- pagination` passes; CI run green on main.,,\n"
+  },
+  {
+   "format": "csv",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 726,
+   "diff_text": "diff --git a/tasks.csv b/tasks.csv\nindex 206ba57..adb7e73 100644\n--- a/tasks.csv\n+++ b/tasks.csv\n@@ -380,7 +380,7 @@ t-81dc8563-ba09-40a8-b23a-a9cebb4313a1,done,Write a how-to for bulk import endpo\n t-81de5702-75a5-43a8-8d2d-ac9eda6cdfb7,done,Cache search indexer results to cut cold start (retention emails).,search,,,,2026-08-06,Added the missing guard in search indexer and a regression test.,`pnpm test -- search-indexer` passes; CI run green on main.,,\n t-8206863a-eb81-4a7d-b4a8-46875ed9ef56,cancelled,Extract navigation menu logic into a shared module on Safari.,ui,normal,,,2026-07-26,,,Dropped: product decided against it in the planning meeting.,\n t-83181a75-63eb-4034-a66f-88f21cc4d89a,cancelled,Replace the hand-rolled CORS headers state machine during onboarding.,api,high,,,2026-08-02,,,Dropped: product decided against it in the planning meeting.,\n-t-831d03bf-9b2b-46c0-816b-ee06f92e2339,pending,Document invoice PDF local setup.,billing,normal,,backlog,,,,,The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\n+t-831d03bf-9b2b-46c0-816b-ee06f92e2339,pending,Document invoice PDF local setup.,billing,urgent,,backlog,,,,,The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.\n t-832426fd-f701-4ed7-a40f-d1f4f30dbe64,done,Support inline editing in orders index.,database,normal,,,2026-09-16,Added the missing guard in orders index and a regression test.,`pnpm test -- orders-index` passes; CI run green on main.,,\n t-8349af63-ff61-4ca7-8b3c-57d4e8886f2e,done,Audit architecture notes for privilege escalation for API clients.,docs,high,,,2026-09-21,Replaced the ad-hoc code in architecture notes with the shared helper.,Commit 8538b66; manual check in the browser on staging.,,\n t-836c7354-928c-45b1-9abe-c99b02549048,done,Extract staging environment logic into a shared module (status page) in read-only mode.,infra,,,,2026-09-09,Staging environment behaves as specified; the old workaround is gone.,Merged in PR #5903; verified on staging.,,\n"
+  },
+  {
+   "format": "csv",
+   "op": "edit_body",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 693,
+   "diff_text": "diff --git a/tasks.csv b/tasks.csv\nindex adb7e73..7a9a281 100644\n--- a/tasks.csv\n+++ b/tasks.csv\n@@ -162,7 +162,7 @@ t-34bc7384-d897-41d3-ab3b-fef39fc83e0f,done,Upgrade CDN cache to Tailwind 4 in t\n t-34be43e9-69d6-4dd6-bb16-209256292c3d,done,Remove dead code from orders index for the SAML rollout.,database,,,,2026-08-08,Replaced the ad-hoc code in orders index with the shared helper.,Merged in PR #772; verified on staging.,,\n t-367bb40b-390e-49b2-b41b-3678b0abdff9,cancelled,Write a how-to for OpenAPI schema configuration.,api,urgent,,,2026-10-08,,,Dropped: product decided against it in the planning meeting.,\n t-37174e14-848c-4778-bd29-048f2ee18bd1,done,Split plan upgrade into smaller units.,billing,low,,,2026-09-11,The plan upgrade now handles the case and shows a clear message.,Merged in PR #3890; verified on staging.,,\n-t-3836e865-77bd-491f-b7b1-03df23231e1e,in_progress,Fix dependency cache dropping the last item as part of the inviting teammates.,ci,normal,2026-12-27,backlog,,,,,Came up in the design review; the current behaviour confuses new users.\n+t-3836e865-77bd-491f-b7b1-03df23231e1e,in_progress,Fix dependency cache dropping the last item as part of the inviting teammates.,ci,normal,2026-12-27,backlog,,,,,Came up in the design review; the current behaviour confuses new users.\\n\\nReworded on branch 2.\n t-3938902d-6e57-4eb8-899c-9ce4700286a0,done,Split Terraform state into smaller units.,infra,,,,2026-08-04,Added the missing guard in Terraform state and a regression test.,`pnpm test -- terraform-state` passes; CI run green on main.,,\n t-39741156-1bf8-4d11-83e1-5c5594865d85,pending,Fix Terraform state double-submitting on the free plan.,infra,,,backlog,,,,,The previous attempt was reverted because it broke the staging smoke test.\n t-3992b859-33f1-48d3-81e0-1192f9e78ae1,done,Rename the invite links config keys for large accounts.,auth,,,,2026-08-04,Replaced the ad-hoc code in invite links with the shared helper.,Merged in PR #9705; verified on staging.,,\n"
+  },
+  {
+   "format": "csv",
+   "op": "close",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 744,
+   "diff_text": "diff --git a/tasks.csv b/tasks.csv\nindex 7a9a281..87430b6 100644\n--- a/tasks.csv\n+++ b/tasks.csv\n@@ -576,7 +576,7 @@ t-c6ce0ee5-b9a1-413e-892e-6de15e7b4e6a,done,Investigate the flicker in notificat\n t-c707f818-d4be-4def-bcf2-f6fa1368d536,done,Add a retry button to soft deletes during onboarding.,database,,,,2026-11-08,Added the missing guard in soft deletes and a regression test.,Merged in PR #4555; verified on staging.,,\n t-c7f48e4c-d99a-4cca-b7b6-063a6f72b169,cancelled,Receipt emails is losing state on back navigation (filter presets) for API clients.,billing,high,,,2026-07-28,,,Duplicate of an earlier entry closed the same week.,\n t-c8b215ac-9eee-42fe-97d2-9ac416396351,done,Role permissions is hanging on slow networks.,auth,,,,2026-09-23,The role permissions now handles the case and shows a clear message.,Commit 530a19a; manual check in the browser on staging.,,\n-t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c,pending,Fix token refresh rendering off-screen on small screens.,auth,,2026-11-29,backlog,,,,,Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.\n+t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c,done,Fix token refresh rendering off-screen on small screens.,auth,,,,2026-11-16,Done as described.,proof 3,,Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.\n t-c9e0f99c-178e-475f-953d-377015ca27de,done,Split token refresh into smaller units.,auth,normal,,,2026-08-21,Added the missing guard in token refresh and a regression test.,Commit 56faaea; manual check in the browser on staging.,,\n t-c9e48a52-ccd7-4516-9eac-deb2675c186f,done,Refund flow is losing state on back navigation for EU tenants.,billing,low,,,2026-07-24,Refund flow behaves as specified; the old workaround is gone.,Load test shows p95 down from 840 ms to 210 ms (report in PR #7585).,,\n t-c9f17c53-d871-411e-993f-4ed44d47d712,done,Extract login form logic into a shared module for EU tenants.,ui,low,,,2026-10-16,Login form behaves as specified; the old workaround is gone.,Merged in PR #790; verified on staging.,,\n"
+  },
+  {
+   "format": "sqldump",
+   "op": "add",
+   "added": 2,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 1028,
+   "diff_text": "diff --git a/todo.sql b/todo.sql\nindex c99e8ca..cfe5440 100644\n--- a/todo.sql\n+++ b/todo.sql\n@@ -559,6 +559,7 @@ INSERT INTO task VALUES('t-c134daa0-1611-487d-9c05-acb8747bc082','done','Split t\n INSERT INTO task VALUES('t-c17e77a4-7758-449f-903e-3a049e807e42','done','Add a retry button to session expiry as part of the database upgrade.','auth',NULL,NULL,NULL,'2026-08-02','The session expiry now handles the case and shows a clear message.','`pytest tests/test_session-expiry.py` passes (12 tests).',NULL,NULL);\n INSERT INTO task VALUES('t-c2cdf789-acdb-497d-9236-d0fd3fa2581d','done','Audit base Docker image for privilege escalation for the new invoice layout in the legacy view.','infra','normal',NULL,NULL,'2026-10-09','Replaced the ad-hoc code in base Docker image with the shared helper.','Commit 01cef9c; manual check in the browser on staging.',NULL,NULL);\n INSERT INTO task VALUES('t-c31fd5b1-cad2-41ac-bc97-40e6a14d1c2c','done','Extract navigation menu logic into a shared module.','ui','high',NULL,NULL,'2026-07-27','Added the missing guard in navigation menu and a regression test.','`pytest tests/test_navigation-menu.py` passes (12 tests).',NULL,NULL);\n+INSERT INTO task VALUES('t-c386bbc4-cd61-4e30-98f1-6adf91b7584a','pending','New task 900 for password reset.','auth','normal',NULL,'backlog',NULL,NULL,NULL,NULL,'Added on a branch.');\n INSERT INTO task VALUES('t-c3b240f9-77a7-4f35-ba90-e3514868e88a','done','Replace the hand-rolled push notifications state machine.','notifications','normal',NULL,NULL,'2026-08-25','The push notifications now handles the case and shows a clear message.','Load test shows p95 down from 840 ms to 210 ms (report in PR #4649).',NULL,NULL);\n INSERT INTO task VALUES('t-c3c17bdd-c345-4b15-a6ec-30b5dd3fb285','cancelled','Fix idempotency keys rendering off-screen on small screens for API clients.','api','normal',NULL,NULL,'2026-07-21',NULL,NULL,'Duplicate of an earlier entry closed the same week.',NULL);\n INSERT INTO task VALUES('t-c41dd084-8801-4f09-b681-42022bc415c1','done','Fix pagination sorting dates as strings (status page) for EU tenants.','api','normal',NULL,NULL,'2026-09-29','Added the missing guard in pagination and a regression test.','`pnpm test -- pagination` passes; CI run green on main.',NULL,NULL);\n@@ -1421,6 +1422,7 @@ INSERT INTO task_label VALUES('t-c17e77a4-7758-449f-903e-3a049e807e42','postgres\n INSERT INTO task_label VALUES('t-c2cdf789-acdb-497d-9236-d0fd3fa2581d','invoice-redesign');\n INSERT INTO task_label VALUES('t-c2cdf789-acdb-497d-9236-d0fd3fa2581d','security');\n INSERT INTO task_label VALUES('t-c31fd5b1-cad2-41ac-bc97-40e6a14d1c2c','refactor');\n+INSERT INTO task_label VALUES('t-c386bbc4-cd61-4e30-98f1-6adf91b7584a','feature');\n INSERT INTO task_label VALUES('t-c3b240f9-77a7-4f35-ba90-e3514868e88a','refactor');\n INSERT INTO task_label VALUES('t-c3c17bdd-c345-4b15-a6ec-30b5dd3fb285','bug');\n INSERT INTO task_label VALUES('t-c41dd084-8801-4f09-b681-42022bc415c1','bug');\n"
+  },
+  {
+   "format": "sqldump",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 827,
+   "diff_text": "diff --git a/todo.sql b/todo.sql\nindex cfe5440..61057ec 100644\n--- a/todo.sql\n+++ b/todo.sql\n@@ -382,7 +382,7 @@ INSERT INTO task VALUES('t-81dc8563-ba09-40a8-b23a-a9cebb4313a1','done','Write a\n INSERT INTO task VALUES('t-81de5702-75a5-43a8-8d2d-ac9eda6cdfb7','done','Cache search indexer results to cut cold start (retention emails).','search',NULL,NULL,NULL,'2026-08-06','Added the missing guard in search indexer and a regression test.','`pnpm test -- search-indexer` passes; CI run green on main.',NULL,NULL);\n INSERT INTO task VALUES('t-8206863a-eb81-4a7d-b4a8-46875ed9ef56','cancelled','Extract navigation menu logic into a shared module on Safari.','ui','normal',NULL,NULL,'2026-07-26',NULL,NULL,'Dropped: product decided against it in the planning meeting.',NULL);\n INSERT INTO task VALUES('t-83181a75-63eb-4034-a66f-88f21cc4d89a','cancelled','Replace the hand-rolled CORS headers state machine during onboarding.','api','high',NULL,NULL,'2026-08-02',NULL,NULL,'Dropped: product decided against it in the planning meeting.',NULL);\n-INSERT INTO task VALUES('t-831d03bf-9b2b-46c0-816b-ee06f92e2339','pending','Document invoice PDF local setup.','billing','normal',NULL,'backlog',NULL,NULL,NULL,NULL,'The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.');\n+INSERT INTO task VALUES('t-831d03bf-9b2b-46c0-816b-ee06f92e2339','pending','Document invoice PDF local setup.','billing','urgent',NULL,'backlog',NULL,NULL,NULL,NULL,'The on-call engineer flagged it in the weekly incident review.\\n\\nSmallest next step: measure the baseline with the existing benchmark in `src/billing/invoice_pdf.ts`.');\n INSERT INTO task VALUES('t-832426fd-f701-4ed7-a40f-d1f4f30dbe64','done','Support inline editing in orders index.','database','normal',NULL,NULL,'2026-09-16','Added the missing guard in orders index and a regression test.','`pnpm test -- orders-index` passes; CI run green on main.',NULL,NULL);\n INSERT INTO task VALUES('t-8349af63-ff61-4ca7-8b3c-57d4e8886f2e','done','Audit architecture notes for privilege escalation for API clients.','docs','high',NULL,NULL,'2026-09-21','Replaced the ad-hoc code in architecture notes with the shared helper.','Commit 8538b66; manual check in the browser on staging.',NULL,NULL);\n INSERT INTO task VALUES('t-836c7354-928c-45b1-9abe-c99b02549048','done','Extract staging environment logic into a shared module (status page) in read-only mode.','infra',NULL,NULL,NULL,'2026-09-09','Staging environment behaves as specified; the old workaround is gone.','Merged in PR #5903; verified on staging.',NULL,NULL);\n"
+  },
+  {
+   "format": "sqldump",
+   "op": "edit_body",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 788,
+   "diff_text": "diff --git a/todo.sql b/todo.sql\nindex 61057ec..689c543 100644\n--- a/todo.sql\n+++ b/todo.sql\n@@ -164,7 +164,7 @@ INSERT INTO task VALUES('t-34bc7384-d897-41d3-ab3b-fef39fc83e0f','done','Upgrade\n INSERT INTO task VALUES('t-34be43e9-69d6-4dd6-bb16-209256292c3d','done','Remove dead code from orders index for the SAML rollout.','database',NULL,NULL,NULL,'2026-08-08','Replaced the ad-hoc code in orders index with the shared helper.','Merged in PR #772; verified on staging.',NULL,NULL);\n INSERT INTO task VALUES('t-367bb40b-390e-49b2-b41b-3678b0abdff9','cancelled','Write a how-to for OpenAPI schema configuration.','api','urgent',NULL,NULL,'2026-10-08',NULL,NULL,'Dropped: product decided against it in the planning meeting.',NULL);\n INSERT INTO task VALUES('t-37174e14-848c-4778-bd29-048f2ee18bd1','done','Split plan upgrade into smaller units.','billing','low',NULL,NULL,'2026-09-11','The plan upgrade now handles the case and shows a clear message.','Merged in PR #3890; verified on staging.',NULL,NULL);\n-INSERT INTO task VALUES('t-3836e865-77bd-491f-b7b1-03df23231e1e','in_progress','Fix dependency cache dropping the last item as part of the inviting teammates.','ci','normal','2026-12-27','backlog',NULL,NULL,NULL,NULL,'Came up in the design review; the current behaviour confuses new users.');\n+INSERT INTO task VALUES('t-3836e865-77bd-491f-b7b1-03df23231e1e','in_progress','Fix dependency cache dropping the last item as part of the inviting teammates.','ci','normal','2026-12-27','backlog',NULL,NULL,NULL,NULL,'Came up in the design review; the current behaviour confuses new users.\\n\\nReworded on branch 2.');\n INSERT INTO task VALUES('t-3938902d-6e57-4eb8-899c-9ce4700286a0','done','Split Terraform state into smaller units.','infra',NULL,NULL,NULL,'2026-08-04','Added the missing guard in Terraform state and a regression test.','`pnpm test -- terraform-state` passes; CI run green on main.',NULL,NULL);\n INSERT INTO task VALUES('t-39741156-1bf8-4d11-83e1-5c5594865d85','pending','Fix Terraform state double-submitting on the free plan.','infra',NULL,NULL,'backlog',NULL,NULL,NULL,NULL,'The previous attempt was reverted because it broke the staging smoke test.');\n INSERT INTO task VALUES('t-3992b859-33f1-48d3-81e0-1192f9e78ae1','done','Rename the invite links config keys for large accounts.','auth',NULL,NULL,NULL,'2026-08-04','Replaced the ad-hoc code in invite links with the shared helper.','Merged in PR #9705; verified on staging.',NULL,NULL);\n"
+  },
+  {
+   "format": "sqldump",
+   "op": "close",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 841,
+   "diff_text": "diff --git a/todo.sql b/todo.sql\nindex 689c543..50e7152 100644\n--- a/todo.sql\n+++ b/todo.sql\n@@ -578,7 +578,7 @@ INSERT INTO task VALUES('t-c6ce0ee5-b9a1-413e-892e-6de15e7b4e6a','done','Investi\n INSERT INTO task VALUES('t-c707f818-d4be-4def-bcf2-f6fa1368d536','done','Add a retry button to soft deletes during onboarding.','database',NULL,NULL,NULL,'2026-11-08','Added the missing guard in soft deletes and a regression test.','Merged in PR #4555; verified on staging.',NULL,NULL);\n INSERT INTO task VALUES('t-c7f48e4c-d99a-4cca-b7b6-063a6f72b169','cancelled','Receipt emails is losing state on back navigation (filter presets) for API clients.','billing','high',NULL,NULL,'2026-07-28',NULL,NULL,'Duplicate of an earlier entry closed the same week.',NULL);\n INSERT INTO task VALUES('t-c8b215ac-9eee-42fe-97d2-9ac416396351','done','Role permissions is hanging on slow networks.','auth',NULL,NULL,NULL,'2026-09-23','The role permissions now handles the case and shows a clear message.','Commit 530a19a; manual check in the browser on staging.',NULL,NULL);\n-INSERT INTO task VALUES('t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c','pending','Fix token refresh rendering off-screen on small screens.','auth',NULL,'2026-11-29','backlog',NULL,NULL,NULL,NULL,'Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.');\n+INSERT INTO task VALUES('t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c','done','Fix token refresh rendering off-screen on small screens.','auth',NULL,NULL,NULL,'2026-11-16','Done as described.','proof 3',NULL,'Reported by a customer on the enterprise plan; the support ticket has a screen recording.\\n\\nDone when: the token refresh behaves as described and CI is green.');\n INSERT INTO task VALUES('t-c9e0f99c-178e-475f-953d-377015ca27de','done','Split token refresh into smaller units.','auth','normal',NULL,NULL,'2026-08-21','Added the missing guard in token refresh and a regression test.','Commit 56faaea; manual check in the browser on staging.',NULL,NULL);\n INSERT INTO task VALUES('t-c9e48a52-ccd7-4516-9eac-deb2675c186f','done','Refund flow is losing state on back navigation for EU tenants.','billing','low',NULL,NULL,'2026-07-24','Refund flow behaves as specified; the old workaround is gone.','Load test shows p95 down from 840 ms to 210 ms (report in PR #7585).',NULL,NULL);\n INSERT INTO task VALUES('t-c9f17c53-d871-411e-993f-4ed44d47d712','done','Extract login form logic into a shared module for EU tenants.','ui','low',NULL,NULL,'2026-10-16','Login form behaves as specified; the old workaround is gone.','Merged in PR #790; verified on staging.',NULL,NULL);\n"
+  },
+  {
+   "format": "hybrid",
+   "op": "add",
+   "added": 11,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 218,
+   "diff_text": "diff --git a/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.md b/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.md\nnew file mode 100644\nindex 0000000..c23338c\n--- /dev/null\n+++ b/todo/t-c386bbc4-cd61-4e30-98f1-6adf91b7584a.md\n@@ -0,0 +1,11 @@\n+---\n+id: t-c386bbc4-cd61-4e30-98f1-6adf91b7584a\n+state: pending\n+title: New task 900 for password reset.\n+category: auth\n+priority: normal\n+queue: backlog\n+labels: [feature]\n+---\n+\n+Added on a branch.\n"
+  },
+  {
+   "format": "hybrid",
+   "op": "set_priority",
+   "added": 1,
+   "removed": 1,
+   "binary": false,
+   "diff_tokens": 229,
+   "diff_text": "diff --git a/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md b/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md\nindex e960a17..a7a043d 100644\n--- a/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md\n+++ b/todo/t-831d03bf-9b2b-46c0-816b-ee06f92e2339.md\n@@ -3,7 +3,7 @@ id: t-831d03bf-9b2b-46c0-816b-ee06f92e2339\n state: pending\n title: Document invoice PDF local setup.\n category: billing\n-priority: normal\n+priority: urgent\n queue: backlog\n labels: [docs]\n ---\n"
+  },
+  {
+   "format": "hybrid",
+   "op": "edit_body",
+   "added": 2,
+   "removed": 0,
+   "binary": false,
+   "diff_tokens": 195,
+   "diff_text": "diff --git a/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md b/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md\nindex 757336f..4dfb06e 100644\n--- a/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md\n+++ b/todo/t-3836e865-77bd-491f-b7b1-03df23231e1e.md\n@@ -10,3 +10,5 @@ labels: [bug, team-invites]\n ---\n \n Came up in the design review; the current behaviour confuses new users.\n+\n+Reworded on branch 2.\n"
+  },
+  {
+   "format": "hybrid",
+   "op": "close",
+   "added": 9,
+   "removed": 13,
+   "binary": false,
+   "diff_tokens": 468,
+   "diff_text": "diff --git a/TODO_LOG.md b/TODO_LOG.md\nindex 65fa591..932a262 100644\n--- a/TODO_LOG.md\n+++ b/TODO_LOG.md\n@@ -8,6 +8,15 @@\n \n ### 2026-11\n \n+- [x] 2026-11-16 \u2014 **Auth:** Fix token refresh rendering off-screen on small screens.\n+\n+  ID: t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\n+\n+  Labels: bug\n+\n+  - Result: Done as described.\n+  - Evidence: proof 3\n+\n - [x] 2026-11-15 \u2014 **UI:** Remove dead code from theme switcher for EU tenants.\n \n   ID: t-9714e577-ff10-441c-8e58-385cdfe94c8b\ndiff --git a/todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md b/todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md\ndeleted file mode 100644\nindex a873c67..0000000\n--- a/todo/t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c.md\n+++ /dev/null\n@@ -1,13 +0,0 @@\n----\n-id: t-c9d22950-eb25-48a1-bc2e-6a591ce3bc0c\n-state: pending\n-title: Fix token refresh rendering off-screen on small screens.\n-category: auth\n-due: 2026-11-29\n-queue: backlog\n-labels: [bug]\n----\n-\n-Reported by a customer on the enterprise plan; the support ticket has a screen recording.\n-\n-Done when: the token refresh behaves as described and CI is green.\n"
+  }
+ ],
+ "merge": [
+  {
+   "variant": "md_fields",
+   "scenario": "different items",
+   "clean": 139,
+   "conflict": 11,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+close": 9,
+    "conflict:add+add": 2
+   }
+  },
+  {
+   "variant": "md_fields",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_fields",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "md_fields+union(log only)",
+   "scenario": "different items",
+   "clean": 147,
+   "conflict": 3,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:add+add": 2,
+    "conflict:close+close": 1
+   }
+  },
+  {
+   "variant": "md_fields+union(log only)",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_fields+union(log only)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "md_fields+union(all)",
+   "scenario": "different items",
+   "clean": 149,
+   "conflict": 0,
+   "wrong": 1,
+   "by_pair": {
+    "wrong:close+close": 1
+   }
+  },
+  {
+   "variant": "md_fields+union(all)",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_fields+union(all)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 0,
+   "wrong": 47,
+   "by_pair": {
+    "wrong:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "jsonl",
+   "scenario": "different items",
+   "clean": 125,
+   "conflict": 25,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:add+add": 10,
+    "conflict:add+set_priority": 1,
+    "conflict:close+close": 9,
+    "conflict:set_priority+set_priority": 1,
+    "conflict:close+set_priority": 3,
+    "conflict:edit_body+set_priority": 1
+   }
+  },
+  {
+   "variant": "jsonl",
+   "scenario": "same item, different fields",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:edit_body+set_priority": 47
+   }
+  },
+  {
+   "variant": "jsonl",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "jsonl+union(log only)",
+   "scenario": "different items",
+   "clean": 134,
+   "conflict": 16,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:add+add": 10,
+    "conflict:add+set_priority": 1,
+    "conflict:set_priority+set_priority": 1,
+    "conflict:close+set_priority": 3,
+    "conflict:edit_body+set_priority": 1
+   }
+  },
+  {
+   "variant": "jsonl+union(log only)",
+   "scenario": "same item, different fields",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:edit_body+set_priority": 47
+   }
+  },
+  {
+   "variant": "jsonl+union(log only)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "jsonl+union(all)",
+   "scenario": "different items",
+   "clean": 144,
+   "conflict": 0,
+   "wrong": 6,
+   "by_pair": {
+    "wrong:add+set_priority": 1,
+    "wrong:set_priority+set_priority": 1,
+    "wrong:close+set_priority": 3,
+    "wrong:edit_body+set_priority": 1
+   }
+  },
+  {
+   "variant": "jsonl+union(all)",
+   "scenario": "same item, different fields",
+   "clean": 3,
+   "conflict": 0,
+   "wrong": 47,
+   "by_pair": {
+    "wrong:edit_body+set_priority": 47
+   }
+  },
+  {
+   "variant": "jsonl+union(all)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 0,
+   "wrong": 47,
+   "by_pair": {
+    "wrong:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "json",
+   "scenario": "different items",
+   "clean": 131,
+   "conflict": 19,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:add+add": 10,
+    "conflict:close+close": 9
+   }
+  },
+  {
+   "variant": "json",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "json",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "sqlite",
+   "scenario": "different items",
+   "clean": 0,
+   "conflict": 150,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:add+edit_body": 16,
+    "conflict:add+close": 19,
+    "conflict:add+set_priority": 20,
+    "conflict:add+add": 10,
+    "conflict:edit_body+set_priority": 22,
+    "conflict:close+edit_body": 22,
+    "conflict:close+close": 9,
+    "conflict:set_priority+set_priority": 9,
+    "conflict:close+set_priority": 17,
+    "conflict:edit_body+edit_body": 6
+   }
+  },
+  {
+   "variant": "sqlite",
+   "scenario": "same item, different fields",
+   "clean": 0,
+   "conflict": 50,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:edit_body+set_priority": 50
+   }
+  },
+  {
+   "variant": "sqlite",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 0,
+   "conflict": 50,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 50
+   }
+  },
+  {
+   "variant": "json_dir",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "json_dir",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "json_dir",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "md_dir",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_dir",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_dir",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "rec",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "rec",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "rec",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "csv",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "csv",
+   "scenario": "same item, different fields",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:edit_body+set_priority": 47
+   }
+  },
+  {
+   "variant": "csv",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "sqldump",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "sqldump",
+   "scenario": "same item, different fields",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:edit_body+set_priority": 47
+   }
+  },
+  {
+   "variant": "sqldump",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "json_dir (append-only close)",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "json_dir (append-only close)",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "json_dir (append-only close)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_dir (append-only close)",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_dir (append-only close)",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "md_dir (append-only close)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "rec (append-only close)",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "rec (append-only close)",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "rec (append-only close)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "hybrid",
+   "scenario": "different items",
+   "clean": 141,
+   "conflict": 9,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+close": 9
+   }
+  },
+  {
+   "variant": "hybrid",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "hybrid",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  },
+  {
+   "variant": "hybrid+union(log only)",
+   "scenario": "different items",
+   "clean": 150,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "hybrid+union(log only)",
+   "scenario": "same item, different fields",
+   "clean": 50,
+   "conflict": 0,
+   "wrong": 0,
+   "by_pair": {}
+  },
+  {
+   "variant": "hybrid+union(log only)",
+   "scenario": "same item: closed on one branch, edited on the other",
+   "clean": 3,
+   "conflict": 47,
+   "wrong": 0,
+   "by_pair": {
+    "conflict:close+set_priority": 47
+   }
+  }
+ ]
+}

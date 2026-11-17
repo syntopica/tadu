@@ -1,0 +1,2432 @@
+{
+ "tokenizer": "claude-legacy-tokenizer",
+ "sizes": [
+  {
+   "scale": "S",
+   "format": "md_prose",
+   "file": "open",
+   "bytes": 31263,
+   "lines": 892,
+   "tokens": 7516
+  },
+  {
+   "scale": "S",
+   "format": "md_prose",
+   "file": "log",
+   "bytes": 161802,
+   "lines": 2889,
+   "tokens": 46053
+  },
+  {
+   "scale": "S",
+   "format": "md_fields",
+   "file": "open",
+   "bytes": 40003,
+   "lines": 1490,
+   "tokens": 11799
+  },
+  {
+   "scale": "S",
+   "format": "md_fields",
+   "file": "log",
+   "bytes": 209348,
+   "lines": 6661,
+   "tokens": 68017
+  },
+  {
+   "scale": "S",
+   "format": "jsonl",
+   "file": "open",
+   "bytes": 49788,
+   "lines": 120,
+   "tokens": 15683
+  },
+  {
+   "scale": "S",
+   "format": "jsonl",
+   "file": "log",
+   "bytes": 243702,
+   "lines": 600,
+   "tokens": 78949
+  },
+  {
+   "scale": "S",
+   "format": "json",
+   "file": "open",
+   "bytes": 56577,
+   "lines": 1593,
+   "tokens": 17518
+  },
+  {
+   "scale": "S",
+   "format": "json",
+   "file": "log",
+   "bytes": 285835,
+   "lines": 9481,
+   "tokens": 91240
+  },
+  {
+   "scale": "S",
+   "format": "yaml",
+   "file": "open",
+   "bytes": 47571,
+   "lines": 1600,
+   "tokens": 13880
+  },
+  {
+   "scale": "S",
+   "format": "yaml",
+   "file": "log",
+   "bytes": 230449,
+   "lines": 7147,
+   "tokens": 72994
+  },
+  {
+   "scale": "S",
+   "format": "sqlite",
+   "file": "db (open+log)",
+   "bytes": 397312,
+   "lines": null,
+   "tokens": null
+  },
+  {
+   "scale": "S",
+   "format": "json_dir",
+   "file": "all (open+log)",
+   "bytes": 284254,
+   "lines": 9116,
+   "tokens": 96083,
+   "files": 720,
+   "disk": 2949120
+  },
+  {
+   "scale": "S",
+   "format": "md_dir",
+   "file": "all (open+log)",
+   "bytes": 242308,
+   "lines": 11282,
+   "tokens": 81348,
+   "files": 720,
+   "disk": 2949120
+  },
+  {
+   "scale": "S",
+   "format": "rec",
+   "file": "all (open+log)",
+   "bytes": 232813,
+   "lines": 7209,
+   "tokens": 75170,
+   "files": 1,
+   "disk": 233472
+  },
+  {
+   "scale": "S",
+   "format": "csv",
+   "file": "all (open+log)",
+   "bytes": 221747,
+   "lines": 1608,
+   "tokens": 85942,
+   "files": 2,
+   "disk": 229376
+  },
+  {
+   "scale": "S",
+   "format": "sqldump",
+   "file": "all (open+log)",
+   "bytes": 296490,
+   "lines": 1609,
+   "tokens": 102186,
+   "files": 1,
+   "disk": 299008
+  },
+  {
+   "scale": "M",
+   "format": "md_prose",
+   "file": "open",
+   "bytes": 153122,
+   "lines": 4326,
+   "tokens": 36838
+  },
+  {
+   "scale": "M",
+   "format": "md_prose",
+   "file": "log",
+   "bytes": 1610425,
+   "lines": 28563,
+   "tokens": 456628
+  },
+  {
+   "scale": "M",
+   "format": "md_fields",
+   "file": "open",
+   "bytes": 195732,
+   "lines": 7258,
+   "tokens": 57962
+  },
+  {
+   "scale": "M",
+   "format": "md_fields",
+   "file": "log",
+   "bytes": 2086064,
+   "lines": 66451,
+   "tokens": 676586
+  },
+  {
+   "scale": "M",
+   "format": "jsonl",
+   "file": "open",
+   "bytes": 246721,
+   "lines": 600,
+   "tokens": 77956
+  },
+  {
+   "scale": "M",
+   "format": "jsonl",
+   "file": "log",
+   "bytes": 2429594,
+   "lines": 6000,
+   "tokens": 786592
+  },
+  {
+   "scale": "M",
+   "format": "json",
+   "file": "open",
+   "bytes": 280510,
+   "lines": 7933,
+   "tokens": 87091
+  },
+  {
+   "scale": "M",
+   "format": "json",
+   "file": "log",
+   "bytes": 2848761,
+   "lines": 94368,
+   "tokens": 908736
+  },
+  {
+   "scale": "M",
+   "format": "yaml",
+   "file": "open",
+   "bytes": 235615,
+   "lines": 7932,
+   "tokens": 69017
+  },
+  {
+   "scale": "M",
+   "format": "yaml",
+   "file": "log",
+   "bytes": 2296948,
+   "lines": 71138,
+   "tokens": 726721
+  },
+  {
+   "scale": "M",
+   "format": "sqlite",
+   "file": "db (open+log)",
+   "bytes": 3002368,
+   "lines": null,
+   "tokens": null
+  },
+  {
+   "scale": "M",
+   "format": "json_dir",
+   "file": "all (open+log)",
+   "bytes": 2583015,
+   "lines": 83789,
+   "tokens": 875629,
+   "files": 6600,
+   "disk": 27033600
+  },
+  {
+   "scale": "M",
+   "format": "md_dir",
+   "file": "all (open+log)",
+   "bytes": 2203791,
+   "lines": 104696,
+   "tokens": 744283,
+   "files": 6600,
+   "disk": 27033600
+  },
+  {
+   "scale": "M",
+   "format": "rec",
+   "file": "all (open+log)",
+   "bytes": 2106633,
+   "lines": 65196,
+   "tokens": 682667,
+   "files": 1,
+   "disk": 2109440
+  },
+  {
+   "scale": "M",
+   "format": "csv",
+   "file": "all (open+log)",
+   "bytes": 1999562,
+   "lines": 14667,
+   "tokens": 780215,
+   "files": 2,
+   "disk": 2002944
+  },
+  {
+   "scale": "M",
+   "format": "sqldump",
+   "file": "all (open+log)",
+   "bytes": 2679532,
+   "lines": 14668,
+   "tokens": 927171,
+   "files": 1,
+   "disk": 2682880
+  },
+  {
+   "scale": "L",
+   "format": "md_prose",
+   "file": "open",
+   "bytes": 638867,
+   "lines": 18072,
+   "tokens": 154717
+  },
+  {
+   "scale": "L",
+   "format": "md_prose",
+   "file": "log",
+   "bytes": 6761732,
+   "lines": 119177,
+   "tokens": 1915504
+  },
+  {
+   "scale": "L",
+   "format": "md_fields",
+   "file": "open",
+   "bytes": 817579,
+   "lines": 30394,
+   "tokens": 243195
+  },
+  {
+   "scale": "L",
+   "format": "md_fields",
+   "file": "log",
+   "bytes": 8738348,
+   "lines": 276639,
+   "tokens": 2830795
+  },
+  {
+   "scale": "L",
+   "format": "jsonl",
+   "file": "open",
+   "bytes": 1030464,
+   "lines": 2500,
+   "tokens": 326825
+  },
+  {
+   "scale": "L",
+   "format": "jsonl",
+   "file": "log",
+   "bytes": 10175257,
+   "lines": 25000,
+   "tokens": 3288410
+  },
+  {
+   "scale": "L",
+   "format": "json",
+   "file": "open",
+   "bytes": 1171273,
+   "lines": 33053,
+   "tokens": 364880
+  },
+  {
+   "scale": "L",
+   "format": "json",
+   "file": "log",
+   "bytes": 11923670,
+   "lines": 393591,
+   "tokens": 3798096
+  },
+  {
+   "scale": "L",
+   "format": "yaml",
+   "file": "open",
+   "bytes": 984195,
+   "lines": 33182,
+   "tokens": 289407
+  },
+  {
+   "scale": "L",
+   "format": "yaml",
+   "file": "log",
+   "bytes": 9622648,
+   "lines": 296733,
+   "tokens": 3039578
+  },
+  {
+   "scale": "L",
+   "format": "sqlite",
+   "file": "db (open+log)",
+   "bytes": 12451840,
+   "lines": null,
+   "tokens": null
+  },
+  {
+   "scale": "L",
+   "format": "json_dir",
+   "file": "all (open+log)",
+   "bytes": 10807325,
+   "lines": 349030,
+   "tokens": 3658543,
+   "files": 27500,
+   "disk": 112640000
+  },
+  {
+   "scale": "L",
+   "format": "md_dir",
+   "file": "all (open+log)",
+   "bytes": 9228179,
+   "lines": 436683,
+   "tokens": 3113237,
+   "files": 27500,
+   "disk": 112640000
+  },
+  {
+   "scale": "L",
+   "format": "rec",
+   "file": "all (open+log)",
+   "bytes": 8821552,
+   "lines": 271615,
+   "tokens": 2856211,
+   "files": 1,
+   "disk": 8822784
+  },
+  {
+   "scale": "L",
+   "format": "csv",
+   "file": "all (open+log)",
+   "bytes": 8373878,
+   "lines": 61018,
+   "tokens": 3258537,
+   "files": 2,
+   "disk": 8380416
+  },
+  {
+   "scale": "L",
+   "format": "sqldump",
+   "file": "all (open+log)",
+   "bytes": 11203080,
+   "lines": 61019,
+   "tokens": 3870048,
+   "files": 1,
+   "disk": 11206656
+  }
+ ],
+ "reads": [
+  {
+   "scale": "S",
+   "what": "python startup",
+   "backend": "-",
+   "ms": 42.33796700009407
+  },
+  {
+   "scale": "S",
+   "what": "tadu --version",
+   "backend": "-",
+   "ms": 238.55911300051957
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tadu list (md)",
+   "ms": 331.4388870003313
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tadu list (md)",
+   "ms": 304.1920759997083
+  },
+  {
+   "scale": "S",
+   "what": "grep log",
+   "backend": "grep (md)",
+   "ms": 4.927322000185086
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq md",
+   "ms": 118.76278799991269
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq md",
+   "ms": 152.40377400004945
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq md",
+   "ms": 174.1605500001242
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq mdcache (warm)",
+   "ms": 129.75032499980443
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq mdcache (warm)",
+   "ms": 126.83098999968934
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq mdcache (warm)",
+   "ms": 113.7630060002266
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq jsonl",
+   "ms": 122.63159699978132
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq jsonl",
+   "ms": 111.42172800009575
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq jsonl",
+   "ms": 152.2388769999452
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq json",
+   "ms": 113.30257299960067
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq json",
+   "ms": 142.45751399994333
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq json",
+   "ms": 169.11241599973437
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq sqlite",
+   "ms": 131.6262230002394
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq sqlite",
+   "ms": 134.00696200005768
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq sqlite",
+   "ms": 125.26071200045408
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq json_dir",
+   "ms": 117.51664699932007
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq json_dir",
+   "ms": 150.28759500000888
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq json_dir",
+   "ms": 187.24338599986368
+  },
+  {
+   "scale": "S",
+   "what": "cache rebuild",
+   "backend": "tq json_dir + cache (cold)",
+   "ms": 333.2858089997899
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq md_dir",
+   "ms": 95.29105399997206
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq md_dir",
+   "ms": 130.4157380000106
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq md_dir",
+   "ms": 177.02038300012646
+  },
+  {
+   "scale": "S",
+   "what": "cache rebuild",
+   "backend": "tq md_dir + cache (cold)",
+   "ms": 327.4099109994495
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq rec",
+   "ms": 134.6200450007018
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq rec",
+   "ms": 147.09925900024245
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq rec",
+   "ms": 156.4115060000404
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq rec + cache (warm)",
+   "ms": 124.94603999948595
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq rec + cache (warm)",
+   "ms": 131.86757099992974
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq rec + cache (warm)",
+   "ms": 126.35609100016154
+  },
+  {
+   "scale": "S",
+   "what": "cache rebuild",
+   "backend": "tq rec + cache (cold)",
+   "ms": 290.62646299917105
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq csv",
+   "ms": 189.9765110001681
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq csv",
+   "ms": 204.75526600057492
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq csv",
+   "ms": 228.10983099952864
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq csv + cache (warm)",
+   "ms": 112.80939200059947
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq csv + cache (warm)",
+   "ms": 104.15367400037212
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq csv + cache (warm)",
+   "ms": 108.67202800000086
+  },
+  {
+   "scale": "S",
+   "what": "cache rebuild",
+   "backend": "tq csv + cache (cold)",
+   "ms": 298.0223280001155
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq sqldump",
+   "ms": 224.95387999970262
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq sqldump",
+   "ms": 231.53478899985203
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq sqldump",
+   "ms": 241.9039430005796
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 127.60970499948598
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 120.01170899930003
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 121.05313600113732
+  },
+  {
+   "scale": "S",
+   "what": "cache rebuild",
+   "backend": "tq sqldump + cache (cold)",
+   "ms": 304.9944289996347
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "duckdb over json_dir",
+   "ms": 623.9997819993732
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "duckdb over json_dir",
+   "ms": 786.5904380014399
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "duckdb over csv tables",
+   "ms": 505.55491799968877
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "duckdb over csv tables",
+   "ms": 604.2168709991529
+  },
+  {
+   "scale": "S",
+   "what": "cache rebuild",
+   "backend": "tq mdcache (cold)",
+   "ms": 329.2851749993133
+  },
+  {
+   "scale": "M",
+   "what": "python startup",
+   "backend": "-",
+   "ms": 73.71893199888291
+  },
+  {
+   "scale": "M",
+   "what": "tadu --version",
+   "backend": "-",
+   "ms": 242.07748599837942
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tadu list (md)",
+   "ms": 646.825035000802
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tadu list (md)",
+   "ms": 633.7743899985071
+  },
+  {
+   "scale": "M",
+   "what": "grep log",
+   "backend": "grep (md)",
+   "ms": 8.490633999826969
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq md",
+   "ms": 107.38205000052403
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq md",
+   "ms": 277.78565700100444
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq md",
+   "ms": 497.79406400011794
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq mdcache (warm)",
+   "ms": 101.01705899978697
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq mdcache (warm)",
+   "ms": 112.48325200176623
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq mdcache (warm)",
+   "ms": 148.11170900065918
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq jsonl",
+   "ms": 112.90547299904574
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq jsonl",
+   "ms": 207.23118800015072
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq jsonl",
+   "ms": 420.07304900107556
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq json",
+   "ms": 97.13988899966353
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq json",
+   "ms": 203.75491400045576
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq json",
+   "ms": 445.24884299971745
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq sqlite",
+   "ms": 84.04690799943637
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq sqlite",
+   "ms": 100.98548799942364
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq sqlite",
+   "ms": 97.9166310007713
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq json_dir",
+   "ms": 102.73568499906105
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq json_dir",
+   "ms": 426.23830800039286
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq json_dir",
+   "ms": 700.2624910001032
+  },
+  {
+   "scale": "M",
+   "what": "cache rebuild",
+   "backend": "tq json_dir + cache (cold)",
+   "ms": 1350.8442910006124
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq md_dir",
+   "ms": 136.91558500067913
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq md_dir",
+   "ms": 536.8180719997326
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq md_dir",
+   "ms": 713.9482109996607
+  },
+  {
+   "scale": "M",
+   "what": "cache rebuild",
+   "backend": "tq md_dir + cache (cold)",
+   "ms": 1473.0311099992832
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq rec",
+   "ms": 249.85319699953834
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq rec",
+   "ms": 293.3410380010173
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq rec",
+   "ms": 506.52192100096727
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq rec + cache (warm)",
+   "ms": 113.17058700115012
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq rec + cache (warm)",
+   "ms": 91.77598300084355
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq rec + cache (warm)",
+   "ms": 91.22954899976321
+  },
+  {
+   "scale": "M",
+   "what": "cache rebuild",
+   "backend": "tq rec + cache (cold)",
+   "ms": 609.6343589997559
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq csv",
+   "ms": 578.7929970010737
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq csv",
+   "ms": 698.6439240008622
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq csv",
+   "ms": 863.0208319991652
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq csv + cache (warm)",
+   "ms": 123.0630009995366
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq csv + cache (warm)",
+   "ms": 125.84415200035437
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq csv + cache (warm)",
+   "ms": 131.04268099959882
+  },
+  {
+   "scale": "M",
+   "what": "cache rebuild",
+   "backend": "tq csv + cache (cold)",
+   "ms": 1148.048375000144
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq sqldump",
+   "ms": 829.3607080013317
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq sqldump",
+   "ms": 873.2088100005058
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq sqldump",
+   "ms": 1081.9531760007521
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 118.17064900060359
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 122.88542100031918
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 129.4367129994498
+  },
+  {
+   "scale": "M",
+   "what": "cache rebuild",
+   "backend": "tq sqldump + cache (cold)",
+   "ms": 1463.9704940000229
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "duckdb over json_dir",
+   "ms": 626.4105460013525
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "duckdb over json_dir",
+   "ms": 728.0617380001786
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "duckdb over csv tables",
+   "ms": 521.0171260005154
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "duckdb over csv tables",
+   "ms": 551.5414389992657
+  },
+  {
+   "scale": "M",
+   "what": "cache rebuild",
+   "backend": "tq mdcache (cold)",
+   "ms": 975.3365959986695
+  },
+  {
+   "scale": "L",
+   "what": "python startup",
+   "backend": "-",
+   "ms": 68.9602679995005
+  },
+  {
+   "scale": "L",
+   "what": "tadu --version",
+   "backend": "-",
+   "ms": 284.9571949991514
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tadu list (md)",
+   "ms": 1821.5854949994537
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tadu list (md)",
+   "ms": 2268.3637289992475
+  },
+  {
+   "scale": "L",
+   "what": "grep log",
+   "backend": "grep (md)",
+   "ms": 21.763598000688944
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq md",
+   "ms": 203.4359460012638
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq md",
+   "ms": 1048.993459000485
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq md",
+   "ms": 1996.7486610003107
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq mdcache (warm)",
+   "ms": 137.48076500087336
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq mdcache (warm)",
+   "ms": 122.84666599953198
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq mdcache (warm)",
+   "ms": 148.03495800151723
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq jsonl",
+   "ms": 151.38276099969517
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq jsonl",
+   "ms": 451.7752020001353
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq jsonl",
+   "ms": 1372.2918099992967
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq json",
+   "ms": 148.89917400068953
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq json",
+   "ms": 505.9223309999652
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq json",
+   "ms": 1492.8686559997004
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq sqlite",
+   "ms": 142.27682700038713
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq sqlite",
+   "ms": 171.49203900044085
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq sqlite",
+   "ms": 154.07780299938167
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq json_dir",
+   "ms": 269.25041100003
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq json_dir",
+   "ms": 1817.1916260016587
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq json_dir",
+   "ms": 3102.980096000465
+  },
+  {
+   "scale": "L",
+   "what": "cache rebuild",
+   "backend": "tq json_dir + cache (cold)",
+   "ms": 5121.707088999756
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq md_dir",
+   "ms": 278.9447669983929
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq md_dir",
+   "ms": 2012.8879540006892
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq md_dir",
+   "ms": 3262.7634729997226
+  },
+  {
+   "scale": "L",
+   "what": "cache rebuild",
+   "backend": "tq md_dir + cache (cold)",
+   "ms": 5437.890048000554
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq rec",
+   "ms": 667.070784000316
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq rec",
+   "ms": 821.1098550000315
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq rec",
+   "ms": 1880.5104559996835
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq rec + cache (warm)",
+   "ms": 136.7902679994586
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq rec + cache (warm)",
+   "ms": 131.91203499991389
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq rec + cache (warm)",
+   "ms": 134.56610000139335
+  },
+  {
+   "scale": "L",
+   "what": "cache rebuild",
+   "backend": "tq rec + cache (cold)",
+   "ms": 3141.157949999979
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq csv",
+   "ms": 2291.627118998804
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq csv",
+   "ms": 2114.751191000323
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq csv",
+   "ms": 3249.792616999912
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq csv + cache (warm)",
+   "ms": 101.76301399951626
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq csv + cache (warm)",
+   "ms": 121.24341900016589
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq csv + cache (warm)",
+   "ms": 135.9897539987287
+  },
+  {
+   "scale": "L",
+   "what": "cache rebuild",
+   "backend": "tq csv + cache (cold)",
+   "ms": 4909.32952500043
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq sqldump",
+   "ms": 3085.7284250014345
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq sqldump",
+   "ms": 3233.894312001212
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq sqldump",
+   "ms": 4364.963361000264
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 134.91031299963652
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 142.2643660007452
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq sqldump + cache (warm)",
+   "ms": 132.019530999969
+  },
+  {
+   "scale": "L",
+   "what": "cache rebuild",
+   "backend": "tq sqldump + cache (cold)",
+   "ms": 7497.623676999865
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "duckdb over json_dir",
+   "ms": 589.1455769997265
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "duckdb over json_dir",
+   "ms": 899.3270989994926
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "duckdb over csv tables",
+   "ms": 580.2326459997857
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "duckdb over csv tables",
+   "ms": 733.3397539987345
+  },
+  {
+   "scale": "L",
+   "what": "cache rebuild",
+   "backend": "tq mdcache (cold)",
+   "ms": 3172.1315610011516
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 162.08110799925635
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 162.94999999990978
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 175.84700800034625
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 166.70177200103353
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 176.26668699995207
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 173.00308300036704
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 166.4622190000955
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 202.10516899896902
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 217.10724100012158
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 169.97461899882182
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 197.64631599900895
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 184.4941489998746
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 224.48274799899082
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 251.17227400005504
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq json_dir + cache (warm)",
+   "ms": 227.964833000442
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 213.813880998714
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 188.5081629989145
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq md_dir + cache (warm)",
+   "ms": 220.0608419989294
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq hybrid",
+   "ms": 144.59714599979634
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq hybrid",
+   "ms": 163.37460100112366
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq hybrid",
+   "ms": 229.96243099987623
+  },
+  {
+   "scale": "S",
+   "what": "open query",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 126.31140400117147
+  },
+  {
+   "scale": "S",
+   "what": "log query",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 131.82864999907906
+  },
+  {
+   "scale": "S",
+   "what": "similar (open+log)",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 133.58471799983818
+  },
+  {
+   "scale": "S",
+   "what": "cache rebuild",
+   "backend": "tq hybrid + cache (cold)",
+   "ms": 297.0903149998776
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq hybrid",
+   "ms": 176.5986159989552
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq hybrid",
+   "ms": 401.7064079998818
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq hybrid",
+   "ms": 671.999443000459
+  },
+  {
+   "scale": "M",
+   "what": "open query",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 128.04933299958066
+  },
+  {
+   "scale": "M",
+   "what": "log query",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 158.77993200047058
+  },
+  {
+   "scale": "M",
+   "what": "similar (open+log)",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 171.781959999862
+  },
+  {
+   "scale": "M",
+   "what": "cache rebuild",
+   "backend": "tq hybrid + cache (cold)",
+   "ms": 1274.953842999821
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq hybrid",
+   "ms": 389.8985289997654
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq hybrid",
+   "ms": 1507.7709710003546
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq hybrid",
+   "ms": 2576.9358090001333
+  },
+  {
+   "scale": "L",
+   "what": "open query",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 151.92094300073222
+  },
+  {
+   "scale": "L",
+   "what": "log query",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 170.26468699987163
+  },
+  {
+   "scale": "L",
+   "what": "similar (open+log)",
+   "backend": "tq hybrid + cache (warm)",
+   "ms": 208.09926299989456
+  },
+  {
+   "scale": "L",
+   "what": "cache rebuild",
+   "backend": "tq hybrid + cache (cold)",
+   "ms": 4482.627826999305
+  }
+ ],
+ "writes": [
+  {
+   "scale": "S",
+   "format": "md_fields",
+   "op": "add",
+   "ms": 1.9594859986682422
+  },
+  {
+   "scale": "S",
+   "format": "md_fields",
+   "op": "set_priority",
+   "ms": 6.749951000529109
+  },
+  {
+   "scale": "S",
+   "format": "md_fields",
+   "op": "close",
+   "ms": 12.263673001143616
+  },
+  {
+   "scale": "S",
+   "format": "jsonl",
+   "op": "add",
+   "ms": 0.06431600013456773
+  },
+  {
+   "scale": "S",
+   "format": "jsonl",
+   "op": "set_priority",
+   "ms": 1.2017469998681918
+  },
+  {
+   "scale": "S",
+   "format": "jsonl",
+   "op": "close",
+   "ms": 0.9016629992402159
+  },
+  {
+   "scale": "S",
+   "format": "json",
+   "op": "add",
+   "ms": 5.23302799956582
+  },
+  {
+   "scale": "S",
+   "format": "json",
+   "op": "set_priority",
+   "ms": 4.207025000141584
+  },
+  {
+   "scale": "S",
+   "format": "json",
+   "op": "close",
+   "ms": 37.26505300073768
+  },
+  {
+   "scale": "S",
+   "format": "sqlite",
+   "op": "add",
+   "ms": 4.0941520001069875
+  },
+  {
+   "scale": "S",
+   "format": "sqlite",
+   "op": "set_priority",
+   "ms": 5.991961001200252
+  },
+  {
+   "scale": "S",
+   "format": "sqlite",
+   "op": "close",
+   "ms": 9.003895000205375
+  },
+  {
+   "scale": "S",
+   "format": "json_dir",
+   "op": "add",
+   "ms": 0.22144800095702522
+  },
+  {
+   "scale": "S",
+   "format": "json_dir",
+   "op": "set_priority",
+   "ms": 2.680375000636559
+  },
+  {
+   "scale": "S",
+   "format": "json_dir",
+   "op": "close",
+   "ms": 2.110310999341891
+  },
+  {
+   "scale": "S",
+   "format": "md_dir",
+   "op": "add",
+   "ms": 0.20383399896672927
+  },
+  {
+   "scale": "S",
+   "format": "md_dir",
+   "op": "set_priority",
+   "ms": 0.7010919998720055
+  },
+  {
+   "scale": "S",
+   "format": "md_dir",
+   "op": "close",
+   "ms": 0.596404001043993
+  },
+  {
+   "scale": "S",
+   "format": "rec",
+   "op": "add",
+   "ms": 28.225788000781904
+  },
+  {
+   "scale": "S",
+   "format": "rec",
+   "op": "set_priority",
+   "ms": 27.83529899897985
+  },
+  {
+   "scale": "S",
+   "format": "rec",
+   "op": "close",
+   "ms": 26.96999500039965
+  },
+  {
+   "scale": "S",
+   "format": "csv",
+   "op": "add",
+   "ms": 83.68086299924471
+  },
+  {
+   "scale": "S",
+   "format": "csv",
+   "op": "set_priority",
+   "ms": 75.94818199868314
+  },
+  {
+   "scale": "S",
+   "format": "csv",
+   "op": "close",
+   "ms": 78.69276499877742
+  },
+  {
+   "scale": "S",
+   "format": "sqldump",
+   "op": "add",
+   "ms": 134.22824099870923
+  },
+  {
+   "scale": "S",
+   "format": "sqldump",
+   "op": "set_priority",
+   "ms": 110.14300399983767
+  },
+  {
+   "scale": "S",
+   "format": "sqldump",
+   "op": "close",
+   "ms": 103.86592800023209
+  },
+  {
+   "scale": "S",
+   "format": "md (tadu close --write)",
+   "op": "close",
+   "ms": 434.04530699990573
+  },
+  {
+   "scale": "M",
+   "format": "md_fields",
+   "op": "add",
+   "ms": 4.584932999932789
+  },
+  {
+   "scale": "M",
+   "format": "md_fields",
+   "op": "set_priority",
+   "ms": 16.951686000538757
+  },
+  {
+   "scale": "M",
+   "format": "md_fields",
+   "op": "close",
+   "ms": 44.080183000914985
+  },
+  {
+   "scale": "M",
+   "format": "jsonl",
+   "op": "add",
+   "ms": 0.05465700087370351
+  },
+  {
+   "scale": "M",
+   "format": "jsonl",
+   "op": "set_priority",
+   "ms": 3.5599670009105466
+  },
+  {
+   "scale": "M",
+   "format": "jsonl",
+   "op": "close",
+   "ms": 1.936861999638495
+  },
+  {
+   "scale": "M",
+   "format": "json",
+   "op": "add",
+   "ms": 14.488712999082054
+  },
+  {
+   "scale": "M",
+   "format": "json",
+   "op": "set_priority",
+   "ms": 13.293580999743426
+  },
+  {
+   "scale": "M",
+   "format": "json",
+   "op": "close",
+   "ms": 186.82965399966633
+  },
+  {
+   "scale": "M",
+   "format": "sqlite",
+   "op": "add",
+   "ms": 12.831418000132544
+  },
+  {
+   "scale": "M",
+   "format": "sqlite",
+   "op": "set_priority",
+   "ms": 3.1400789994222578
+  },
+  {
+   "scale": "M",
+   "format": "sqlite",
+   "op": "close",
+   "ms": 4.884756001047208
+  },
+  {
+   "scale": "M",
+   "format": "json_dir",
+   "op": "add",
+   "ms": 0.20415099970705342
+  },
+  {
+   "scale": "M",
+   "format": "json_dir",
+   "op": "set_priority",
+   "ms": 0.535132001459715
+  },
+  {
+   "scale": "M",
+   "format": "json_dir",
+   "op": "close",
+   "ms": 0.3084420004597632
+  },
+  {
+   "scale": "M",
+   "format": "md_dir",
+   "op": "add",
+   "ms": 0.25871299840218853
+  },
+  {
+   "scale": "M",
+   "format": "md_dir",
+   "op": "set_priority",
+   "ms": 0.7693110001127934
+  },
+  {
+   "scale": "M",
+   "format": "md_dir",
+   "op": "close",
+   "ms": 0.3911200001311954
+  },
+  {
+   "scale": "M",
+   "format": "rec",
+   "op": "add",
+   "ms": 175.04887500035693
+  },
+  {
+   "scale": "M",
+   "format": "rec",
+   "op": "set_priority",
+   "ms": 167.24554900065414
+  },
+  {
+   "scale": "M",
+   "format": "rec",
+   "op": "close",
+   "ms": 166.67707299893664
+  },
+  {
+   "scale": "M",
+   "format": "csv",
+   "op": "add",
+   "ms": 573.2159419985692
+  },
+  {
+   "scale": "M",
+   "format": "csv",
+   "op": "set_priority",
+   "ms": 581.2014069997531
+  },
+  {
+   "scale": "M",
+   "format": "csv",
+   "op": "close",
+   "ms": 523.051468999256
+  },
+  {
+   "scale": "M",
+   "format": "sqldump",
+   "op": "add",
+   "ms": 696.6979590015399
+  },
+  {
+   "scale": "M",
+   "format": "sqldump",
+   "op": "set_priority",
+   "ms": 855.3331839993916
+  },
+  {
+   "scale": "M",
+   "format": "sqldump",
+   "op": "close",
+   "ms": 756.5026930005843
+  },
+  {
+   "scale": "M",
+   "format": "md (tadu close --write)",
+   "op": "close",
+   "ms": 1023.0308669997612
+  },
+  {
+   "scale": "L",
+   "format": "md_fields",
+   "op": "add",
+   "ms": 12.012337001578999
+  },
+  {
+   "scale": "L",
+   "format": "md_fields",
+   "op": "set_priority",
+   "ms": 79.56207800089032
+  },
+  {
+   "scale": "L",
+   "format": "md_fields",
+   "op": "close",
+   "ms": 244.8805160001939
+  },
+  {
+   "scale": "L",
+   "format": "jsonl",
+   "op": "add",
+   "ms": 0.08411799899477046
+  },
+  {
+   "scale": "L",
+   "format": "jsonl",
+   "op": "set_priority",
+   "ms": 9.972366000511101
+  },
+  {
+   "scale": "L",
+   "format": "jsonl",
+   "op": "close",
+   "ms": 17.53351800107339
+  },
+  {
+   "scale": "L",
+   "format": "json",
+   "op": "add",
+   "ms": 74.14185400011775
+  },
+  {
+   "scale": "L",
+   "format": "json",
+   "op": "set_priority",
+   "ms": 68.1310569998459
+  },
+  {
+   "scale": "L",
+   "format": "json",
+   "op": "close",
+   "ms": 656.3847520010313
+  },
+  {
+   "scale": "L",
+   "format": "sqlite",
+   "op": "add",
+   "ms": 12.487904999943567
+  },
+  {
+   "scale": "L",
+   "format": "sqlite",
+   "op": "set_priority",
+   "ms": 10.781240998767316
+  },
+  {
+   "scale": "L",
+   "format": "sqlite",
+   "op": "close",
+   "ms": 7.636279999132967
+  },
+  {
+   "scale": "L",
+   "format": "json_dir",
+   "op": "add",
+   "ms": 0.14671499957330525
+  },
+  {
+   "scale": "L",
+   "format": "json_dir",
+   "op": "set_priority",
+   "ms": 0.6969930000195745
+  },
+  {
+   "scale": "L",
+   "format": "json_dir",
+   "op": "close",
+   "ms": 0.2664140010892879
+  },
+  {
+   "scale": "L",
+   "format": "md_dir",
+   "op": "add",
+   "ms": 0.2958699988084845
+  },
+  {
+   "scale": "L",
+   "format": "md_dir",
+   "op": "set_priority",
+   "ms": 0.7279059991560644
+  },
+  {
+   "scale": "L",
+   "format": "md_dir",
+   "op": "close",
+   "ms": 0.40780600102152675
+  },
+  {
+   "scale": "L",
+   "format": "rec",
+   "op": "add",
+   "ms": 820.3413529990939
+  },
+  {
+   "scale": "L",
+   "format": "rec",
+   "op": "set_priority",
+   "ms": 729.1667330009659
+  },
+  {
+   "scale": "L",
+   "format": "rec",
+   "op": "close",
+   "ms": 742.1404609995079
+  },
+  {
+   "scale": "L",
+   "format": "csv",
+   "op": "add",
+   "ms": 2620.0292390003597
+  },
+  {
+   "scale": "L",
+   "format": "csv",
+   "op": "set_priority",
+   "ms": 2295.9445269989374
+  },
+  {
+   "scale": "L",
+   "format": "csv",
+   "op": "close",
+   "ms": 2625.574155999857
+  },
+  {
+   "scale": "L",
+   "format": "sqldump",
+   "op": "add",
+   "ms": 3449.0466939987527
+  },
+  {
+   "scale": "L",
+   "format": "sqldump",
+   "op": "set_priority",
+   "ms": 4047.647616998802
+  },
+  {
+   "scale": "L",
+   "format": "sqldump",
+   "op": "close",
+   "ms": 3424.0508540005976
+  },
+  {
+   "scale": "L",
+   "format": "md (tadu close --write)",
+   "op": "close",
+   "ms": 5835.602909999579
+  },
+  {
+   "scale": "S",
+   "format": "hybrid",
+   "op": "add",
+   "ms": 0.5377670004236279
+  },
+  {
+   "scale": "S",
+   "format": "hybrid",
+   "op": "set_priority",
+   "ms": 0.5844810002599843
+  },
+  {
+   "scale": "S",
+   "format": "hybrid",
+   "op": "close",
+   "ms": 4.026513001008425
+  },
+  {
+   "scale": "M",
+   "format": "hybrid",
+   "op": "add",
+   "ms": 0.19279099979030434
+  },
+  {
+   "scale": "M",
+   "format": "hybrid",
+   "op": "set_priority",
+   "ms": 0.4238480014464585
+  },
+  {
+   "scale": "M",
+   "format": "hybrid",
+   "op": "close",
+   "ms": 37.84190100122942
+  },
+  {
+   "scale": "L",
+   "format": "hybrid",
+   "op": "add",
+   "ms": 0.3672839993669186
+  },
+  {
+   "scale": "L",
+   "format": "hybrid",
+   "op": "set_priority",
+   "ms": 0.7631480002601165
+  },
+  {
+   "scale": "L",
+   "format": "hybrid",
+   "op": "close",
+   "ms": 254.7552430005453
+  }
+ ],
+ "repo": [
+  {
+   "scale": "S",
+   "format": "md_fields",
+   "import_commit_ms": 30.384277999473852,
+   "status_ms": 6.172884999614325,
+   "commit_one_change_ms": 22.22049999909359,
+   "git_dir_bytes": 80625,
+   "clone_ms": 45.18661399924895
+  },
+  {
+   "scale": "S",
+   "format": "jsonl",
+   "import_commit_ms": 27.303280998239643,
+   "status_ms": 8.049879999816767,
+   "commit_one_change_ms": 18.286931999682565,
+   "git_dir_bytes": 82522,
+   "clone_ms": 57.3781279999821
+  },
+  {
+   "scale": "S",
+   "format": "json_dir",
+   "import_commit_ms": 212.3753849991772,
+   "status_ms": 5.578837000939529,
+   "commit_one_change_ms": 24.295371000334853,
+   "git_dir_bytes": 359120,
+   "clone_ms": 80.56830799978343
+  },
+  {
+   "scale": "S",
+   "format": "md_dir",
+   "import_commit_ms": 198.9164009992237,
+   "status_ms": 6.643635000727954,
+   "commit_one_change_ms": 24.121338999975706,
+   "git_dir_bytes": 355641,
+   "clone_ms": 85.88222399885126
+  },
+  {
+   "scale": "S",
+   "format": "rec",
+   "import_commit_ms": 22.92803599993931,
+   "status_ms": 5.237727998974151,
+   "commit_one_change_ms": 20.643549998567323,
+   "git_dir_bytes": 78370,
+   "clone_ms": 52.93237000114459
+  },
+  {
+   "scale": "S",
+   "format": "csv",
+   "import_commit_ms": 20.77172899953439,
+   "status_ms": 5.9767599996121135,
+   "commit_one_change_ms": 21.494325999810826,
+   "git_dir_bytes": 77680,
+   "clone_ms": 52.68673299906368
+  },
+  {
+   "scale": "S",
+   "format": "sqldump",
+   "import_commit_ms": 18.362552998951287,
+   "status_ms": 5.019471000196063,
+   "commit_one_change_ms": 20.401538000442088,
+   "git_dir_bytes": 94779,
+   "clone_ms": 48.43562999849382
+  },
+  {
+   "scale": "S",
+   "format": "sqlite",
+   "import_commit_ms": 26.750903998618014,
+   "status_ms": 7.10691600033897,
+   "commit_one_change_ms": 24.991627000417793,
+   "git_dir_bytes": 150354,
+   "clone_ms": 67.91531099952408
+  },
+  {
+   "scale": "S",
+   "format": "hybrid",
+   "import_commit_ms": 82.72424899951147,
+   "status_ms": 4.990636000002269,
+   "commit_one_change_ms": 27.455151999674854,
+   "git_dir_bytes": 126107,
+   "clone_ms": 80.92756800033385
+  },
+  {
+   "scale": "M",
+   "format": "md_fields",
+   "import_commit_ms": 80.71214299889107,
+   "status_ms": 20.381926000482053,
+   "commit_one_change_ms": 42.237240999384085,
+   "git_dir_bytes": 445836,
+   "clone_ms": 118.66439000004902
+  },
+  {
+   "scale": "M",
+   "format": "jsonl",
+   "import_commit_ms": 109.54763399968215,
+   "status_ms": 17.61381500000425,
+   "commit_one_change_ms": 39.02065500005847,
+   "git_dir_bytes": 466746,
+   "clone_ms": 96.69733100054145
+  },
+  {
+   "scale": "M",
+   "format": "json_dir",
+   "import_commit_ms": 1777.9225800004497,
+   "status_ms": 17.92039400061185,
+   "commit_one_change_ms": 114.03366199920129,
+   "git_dir_bytes": 3018381,
+   "clone_ms": 1895.9733709998545
+  },
+  {
+   "scale": "M",
+   "format": "md_dir",
+   "import_commit_ms": 40285.02773599939,
+   "status_ms": 446.3687089992163,
+   "commit_one_change_ms": 965.9129649990064,
+   "git_dir_bytes": 2990574,
+   "clone_ms": 4262.642790001337
+  },
+  {
+   "scale": "M",
+   "format": "rec",
+   "import_commit_ms": 295.1386539989471,
+   "status_ms": 47.445087000596686,
+   "commit_one_change_ms": 218.0667539996648,
+   "git_dir_bytes": 439845,
+   "clone_ms": 357.2782110004482
+  },
+  {
+   "scale": "M",
+   "format": "csv",
+   "import_commit_ms": 100.1589760016941,
+   "status_ms": 18.253075000757235,
+   "commit_one_change_ms": 235.51093700007186,
+   "git_dir_bytes": 427887,
+   "clone_ms": 380.1521090008464
+  },
+  {
+   "scale": "M",
+   "format": "sqldump",
+   "import_commit_ms": 103.10912699969776,
+   "status_ms": 2.9122640007699374,
+   "commit_one_change_ms": 225.95608400115452,
+   "git_dir_bytes": 584682,
+   "clone_ms": 1042.3262229996908
+  },
+  {
+   "scale": "M",
+   "format": "sqlite",
+   "import_commit_ms": 507.2118070002034,
+   "status_ms": 28.837773001214373,
+   "commit_one_change_ms": 431.27310300042154,
+   "git_dir_bytes": 964898,
+   "clone_ms": 898.583984000652
+  },
+  {
+   "scale": "M",
+   "format": "hybrid",
+   "import_commit_ms": 3038.880034000613,
+   "status_ms": 7.444488999681198,
+   "commit_one_change_ms": 96.93641400008346,
+   "git_dir_bytes": 679642,
+   "clone_ms": 1962.9798300011316
+  },
+  {
+   "scale": "L",
+   "format": "md_fields",
+   "import_commit_ms": 506.91571599963936,
+   "status_ms": 6.703914001263911,
+   "commit_one_change_ms": 298.8031700006104,
+   "git_dir_bytes": 1736946,
+   "clone_ms": 3125.2572479988885
+  },
+  {
+   "scale": "L",
+   "format": "jsonl",
+   "import_commit_ms": 444.69519199992646,
+   "status_ms": 16.37098699939088,
+   "commit_one_change_ms": 166.44242999973358,
+   "git_dir_bytes": 1832080,
+   "clone_ms": 2668.8364159999765
+  },
+  {
+   "scale": "L",
+   "format": "json_dir",
+   "import_commit_ms": 19174.592246999964,
+   "status_ms": 242.006840000613,
+   "commit_one_change_ms": 347.8236549999565,
+   "git_dir_bytes": 12506469,
+   "clone_ms": 5893.732451000687
+  },
+  {
+   "scale": "L",
+   "format": "md_dir",
+   "import_commit_ms": 4621.022832998278,
+   "status_ms": 123.70318299872451,
+   "commit_one_change_ms": 424.74488799962273,
+   "git_dir_bytes": 12376667,
+   "clone_ms": 3376.21536000006
+  },
+  {
+   "scale": "L",
+   "format": "rec",
+   "import_commit_ms": 398.01086999977997,
+   "status_ms": 58.18227000054321,
+   "commit_one_change_ms": 118.738139000925,
+   "git_dir_bytes": 1733114,
+   "clone_ms": 329.0973789989948
+  },
+  {
+   "scale": "L",
+   "format": "csv",
+   "import_commit_ms": 353.92783700081054,
+   "status_ms": 6.135012999948231,
+   "commit_one_change_ms": 134.3211040002643,
+   "git_dir_bytes": 1683886,
+   "clone_ms": 281.405107001774
+  },
+  {
+   "scale": "L",
+   "format": "sqldump",
+   "import_commit_ms": 324.966067000787,
+   "status_ms": 57.51889800012577,
+   "commit_one_change_ms": 181.1517609985458,
+   "git_dir_bytes": 2328456,
+   "clone_ms": 969.3861960004142
+  },
+  {
+   "scale": "L",
+   "format": "sqlite",
+   "import_commit_ms": 452.5512609998259,
+   "status_ms": 69.93960900035745,
+   "commit_one_change_ms": 419.7382620004646,
+   "git_dir_bytes": 3815862,
+   "clone_ms": 1417.6025500000833
+  },
+  {
+   "scale": "L",
+   "format": "hybrid",
+   "import_commit_ms": 1996.4489949998097,
+   "status_ms": 28.01584900043963,
+   "commit_one_change_ms": 139.33670100050222,
+   "git_dir_bytes": 2724902,
+   "clone_ms": 2157.5501870011067
+  }
+ ]
+}

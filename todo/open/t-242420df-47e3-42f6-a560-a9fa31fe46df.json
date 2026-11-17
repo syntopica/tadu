@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-242420df-47e3-42f6-a560-a9fa31fe46df",
+  "title": "Age blocked items",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "low",
+  "notes": [
+    "Smallest next step: derive the days an item has been `[!]` from `git log` and show it on the card."
+  ]
+}

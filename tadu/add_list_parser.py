@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import date
 from typing import TYPE_CHECKING
 
+from tadu.add_query_arguments import add_query_arguments
 from tadu.add_scope_arguments import add_scope_arguments
 from tadu.columns import COLUMNS
 from tadu.priorities import PRIORITIES
@@ -28,3 +29,4 @@ def add_list_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser
     listing.add_argument("--label", help="item label")
     listing.add_argument("--due-before", type=date.fromisoformat, help="YYYY-MM-DD")
     listing.add_argument("--include-cancelled", action="store_true", help="keep cancelled items")
+    add_query_arguments(listing)

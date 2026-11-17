@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-9b2e4d6f-8a1c-4e3b-a5d7-6c8e0f2a4b19",
+  "title": "Expose tadu list to agents over MCP",
+  "state": "cancelled",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-12",
+  "created_by": "agent:codex",
+  "closed": "2026-11-12",
+  "resolution": "Duplicate of t-8c41d2e7-0a6b-4f3c-b5d8-2e9f1a7c6b43.",
+  "duplicate_of": "t-8c41d2e7-0a6b-4f3c-b5d8-2e9f1a7c6b43"
+}

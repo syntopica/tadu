@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-7d09c563-14a0-4c81-93e5-f8f06c6f39b7",
+  "title": "Rule block v2 that a contributor's agent can follow without the skills",
+  "state": "done",
+  "category": "adoption",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "The block names the `Evidence:` / `Resolution:` lines per state, gives the closed-entry template and the `## YYYY` / `### YYYY-MM` headings, links the spec and calls the skills optional; `RULE_BLOCK_VERSION` is 2, so v1 blocks report R004.",
+  "evidence": [
+    "uv run codeality-py gate (all passed, 100% coverage); a Codex agent given only the synced `AGENTS.md` in a fresh repository recorded and closed one `[x]` and one `[-]` item and `tadu doctor .` exited 0."
+  ]
+}

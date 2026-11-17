@@ -1,0 +1,11 @@
+{
+  "tadu": 2,
+  "id": "t-96ffeaaf-2965-45a8-8179-828411ea1ff4",
+  "title": "Recommend `TODO_LOG.md merge=union`",
+  "state": "cancelled",
+  "category": "adoption",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "resolution": "Rejected: a union merge can interleave the lines of two multi-line entries and attach one entry's `Evidence:` to the other; the README says to resolve log conflicts by hand and run `tadu doctor .`."
+}

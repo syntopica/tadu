@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-02c3f0d6-b602-450b-9bb7-54d99638de25",
+  "title": "Publish syntopica/tadu and wire it into the Syntopica hub",
+  "state": "done",
+  "category": "release",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "syntopica/tadu is public; the hub lists it in its README and AGENTS.md and offers the `tadu` plugin from its marketplace (syntopica/syntopica commit 5150265).",
+  "evidence": [
+    "`gh repo view syntopica/tadu` reports PUBLIC; syntopica `.claude-plugin/marketplace.json` has the `tadu` entry sourced from syntopica/tadu, whose `.claude-plugin/plugin.json` ships the skills."
+  ]
+}

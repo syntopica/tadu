@@ -22,7 +22,7 @@ build-backend = "setuptools.build_meta"
 include = ["tadu*"]
 
 [tool.setuptools.package-data]
-tadu = ["rule_block_v3.md", "board/*.html", "board/*.js", "board/*.css"]
+tadu = ["rule_block_v4.md", "board/*.html", "board/*.js", "board/*.css"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"
@@ -55,3 +55,7 @@ quality = [
 
 [tool.uv]
 default-groups = ["quality"]
+
+[tool.deptry]
+# bench/ holds study scripts (REPORT.md), not part of the tadu package.
+extend_exclude = ["bench"]

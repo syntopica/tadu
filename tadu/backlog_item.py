@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
+
+from tadu.task_extras import TaskExtras
 
 if TYPE_CHECKING:
     from datetime import date
@@ -27,3 +29,4 @@ class BacklogItem:
     text: str
     fields: ItemFields
     problems: tuple[FieldProblem, ...]
+    extras: TaskExtras = field(default_factory=TaskExtras)

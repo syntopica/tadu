@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-eedfc71f-c181-4cfd-b614-7544bf478dfe",
+  "title": "Show the workspace file's saved views in the board sidebar",
+  "state": "done",
+  "category": "board",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "`[[view]]` tables are read by `tadu list --view` only; the board keeps its own views in the browser's `localStorage`. Smallest next step: send the workspace views with the board payload and list them under Views, read-only."
+  ],
+  "closed": "2026-11-13",
+  "result": "Board payload carries views; the sidebar lists them read-only under Workspace views.",
+  "evidence": [
+    "tests/test_board_payload.py::test_sends_the_workspace_views, tests/test_view_summary.py; full gate green"
+  ]
+}

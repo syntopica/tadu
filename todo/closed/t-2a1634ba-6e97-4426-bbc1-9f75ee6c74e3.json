@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-2a1634ba-6e97-4426-bbc1-9f75ee6c74e3",
+  "title": "Publish tadu 0.1.0 to PyPI through trusted publishing",
+  "state": "done",
+  "category": "release",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-19",
+  "result": "`.github/workflows/publish.yml` builds and publishes on a `v*` tag that matches the project version, through the `pypi` environment with no token; PyPI's pending publisher for `tadu` points at syntopica/tadu, `publish.yml`, environment `pypi`; the README installs `tadu` from PyPI and keeps git for the development version.",
+  "evidence": [
+    "tag v0.1.0, run 39182073151 succeeded; https://pypi.org/project/tadu/ lists tadu-0.1.0-py3-none-any.whl and tadu-0.1.0.tar.gz; `pip install tadu==0.1.0` in a clean venv and `uvx tadu@0.1.0 doctor .` both run."
+  ]
+}

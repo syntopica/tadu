@@ -1,0 +1,357 @@
+12	-	Login: Let users pick CSV export from role permissions for API clients.
+20	B	Public API: Fix the off-by-one error in CORS headers.
+26	H B D:2026-11-02	Deploy: Fix the encoding bug in CDN cache (P1).
+34	B	Docs: Architecture notes is returning 500 on invalid input as part of the onboarding revamp.
+48	U B D:2026-12-29	UI: Fix the deadlock in toast messages during onboarding.
+56	BL	Docs: Remove dead code from API reference.
+64	U C	UI: Add sorting by priority to empty states (CSV import).
+68	U	UI: Support a retry button in empty states as part of the team invites for large accounts (P3).
+74	U D:2026-11-10	UI: Add pagination cursors to toolbar on Safari.
+80	U B	UI: Investigate the duplicate request in toolbar for large accounts.
+86	U	Frontend: Clean up feature flags in theme switcher.
+94	U	UI: Add a regression test for sidebar pagination limits for large accounts.
+100	U	UI: Upgrade empty states to React 19.
+108	U	UI: Add keyboard navigation to shortcut overlay for admins.
+114	U	Web: Clean up feature flags in settings page.
+122	U B H D:2026-12-23	UI: Settings page is returning 500 on invalid input for admins.
+132	U	UI: Let users pick a retry button from profile page.
+138	U D:2026-11-20	UI: Speed up settings page cold start as part of the saved filters after login.
+146	-	Search: Sanitize untrusted input in facet filters for admins.
+150	H B	Auth: Fix token refresh failing silently when offline for API clients.
+158	U BL	Web: Cover sidebar empty input with an e2e test as part of the bulk upload.
+168	U B D:2026-11-23	Frontend: Fix the duplicate request in modal dialog (accessibility pass).
+174	U BL D:2026-10-28	UI: Let users pick bulk actions from profile page on Safari.
+186	U D:2026-12-06	UI: Add an audit trail to sidebar (churn emails).
+198	U BL D:2026-11-06	UX: Add bulk actions to modal dialog.
+210	U BL	Frontend: Support a copy-to-clipboard action in data table.
+218	U B	UI: Investigate the layout shift in settings page for large accounts.
+226	U D:2026-12-06	UI: Audit sidebar for privilege escalation for the audit log in the export path.
+232	U B H	UX: Navigation menu is dropping the last item for the offline mode on the free plan.
+240	U	UI: Cache chart widget results to cut query time for the performance budget.
+250	U	UI: Audit settings page for privilege escalation for API clients.
+258	U	Web: Let users pick undo support from date picker.
+266	U	Web: Support inline editing in settings page during onboarding.
+272	U D:2026-10-27	UX: Split theme switcher into smaller units during onboarding.
+282	U	UI: Extract onboarding wizard logic into a shared module during onboarding.
+290	U	UX: Split empty states into smaller units.
+296	U	UI: Add a regression test for toast messages empty input (P2).
+300	U	UI: Add tests for settings page error states after login.
+306	U	UI: Remove dead code from chart widget.
+312	U D:2026-11-12	UI: Cover profile page happy path with an e2e test during onboarding.
+318	U D:2026-12-14	Frontend: Add inline editing to shortcut overlay.
+326	U	UI: Let users pick pagination cursors from chart widget for the gift notes.
+336	U B	UI: Toast messages is ignoring the user's locale as part of the database upgrade for admins.
+344	U H	Web: Add keyboard navigation to toast messages (invoice redesign).
+354	U B C	Dashboard: Toast messages is leaking memory on long sessions (CSV import) (P3).
+362	U B H	UI: Fix empty states crashing when the list is empty (dark theme) (P1).
+368	U	UI: Add a regression test for search box retry behaviour (P2).
+372	U	Web: Rename the profile page config keys for invited users.
+378	U	UI: Speed up toolbar initial load for invited users.
+386	U	UI: Upgrade date picker to pnpm 10.
+392	U	Web: Clean up feature flags in search box.
+400	U	UX: Support dark theme support in sidebar (P2).
+406	U	UI: Support pagination cursors in toast messages in the legacy view (P2).
+410	U D:2026-11-27	UX: Profile empty states p95 latency.
+418	U B H	Dashboard: Navigation menu is showing stale data after refresh for API clients.
+426	U	UX: Add pagination cursors to toolbar.
+432	U B H	UX: Investigate the deadlock in settings page in the mobile app.
+438	U	UI: Let users pick undo support from profile page.
+442	U B	Frontend: Empty states is ignoring the user's locale.
+448	U	UI: Clean up feature flags in toast messages on the free plan.
+454	U BL	UI: Profile data table p95 latency for API clients.
+464	U B	UI: Someday: Fix shortcut overlay leaking memory on long sessions (saved filters).
+470	U H	UI: Let users pick dark theme support from shortcut overlay in the export path.
+480	U	UI: Extract toast messages logic into a shared module.
+486	U	UI: Replace the hand-rolled toast messages state machine for large accounts.
+492	U BL H	Dashboard: Write a how-to for chart widget limits and quotas as part of the alerts hub after login (P1).
+500	U	UI: Add a regression test for chart widget permission checks during onboarding.
+506	U	UI: Rename the toast messages config keys for the SSO rollout in the legacy view.
+512	U BL	UI: Audit login form for privilege escalation on the free plan.
+524	-	Database: Add inline editing to nightly backups.
+528	U	UI: Add a progress indicator to onboarding wizard.
+534	U B	UI: Toast messages is sorting dates as strings.
+542	U B H	UI: Important: Fix profile page leaking memory on long sessions.
+546	U D:2026-10-31	UI: Let users pick an audit trail from search box in the export path.
+554	U B	UI: Fix shortcut overlay failing silently when offline.
+560	U B	UI: Fix toast messages timing out under load during onboarding (P2).
+566	U D:2026-11-22	UI: Add tests for profile page timezone edges (offline support).
+572	U	UI: Support keyboard navigation in chart widget in the legacy view.
+578	U B	UX: Theme switcher is hanging on slow networks.
+586	U B H	UI: Investigate the layout shift in theme switcher behind the proxy.
+594	-	Messaging: Let users pick sorting by priority from in-app inbox.
+600	U H	Dashboard: Upgrade navigation menu to Tailwind 4.
+606	U	UI: Remove dead code from theme switcher in read-only mode.
+614	U BL	UI: Split settings page into smaller units on first load.
+622	U	UI: Support a progress indicator in shortcut overlay for the webhook idempotency.
+628	U C	UI: Write a how-to for sidebar rollback procedure (CSV import).
+634	U BL D:2026-11-16	UI: Rename the theme switcher config keys.
+646	U	Dashboard: Write a how-to for toast messages rollback procedure for the metered billing.
+654	U	UX: Audit navigation menu for privilege escalation in the mobile app.
+672	BL B D:2026-11-19	API: Investigate the encoding bug in error responses as part of the public API v2.
+680	B D:2026-11-28	Auth: Fix magic links losing state on back navigation (custom domains).
+690	U B	Web: Fix the off-by-one error in sidebar.
+696	U H	UI: Extract chart widget logic into a shared module (P1).
+700	B D:2026-12-01	Docs: Investigate the stale cache in contributing guide.
+708	U B	Dashboard: Date picker is dropping the last item for admins (P2).
+716	U	UI: Cover empty states pagination limits with an e2e test for admins.
+740	U H	UI: Clean up feature flags in onboarding wizard for admins.
+748	U BL D:2026-11-24	UI: Cover date picker empty input with an e2e test after login (P2).
+760	U	UI: Clean up feature flags in settings page on the free plan.
+766	B	API: Investigate the stale cache in webhook endpoint.
+778	H	API: Support inline editing in bulk import endpoint on Safari.
+786	B D:2026-11-04	API: Version header is losing state on back navigation on Safari.
+794	D:2026-10-31	Public API: Rotate the secrets used by version header for the bulk upload.
+802	B D:2027-01-04	API: Fix idempotency keys reporting the wrong timezone (onboarding revamp) after login.
+810	B H	Endpoints: OpenAPI schema is showing stale data after refresh.
+848	B	API: Fix version header double-submitting.
+854	B	API: Fix the memory leak in pagination.
+872	BL D:2026-12-24	API: Cover CORS headers happy path with an e2e test (P2).
+882	H	Endpoints: Clean up feature flags in CORS headers.
+890	BL D:2026-12-18	API: Cache webhook endpoint results to cut render time.
+904	D:2026-11-25	API: Write a how-to for GraphQL gateway local setup.
+910	H	Endpoints: Cache idempotency keys results to cut query time.
+936	H	API: Add dark theme support to bulk import endpoint.
+946	H D:2026-11-12	API: Profile rate limiter query time on first load.
+954	B H D:2026-11-29	API: Webhook endpoint is showing stale data after refresh as part of the Postgres 17 upgrade.
+980	BL B D:2026-11-20	API: Fix OpenAPI schema losing state on back navigation.
+998	BL	API: Add tests for bulk import endpoint retry behaviour.
+1006	BL D:2026-11-02	Public API: Add a dry-run mode to version header (accessibility pass) after login.
+1030	B	API: Fix the duplicate request in GraphQL gateway on first load.
+1040	B	API: Fix error responses losing state on back navigation.
+1046	BL B H	Endpoints: Investigate the stale cache in rate limiter (P1).
+1056	D:2026-11-18	API: Speed up API keys query time.
+1068	B D:2026-11-25	API: Fix the memory leak in bulk import endpoint.
+1084	B D:2026-12-17	API: Someday: Fix rate limiter returning 500 on invalid input for the usage-based billing.
+1102	D:2026-11-17	API: Clean up feature flags in bulk import endpoint for API clients.
+1112	B D:2026-11-23	Auth: OAuth callback is double-submitting for large accounts.
+1140	B D:2026-12-22	Endpoints: Fix the duplicate request in API keys.
+1148	B D:2027-01-06	API: Fix the null pointer in webhook endpoint in the mobile app.
+1172	BL	API: Add a regression test for bulk import endpoint permission checks for the SAML rollout.
+1190	H	API: Let users pick per-tenant limits from error responses.
+1200	BL B	Public API: Investigate the deadlock in OpenAPI schema for EU tenants.
+1222	BL D:2026-12-31	API: Speed up version header query time on first load (P3).
+1242	BL	Endpoints: Speed up GraphQL gateway render time for the invoice redesign.
+1250	H	API: Clean up feature flags in OpenAPI schema for the translations in the mobile app.
+1262	D:2026-11-20	API: Support an audit trail in request validator in read-only mode.
+1270	H D:2026-11-14	API: Add dark theme support to OpenAPI schema for large accounts.
+1280	B	API: CORS headers is leaking memory on long sessions on first load.
+1284	B H	API: Important: OpenAPI schema is reporting the wrong timezone.
+1290	BL	API: Add tests for CORS headers happy path for large accounts.
+1300	BL	API: Document rate limiter rollback procedure for API clients.
+1318	BL B	Docs: Fix architecture notes failing silently when offline.
+1338	BL	API: Someday: Document rate limiter rollback procedure in the legacy view.
+1358	B	API: Request validator is ignoring the user's locale (bulk upload) (P2).
+1364	H	API: Cache OpenAPI schema results to cut initial load.
+1418	H D:2026-12-22	API: Document CORS headers rollback procedure after login.
+1450	BL	Auth: Let users pick undo support from invite links.
+1462	B	Security: Fix the deadlock in session expiry.
+1474	BL B H	Auth: Password reset is double-submitting as part of the invoice redesign.
+1500	H D:2026-12-11	Auth: Add a regression test for account lockout permission checks on first load.
+1510	B	Auth: Fix invite links reporting the wrong timezone.
+1516	BL D:2026-11-22	Alerts: Let users pick an audit trail from digest emails after login.
+1532	BL	Auth: Remove dead code from SSO login.
+1550	B	Login: Investigate the stale cache in SSO login (first-run flow) on first load.
+1556	BL H D:2026-11-07	Auth: Audit magic links for privilege escalation for invited users.
+1596	B D:2026-11-07	Auth: Investigate the stale cache in SSO login in the export path.
+1610	H	Identity: Important: Speed up invite links memory use.
+1614	B	Auth: Fix password reset crashing when the list is empty in the mobile app.
+1650	U D:2026-10-26	UI: Add tests for theme switcher empty input (SOC 2 audit).
+1658	B	Auth: Magic links is reporting the wrong timezone on first load.
+1664	H	Auth: Rotate the secrets used by role permissions (P1).
+1672	C D:2026-12-22	Auth: Speed up 2FA enrollment memory use for the CSV import for invited users.
+1692	BL	Identity: Cover magic links permission checks with an e2e test as part of the feature flags in the export path.
+1700	H D:2026-12-06	Auth: Rename the role permissions config keys for API clients.
+1708	B D:2026-12-29	Auth: Investigate the null pointer in 2FA enrollment.
+1718	BL	Auth: Rotate the secrets used by OAuth callback for the free trial in the export path.
+1726	B	Auth: Session expiry is dropping the last item in the export path.
+1730	B	Auth: Role permissions is breaking after the last deploy.
+1740	BL H D:2026-12-19	Auth: Support a dry-run mode in account lockout.
+1758	H	Auth: Important: Add tests for SSO login empty input.
+1780	B	Auth: Fix the race condition in 2FA enrollment after login.
+1790	B	Billing: Investigate the flicker in coupon codes.
+1804	BL B	Billing: Coupon codes is ignoring the user's locale for large accounts (P2).
+1818	B	Billing: Plan upgrade is double-submitting after login.
+1826	BL	Checkout: Support CSV export in usage metering in the export path.
+1832	B	Billing: Proration is hanging on slow networks.
+1838	H	Billing: ASAP: Support a dry-run mode in invoice PDF for API clients.
+1844	B	Subscriptions: Investigate the duplicate request in tax calculation.
+1856	BL B D:2026-11-30	Billing: Coupon codes is timing out under load for the invoice redesign.
+1866	H	Subscriptions: Let users pick inline editing from receipt emails for EU tenants.
+1872	H	Subscriptions: Cache proration results to cut render time.
+1892	B	API: GraphQL gateway is double-submitting.
+1902	D:2026-11-05	Checkout: Cache tax calculation results to cut initial load (invoice redesign) on Safari.
+1916	BL	Billing: Add saved presets to refund flow as part of the saved filters.
+1940	B	Billing: Receipt emails is timing out under load.
+1946	B	Checkout: Fix proration hanging on slow networks.
+1952	H D:2026-11-20	Billing: Upgrade receipt emails to pnpm 10.
+1968	BL C	Tests: Upgrade lint step to the OpenTelemetry SDK (CSV import) on the free plan.
+1990	B	Payments: Fix coupon codes timing out under load during onboarding.
+2000	B	Billing: Plan upgrade is double-submitting (flag service) behind the proxy.
+2032	B	Billing: Fix tax calculation sorting dates as strings for admins (P2).
+2044	H D:2026-11-21	Subscriptions: Let users pick saved presets from proration.
+2052	H D:2026-12-14	Billing: Write a how-to for coupon codes upgrade steps.
+2074	B	Billing: Fix the off-by-one error in usage metering (mobile layout).
+2086	B	Subscriptions: Usage metering is breaking after the last deploy for admins (P2).
+2090	BL D:2026-11-11	Billing: Add tests for refund flow timezone edges during onboarding (P3).
+2098	B	Subscriptions: Investigate the flicker in receipt emails.
+2106	B	Billing: Investigate the stale cache in invoice PDF.
+2120	BL B	Payments: Investigate the null pointer in receipt emails after login.
+2144	D:2026-11-12	Billing: Add CSRF protection to Stripe webhooks for admins.
+2178	B	Billing: Fix the layout shift in Stripe webhooks during onboarding.
+2192	B D:2026-11-24	Subscriptions: Fix receipt emails showing stale data after refresh.
+2226	D:2026-11-08	Billing: Add a regression test for plan upgrade permission checks as part of the database upgrade.
+2262	BL H	Search: Add tests for search indexer retry behaviour after login.
+2274	B D:2026-12-11	Search: Fix search indexer crashing when the list is empty.
+2294	B D:2026-11-22	Search: Investigate the deadlock in ranking on first load (P2).
+2306	B H D:2026-11-17	Indexing: Fix facet filters dropping the last item (P1).
+2312	B	Indexing: Investigate the flicker in reindex job for EU tenants.
+2324	H	Indexing: Add tests for autocomplete empty input for the audit log for API clients.
+2346	B	Search: Investigate the flicker in reindex job.
+2360	U D:2026-12-29	UI: Support a copy-to-clipboard action in chart widget in the mobile app.
+2368	B	Notifications: In-app inbox is crashing when the list is empty as part of the mobile layout in the legacy view.
+2388	BL	Search: Add a regression test for result highlighting concurrent writes in the legacy view.
+2398	B	Search: Synonym dictionary is leaking memory on long sessions.
+2406	B H	Indexing: Investigate the flicker in synonym dictionary.
+2420	B	Indexing: Investigate the deadlock in synonym dictionary.
+2468	BL H	Search: Important: Speed up autocomplete query time on the free plan.
+2490	D:2026-11-18	Search: Split search indexer into smaller units as part of the customer domains.
+2506	BL H D:2026-10-31	Search: Speed up ranking cold start.
+2518	B	Search: Investigate the flicker in search indexer (database upgrade).
+2556	B H D:2026-12-11	Discovery: Investigate the stale cache in typo tolerance.
+2564	B	Discovery: Search indexer is double-submitting in the legacy view.
+2580	B H	Search: Investigate the duplicate request in result highlighting as part of the offline mode in the export path.
+2586	B	Search: Fix the duplicate request in search indexer.
+2594	H D:2027-01-13	Search: ASAP: Support a progress indicator in autocomplete.
+2618	D:2026-11-07	Infrastructure: Upgrade TLS certificates to Playwright for invited users.
+2626	B	Infrastructure: Investigate the stale cache in base Docker image during onboarding.
+2656	B	Alerts: Investigate the deadlock in digest emails (data export request).
+2664	BL H	Infrastructure: Let users pick an audit trail from base Docker image.
+2674	B	Notifications: Push notifications is failing silently when offline for invited users.
+2686	H	Notifications: Write a how-to for notification preferences failure modes on Safari.
+2700	H D:2026-12-03	Alerts: Remove dead code from push notifications in the export path.
+2712	BL	Notifications: Split bounce handling into smaller units for the free trial on first load.
+2726	H D:2026-12-21	Notifications: Profile notification preferences query time for EU tenants.
+2756	U D:2026-12-26	UI: Add a copy-to-clipboard action to modal dialog.
+2762	H C	Notifications: Add a regression test for bounce handling happy path (CSV import).
+2768	BL	Notifications: Cache notification preferences results to cut p95 latency in the mobile app (P2).
+2810	B H	Notifications: Fix the memory leak in in-app inbox (duplicate webhooks).
+2816	B	Notifications: Fix email templates double-submitting on first load.
+2822	B	Messaging: Email templates is leaking memory on long sessions.
+2830	D:2026-11-19	Notifications: Support date range filter in in-app inbox as part of the webhook idempotency.
+2838	B D:2026-11-23	Billing: Investigate the deadlock in coupon codes.
+2846	B	Notifications: Fix SMS fallback leaking memory on long sessions.
+2856	B	Notifications: Fix email templates dropping the last item for the retention emails for API clients.
+2860	U	Web: Let users pick keyboard navigation from toolbar as part of the team invites for API clients.
+2866	U B D:2026-11-27	UI: Investigate the flicker in date picker.
+2874	B	Email: Fix the race condition in unsubscribe link for API clients.
+2882	B D:2026-11-13	Email: Push notifications is timing out under load for API clients.
+2892	U BL B D:2027-01-05	Web: Toolbar is rendering off-screen on small screens.
+2902	B D:2027-01-09	Database: Fix audit log table showing stale data after refresh.
+2910	H	Storage: Add dark theme support to vacuum schedule on first load.
+2918	B	Storage: Fix the memory leak in schema migrations (SSO rollout) in the mobile app.
+2922	B D:2026-12-07	Database: Investigate the stale cache in soft deletes for EU tenants.
+2938	BL	Storage: Add tests for tenant partitioning error states.
+2956	B	Database: Fix read replica timing out under load for large accounts.
+2966	B C	Database: Fix the stale cache in read replica as part of the CSV import.
+2972	BL B D:2026-11-29	Persistence: Soft deletes is sorting dates as strings.
+2988	U BL D:2027-01-08	UI: Add tests for theme switcher permission checks for admins.
+3002	B	DB: Fix schema migrations sorting dates as strings.
+3006	B	Notifications: Fix the stale cache in notification preferences for admins.
+3012	B H D:2026-11-10	Database: Read replica is dropping the last item behind the proxy.
+3024	BL	Database: Replace the hand-rolled read replica state machine (P2).
+3032	B D:2026-11-27	Database: Investigate the off-by-one error in nightly backups.
+3040	BL	Database: Add tests for schema migrations happy path.
+3052	B	Persistence: Fix the duplicate request in tenant partitioning on the free plan.
+3058	B	Auth: Fix the layout shift in SSO login for API clients.
+3072	B D:2026-11-07	Database: Fix the off-by-one error in nightly backups behind the proxy.
+3092	U B H	UI: Shortcut overlay is losing state on back navigation.
+3116	H	Database: Let users pick a copy-to-clipboard action from tenant partitioning on first load.
+3122	BL B	Database: Fix the stale cache in connection pool.
+3130	H	Database: Important: Sanitize untrusted input in connection pool during onboarding.
+3150	H	Database: Clean up feature flags in orders index on Safari.
+3162	B H	Database: Fix orders index crashing when the list is empty in read-only mode.
+3178	BL	DB: Sanitize untrusted input in orders index after login.
+3224	H	Storage: Remove dead code from nightly backups.
+3242	B	Storage: Investigate the stale cache in tenant partitioning.
+3286	B D:2027-01-03	DevOps: Fix the layout shift in autoscaling policy.
+3296	H	Infrastructure: Cover CDN cache happy path with an e2e test as part of the saved filters.
+3304	H	Infrastructure: Split TLS certificates into smaller units after login.
+3312	BL D:2026-12-20	DevOps: Add pagination cursors to CDN cache.
+3324	B	Infrastructure: Fix Terraform state rendering off-screen on small screens.
+3332	U D:2027-01-10	UI: Add date range filter to shortcut overlay.
+3342	BL	Infrastructure: Let users pick per-tenant limits from CDN cache for the offline mode during onboarding.
+3356	BL	Infrastructure: Add per-tenant limits to autoscaling policy for API clients.
+3378	BL	Infrastructure: Add tests for staging environment retry behaviour as part of the rate limits.
+3394	D:2026-11-05	Auth: Rotate the secrets used by 2FA enrollment.
+3402	B	Deploy: Investigate the null pointer in Kubernetes manifests.
+3414	H D:2026-11-02	Deploy: Upgrade base Docker image to React 19.
+3424	B	Infrastructure: Fix the null pointer in CDN cache.
+3432	D:2026-11-07	Platform: Replace the hand-rolled Kubernetes manifests state machine behind the proxy.
+3444	BL	Infrastructure: Add CSRF protection to TLS certificates on the free plan (P3).
+3452	B H D:2026-11-24	Platform: Important: Investigate the race condition in log shipping.
+3470	B	Infrastructure: Fix secrets vault reporting the wrong timezone.
+3476	D:2026-11-03	Infrastructure: Rotate the secrets used by base Docker image for EU tenants.
+3490	B	Infrastructure: Fix Kubernetes manifests losing state on back navigation (request quotas).
+3504	H D:2026-12-23	Infrastructure: Rotate the secrets used by autoscaling policy in the mobile app.
+3514	B D:2026-11-15	Infrastructure: Log shipping is reporting the wrong timezone as part of the k8s move.
+3532	H D:2026-11-16	DevOps: Support bulk actions in base Docker image.
+3544	BL B	Deploy: Base Docker image is failing silently when offline as part of the onboarding revamp on first load.
+3550	H	Platform: Important: Rename the log shipping config keys.
+3560	B H	CI: Investigate the encoding bug in release workflow after login.
+3574	H	Pipeline: Add a regression test for coverage gate concurrent writes on first load.
+3586	BL	Tests: Write a how-to for dependency cache upgrade steps during onboarding (P2).
+3608	D:2026-10-31	CI: Add tests for lint step permission checks after login.
+3622	B	Tests: Investigate the duplicate request in release workflow.
+3630	B H D:2027-01-09	CI: Important: Preview deployments is reporting the wrong timezone after login.
+3646	D:2026-11-01	CI: Let users pick pagination cursors from test sharding for API clients.
+3652	B	CI: Investigate the duplicate request in coverage gate for EU tenants.
+3658	B H	Build: Fix the flicker in nightly build.
+3694	D:2026-11-21	Docs: Cache onboarding guide results to cut p95 latency.
+3704	H	CI: Remove dead code from dependency cache.
+3722	B	CI: Fix e2e suite sorting dates as strings (public API v2) for admins.
+3740	B D:2026-12-18	CI: Investigate the layout shift in dependency cache in the mobile app.
+3766	U H	Web: Add tests for settings page timezone edges during onboarding.
+3794	B D:2026-12-25	Build: Fix nightly build rendering off-screen on small screens (P3).
+3802	B D:2026-12-01	CI: Investigate the memory leak in e2e suite for API clients (P2).
+3812	BL	CI: Speed up release workflow query time.
+3836	H	CI: Write a how-to for e2e suite upgrade steps for large accounts.
+3844	B	CI: Fix the null pointer in nightly build on first load (P3).
+3850	D:2026-11-05	Billing: Add inline editing to coupon codes.
+3858	H D:2027-01-10	Tests: Profile release workflow render time as part of the team invites.
+3888	BL	Pipeline: Let users pick a copy-to-clipboard action from e2e suite.
+3896	B	CI: Fix coverage gate returning 500 on invalid input for invited users.
+3906	BL	CI: Document lint step rollback procedure (data export request) (P2).
+3920	B D:2027-01-09	Alerts: Investigate the duplicate request in email templates after login.
+3934	BL	Build: Add tests for e2e suite timezone edges for the throttling.
+3946	BL B D:2026-12-09	Tests: Test sharding is dropping the last item.
+3956	D:2026-11-15	Database: Write a how-to for schema migrations rollback procedure in the legacy view.
+3974	B	CI: Coverage gate is leaking memory on long sessions in the mobile app.
+3978	BL	Build: Add pagination cursors to coverage gate.
+3988	B	CI: Test sharding is leaking memory on long sessions on first load.
+3992	H	CI: Audit nightly build for privilege escalation (database upgrade) in the legacy view (P1).
+3998	BL B	CI: Fix e2e suite showing stale data after refresh (P3).
+4014	B	Docs: Fix API reference returning 500 on invalid input.
+4028	BL B	Docs: Fix the stale cache in changelog (multi-currency).
+4036	B	README: Contributing guide is crashing when the list is empty (usage-based billing).
+4042	B	Docs: Fix the memory leak in changelog (request quotas) on the free plan.
+4050	B D:2026-11-02	Docs: Fix onboarding guide leaking memory on long sessions on the free plan.
+4056	H	Docs: Let users pick bulk actions from contributing guide as part of the uptime page in the mobile app.
+4064	D:2026-11-28	Docs: Support per-tenant limits in incident runbook (a11y fixes) on Safari.
+4084	H	Guides: Support an audit trail in onboarding guide as part of the performance budget during onboarding.
+4108	B H	Docs: Fix the flicker in architecture notes.
+4132	B H	Docs: API reference is losing state on back navigation for the search v2 in the legacy view.
+4140	BL	Infrastructure: Add an audit trail to CDN cache on first load.
+4146	D:2026-10-29	Messaging: Add a regression test for notification preferences pagination limits.
+4166	BL H	Persistence: Speed up audit log table cold start in the export path.
+4206	BL	Storage: Someday: Let users pick inline editing from read replica (public API v2) on the free plan.
+4226	BL	Docs: Add tests for contributing guide retry behaviour for large accounts.
+4232	H	Discovery: Support an audit trail in result highlighting for the audit log.
+4240	BL D:2026-11-11	README: Support date range filter in deployment guide.
+4268	BL D:2027-01-01	Docs: Cache onboarding guide results to cut query time.
+4280	BL	README: Extract API reference logic into a shared module (responsive layout).
+4294	D:2026-10-29	Infra: Support dark theme support in log shipping.
+4302	B H	Documentation: Onboarding guide is ignoring the user's locale.
+4326	B	Documentation: Fix incident runbook ignoring the user's locale on the free plan.
+4330	B	Docs: Fix onboarding guide sorting dates as strings as part of the mobile layout.
+4336	B	Documentation: Fix the off-by-one error in contributing guide.
+4366	B	Docs: Deployment guide is breaking after the last deploy behind the proxy.

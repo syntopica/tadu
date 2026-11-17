@@ -9,11 +9,12 @@ from tadu.backlog_write_pattern import (
     BACKLOG_NAME_PATTERN,
     LEADING_CD_PATTERN,
     SHELL_WRITE_PATTERN,
-    TADU_CLOSE_WRITE_PATTERN,
+    TADU_WRITE_PATTERN,
 )
 from tadu.nearest_backlog_root import nearest_backlog_root
 from tadu.payload_text import payload_text
 from tadu.shell_backlog_start import shell_backlog_start
+from tadu.task_file_root import task_file_root
 
 
 def hook_backlog_root(payload: object) -> Path | None:
@@ -22,10 +23,12 @@ def hook_backlog_root(payload: object) -> Path | None:
     cwd = Path(payload_text(payload, "cwd") or ".")
     if tool in ("Edit", "Write", "MultiEdit"):
         path = Path(payload_text(payload, "tool_input", "file_path"))
-        return nearest_backlog_root(path.parent) if path.name in BACKLOG_FILE_NAMES else None
+        if path.name in BACKLOG_FILE_NAMES:
+            return nearest_backlog_root(path.parent)
+        return task_file_root(path)
     command = payload_text(payload, "tool_input", "command")
     edits = BACKLOG_NAME_PATTERN.search(command) and SHELL_WRITE_PATTERN.search(command)
-    if tool != "Bash" or not (edits or TADU_CLOSE_WRITE_PATTERN.search(command)):
+    if tool != "Bash" or not (edits or TADU_WRITE_PATTERN.search(command)):
         return None
     lead = LEADING_CD_PATTERN.match(command)
     start = cwd / Path(lead.group(1).strip("\"'")).expanduser() if lead else cwd

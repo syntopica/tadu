@@ -1,0 +1,33 @@
+{
+  "tadu": 2,
+  "categories": {
+    "board": "Board",
+    "cli": "CLI",
+    "format": "Format",
+    "adoption": "Adoption",
+    "release": "Release",
+    "ci": "CI",
+    "docs": "Docs"
+  },
+  "types": [
+    "bug",
+    "feature",
+    "chore",
+    "test",
+    "docs",
+    "refactor",
+    "perf",
+    "security",
+    "decision"
+  ],
+  "milestones": {
+    "v0-2": {
+      "name": "0.2",
+      "due": "2026-12-15"
+    }
+  },
+  "stale_after_days": 14,
+  "archive": {
+    "after_days": 30
+  }
+}

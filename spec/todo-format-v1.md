@@ -198,7 +198,7 @@ The maintenance rule lives in the repository's agent instruction file
 (`AGENTS.md`, else `CLAUDE.md`) between two marker lines:
 
 ```md
-<!-- tadu:rule v3 -->
+<!-- tadu:rule v4 -->
 ...
 <!-- /tadu:rule -->
 ```
@@ -206,7 +206,9 @@ The maintenance rule lives in the repository's agent instruction file
 The number in the open marker is the rule block's version, separate from the
 format version: v2 adds the closed-entry template and the labels it requires;
 v3 adds the `tadu close` command, the instruction to run `tadu doctor .` before
-committing, and an install hint.
+committing, and an install hint; v4 tells agents to query the backlog instead of
+reading it whole, to run `tadu similar` before adding an item, and how to work a
+task backlog ([format 2](todo-format-v2.md)).
 A block older than the current version is a warning until `tadu sync` rewrites
 it.
 
@@ -405,13 +407,19 @@ with exactly these keys:
 | `priority`, `due`, `estimate` | the field value, or `null` |
 | `queue` | `backlog` or `ready`, `backlog` when absent |
 | `assignees`, `labels` | lists |
+| `category` | format 1: the `**Category:**` prefix as a slug; format 2: the `category` field; or `null` |
+| `type`, `milestone`, `defer_until`, `started` | format 2 field values, or `null` |
+| `relations` | format 2: a list of `{"kind": ..., "key": ...}` such as `blocked_by` |
 | `project` | the project key, or `null` |
 | `organizations` | a list of `{"role": ..., "org": ...}` |
 | `problems` | a list of `{"line": ..., "message": ...}`, lines 1-based |
 | `editor_url`, `remote_url` | a link to the line, or `null` |
 
 Filters: `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`,
-`--label`, `--due-before` and `--include-cancelled`. `--workspace DIR` replaces
+`--label`, `--due-before` and `--include-cancelled`; queries: `--category`,
+`--type`, `--milestone`, `--text`, `--due-within`, `--overdue`, `--min-priority`
+and `--history`; `--sort`, `--limit` (default 100) and `--offset`, with a note on
+standard error when more items match. `--workspace DIR` replaces
 the repository roots; giving both exits 2. `--view NAME` starts from the workspace's saved
 view of that name, and every filter flag given beside it replaces the view's
 criterion; it needs `--workspace`, and an unknown name exits 2.
