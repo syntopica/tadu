@@ -18,3 +18,7 @@ def test_marker_changes_and_the_note_ends_the_item() -> None:
 
 def test_without_a_note_only_the_marker_changes() -> None:
     assert marked_lines(LINES, 4, "~", None) == [*LINES[:4], "- [~] Next.", ""]
+
+
+def test_no_marker_keeps_the_state() -> None:
+    assert marked_lines(LINES, 0, None, None) == LINES

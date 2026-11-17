@@ -52,6 +52,7 @@ data = [
   "tadu/log_entry_pattern.py",
   "tadu/log_marker_pattern.py",
   "tadu/loopback_hosts.py",
+  "tadu/mark_fields.py",
   "tadu/mark_states.py",
   "tadu/mcp_attention_tools.py",
   "tadu/mcp_instructions.py",

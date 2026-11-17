@@ -56,3 +56,17 @@ def test_writing_commands_write_to_their_one_repository(tmp_path: Path) -> None:
         "--",
         str(tmp_path),
     ]
+
+
+def test_mark_fields_become_options(tmp_path: Path) -> None:
+    scope = McpScope(paths=(str(tmp_path),), workspace=None)
+    arguments: dict[str, object] = {"match": "T", "kind": "task", "labels": ["a", "b"]}
+    assert mcp_argv("mark", arguments, scope) == [
+        "mark",
+        "--match=T",
+        "--kind=task",
+        "--labels=a, b",
+        "--write",
+        "--",
+        str(tmp_path),
+    ]

@@ -24,7 +24,7 @@ def mark(root: Path, *argv: str) -> int:
 def test_block_then_reopen(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     root = repo(tmp_path)
     assert mark(root, "--state", "blocked", "--note", "Blocked on the decision.") == 0
-    assert capsys.readouterr().out.endswith("would mark it blocked; run again with --write\n")
+    assert capsys.readouterr().out.endswith("would set blocked; run again with --write\n")
     assert (root / "TODO.md").read_text() == TODO
     assert mark(root, "--state", "blocked", "--note", "Blocked on the decision.", "--write") == 0
     text = (root / "TODO.md").read_text()
@@ -83,3 +83,32 @@ def test_a_file_changed_before_the_write_is_kept(
     monkeypatch.setattr("tadu.run_todo_change.write_if_unchanged", lambda *_: False)
     assert mark(root, "--state", "in_progress", "--write") == 2
     assert (root / "TODO.md").read_text() == TODO
+
+
+def test_fields_are_replaced_or_added(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    root = repo(tmp_path)
+    argv = ["--priority", "low", "--kind", "decision", "--due", "2026-12-31"]
+    assert mark(root, *argv) == 0
+    assert "would set Kind decision; Priority low; Due 2026-12-31" in capsys.readouterr().out
+    assert (root / "TODO.md").read_text() == TODO
+    assert mark(root, *argv, "--write") == 0
+    text = (root / "TODO.md").read_text()
+    assert "  Priority: low\n\n  Kind: decision\n\n  Due: 2026-12-31\n\n- [ ] Fix the cart." in text
+    assert mark(root, *argv, "--write") == 0
+    assert "nothing to change" in capsys.readouterr().out.splitlines()[-1]
+
+
+@pytest.mark.parametrize(
+    ("argv", "message"),
+    [
+        ([], "give --state or a field to set"),
+        (["--due", "soon"], "Due is not a YYYY-MM-DD date"),
+        (["--estimate", "x"], "Estimate"),
+        (["--labels", "a\nb"], "arguments must be single lines"),
+    ],
+)
+def test_refused_fields(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], argv: list[str], message: str
+) -> None:
+    assert mark(repo(tmp_path), *argv) == 2
+    assert message in capsys.readouterr().err

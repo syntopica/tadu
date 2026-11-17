@@ -44,14 +44,24 @@ MCP_WRITE_TOOLS = (
     mcp_tool(
         "mark",
         "Set one open item's state: `blocked` with a note naming the blocker (such as the "
-        "decision you added), `open` once it is unblocked, or `in_progress`.",
+        "decision you added), `open` once it is unblocked, or `in_progress`. Also sets or "
+        "changes its fields, such as kind or priority, without editing TODO.md.",
         {
             "match": mcp_property("string", "text found in the item's first line"),
             "state": mcp_property("string", "the new state", tuple(MARK_STATES)),
+            "kind": mcp_property("string", "set Kind: task, decision, waiting or later", KINDS),
+            "priority": mcp_property("string", "set Priority:", PRIORITIES),
+            "assignees": mcp_property("array", "set Assignees: person ids"),
+            "due": mcp_property("string", "set Due: YYYY-MM-DD"),
+            "check_on": mcp_property("string", "set Check on: YYYY-MM-DD"),
+            "not_before": mcp_property("string", "set Not before: YYYY-MM-DD"),
+            "labels": mcp_property("array", "set Labels:"),
+            "queue": mcp_property("string", "set Queue: backlog or ready", QUEUES),
+            "estimate": mcp_property("integer", "set Estimate: minutes"),
             "note": mcp_property("string", "a paragraph added to the item; required for blocked"),
             "repository": REPOSITORY,
         },
-        ("match", "state"),
+        ("match",),
         read_only=False,
     ),
     mcp_tool(
