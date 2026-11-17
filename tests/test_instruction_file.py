@@ -19,7 +19,7 @@ def test_none_when_absent(tmp_path: Path) -> None:
 
 def test_file_holding_the_block_wins(tmp_path: Path) -> None:
     (tmp_path / "AGENTS.md").write_text("<!-- BEGIN:nextjs-agent-rules -->\n")
-    (tmp_path / "CLAUDE.md").write_text("<!-- tadu:rule v4 -->\n<!-- /tadu:rule -->\n")
+    (tmp_path / "CLAUDE.md").write_text("<!-- tadu:rule v5 -->\n<!-- /tadu:rule -->\n")
     assert instruction_file(tmp_path, None) == tmp_path / "CLAUDE.md"
 
 

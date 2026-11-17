@@ -147,7 +147,7 @@ def test_doctor_command_on_a_task_backlog(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     root = task_backlog(tmp_path, [sample_task(1, state="odd")])
-    (root / "AGENTS.md").write_text("<!-- tadu:rule v4 -->\n<!-- /tadu:rule -->\n")
+    (root / "AGENTS.md").write_text("<!-- tadu:rule v5 -->\n<!-- /tadu:rule -->\n")
     assert main(["doctor", str(root)]) == 1
     out = capsys.readouterr().out
     assert "error J003 state must be one of pending" in out

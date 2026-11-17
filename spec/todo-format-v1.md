@@ -198,7 +198,7 @@ The maintenance rule lives in the repository's agent instruction file
 (`AGENTS.md`, else `CLAUDE.md`) between two marker lines:
 
 ```md
-<!-- tadu:rule v4 -->
+<!-- tadu:rule v5 -->
 ...
 <!-- /tadu:rule -->
 ```

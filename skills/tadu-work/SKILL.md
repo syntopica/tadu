@@ -235,6 +235,8 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
   mark remaining work complete to make the run appear finished; if the
   environment forces a handoff while an item remains actionable, report a
   checkpointed incomplete run.
+- In the summary a person reads, name each task by its title, never by its ID:
+  IDs stay in commands and tool calls.
 - Load `references/format.md` (format 1) or `references/format-v2.md` (format 2)
   for the state legend, the log entry or task shape, and the optional item
   fields.

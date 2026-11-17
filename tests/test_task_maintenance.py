@@ -95,7 +95,7 @@ def test_init_format_2(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> No
     assert main(["init", str(tmp_path), "--format", "2", "--write"]) == 0
     config = json.loads((tmp_path / "todo" / "tadu.json").read_text())
     assert config == {"tadu": 2, "categories": {"general": "General"}}
-    assert "<!-- tadu:rule v4 -->" in (tmp_path / "AGENTS.md").read_text()
+    assert "<!-- tadu:rule v5 -->" in (tmp_path / "AGENTS.md").read_text()
     capsys.readouterr()
     assert main(["doctor", str(tmp_path)]) == 0
 
@@ -111,7 +111,7 @@ def test_init_format_2_refusals(tmp_path: Path, capsys: pytest.CaptureFixture[st
     assert "not a regular file" in capsys.readouterr().err
     bad = tmp_path / "bad"
     bad.mkdir()
-    (bad / "AGENTS.md").write_text("<!-- tadu:rule v4 -->\nno close\n")
+    (bad / "AGENTS.md").write_text("<!-- tadu:rule v5 -->\nno close\n")
     assert main(["init", str(bad), "--format", "2", "--write"]) == 2
     assert not (bad / "todo").exists()
 

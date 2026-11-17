@@ -20,7 +20,7 @@ def test_known_assets(name: str, content_type: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "name", ["", "../cli.py", "rule_block_v4.md", "board/index.html", "missing.js", "a/b.js"]
+    "name", ["", "../cli.py", "rule_block_v5.md", "board/index.html", "missing.js", "a/b.js"]
 )
 def test_unknown_names(name: str) -> None:
     assert board_asset(name) is None

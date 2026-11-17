@@ -52,5 +52,5 @@ def test_format_v2_reference_matches_the_spec(skill_dir: Path) -> None:
 
 def test_rule_block_reference_matches_the_package_copy() -> None:
     copy = REPO_ROOT / "skills" / "tadu-create" / "references" / "rule-block.md"
-    package = REPO_ROOT / "tadu" / "rule_block_v4.md"
+    package = REPO_ROOT / "tadu" / "rule_block_v5.md"
     assert copy.read_bytes() == package.read_bytes()

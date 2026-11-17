@@ -326,7 +326,7 @@ Reading a task backlog is fast for open work at any size (`list --open`, `ready`
 
 ## Write the rule block
 
-`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v4 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
+`tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v5 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
 
 ```bash
 tadu sync .
@@ -338,7 +338,7 @@ tadu sync .
 @@ -1 +1,59 @@
  # Demo
 +
-+<!-- tadu:rule v4 -->
++<!-- tadu:rule v5 -->
 +
 +## Continuous TODO, Work Log, and History Coverage
 ...

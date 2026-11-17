@@ -161,6 +161,8 @@ Before finishing:
   inaccessible and irrelevant; files modified; validation performed, including
   the `tadu doctor` result; cross-project items filed with their target
   repositories; and any finding needing immediate human action.
+- In the summary a person reads, name each task by its title, never by its ID:
+  IDs stay in commands and tool calls.
 - Show a focused diff summary for the backlog files (`TODO.md` and
   `TODO_LOG.md`, or `todo/`), `TODO_HISTORY_INDEX.jsonl` and the instruction
   source. Do not dump the backlog
