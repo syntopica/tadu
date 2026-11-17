@@ -19,6 +19,9 @@ class CardFilter:
     assignee: str | None = None
     column: str | None = None
     priority: str | None = None
+    kind: str | None = None
     label: str | None = None
     due_before: date | None = None
+    check_before: date | None = None
     include_cancelled: bool = False
+    open: bool = False

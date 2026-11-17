@@ -27,5 +27,6 @@ def parse_paths(value: object, directory: Path, workspace: Workspace) -> dict[st
         if not isinstance(path, str):
             msg = f"paths: {key} must be a string"
             raise WorkspaceError(msg)
+        # keys: the keys of one TOML table are unique.
         paths[key] = (directory / Path(path).expanduser()).resolve()
     return paths

@@ -64,3 +64,19 @@ def test_cancelled_hidden_unless_requested() -> None:
     assert card_matches(card, CardFilter(include_cancelled=True))
     assert card_matches(card, CardFilter(column="cancelled"))
     assert not card_matches(card, CardFilter(column="cancelled", project="other"))
+
+
+def test_kind() -> None:
+    card = sample_card()
+    assert card_matches(card, CardFilter(kind="decision"))
+    assert not card_matches(card, CardFilter(kind="task"))
+    plain = replace(card, item=replace(card.item, fields=replace(card.item.fields, kind="task")))
+    assert card_matches(plain, CardFilter(kind="task"))
+
+
+def test_open_drops_closed_cards() -> None:
+    card = sample_card()
+    done = replace(card, column="done", item=replace(card.item, state="x"))
+    assert card_matches(card, CardFilter(open=True))
+    assert not card_matches(done, CardFilter(open=True))
+    assert card_matches(done, CardFilter())

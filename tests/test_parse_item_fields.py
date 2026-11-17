@@ -50,3 +50,33 @@ def test_oversized_estimate_is_a_problem() -> None:
     fields, problems = parse_item_fields([(2, "Estimate", "9" * 5000)])
     assert fields.estimate is None
     assert problems == (FieldProblem(2, "Estimate is not a positive whole number of minutes"),)
+
+
+def test_kind_parses_and_absent_means_unclassified() -> None:
+    assert parse_item_fields([])[0].kind is None
+    fields, problems = parse_item_fields([(2, "Kind", "waiting")])
+    assert fields == ItemFields(kind="waiting")
+    assert problems == ()
+
+
+def test_unknown_kind_is_a_problem_and_stays_unclassified() -> None:
+    fields, problems = parse_item_fields([(2, "Kind", "someday")])
+    assert fields.kind is None
+    assert problems == (FieldProblem(2, "Kind is not one of task, decision, waiting, later"),)
+
+
+def test_check_on_and_not_before_are_dates() -> None:
+    fields, problems = parse_item_fields(
+        [(2, "Check on", "2026-11-20"), (4, "Not before", "2026-12-01"), (6, "Due", "2026-12-15")]
+    )
+    assert (fields.check_on, fields.not_before, fields.due) == (
+        date(2026, 11, 20),
+        date(2026, 12, 1),
+        date(2026, 12, 15),
+    )
+    assert problems == ()
+    _, bad = parse_item_fields([(2, "Check on", "soon"), (4, "Not before", "2026-02-30")])
+    assert bad == (
+        FieldProblem(2, "Check on is not a YYYY-MM-DD date"),
+        FieldProblem(4, "Not before is not a YYYY-MM-DD date"),
+    )

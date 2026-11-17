@@ -26,3 +26,15 @@ def test_problems(tmp_path: Path) -> None:
     assert cards == ()
     assert problems[0].message == f"checkout {gone.resolve()} is not a directory"
     assert problems[1].repository == "bad"
+
+
+def test_same_folder_name_in_two_places_stays_apart(tmp_path: Path) -> None:
+    roots = []
+    for client in ("acme", "globex"):
+        root = tmp_path / client / "api"
+        root.mkdir(parents=True)
+        (root / "TODO.md").write_text("- [ ] Rotate the key.\n")
+        roots.append(str(root))
+    cards, _ = path_cards((*roots, roots[0]), CUTOFF)
+    assert [card.repository for card in cards] == roots
+    assert cards[0].item.key != cards[1].item.key

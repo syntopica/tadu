@@ -1,4 +1,5 @@
 import { COLUMN_TITLES } from "./column-titles.js";
+import { KIND_FILTER_TITLES } from "./kind-filter-titles.js";
 import { PRIORITY_TITLES } from "./priority-titles.js";
 
 // The active filters as removable chips: {name, label}; organizations by
@@ -9,11 +10,13 @@ export function activeChips(filters, orgNames) {
     role: "Role",
     assignee: "Assignee",
     priority: "Priority",
+    kind: "Kind",
     label: "Label",
     dueBefore: "Due before",
   };
   const shown = {
     priority: (value) => PRIORITY_TITLES[value],
+    kind: (value) => KIND_FILTER_TITLES[value],
     organization: (value) => orgNames.get(value) ?? value,
   };
   const chips = [];

@@ -258,6 +258,17 @@ code {
   text-overflow: ellipsis;
 }
 
+.nav-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.nav-item.active .nav-count {
+  color: var(--accent-ink);
+}
+
 .nav-section {
   padding-top: 14px;
   border-top: 1px solid var(--border);
@@ -1278,6 +1289,29 @@ body.detail-open .main {
 .priority-low {
   background: var(--low-bg);
   color: var(--low-ink);
+}
+
+.kind {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--muted);
+}
+
+.kind-decision {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.kind-later {
+  border-style: dashed;
+}
+
+.row-title .kind {
+  height: 18px;
+  margin-right: 6px;
+  padding: 0 7px;
+  font-size: 11.5px;
+  vertical-align: 1px;
 }
 
 .due {

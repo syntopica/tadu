@@ -1,6 +1,6 @@
 [project]
 name = "tadu"
-version = "0.1.0"
+version = "0.2.0"
 description = "A repository backlog agents keep: TODO.md, TODO_LOG.md and a history index, with a checker and a rule updater"
 readme = "README.md"
 license = "MIT"
@@ -22,7 +22,7 @@ build-backend = "setuptools.build_meta"
 include = ["tadu*"]
 
 [tool.setuptools.package-data]
-tadu = ["rule_block_v3.md", "board/*.html", "board/*.js", "board/*.css"]
+tadu = ["rule_block_v4.md", "board/*.html", "board/*.js", "board/*.css"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"

@@ -6,5 +6,6 @@ export const FILTER_VALUES = {
   role: (card) => card.organizations.map((entry) => entry.role),
   assignee: (card) => card.assignees,
   priority: (card) => (card.priority === null ? [] : [card.priority]),
+  kind: (card) => [card.kind ?? "unclassified"],
   label: (card) => card.labels,
 };

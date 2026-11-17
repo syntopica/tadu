@@ -1,4 +1,5 @@
 import { COLUMN_TITLES } from "./column-titles.js";
+import { KIND_TITLES } from "./kind-titles.js";
 import { LAST_ORDER } from "./last-order.js";
 import { newestFirst } from "./newest-first.js";
 import { PRIORITY_TITLES } from "./priority-titles.js";
@@ -27,6 +28,16 @@ export function groupValues(card, group) {
           order: String(priorityRank(card.priority)),
         },
       ];
+    case "kind":
+      return card.kind === null
+        ? [{ key: "", label: "Unclassified", order: LAST_ORDER }]
+        : [
+            {
+              key: card.kind,
+              label: KIND_TITLES[card.kind] ?? card.kind,
+              order: String(Object.keys(KIND_TITLES).indexOf(card.kind)),
+            },
+          ];
     case "assignee":
       return card.assignees.length === 0
         ? [{ key: "", label: "Unassigned", order: LAST_ORDER }]

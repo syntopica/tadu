@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 def merge_filters(view: CardFilter, flags: CardFilter) -> CardFilter:
     """Start from the view; every criterion set by a flag replaces the view's."""
+    # keys: the field names of one dataclass are unique.
     given = {f.name: getattr(flags, f.name) for f in fields(flags)}
     return replace(
         view, **{key: value for key, value in given.items() if value not in (None, False)}

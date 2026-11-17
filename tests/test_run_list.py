@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -77,3 +78,53 @@ def test_view_without_workspace_exits_two(
 ) -> None:
     assert main(["list", str(repo(tmp_path)), "--view", "hot"]) == 2
     assert capsys.readouterr().err == "tadu list: --view needs --workspace\n"
+
+
+def test_kind_filter(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    root = tmp_path / "shop"
+    root.mkdir()
+    (root / "TODO.md").write_text(
+        "- [ ] Fix it.\n\n- [ ] Pick a carrier.\n\n  Kind: decision\n\n"
+        "- [!] Carrier key from Ana.\n\n  Kind: waiting\n\n  Due: 2026-11-20\n"
+    )
+    assert main(["list", str(root)]) == 0
+    assert capsys.readouterr().out == (
+        "shop:TODO.md:1 [backlog] - Fix it.\n"
+        "shop:TODO.md:3 [backlog/decision] - Pick a carrier.\n"
+        "shop:TODO.md:7 [blocked/waiting] - Carrier key from Ana.\n"
+    )
+    assert main(["list", str(root), "--kind", "waiting", "--json"]) == 0
+    [line] = capsys.readouterr().out.splitlines()
+    assert (json.loads(line)["kind"], json.loads(line)["due"]) == ("waiting", "2026-11-20")
+
+
+def test_open_leaves_out_what_closed_today(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = repo(tmp_path)
+    today = datetime.now(UTC).astimezone().date().isoformat()
+    (root / "TODO_LOG.md").write_text(f"- [x] {today} — **C:** Did.\n  - Evidence: e\n")
+    assert main(["list", str(root), "--done-days", "0"]) == 0
+    assert "[done]" in capsys.readouterr().out
+    assert main(["list", str(root), "--open"]) == 0
+    assert capsys.readouterr().out == (
+        "shop:TODO.md:1 [backlog] high A.\nshop:TODO.md:5 [backlog] - B.\n"
+    )
+
+
+def test_unclassified_and_check_before(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    root = tmp_path / "shop"
+    root.mkdir()
+    (root / "TODO.md").write_text(
+        "- [ ] Old item.\n\n- [ ] Look again.\n\n  Kind: later\n\n  Check on: 2026-11-20\n\n"
+        "- [ ] A task.\n\n  Kind: task\n\n  Not before: 2026-12-01\n"
+    )
+    assert main(["list", str(root), "--kind", "unclassified"]) == 0
+    assert capsys.readouterr().out == "shop:TODO.md:1 [backlog] - Old item.\n"
+    assert main(["list", str(root), "--check-before", "2026-11-21"]) == 0
+    assert capsys.readouterr().out == "shop:TODO.md:3 [backlog/later] - Look again.\n"
+    assert main(["list", str(root), "--kind", "task", "--json"]) == 0
+    data = json.loads(capsys.readouterr().out)
+    assert (data["kind"], data["not_before"], data["check_on"]) == ("task", "2026-12-01", None)
+    assert main(["list", str(root), "--kind", "unclassified", "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["kind"] is None

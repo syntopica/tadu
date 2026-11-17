@@ -19,7 +19,10 @@ def filter_from_args(args: argparse.Namespace) -> CardFilter:
         assignee=args.assignee,
         column=args.column,
         priority=args.priority,
+        kind=args.kind,
         label=args.label,
         due_before=args.due_before,
+        check_before=args.check_before,
         include_cancelled=args.include_cancelled,
+        open=args.open,
     )

@@ -4,10 +4,25 @@ import pytest
 from board_js import board_js, js_card
 
 CARDS = [
-    js_card("backlog", key="a", repository="b-repo", line=9, title="beta"),
-    js_card("blocked", key="b", priority="low", due="2026-12-01", title="Alpha"),
-    js_card("in_progress", key="c", priority="urgent", assignees=["bo", "ana"], title="gamma"),
-    js_card("backlog", key="d", priority="low", due="2026-11-10", project=None, title="delta"),
+    js_card("backlog", key="a", repository="b-repo", line=9, title="beta", kind="task"),
+    js_card("blocked", key="b", priority="low", due="2026-12-01", title="Alpha", kind="waiting"),
+    js_card(
+        "in_progress",
+        key="c",
+        priority="urgent",
+        assignees=["bo", "ana"],
+        title="gamma",
+        kind="decision",
+    ),
+    js_card(
+        "backlog",
+        key="d",
+        priority="low",
+        due="2026-11-10",
+        project=None,
+        title="delta",
+        kind="later",
+    ),
     js_card("done", key="e", repository="a-repo", day="2026-11-02", title="eps"),
     js_card("done", key="f", day="2026-11-05", line=3, title="zeta"),
     js_card("done", key="g", day=None, line=2, title="eta"),
@@ -28,7 +43,7 @@ const rows = listRows(groupCards(cards, "state"), new Set(["done"]));
 const offsets = rowOffsets(rows, 10, 20);
 out({
   sorts: ["priority", "due", "title", "location", "closed", "bogus"].map(sorted),
-  groups: ["state", "project", "repository", "priority", "assignee", "day"].map(groups),
+  groups: ["state", "project", "repository", "priority", "assignee", "day", "kind"].map(groups),
   rows: rows.map((row) => (row.kind === "group" ? `${row.label}:${row.count}:${row.closed}` : row.card.key)),
   offsets,
   windows: [
@@ -63,7 +78,7 @@ def test_sorts(results: dict[str, object]) -> None:
 def test_groups(results: dict[str, object]) -> None:
     groups = results["groups"]
     assert isinstance(groups, list)
-    state, project, repository, priority, assignee, day = groups
+    state, project, repository, priority, assignee, day, _ = groups
     assert state == [
         ["Blocked", ["b"]],
         ["In progress", ["c"]],
@@ -108,3 +123,17 @@ def test_rows_and_window(results: dict[str, object]) -> None:
         "blocked": 1,
         "in_progress": 1,
     }
+
+
+def test_kind_groups_follow_the_kind_order_and_unclassified_come_last(
+    results: dict[str, object],
+) -> None:
+    groups = results["groups"]
+    assert isinstance(groups, list)
+    assert groups[-1] == [
+        ["Task", ["a"]],
+        ["Decision", ["c"]],
+        ["Waiting on others", ["b"]],
+        ["Later", ["d"]],
+        ["Unclassified", ["e", "f", "g"]],
+    ]

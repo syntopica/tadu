@@ -4,4 +4,6 @@ from __future__ import annotations
 
 import re
 
-FIELD_LINE_PATTERN = re.compile(r"^  (ID|Priority|Assignees|Due|Labels|Queue|Estimate): (.*)$")
+FIELD_LINE_PATTERN = re.compile(
+    r"^  (ID|Priority|Assignees|Due|Labels|Queue|Kind|Check on|Not before|Estimate): (.*)$"
+)

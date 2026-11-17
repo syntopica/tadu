@@ -28,7 +28,7 @@ globalThis.document = {
 };
 const { renderSidebar } = await load("render-sidebar.js");
 const store = (payload) => ({
-  navOpen: false, view: "board", index: null, favourites: [], recent: [], saved: [],
+  navOpen: false, view: "board", index: null, favourites: [], recent: [], saved: [], cards: [],
   where: { company: "", project: "", repository: "" }, sideOpen: new Set(),
   theme: "auto", payload,
 });

@@ -2,6 +2,7 @@ import { avatar } from "./avatar.js";
 import { COLUMN_TITLES } from "./column-titles.js";
 import { detailField } from "./detail-field.js";
 import { el } from "./el.js";
+import { KIND_TITLES } from "./kind-titles.js";
 import { PRIORITY_TITLES } from "./priority-titles.js";
 import { relationLabel } from "./relation-label.js";
 
@@ -33,8 +34,11 @@ export function detailFields(card) {
   right.append(
     ...detailField("Assignees", "user", people.length > 0 ? people : none),
     ...detailField("Priority", "", PRIORITY_TITLES[card.priority] ?? none),
+    ...detailField("Kind", "", KIND_TITLES[card.kind] ?? none),
     ...detailField("Labels", "tag", labels.length > 0 ? labels : none),
     ...detailField("Due", "calendar", card.due ?? none),
+    ...detailField("Check on", "clock", card.check_on ?? none),
+    ...detailField("Not before", "calendar", card.not_before ?? none),
   );
   const grid = el("div", "fields-grid");
   grid.append(left, right);

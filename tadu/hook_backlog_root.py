@@ -22,6 +22,8 @@ def hook_backlog_root(payload: object) -> Path | None:
     cwd = Path(payload_text(payload, "cwd") or ".")
     if tool in ("Edit", "Write", "MultiEdit"):
         path = Path(payload_text(payload, "tool_input", "file_path"))
+        # path-name: tests the file name against the backlog file names; the repository is found
+        #   from the full path.
         return nearest_backlog_root(path.parent) if path.name in BACKLOG_FILE_NAMES else None
     command = payload_text(payload, "tool_input", "command")
     edits = BACKLOG_NAME_PATTERN.search(command) and SHELL_WRITE_PATTERN.search(command)

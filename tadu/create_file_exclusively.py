@@ -9,6 +9,7 @@ from pathlib import Path
 
 def create_file_exclusively(target: Path, text: str) -> None:
     """Write `text` to a sibling temp file, then hard-link it to `target`; FileExistsError if taken."""
+    # path-name: only names the temporary file beside the target.
     descriptor, name = tempfile.mkstemp(dir=target.parent, prefix=f".{target.name}.", suffix=".tmp")
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as handle:

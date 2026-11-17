@@ -34,7 +34,7 @@ export function cleanSavedView(raw) {
     scope: pick(raw.scope, ["all", "mine", "unassigned"], "all"),
     group: pick(
       raw.group,
-      ["state", "company", "project", "repository", "priority", "assignee", "day"],
+      ["state", "company", "project", "repository", "priority", "kind", "assignee", "day"],
       "state",
     ),
     sort: pick(raw.sort, ["priority", "due", "title", "location", "closed"], "priority"),

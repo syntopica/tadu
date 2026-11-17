@@ -8,6 +8,7 @@ NONE: dict[str, object] = {
     "role": "",
     "assignee": "",
     "priority": "",
+    "kind": "",
     "label": "",
     "dueBefore": "",
     "unassigned": False,
@@ -31,16 +32,18 @@ VISIBLE: list[tuple[dict[str, object], dict[str, object]]] = [
     (js_card(), {"dueBefore": "2026-11-04"}),
     (js_card(priority="high", labels=["ux"]), {"priority": "high", "label": "ux"}),
     (js_card(), {"label": "ux"}),
+    (js_card(kind="decision", waiting_on_me=True), {"waitingOnMe": True, "me": "ana"}),
     (js_card("blocked", assignees=["ana"]), {"waitingOnMe": True, "me": "ana"}),
-    (js_card("ready", assignees=["ana"]), {"waitingOnMe": True, "me": "ana"}),
-    (js_card("blocked", assignees=["bo"]), {"waitingOnMe": True, "me": "ana"}),
-    (js_card("blocked", assignees=["ana"]), {"waitingOnMe": True}),
+    (js_card("blocked", waiting_on_me=False), {"waitingOnMe": True, "me": "ana"}),
+    (js_card(waiting_on_me=True), {"waitingOnMe": True}),
     (js_card("cancelled"), {}),
     (js_card("cancelled"), {"showCancelled": True}),
     (js_card(assignees=["ana"]), {"unassigned": True}),
     (js_card(), {"unassigned": True}),
     (js_card(priority="low"), {"noPriority": True}),
     (js_card(), {"noPriority": True}),
+    (js_card(kind="waiting"), {"kind": "waiting"}),
+    (js_card(), {"kind": "waiting"}),
 ]
 PIXEL = {"companies": ["pp"], "company": "Pixel Potion", "project": "CRM", "relations": []}
 LOOSE = {"companies": [], "company": "", "project": "", "relations": []}
@@ -107,6 +110,7 @@ def test_card_visible(results: dict[str, object]) -> None:
         *(True, False, False, False),
         *(False, True),
         *(False, True, False, True),
+        *(True, False),
     ]
 
 

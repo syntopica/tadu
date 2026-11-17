@@ -44,3 +44,12 @@ def test_hook_reads_stdin(
     monkeypatch.setattr("sys.stdin", stream)
     assert main(["hook", "claude"]) == 0
     assert capsys.readouterr().out == ""
+
+
+def test_help_names_the_commands_for_each_request(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit):
+        main(["--help"])
+    text = " ".join(capsys.readouterr().out.split())
+    assert "next tasks an agent can do now without a person" in text
+    assert "inbox what waits on a person" in text
+    assert "urgent urgent or high priority items" in text

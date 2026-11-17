@@ -1,18 +1,21 @@
+import { attentionShortcuts } from "./attention-shortcuts.js";
 import { companyNav } from "./company-nav.js";
 import { el } from "./el.js";
 import { icon } from "./icon.js";
 import { navItem } from "./nav-item.js";
+import { openShortcut } from "./open-shortcut.js";
 import { requestRender } from "./request-render.js";
 import { restoreView } from "./restore-view.js";
 import { sameWhere } from "./same-where.js";
 import { setView } from "./set-view.js";
 import { setWhere } from "./set-where.js";
+import { shortcutActive } from "./shortcut-active.js";
 import { storeSavedViews } from "./store-saved-views.js";
 import { VIEW_TITLES } from "./view-titles.js";
 import { whereParts } from "./where-parts.js";
 import { workspaceViewItem } from "./workspace-view-item.js";
 
-// Views, starred scopes, the companies with their projects, the recent
+// Views, the shortcuts to what needs a person, starred scopes, the companies with their projects, the recent
 // scopes, saved views and the theme label.
 export function renderSidebar(store) {
   document.getElementById("sidebar").classList.toggle("open", store.navOpen);
@@ -23,6 +26,21 @@ export function renderSidebar(store) {
         navItem(title, iconName, store.view === view, () => setView(view)),
       ),
     );
+  const shortcuts = store.payload
+    ? attentionShortcuts(store.cards, store.where, store.payload.me ?? null)
+    : [];
+  document.getElementById("attention-section").hidden = shortcuts.length === 0;
+  document.getElementById("nav-attention").replaceChildren(
+    ...shortcuts.map((shortcut) =>
+      navItem(
+        shortcut.title,
+        shortcut.iconName,
+        shortcutActive(shortcut, store.view, store.filters),
+        () => openShortcut(shortcut.filters),
+        shortcut.count,
+      ),
+    ),
+  );
   const index = store.index;
   const scopes = (list, iconName) =>
     list.map((where) =>

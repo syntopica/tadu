@@ -5,6 +5,7 @@ export const DEFAULT_FILTERS = Object.freeze({
   role: "",
   assignee: "",
   priority: "",
+  kind: "",
   label: "",
   dueBefore: "",
   unassigned: false,

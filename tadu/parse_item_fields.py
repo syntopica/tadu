@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 
+from tadu.date_fields import DATE_FIELDS
 from tadu.field_checks import FIELD_CHECKS
 from tadu.field_problem import FieldProblem
 from tadu.item_fields import ItemFields
@@ -26,11 +27,14 @@ def parse_item_fields(
         if message is not None:
             problems.append(FieldProblem(line, message))
         elif name in ("Assignees", "Labels"):
+            # keys: a repeated field name was skipped above, so each is set once.
             parsed[name.lower()] = split_list_value(value)
-        elif name == "Due":
-            parsed["due"] = date.fromisoformat(value)
+        elif name in DATE_FIELDS:
+            # keys: a repeated field name was skipped above, so each is set once.
+            parsed[DATE_FIELDS[name]] = date.fromisoformat(value)
         elif name == "Estimate":
             parsed["estimate"] = int(value)
         else:
+            # keys: a repeated field name was skipped above, so each is set once.
             parsed["id" if name == "ID" else name.lower()] = value
     return ItemFields(**parsed), tuple(problems)  # type: ignore[arg-type]
