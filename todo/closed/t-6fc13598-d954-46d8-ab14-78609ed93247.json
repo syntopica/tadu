@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-6fc13598-d954-46d8-ab14-78609ed93247",
   "title": "Decide whether to push DameTicket with 4 unpushed commits it did not make",
-  "state": "pending",
+  "state": "done",
   "category": "tooling",
   "type": "chore",
   "priority": "normal",
@@ -10,5 +10,10 @@
   "notes": [
     "~/p/DameTicket is 5 commits ahead of origin: the migration commit 9acc7dc plus 4 earlier local commits (two merges, a yarn.lock fix, a token audit close). Owner decides whether to publish them all.",
     "2026-11-17: the remote BusiRocket/DameTicket is archived on GitHub (push says read-only), so the 4 local commits cannot be pushed. Smallest next step: decide whether to unarchive it or keep the commits local."
+  ],
+  "closed": "2026-11-17",
+  "result": "Decide whether to push DameTicket with 4 unpushed commits it did not make",
+  "evidence": [
+    "DameTicket unarchived, its 4 local commits pushed, repository archived again (isArchived true)"
   ]
 }
