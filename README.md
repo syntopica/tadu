@@ -303,6 +303,8 @@ tadu migrate                        # prints the plan
 tadu migrate --write                # writes todo/, removes TODO.md and TODO_LOG.md (git keeps them)
 ```
 
+Legacy items convert to valid tasks: a title over 200 characters, or written as a bold lead sentence, keeps its first sentence and moves the rest into the notes; a done or cancelled item with no day, result, evidence or resolution gets the migration day and a "legacy item migrated without a recorded ..." line; a dated open item keeps its day as `created`. The plan lists any task that still fails the checks, so nothing is lost silently.
+
 Then work through the commands, never by editing the JSON by hand:
 
 ```bash

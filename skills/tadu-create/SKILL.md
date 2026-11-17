@@ -46,7 +46,9 @@ argument-hint: [repository-or-scope]
 - Pick the format first. A repository with `todo/tadu.json` is format 2: never
   edit its task files by hand, use the commands in step 5. A new backlog is
   created in format 2 (`tadu init --format 2 --write`). An existing format 1
-  backlog stays as it is unless the user asks to migrate it (`tadu migrate`).
+  backlog stays as it is unless the user asks to migrate it (`tadu migrate`: read the
+  dry-run plan, write only when it lists no problem, then run `tadu sync --write`
+  and `tadu doctor .`).
 
 ## Workflow
 
