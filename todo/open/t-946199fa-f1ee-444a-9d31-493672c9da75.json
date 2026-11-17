@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-946199fa-f1ee-444a-9d31-493672c9da75",
+  "title": "Decide whether agents and scribe version todo/ or ignore it",
+  "state": "pending",
+  "category": "tooling",
+  "type": "chore",
+  "priority": "normal",
+  "created": "2026-11-17",
+  "notes": [
+    "Both repositories gitignore TODO.md and TODO_LOG.md. tadu migrate converted them on 2026-11-17 and left todo/ and the AGENTS.md rule update uncommitted in ~/p/agents and ~/p/scribe. Owner decides: version todo/ or add it to .gitignore."
+  ]
+}

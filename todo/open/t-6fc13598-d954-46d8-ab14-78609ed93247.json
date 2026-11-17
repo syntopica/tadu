@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-6fc13598-d954-46d8-ab14-78609ed93247",
+  "title": "Decide whether to push DameTicket with 4 unpushed commits it did not make",
+  "state": "pending",
+  "category": "tooling",
+  "type": "chore",
+  "priority": "normal",
+  "created": "2026-11-17",
+  "notes": [
+    "~/p/DameTicket is 5 commits ahead of origin: the migration commit 9acc7dc plus 4 earlier local commits (two merges, a yarn.lock fix, a token audit close). Owner decides whether to publish them all."
+  ]
+}
