@@ -54,3 +54,11 @@ def test_migrate_lists_a_task_that_stays_invalid(
     (tmp_path / "TODO.md").write_text("# TODO\n\n- [ ] Odd.\n\n  Priority: whenever\n")
     assert main(["migrate", str(tmp_path)]) == 0
     assert "priority" in capsys.readouterr().out
+
+
+def test_repeated_files_are_kept_once(tmp_path: Path) -> None:
+    (tmp_path / "TODO_LOG.md").write_text(
+        "# TODO Log\n\n- [x] 2026-10-01 — Done.\n  - Result: ok\n  - Evidence: ran\n  - Files: `a.py`, `a.py`, `b.py`\n"
+    )
+    tasks, _ = migration_tasks(tmp_path)
+    assert tasks[0]["files"] == ["a.py", "b.py"]

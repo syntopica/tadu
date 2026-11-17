@@ -13,6 +13,7 @@ from tadu.split_long_title import split_long_title
 from tadu.stable_task_id import stable_task_id
 from tadu.task_defaults import DEFAULT_TASK_TYPES, UNKNOWN_CATEGORY, UNKNOWN_PRIORITY, UNKNOWN_TYPE
 from tadu.task_format_version import TASK_FORMAT_VERSION
+from tadu.unique_in_order import unique_in_order
 
 STATES = {" ": "pending", "~": "in_progress", "!": "blocked", "x": "done", "-": "cancelled"}
 CATEGORY = re.compile(r"^\*\*([^*\n]+):\*\* ")
@@ -72,8 +73,8 @@ def v1_task(
         "done_when": parts.done_when,
         "created": None if closing["closed"] else day,
         **closing,
-        "files": [
-            f.strip(" `.") for f in ", ".join(bullets.get("Files", [])).split(",") if f.strip(" `.")
-        ],
+        "files": unique_in_order(
+            f.strip(" `.") for f in ", ".join(bullets.get("Files", [])).split(",")
+        ),
     }
     return task, shown
