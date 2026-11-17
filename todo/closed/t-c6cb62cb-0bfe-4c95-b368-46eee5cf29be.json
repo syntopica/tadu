@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-c6cb62cb-0bfe-4c95-b368-46eee5cf29be",
   "title": "Support cross-repository `Depends on:` by ID",
-  "state": "blocked",
+  "state": "cancelled",
   "category": "board",
   "type": "feature",
   "priority": "low",
@@ -10,5 +10,7 @@
   "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Smallest next step: parse `Depends on: t-...` and show whether the target is open, in the same workspace."
-  ]
+  ],
+  "closed": "2026-11-17",
+  "resolution": "Dropped for now: tadu add --blocked-by refuses an id from another repository (checked 2026-11-17), so a cross-repo link needs workspace-level validation first; the branch bot/482c0bcb was written for format 1. Kept as tag archive/bot-482c0bcb."
 }

@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-591a254f-8f54-4697-85e9-e2fa5b9e1f01",
   "title": "Add `tadu id --write` and `tadu close --id`",
-  "state": "blocked",
+  "state": "cancelled",
   "category": "board",
   "type": "feature",
   "priority": "normal",
@@ -10,5 +10,7 @@
   "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Gives items without an `ID:` a stable one and closes by ID. Smallest next step: a command that inserts an `ID:` paragraph into one item chosen by its derived key, with `--write` as the only mutation."
-  ]
+  ],
+  "closed": "2026-11-17",
+  "resolution": "Dropped: format 2 tasks carry their own id and tadu close --id exists; the branch bot/2dd1ae9a only served format 1. Kept as tag archive/bot-2dd1ae9a."
 }

@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-242420df-47e3-42f6-a560-a9fa31fe46df",
   "title": "Age blocked items",
-  "state": "blocked",
+  "state": "cancelled",
   "category": "board",
   "type": "feature",
   "priority": "low",
@@ -10,5 +10,7 @@
   "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Smallest next step: derive the days an item has been `[!]` from `git log` and show it on the card."
-  ]
+  ],
+  "closed": "2026-11-17",
+  "resolution": "Dropped: the branch bot/eb37d3ce aged blocked items from git blame of a TODO.md line, which format 2 files do not have; a blocked date field would be the format 2 way. Kept as tag archive/bot-eb37d3ce."
 }

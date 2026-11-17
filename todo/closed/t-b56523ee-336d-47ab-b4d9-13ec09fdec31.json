@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-b56523ee-336d-47ab-b4d9-13ec09fdec31",
   "title": "Show item history from `git log`",
-  "state": "blocked",
+  "state": "cancelled",
   "category": "board",
   "type": "feature",
   "priority": "low",
@@ -10,5 +10,7 @@
   "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Smallest next step: print the commits that touched an item's line span, for one key."
-  ]
+  ],
+  "closed": "2026-11-17",
+  "resolution": "Dropped: in format 2 each task is one file, so git log -- todo/open/<id>.json already shows its history; the branch bot/89b6dd23 used format 1 line spans. Kept as tag archive/bot-89b6dd23."
 }
