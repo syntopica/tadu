@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-e4643fda-265b-438d-8cb2-2c542383ab0e",
+  "title": "Make tadu migrate keep a TODO.md item's bold lead as its title and its ## section as its category",
+  "state": "pending",
+  "category": "bugs",
+  "type": "bug",
+  "priority": "normal",
+  "created": "2026-11-17",
+  "discovered_from": "t-545ee282-0a29-4572-8159-d612fe4984b2",
+  "notes": [
+    "Observed 2026-11-17 migrating teleporte-web (commit d405b1a4): for `- [ ] **Lead:** text` items under `## Section`, migrate used the bold lead as the category and only the rest of the first source line as the title, so titles read \"with the\", \"every\", \"saved views and a\" and about 98 one-item categories appeared. The text before the line break was lost from the notes, notes kept the source indentation, and the files were not in `tadu fmt` form (J004).",
+    "Evidence: teleporte-web commit 87824a2f repaired 216 items with a script; compare `git show d405b1a4^:TODO.md` with the migrated `todo/open/*.json`.",
+    "Smallest next step: a migrate fixture with a `**Lead:** text` item that wraps onto three lines under a `##` heading, asserting title = lead, category = section slug, full text in notes, and doctor clean."
+  ]
+}
