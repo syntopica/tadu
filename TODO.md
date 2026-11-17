@@ -9,12 +9,6 @@
 
 ## Agent ergonomics
 
-- [ ] **Agent ergonomics:** Set or change a field of an existing item, such as Kind: or Priority:, without editing TODO.md.
-
-  ID: t-88e6b60c-f7c5-4ef6-b351-fe8dcbf3ee43
-
-  Found while tagging the board decision by hand. Smallest next step: tadu mark --kind and --priority, with the same checks as add.
-
 ## Compatibility
 
 - [ ] **Compatibility:** `tests/test_board_handler.py::test_log_omits_the_query` fails on Python 3.12 although `requires-python` is `>=3.12`.

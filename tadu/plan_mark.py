@@ -11,13 +11,16 @@ from tadu.marked_lines import marked_lines
 from tadu.read_text_exact import read_text_exact
 from tadu.read_todo_text import read_todo_text
 from tadu.select_item import select_item
+from tadu.set_field_lines import set_field_lines
 from tadu.split_text_lines import split_text_lines
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from tadu.mark_request import MarkRequest
 
-def plan_mark(root: Path, match: str, marker: str, note: str | None) -> tuple[str, str, int] | None:
+
+def plan_mark(root: Path, match: str, request: MarkRequest) -> tuple[str, str, int] | None:
     """(text read, new text, 1-based item line), or None after reporting a refusal."""
     path = root / "TODO.md"
     before = read_todo_text(path)
@@ -29,7 +32,10 @@ def plan_mark(root: Path, match: str, marker: str, note: str | None) -> tuple[st
         return None
     log = root / "TODO_LOG.md"
     log_text = read_text_exact(log) if log.is_file() else ""
-    after = newline.join(marked_lines(lines, first, marker, note))
+    changed = lines
+    for name, value in request.fields:
+        changed = set_field_lines(changed, first, name, value)
+    after = newline.join(marked_lines(changed, first, request.marker, request.note))
     refusal = close_refusal(before, log_text, lines, first) or (
         "would add doctor errors " + ", ".join(added)
         if (added := introduced_errors((before, log_text), (after, log_text)))

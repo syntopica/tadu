@@ -172,9 +172,15 @@ tadu add --title "Raise the acquirer limit or split large charges." --category C
 
 The item gets a new `ID:` unless `--no-id`, then the fields given (`--kind`, `--priority`, `--assignees`, `--due`, `--check-on`, `--not-before`, `--labels`, `--queue`, `--estimate`; without `--kind` the item is left unclassified), then one paragraph per `--note`. A value the fields table does not allow, a blank or multi-line argument, a category containing `*` and a note that would read as a field, a list item or a fence exit `2` before anything is written. A `TODO.md` with irregular line endings or an unclosed fence is refused, and so is a change that would give `doctor` an error; the write is atomic, under the same lock as `close`, and only when the file did not change since it was read.
 
-## Change an item's state
+## Change an item's state or fields
 
-`tadu mark` sets the state of the one open item whose first line contains `--match`: `--state blocked` (`[!]`), `open` (`[ ]`) or `in_progress` (`[~]`). `--note` adds a paragraph at the end of the item, and blocking needs one, since a blocked item names its blocker. It prints the diff and writes only with `--write`, with the same checks, lock and refusals as `add`; no match or more than one exits `2` and lists the candidates.
+`tadu mark` also sets or changes a field without editing `TODO.md`: `--kind`, `--priority`, `--assignees`, `--due`, `--check-on`, `--not-before`, `--labels`, `--queue` and `--estimate`, checked like `add`'s. An existing field line is replaced in place; a missing one is added as the item's last paragraph. `--state` is optional when a field is given; a field cannot be cleared this way.
+
+```bash
+tadu mark --match "Decide the limit" --kind decision --priority high --write
+```
+
+It sets the state of the one open item whose first line contains `--match`: `--state blocked` (`[!]`), `open` (`[ ]`) or `in_progress` (`[~]`). `--note` adds a paragraph at the end of the item, and blocking needs one, since a blocked item names its blocker. It prints the diff and writes only with `--write`, with the same checks, lock and refusals as `add`; no match or more than one exits `2` and lists the candidates.
 
 ```bash
 tadu mark --match "over 10,000 EUR" --state blocked \

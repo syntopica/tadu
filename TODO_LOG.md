@@ -150,3 +150,11 @@
 - [x] 2026-11-17 — **Format:** Separate dates, unclassified items, unchanged output for existing files and contradiction checks.
   - Result: Amends the 2026-11-17 item-kinds entry: Due: is only the deadline, Check on: is when to look again and Not before: when work may start; an item without Kind: is unclassified (kind null, --kind unclassified), never a task by default; list lines print as before and show a kind only as [column/kind]; doctor F004 warns about contradicting fields (Not before or Check on after Due, [~] with Not before ahead or Kind: later, Queue: ready on waiting or later); next, inbox and urgent honour the new dates
   - Evidence: tests/test_field_contradictions.py, test_inbox_cards.py, test_next_cards.py, test_urgent_cards.py, test_run_list.py::test_unclassified_and_check_before; tadu 0.1.0 and this version print identical list, show, feed and doctor output on the baseline TODO.md and a legacy backlog, and their JSON keeps every key and value; pytest 941 passed on Python 3.12, 3.13 and 3.14, coverage 100%
+
+- [x] 2026-11-17 — **Agent ergonomics:** Set or change a field of an existing item, such as Kind: or Priority:, without editing TODO.md.
+
+  ID: t-88e6b60c-f7c5-4ef6-b351-fe8dcbf3ee43
+
+  Found while tagging the board decision by hand. Smallest next step: tadu mark --kind and --priority, with the same checks as add.
+  - Result: tadu mark takes --kind, --priority, --assignees, --due, --check-on, --not-before, --labels, --queue and --estimate (state now optional), validated like add; the mark MCP tool takes the same fields.
+  - Evidence: uv run pytest (958 passed); ruff, mypy and codeality-py gate pass; tests/test_run_mark.py, tests/test_set_field_lines.py
