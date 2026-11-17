@@ -2,7 +2,8 @@
 name: tadu-create
 description:
   Builds a tadu backlog from the accessible coding-agent conversation history
-  into TODO.md, TODO_LOG.md, and the history index. Trigger when a repository
+  into TODO.md and TODO_LOG.md (format 1) or one JSON file per task under todo/
+  (format 2), plus the history index. Trigger when a repository
   has no usable backlog and the work is to audit past conversations, recovering
   every unfinished task, blocker, decision and milestone they contain. Do not
   use for implementing the recovered work, for executing an existing backlog
@@ -21,8 +22,8 @@ argument-hint: [repository-or-scope]
   coverage.
 - Prefer current repository evidence over stale conversational claims, and read
   later messages before deciding an earlier task's status.
-- Never copy credentials, tokens, secret values or personal data into `TODO.md`,
-  `TODO_LOG.md`, the index, instructions or chat. Report the exposure with a
+- Never copy credentials, tokens, secret values or personal data into the
+  backlog (`TODO.md`, `TODO_LOG.md` or `todo/`), the index, instructions or chat. Report the exposure with a
   safe vault reference instead.
 - No commit, push, deploy, production write or destructive operation unless
   separately authorized.
@@ -37,19 +38,24 @@ argument-hint: [repository-or-scope]
   Name it and cap its calls in the coverage plan. Reserve the main session's
   model for coordination, deduplication, and judgment calls.
 - Work discovered that belongs to a different project is filed in that project's
-  own `TODO.md`, following that repository's conventions and the same format
-  contract, with a pointer to the evidence. It never lands in the current
-  backlog as if it were local work. When the target repository is not
-  accessible, record the item in the current `TODO.md` under a `Cross-project`
-  category, marked with the target repository and the smallest transfer action.
+  own backlog, in that repository's format and conventions, with a pointer to
+  the evidence. It never lands in the current backlog as if it were local work.
+  When the target repository is not accessible, record the item in the current
+  backlog under a `Cross-project` category, marked with the target repository
+  and the smallest transfer action.
+- Pick the format first. A repository with `todo/tadu.json` is format 2: never
+  edit its task files by hand, use the commands in step 5. A new backlog is
+  created in format 2 (`tadu init --format 2 --write`). An existing format 1
+  backlog stays as it is unless the user asks to migrate it (`tadu migrate`).
 
 ## Workflow
 
 1. Resolve the repository root, read every applicable instruction file, and
    identify the canonical source of shared instructions. When an instruction
    file is generated or imports another file, edit the owning source, not the
-   generated output. Locate the project-owned `TODO.md`, `TODO_LOG.md` and
-   `TODO_HISTORY_INDEX.jsonl`, ignoring vendor and generated ones.
+   generated output. Locate the project-owned backlog (`todo/tadu.json`, or
+   `TODO.md` and `TODO_LOG.md`) and `TODO_HISTORY_INDEX.jsonl`, ignoring vendor
+   and generated ones.
 2. Inventory accessible history: the conversation logs and summaries of every
    coding agent the user has run on this repository, including CLI agent
    sessions, tasks, rollouts and memories, and editor chat databases (for
@@ -69,19 +75,26 @@ argument-hint: [repository-or-scope]
    and completed milestones worth keeping as context. Corroborate material
    claims against the tree, tests or Git history. Do not invent work the
    evidence does not support.
-5. Write `TODO.md` as a scannable backlog grouped only into categories that
+5. Write the backlog as a scannable one grouped only into categories that
    contain tasks (useful categories include Security, Bugs, UX / UI, Frontend,
    Backend, Database, Infrastructure, Performance, Integrations, Testing,
    Documentation, Refactors, Pending Decisions, Blocked Tasks, and Future
    Ideas), ordered within each category by critical risk, security, data loss,
    production impact, user-facing bugs, delivery blockers, then optional value.
-   When the evidence states it, add a `Done when:` line with the completion
-   condition and a `Depends on:` line naming the prerequisite item. Move
-   verified `[x]` and `[-]` work to `TODO_LOG.md` with its evidence. Load
-   `references/format.md` for the state legend, the `TODO.md` header, the log
-   entry shape and the optional item fields. Reconcile a documented existing
-   convention deliberately and say what was normalized rather than mixing
-   conventions.
+   Run `tadu similar "<title>"` before each item so a recovered task updates an
+   existing one instead of duplicating it.
+   - Format 1: write `TODO.md`. When the evidence states it, add a `Done when:`
+     line with the completion condition and a `Depends on:` line naming the
+     prerequisite item. Move verified `[x]` and `[-]` work to `TODO_LOG.md`
+     with its evidence. Load `references/format.md` for the state legend, the
+     `TODO.md` header, the log entry shape and the optional item fields.
+   - Format 2: one task per item with `tadu add --title ... --category ...
+--type ... --priority ...` (a dry run until `--write`), `tadu set` for
+     later changes, and `tadu close --id ID --evidence "<proof>"` for verified
+     work (`--resolution` for dropped work, `--duplicate-of ID`). Load
+     `references/format-v2.md` for the task fields and states.
+     Reconcile a documented existing convention deliberately and say what was
+     normalized rather than mixing conventions.
 6. Add the rule block to the canonical instruction source identified in step 1.
    `tadu sync` defaults to `AGENTS.md`, then `CLAUDE.md`, and cannot see a
    generated or imported source, so pass the file explicitly:
@@ -127,8 +140,9 @@ Before finishing:
 4. Confirm every completed task has real evidence and every blocker names the
    missing condition.
 5. Confirm no raw output, secret, or excessive historical narration entered
-   `TODO.md` or `TODO_LOG.md`, and that every historical `[x]` or `[-]` item is
-   in `TODO_LOG.md` while active work remains in `TODO.md`.
+   the backlog, and that every historical completed or dropped item is closed
+   (format 1: in `TODO_LOG.md`; format 2: in `todo/closed/`) while active work
+   remains open.
 6. Confirm the instruction change is concise, non-duplicative, and made in the
    owning source.
 7. Confirm every `complete` index record was written only after its findings
@@ -145,6 +159,7 @@ Before finishing:
   inaccessible and irrelevant; files modified; validation performed, including
   the `tadu doctor` result; cross-project items filed with their target
   repositories; and any finding needing immediate human action.
-- Show a focused diff summary for `TODO.md`, `TODO_LOG.md`,
-  `TODO_HISTORY_INDEX.jsonl` and the instruction source. Do not dump the backlog
+- Show a focused diff summary for the backlog files (`TODO.md` and
+  `TODO_LOG.md`, or `todo/`), `TODO_HISTORY_INDEX.jsonl` and the instruction
+  source. Do not dump the backlog
   or the index into chat.

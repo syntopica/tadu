@@ -3,8 +3,9 @@ name: tadu-work
 description:
   Executes a project's existing tadu backlog end to end until every safe item is
   verified complete, blocked with evidence, or superseded. Trigger when the task
-  is to work through TODO.md, clear the backlog, or resume autonomous TODO
-  execution in the current repository, recording closed work in TODO_LOG.md. Do
+  is to work through the backlog (TODO.md, or todo/ in format 2), clear it, or
+  resume autonomous TODO execution in the current repository, recording closed
+  work with tadu close. Do
   not use for building a backlog from conversation history (that is
   tadu-create), for a single named bug fix or feature, or for review of
   already-finished work.
@@ -14,13 +15,16 @@ argument-hint: [scope-or-category]
 
 ## Rules
 
-- Scope is the current repository and its project-owned TODO files. The primary
-  backlog is the root `TODO.md`; nested TODO files apply when their subproject
-  is in scope. Write entries in the backlog's existing language.
+- Scope is the current repository and its project-owned backlog. The primary
+  backlog is the root `TODO.md` (format 1) or `todo/` (format 2, when
+  `todo/tadu.json` exists); nested backlogs apply when their subproject is in
+  scope. Write entries in the backlog's existing language. In format 2 never
+  edit task files by hand: use `tadu claim`, `tadu set`, `tadu add` and
+  `tadu close`, each a dry run until `--write`.
 - Cross-project discoveries are the one exception to repository scope: work that
-  belongs to another project is filed in that project's own `TODO.md` as a
+  belongs to another project is filed in that project's own backlog as a
   bookkeeping write with an evidence pointer, never executed from this run. When
-  the target repository is not accessible, record it in the current `TODO.md`
+  the target repository is not accessible, record it in the current backlog
   under a `Cross-project` category marked with the target repository.
 - No commit, push, branch, or PR unless the user or project instructions
   authorize it. A standing authorization the user gave in their current
@@ -82,7 +86,7 @@ decline, and keep the request itself to one sentence.
 Approved with changes restates the queue once and starts; declined stops without
 changing anything. The approval covers the listed items and the narrow
 dependencies they cannot be completed without - not the backlog at large. Newly
-discovered peer work goes into `TODO.md` for the next plan unless the user
+discovered peer work goes into the backlog for the next plan unless the user
 approved an explicit wildcard ("everything actionable"). Within that boundary
 the approval lasts the whole run: finishing an item, a wave, or the presented
 queue while approved work remains is not a reason to come back, and only an
@@ -146,17 +150,18 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
 
 1. Reconstruct the current state. Read applicable instruction files,
    `git status`, recent history, active plans, reports, and validation scripts,
-   and every project-owned `TODO.md`, `TODO_LOG.md`, `TODO_HISTORY_INDEX.jsonl`.
-   Ignore vendor and generated files. Determine which TODO is primary and which
-   are scoped plans. With no project-owned TODO, stop and recommend
-   `tadu-create`.
+   and every project-owned backlog (`TODO.md` and `TODO_LOG.md`, or `todo/`) and
+   `TODO_HISTORY_INDEX.jsonl`. Query the backlog instead of reading it whole:
+   `tadu list --open`, `tadu ready`, `tadu next`, `tadu show KEY`. Ignore vendor
+   and generated files. Determine which backlog is primary and which are scoped
+   plans. With no project-owned backlog, stop and recommend `tadu-create`.
 2. When consulting conversation history, reuse the index instead of reparsing:
    look up each conversation in `TODO_HISTORY_INDEX.jsonl` by `source` +
    `conversation_id`; skip unchanged `complete` and `irrelevant` records; read
    only content after `reviewed_through` when a reliable cursor exists; retry
    `partial` or `inaccessible` records only when their source or access changed;
-   update a record only after its findings are reconciled into `TODO.md` or
-   `TODO_LOG.md`; never store message content or secrets in the index.
+   update a record only after its findings are reconciled into the backlog;
+   never store message content or secrets in the index.
 3. Build the execution queue. Verify each task's real state rather than trusting
    its marker. Track in the plan mechanism, per item: wording and source
    location, verified state, dependencies and affected files, validation method,
@@ -179,13 +184,15 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
    creep.
 5. When work is already complete, do not redo it: verify it and move it to the
    log with concise evidence, using `tadu close --match "<text>" --evidence
-   "<proof>" --write` rather than editing both files by hand. When a better
+"<proof>" --write` rather than editing both files by hand (format 2:
+   `tadu close --id ID --evidence "<proof>" --write`; claim a task with
+   `tadu claim ID --as agent:<name> --write` before working on it). When a better
    implementation supersedes it, name the replacement and log the original as
    `[-]` (`--resolution`). When blocked, exhaust safe
    in-scope alternatives, record the exact blocker and smallest unblock action,
    and continue elsewhere.
 6. Checkpoint after each item or dependency wave: record the verified result or
-   truthful partial state in `TODO.md` and `TODO_LOG.md` with compact evidence,
+   truthful partial state in the backlog with compact evidence,
    inspect the focused diff and `git status`, and re-read the queue and any
    newer user direction before choosing the next item. A checkpoint is what
    makes a long run resumable, not a reason to stop while safe actionable work
@@ -215,7 +222,7 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
 - Return: items verified already complete, completed this run, advanced or
   superseded, blockers with their smallest unblock action, validation commands
   and results including pre-existing failures and the `tadu doctor` result,
-  `TODO_LOG.md` entries added, history-index records reused, added, or updated
+  log entries or closed tasks added, history-index records reused, added, or updated
   when history was consulted, files changed, cross-project items filed with
   their target repositories, remote or metered actions taken or still needing
   approval, decisions adjudicated by the second model with the option chosen,
@@ -228,5 +235,6 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
   mark remaining work complete to make the run appear finished; if the
   environment forces a handoff while an item remains actionable, report a
   checkpointed incomplete run.
-- Load `references/format.md` for the state legend, the `TODO_LOG.md` entry
-  shape, and the optional `Done when:` and `Depends on:` item fields.
+- Load `references/format.md` (format 1) or `references/format-v2.md` (format 2)
+  for the state legend, the log entry or task shape, and the optional item
+  fields.

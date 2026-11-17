@@ -41,6 +41,15 @@ def test_format_reference_matches_the_spec(skill_dir: Path) -> None:
     assert rest == spec
 
 
+@pytest.mark.parametrize("skill_dir", SKILL_DIRS, ids=lambda path: path.name)
+def test_format_v2_reference_matches_the_spec(skill_dir: Path) -> None:
+    copy = (skill_dir / "references" / "format-v2.md").read_text(encoding="utf-8")
+    spec = (REPO_ROOT / "spec" / "todo-format-v2.md").read_text(encoding="utf-8")
+    first_line, _, rest = copy.partition("\n")
+    assert first_line == "Copied from spec/todo-format-v2.md; the spec is authoritative."
+    assert rest == spec
+
+
 def test_rule_block_reference_matches_the_package_copy() -> None:
     copy = REPO_ROOT / "skills" / "tadu-create" / "references" / "rule-block.md"
     package = REPO_ROOT / "tadu" / "rule_block_v4.md"
