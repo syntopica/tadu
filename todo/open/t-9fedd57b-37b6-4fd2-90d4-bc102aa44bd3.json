@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-9fedd57b-37b6-4fd2-90d4-bc102aa44bd3",
+  "title": "Make tadu migrate keep the prose between a ## heading and its first item",
+  "state": "pending",
+  "category": "bugs",
+  "type": "bug",
+  "priority": "low",
+  "created": "2026-11-17",
+  "discovered_from": "t-e4643fda-265b-438d-8cb2-2c542383ab0e",
+  "notes": [
+    "Found in nubenode (commit e94f215): migrate drops section prose, which a task has no field for. Smallest next step: decide where it goes, such as the notes of the section's first item, then add a fixture."
+  ]
+}

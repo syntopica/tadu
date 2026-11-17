@@ -2,11 +2,16 @@
   "tadu": 2,
   "id": "t-545ee282-0a29-4572-8159-d612fe4984b2",
   "title": "`tadu close` turns the section heading into the category when the closed item already carries its own date and bold category",
-  "state": "pending",
+  "state": "done",
   "category": "close",
   "type": "bug",
   "priority": "normal",
   "notes": [
     "In teleporte-web on 2026-11-16, closing `- [ ] 2026-11-16 — **Coverage database hardening (final review minors):** ...`, listed under `## Mailbox and chat pass (2026-11-15)`, wrote `- [x] 2026-11-16 — **Mailbox and chat pass (2026-11-15):** 2026-11-16 — **Coverage database hardening ...`. The same shape is in that repo's TODO_LOG.md at lines 332, 341, 1550 and 1581, and `tadu doctor` passes it. Smallest next step: a failing test that closes such an item, then reuse the item's own date and category instead of prefixing the heading."
+  ],
+  "closed": "2026-11-17",
+  "result": "`tadu close` turns the section heading into the category when the closed item already carries its own date and bold category",
+  "evidence": [
+    "Merge 27794f9 (bot/6a40170f): close keeps an item's own category and date; the gate's 1090+ tests, ruff, mypy, codeality-py and tadu doctor pass on the merge."
   ]
 }

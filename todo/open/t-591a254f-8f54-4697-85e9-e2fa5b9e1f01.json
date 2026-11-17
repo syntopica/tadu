@@ -2,10 +2,12 @@
   "tadu": 2,
   "id": "t-591a254f-8f54-4697-85e9-e2fa5b9e1f01",
   "title": "Add `tadu id --write` and `tadu close --id`",
-  "state": "pending",
+  "state": "blocked",
   "category": "board",
   "type": "feature",
   "priority": "normal",
+  "blocker": "Unmerged branch bot/2dd1ae9a. The branch is older than the format 2 migration and conflicts with main (README, cli, run_list and the other files it touches). Decide: port it to format 2 by hand, or drop it because format 2 makes it unnecessary.",
+  "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Gives items without an `ID:` a stable one and closes by ID. Smallest next step: a command that inserts an `ID:` paragraph into one item chosen by its derived key, with `--write` as the only mutation."
   ]

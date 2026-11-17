@@ -2,10 +2,12 @@
   "tadu": 2,
   "id": "t-b56523ee-336d-47ab-b4d9-13ec09fdec31",
   "title": "Show item history from `git log`",
-  "state": "pending",
+  "state": "blocked",
   "category": "board",
   "type": "feature",
   "priority": "low",
+  "blocker": "Unmerged branch bot/89b6dd23. The branch is older than the format 2 migration and conflicts with main (README, cli, run_list and the other files it touches). Decide: port it to format 2 by hand, or drop it because format 2 makes it unnecessary.",
+  "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Smallest next step: print the commits that touched an item's line span, for one key."
   ]

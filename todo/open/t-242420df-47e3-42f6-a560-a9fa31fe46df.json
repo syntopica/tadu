@@ -2,10 +2,12 @@
   "tadu": 2,
   "id": "t-242420df-47e3-42f6-a560-a9fa31fe46df",
   "title": "Age blocked items",
-  "state": "pending",
+  "state": "blocked",
   "category": "board",
   "type": "feature",
   "priority": "low",
+  "blocker": "Unmerged branch bot/eb37d3ce. The branch is older than the format 2 migration and conflicts with main (README, cli, run_list and the other files it touches). Decide: port it to format 2 by hand, or drop it because format 2 makes it unnecessary.",
+  "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Smallest next step: derive the days an item has been `[!]` from `git log` and show it on the card."
   ]

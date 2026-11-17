@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-e4643fda-265b-438d-8cb2-2c542383ab0e",
   "title": "Make tadu migrate keep a TODO.md item's bold lead as its title and its ## section as its category",
-  "state": "pending",
+  "state": "done",
   "category": "bugs",
   "type": "bug",
   "priority": "normal",
@@ -14,5 +14,10 @@
     "Smallest next step: a migrate fixture with a `**Lead:** text` item that wraps onto three lines under a `##` heading, asserting title = lead, category = section slug, full text in notes, and doctor clean.",
     "",
     "Second case, 2026-11-17, nubenode (commit e94f215): migrate also dropped (a) wrapped continuation lines that start at column 0 inside an item, (b) `- Evidence:` sub-bullets of open items, (c) section prose between a heading and its first item. A shingle comparison found 178 of 1,912 TODO.md lines and 625 of 5,511 TODO_LOG.md lines lost or mostly lost; one closed task kept 4% of its text. Repaired in nubenode commit f5755f0 by rebuilding notes from the source with wrapped lines joined."
+  ],
+  "closed": "2026-11-17",
+  "result": "A long or bracketed bold lead becomes the title, the section the category; wrapped unindented lines and open-item bullets are kept.",
+  "evidence": [
+    "Commit 9624f67: tests/test_migrate_wrapped_items.py passes; the full gate passes except the known 10 s pytest budget; wrapped lines and open-item Evidence bullets now reach the notes."
   ]
 }

@@ -2,10 +2,12 @@
   "tadu": 2,
   "id": "t-c6cb62cb-0bfe-4c95-b368-46eee5cf29be",
   "title": "Support cross-repository `Depends on:` by ID",
-  "state": "pending",
+  "state": "blocked",
   "category": "board",
   "type": "feature",
   "priority": "low",
+  "blocker": "Unmerged branch bot/482c0bcb. The branch is older than the format 2 migration and conflicts with main (README, cli, run_list and the other files it touches). Decide: port it to format 2 by hand, or drop it because format 2 makes it unnecessary.",
+  "unblock": "The owner chooses to port or drop the branch.",
   "notes": [
     "Smallest next step: parse `Depends on: t-...` and show whether the target is open, in the same workspace."
   ]
