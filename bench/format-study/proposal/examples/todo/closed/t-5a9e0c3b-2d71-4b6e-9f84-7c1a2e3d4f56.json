@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-5a9e0c3b-2d71-4b6e-9f84-7c1a2e3d4f56",
+  "title": "Add a recently-done feed from the logs",
+  "state": "done",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-05",
+  "notes": [
+    "Agents and people want what was finished lately without reading the log."
+  ],
+  "closed": "2026-11-10",
+  "result": "tadu feed prints the done and cancelled log entries of the last 14 days, newest first, as JSON lines.",
+  "evidence": [
+    "tests/test_run_feed.py passes",
+    "uv run codeality-py gate: all passed, 100% coverage"
+  ],
+  "files": [
+    "tadu/run_feed.py",
+    "tadu/recently_done.py"
+  ],
+  "x-jira": "TADU-41"
+}

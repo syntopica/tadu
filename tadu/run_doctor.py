@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tadu.check_workspace_items import check_workspace_items
-from tadu.doctor_checks import DOCTOR_CHECKS
+from tadu.doctor_checks_for import doctor_checks_for
 from tadu.finding import Finding
 from tadu.format_finding import format_finding
 from tadu.unreadable_file_error import UnreadableFileError
@@ -26,7 +26,7 @@ def run_doctor(
     failed = False
     for raw in paths:
         root = Path(raw)
-        for check in DOCTOR_CHECKS:
+        for check in doctor_checks_for(root):
             try:
                 findings = check(root)
             except UnreadableFileError as error:

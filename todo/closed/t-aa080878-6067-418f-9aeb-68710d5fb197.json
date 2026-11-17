@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-aa080878-6067-418f-9aeb-68710d5fb197",
+  "title": "Item kinds: task, decision, waiting and later",
+  "state": "done",
+  "category": "format",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "The Kind: field (default task) in the spec, parser, list --kind, list --json, saved views, F001/F003 and the board (filter, chip, grouping, badge, detail); Due: is the follow-up day of waiting and later items; list lines print the kind after the priority",
+  "evidence": [
+    "tests/test_check_kind_value.py, test_parse_item_fields.py, test_card_matches.py, test_run_list.py::test_kind_filter, test_board_kind_js.py; pytest 925 passed, coverage 100%"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-756e6b64-dc04-4c84-bd44-889e1dc475f3",
+  "title": "Claude Code and `AGENTS.md`",
+  "state": "done",
+  "category": "documentation",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "The README tells Claude Code users to add a `CLAUDE.md` containing `@AGENTS.md` when tadu created `AGENTS.md`.",
+  "evidence": [
+    "README.md \"Start a repository\" section."
+  ]
+}

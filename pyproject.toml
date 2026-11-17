@@ -55,3 +55,7 @@ quality = [
 
 [tool.uv]
 default-groups = ["quality"]
+
+[tool.deptry]
+# bench/ holds study scripts (REPORT.md), not part of the tadu package.
+extend_exclude = ["bench"]

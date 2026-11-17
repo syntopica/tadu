@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "categories": {
+    "adoption": "Adoption",
+    "agent-ergonomics": "Agent ergonomics",
+    "board": "Board",
+    "bugs": "Bugs",
+    "ci-portability": "CI portability",
+    "cli": "CLI",
+    "close": "Close",
+    "compatibility": "Compatibility",
+    "documentation": "Documentation",
+    "format": "Format",
+    "release": "Release",
+    "tooling": "Tooling"
+  }
+}

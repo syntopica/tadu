@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-bcab31c7-a5e0-4588-9e65-53d884909107",
+  "title": "tadu add and tadu mark",
+  "state": "done",
+  "category": "agent-ergonomics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "add writes a new item (generated ID:, fields, notes, under its ## category) and mark sets blocked with its blocker, open or in_progress; both print a diff, write only with --write under the backlog lock, refuse changes that add doctor errors and never overwrite a file changed since read",
+  "evidence": [
+    "tests/test_run_add.py, test_run_mark.py, test_insert_item.py, test_marked_lines.py, test_write_if_unchanged.py"
+  ]
+}

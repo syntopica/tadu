@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-2e4b945c-abab-4bd6-8073-76d4efde6f3c",
+  "title": "Export the locked dependency set as a pip-compatible CI artifact",
+  "state": "done",
+  "category": "ci-portability",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-21",
+  "result": "The quality workflow exports all dependency groups and extras with hashes to a requirements fallback artifact before running the gate, using the existing SHA-pinned upload action. The current project and command header are omitted. Certifi alone moved to 2026.10.19 to fix GHSA-6q48-6c7w-9gw2; the shell-hook test fixture now passes a Path to its typed helper.",
+  "evidence": [
+    "Frozen export preserves dependency hashes and leaves uv.lock unchanged; actionlint passes; uv sync --frozen replaces only certifi; pytest passes 363 tests, Ruff and mypy pass, and codeality-py gate including pip-audit passes."
+  ]
+}

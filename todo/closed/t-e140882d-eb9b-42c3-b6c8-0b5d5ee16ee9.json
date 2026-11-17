@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-e140882d-eb9b-42c3-b6c8-0b5d5ee16ee9",
+  "title": "Add saved views",
+  "state": "done",
+  "category": "board",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Smallest next step: store a named filter set in the workspace file and select it with `--view`."
+  ],
+  "closed": "2026-11-13",
+  "result": "Workspace files hold [[view]] tables (name plus the list filters), validated on load, and tadu list --view NAME applies one with explicit flags overriding it; spec and README document it.",
+  "evidence": [
+    "uv run codeality-py gate exits 0 (pytest with 100% coverage, ruff, mypy); tests/test_run_list.py::test_view_selects_a_saved_filter_and_flags_win; tadu list --workspace on a scratch workspace with --view printed only the urgent item."
+  ]
+}

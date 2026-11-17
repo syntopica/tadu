@@ -11,12 +11,20 @@ if TYPE_CHECKING:
 
 def add_close_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     """Add `close` to the subcommands."""
-    close = commands.add_parser("close", help="move one open item from TODO.md to TODO_LOG.md")
+    close = commands.add_parser(
+        "close", help="close one open item: into TODO_LOG.md, or (format v2) into todo/closed/"
+    )
     close.add_argument("path", nargs="?", default=".", help="repository root (default: .)")
-    close.add_argument("--match", required=True, help="text found in the item's first line")
+    close.add_argument(
+        "--match", default=None, help="text found in the item's first line (title, v2)"
+    )
+    close.add_argument("--id", default=None, help="format v2: task id or unique prefix")
     proof = close.add_mutually_exclusive_group(required=True)
     proof.add_argument("--evidence", help="log it as [x] with this Evidence: line")
     proof.add_argument("--resolution", help="log it as [-] with this Resolution: line")
+    proof.add_argument(
+        "--duplicate-of", default=None, help="format v2: cancel it as a duplicate of this task"
+    )
     close.add_argument("--result", default=None, help="Result: line of the entry")
     close.add_argument("--category", default=None, help="category (default: its ## section)")
     close.add_argument("--title", default=None, help="entry text (default: the item's)")

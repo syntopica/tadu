@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-c25c2694-8a0c-4285-9a70-3c75a61e448a",
+  "title": "`tadu close --write` reports success but leaves a CommonMark lazy continuation in TODO.md instead of moving it into TODO_LOG.md",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Reproduced on 2026-10-21 in an isolated fixture: an indented continuation ends with an open inline-code span, the next line starts at column zero and closes that span, and close moves only the indented prefix. The original central unbacked-inventory record hit this case; its full text was preserved and the archival output repaired manually. Smallest step: add a regression fixture for lazy paragraph/inline-code continuations and make close move the entire list item or fail without writing. No source fix is claimed."
+  ],
+  "closed": "2026-10-21",
+  "result": "Close now refuses possible adjacent unindented continuations before planning or writing; indent the full item or move it manually. EOF, blank separators and known checklist/heading/comment boundaries remain accepted. Independent read-only review returned no findings.",
+  "evidence": [
+    "Original write regressions failed before the fix (2 failed, 6 passed); the complete AGENTS gate passed 377 tests and 100% coverage plus Ruff, mypy, codeality-py check, deptry and pip-audit. An installed-CLI fixture returns exit 2 with both files byte-for-byte unchanged."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-3d4ba54c-4216-45f0-a288-9831d9adf4f9",
+  "title": "Project-wide Python rules P001 to P004",
+  "state": "done",
+  "category": "tooling",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "tests/python_rules.py checks every module's syntax tree for a path name used as identity, dict keys that may collide silently, filesystem writes outside the two writers and replaces without a changed-since-read check; safe sites carry a reason marker",
+  "evidence": [
+    "tests/test_python_rules.py: the rules catch the original folder-name bug and found the sync race; every tadu module passes"
+  ]
+}

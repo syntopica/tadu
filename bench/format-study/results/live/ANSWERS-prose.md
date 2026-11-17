@@ -1,0 +1,606 @@
+## T1
+
+- Deploy: Fix the encoding bug in CDN cache (P1).
+- UI: Settings page is returning 500 on invalid input for admins.
+- Auth: Fix token refresh failing silently when offline for API clients.
+- UX: Navigation menu is dropping the last item for the offline mode on the free plan.
+- Web: Add keyboard navigation to toast messages (invoice redesign).
+- UI: Fix empty states crashing when the list is empty (dark theme) (P1).
+- Dashboard: Navigation menu is showing stale data after refresh for API clients.
+- UX: Investigate the deadlock in settings page in the mobile app.
+- UI: Let users pick dark theme support from shortcut overlay in the export path.
+- Dashboard: Write a how-to for chart widget limits and quotas as part of the alerts hub after login (P1).
+- UI: Important: Fix profile page leaking memory on long sessions.
+- UI: Investigate the layout shift in theme switcher behind the proxy.
+- Dashboard: Upgrade navigation menu to Tailwind 4.
+- UI: Extract chart widget logic into a shared module (P1).
+- UI: Clean up feature flags in onboarding wizard for admins.
+- API: Support inline editing in bulk import endpoint on Safari.
+- Endpoints: OpenAPI schema is showing stale data after refresh.
+- Endpoints: Clean up feature flags in CORS headers.
+- Endpoints: Cache idempotency keys results to cut query time.
+- API: Add dark theme support to bulk import endpoint.
+- API: Profile rate limiter query time on first load.
+- API: Webhook endpoint is showing stale data after refresh as part of the Postgres 17 upgrade.
+- Endpoints: Investigate the stale cache in rate limiter (P1).
+- API: Let users pick per-tenant limits from error responses.
+- API: Clean up feature flags in OpenAPI schema for the translations in the mobile app.
+- API: Add dark theme support to OpenAPI schema for large accounts.
+- API: Important: OpenAPI schema is reporting the wrong timezone.
+- API: Cache OpenAPI schema results to cut initial load.
+- API: Document CORS headers rollback procedure after login.
+- Auth: Password reset is double-submitting as part of the invoice redesign.
+- Auth: Add a regression test for account lockout permission checks on first load.
+- Auth: Audit magic links for privilege escalation for invited users.
+- Identity: Important: Speed up invite links memory use.
+- Auth: Rotate the secrets used by role permissions (P1).
+- Auth: Rename the role permissions config keys for API clients.
+- Auth: Support a dry-run mode in account lockout.
+- Auth: Important: Add tests for SSO login empty input.
+- Billing: ASAP: Support a dry-run mode in invoice PDF for API clients.
+- Subscriptions: Let users pick inline editing from receipt emails for EU tenants.
+- Subscriptions: Cache proration results to cut render time.
+- Billing: Upgrade receipt emails to pnpm 10.
+- Subscriptions: Let users pick saved presets from proration.
+- Billing: Write a how-to for coupon codes upgrade steps.
+- Search: Add tests for search indexer retry behaviour after login.
+- Indexing: Fix facet filters dropping the last item (P1).
+- Indexing: Add tests for autocomplete empty input for the audit log for API clients.
+- Indexing: Investigate the flicker in synonym dictionary.
+- Search: Important: Speed up autocomplete query time on the free plan.
+- Search: Speed up ranking cold start.
+- Discovery: Investigate the stale cache in typo tolerance.
+- Search: Investigate the duplicate request in result highlighting as part of the offline mode in the export path.
+- Search: ASAP: Support a progress indicator in autocomplete.
+- Infrastructure: Let users pick an audit trail from base Docker image.
+- Notifications: Write a how-to for notification preferences failure modes on Safari.
+- Alerts: Remove dead code from push notifications in the export path.
+- Notifications: Profile notification preferences query time for EU tenants.
+- Notifications: Add a regression test for bounce handling happy path (CSV import).
+- Notifications: Fix the memory leak in in-app inbox (duplicate webhooks).
+- Storage: Add dark theme support to vacuum schedule on first load.
+- Database: Read replica is dropping the last item behind the proxy.
+- UI: Shortcut overlay is losing state on back navigation.
+- Database: Let users pick a copy-to-clipboard action from tenant partitioning on first load.
+- Database: Important: Sanitize untrusted input in connection pool during onboarding.
+- Database: Clean up feature flags in orders index on Safari.
+- Database: Fix orders index crashing when the list is empty in read-only mode.
+- Storage: Remove dead code from nightly backups.
+- Infrastructure: Cover CDN cache happy path with an e2e test as part of the saved filters.
+- Infrastructure: Split TLS certificates into smaller units after login.
+- Deploy: Upgrade base Docker image to React 19.
+- Platform: Important: Investigate the race condition in log shipping.
+- Infrastructure: Rotate the secrets used by autoscaling policy in the mobile app.
+- DevOps: Support bulk actions in base Docker image.
+- Platform: Important: Rename the log shipping config keys.
+- CI: Investigate the encoding bug in release workflow after login.
+- Pipeline: Add a regression test for coverage gate concurrent writes on first load.
+- CI: Important: Preview deployments is reporting the wrong timezone after login.
+- Build: Fix the flicker in nightly build.
+- CI: Remove dead code from dependency cache.
+- Web: Add tests for settings page timezone edges during onboarding.
+- CI: Write a how-to for e2e suite upgrade steps for large accounts.
+- Tests: Profile release workflow render time as part of the team invites.
+- CI: Audit nightly build for privilege escalation (database upgrade) in the legacy view (P1).
+- Docs: Let users pick bulk actions from contributing guide as part of the uptime page in the mobile app.
+- Guides: Support an audit trail in onboarding guide as part of the performance budget during onboarding.
+- Docs: Fix the flicker in architecture notes.
+- Docs: API reference is losing state on back navigation for the search v2 in the legacy view.
+- Persistence: Speed up audit log table cold start in the export path.
+- Discovery: Support an audit trail in result highlighting for the audit log.
+- Documentation: Onboarding guide is ignoring the user's locale.
+
+## T2
+
+- Deploy: Fix the encoding bug in CDN cache (P1).
+- UI: Add pagination cursors to toolbar on Safari.
+- UI: Speed up settings page cold start as part of the saved filters after login.
+- UI: Let users pick bulk actions from profile page on Safari.
+- UX: Add bulk actions to modal dialog.
+- UX: Split theme switcher into smaller units during onboarding.
+- UI: Cover profile page happy path with an e2e test during onboarding.
+- UI: Let users pick an audit trail from search box in the export path.
+- UI: Add tests for profile page timezone edges (offline support).
+- UI: Rename the theme switcher config keys.
+- API: Investigate the encoding bug in error responses as part of the public API v2.
+- API: Version header is losing state on back navigation on Safari.
+- Public API: Rotate the secrets used by version header for the bulk upload.
+- API: Profile rate limiter query time on first load.
+- API: Fix OpenAPI schema losing state on back navigation.
+- Public API: Add a dry-run mode to version header (accessibility pass) after login.
+- API: Speed up API keys query time.
+- API: Clean up feature flags in bulk import endpoint for API clients.
+- API: Support an audit trail in request validator in read-only mode.
+- API: Add dark theme support to OpenAPI schema for large accounts.
+- Alerts: Let users pick an audit trail from digest emails after login.
+- Auth: Audit magic links for privilege escalation for invited users.
+- Auth: Investigate the stale cache in SSO login in the export path.
+- UI: Add tests for theme switcher empty input (SOC 2 audit).
+- Checkout: Cache tax calculation results to cut initial load (invoice redesign) on Safari.
+- Billing: Upgrade receipt emails to pnpm 10.
+- Subscriptions: Let users pick saved presets from proration.
+- Billing: Add tests for refund flow timezone edges during onboarding (P3).
+- Billing: Add CSRF protection to Stripe webhooks for admins.
+- Billing: Add a regression test for plan upgrade permission checks as part of the database upgrade.
+- Search: Investigate the deadlock in ranking on first load (P2).
+- Indexing: Fix facet filters dropping the last item (P1).
+- Search: Split search indexer into smaller units as part of the customer domains.
+- Search: Speed up ranking cold start.
+- Infrastructure: Upgrade TLS certificates to Playwright for invited users.
+- Notifications: Support date range filter in in-app inbox as part of the webhook idempotency.
+- Email: Push notifications is timing out under load for API clients.
+- Database: Read replica is dropping the last item behind the proxy.
+- Database: Fix the off-by-one error in nightly backups behind the proxy.
+- Auth: Rotate the secrets used by 2FA enrollment.
+- Deploy: Upgrade base Docker image to React 19.
+- Platform: Replace the hand-rolled Kubernetes manifests state machine behind the proxy.
+- Infrastructure: Rotate the secrets used by base Docker image for EU tenants.
+- Infrastructure: Log shipping is reporting the wrong timezone as part of the k8s move.
+- DevOps: Support bulk actions in base Docker image.
+- CI: Add tests for lint step permission checks after login.
+- CI: Let users pick pagination cursors from test sharding for API clients.
+- Docs: Cache onboarding guide results to cut p95 latency.
+- Billing: Add inline editing to coupon codes.
+- Database: Write a how-to for schema migrations rollback procedure in the legacy view.
+- Docs: Fix onboarding guide leaking memory on long sessions on the free plan.
+- Messaging: Add a regression test for notification preferences pagination limits.
+- README: Support date range filter in deployment guide.
+- Infra: Support dark theme support in log shipping.
+
+## T3
+
+- UI: Fix the deadlock in toast messages during onboarding.
+- UI: Add sorting by priority to empty states (CSV import).
+- UI: Support a retry button in empty states as part of the team invites for large accounts (P3).
+- UI: Add pagination cursors to toolbar on Safari.
+- UI: Investigate the duplicate request in toolbar for large accounts.
+- Frontend: Clean up feature flags in theme switcher.
+- UI: Add a regression test for sidebar pagination limits for large accounts.
+- UI: Upgrade empty states to React 19.
+- UI: Add keyboard navigation to shortcut overlay for admins.
+- Web: Clean up feature flags in settings page.
+- UI: Settings page is returning 500 on invalid input for admins.
+- UI: Let users pick a retry button from profile page.
+- UI: Speed up settings page cold start as part of the saved filters after login.
+- Web: Cover sidebar empty input with an e2e test as part of the bulk upload.
+- Frontend: Fix the duplicate request in modal dialog (accessibility pass).
+- UI: Let users pick bulk actions from profile page on Safari.
+- UI: Add an audit trail to sidebar (churn emails).
+- UX: Add bulk actions to modal dialog.
+- Frontend: Support a copy-to-clipboard action in data table.
+- UI: Investigate the layout shift in settings page for large accounts.
+- UI: Audit sidebar for privilege escalation for the audit log in the export path.
+- UX: Navigation menu is dropping the last item for the offline mode on the free plan.
+- UI: Cache chart widget results to cut query time for the performance budget.
+- UI: Audit settings page for privilege escalation for API clients.
+- Web: Let users pick undo support from date picker.
+- Web: Support inline editing in settings page during onboarding.
+- UX: Split theme switcher into smaller units during onboarding.
+- UI: Extract onboarding wizard logic into a shared module during onboarding.
+- UX: Split empty states into smaller units.
+- UI: Add a regression test for toast messages empty input (P2).
+- UI: Add tests for settings page error states after login.
+- UI: Remove dead code from chart widget.
+- UI: Cover profile page happy path with an e2e test during onboarding.
+- Frontend: Add inline editing to shortcut overlay.
+- UI: Let users pick pagination cursors from chart widget for the gift notes.
+- UI: Toast messages is ignoring the user's locale as part of the database upgrade for admins.
+- Web: Add keyboard navigation to toast messages (invoice redesign).
+- Dashboard: Toast messages is leaking memory on long sessions (CSV import) (P3).
+- UI: Fix empty states crashing when the list is empty (dark theme) (P1).
+- UI: Add a regression test for search box retry behaviour (P2).
+- Web: Rename the profile page config keys for invited users.
+- UI: Speed up toolbar initial load for invited users.
+- UI: Upgrade date picker to pnpm 10.
+- Web: Clean up feature flags in search box.
+- UX: Support dark theme support in sidebar (P2).
+- UI: Support pagination cursors in toast messages in the legacy view (P2).
+- UX: Profile empty states p95 latency.
+- Dashboard: Navigation menu is showing stale data after refresh for API clients.
+- UX: Add pagination cursors to toolbar.
+- UX: Investigate the deadlock in settings page in the mobile app.
+- UI: Let users pick undo support from profile page.
+- Frontend: Empty states is ignoring the user's locale.
+- UI: Clean up feature flags in toast messages on the free plan.
+- UI: Profile data table p95 latency for API clients.
+- UI: Someday: Fix shortcut overlay leaking memory on long sessions (saved filters).
+- UI: Let users pick dark theme support from shortcut overlay in the export path.
+- UI: Extract toast messages logic into a shared module.
+- UI: Replace the hand-rolled toast messages state machine for large accounts.
+- Dashboard: Write a how-to for chart widget limits and quotas as part of the alerts hub after login (P1).
+- UI: Add a regression test for chart widget permission checks during onboarding.
+- UI: Rename the toast messages config keys for the SSO rollout in the legacy view.
+- UI: Audit login form for privilege escalation on the free plan.
+- UI: Add a progress indicator to onboarding wizard.
+- UI: Toast messages is sorting dates as strings.
+- UI: Important: Fix profile page leaking memory on long sessions.
+- UI: Let users pick an audit trail from search box in the export path.
+- UI: Fix shortcut overlay failing silently when offline.
+- UI: Fix toast messages timing out under load during onboarding (P2).
+- UI: Add tests for profile page timezone edges (offline support).
+- UI: Support keyboard navigation in chart widget in the legacy view.
+- UX: Theme switcher is hanging on slow networks.
+- UI: Investigate the layout shift in theme switcher behind the proxy.
+- Dashboard: Upgrade navigation menu to Tailwind 4.
+- UI: Remove dead code from theme switcher in read-only mode.
+- UI: Split settings page into smaller units on first load.
+- UI: Support a progress indicator in shortcut overlay for the webhook idempotency.
+- UI: Write a how-to for sidebar rollback procedure (CSV import).
+- UI: Rename the theme switcher config keys.
+- Dashboard: Write a how-to for toast messages rollback procedure for the metered billing.
+- UX: Audit navigation menu for privilege escalation in the mobile app.
+- Web: Fix the off-by-one error in sidebar.
+- UI: Extract chart widget logic into a shared module (P1).
+- Dashboard: Date picker is dropping the last item for admins (P2).
+- UI: Cover empty states pagination limits with an e2e test for admins.
+- UI: Clean up feature flags in onboarding wizard for admins.
+- UI: Cover date picker empty input with an e2e test after login (P2).
+- UI: Clean up feature flags in settings page on the free plan.
+- UI: Add tests for theme switcher empty input (SOC 2 audit).
+- UI: Support a copy-to-clipboard action in chart widget in the mobile app.
+- UI: Add a copy-to-clipboard action to modal dialog.
+- Web: Let users pick keyboard navigation from toolbar as part of the team invites for API clients.
+- UI: Investigate the flicker in date picker.
+- Web: Toolbar is rendering off-screen on small screens.
+- UI: Add tests for theme switcher permission checks for admins.
+- UI: Shortcut overlay is losing state on back navigation.
+- UI: Add date range filter to shortcut overlay.
+- Web: Add tests for settings page timezone edges during onboarding.
+
+## T4
+
+- Public API: Fix the off-by-one error in CORS headers.
+- Deploy: Fix the encoding bug in CDN cache (P1).
+- Docs: Architecture notes is returning 500 on invalid input as part of the onboarding revamp.
+- UI: Fix the deadlock in toast messages during onboarding.
+- UI: Investigate the duplicate request in toolbar for large accounts.
+- UI: Settings page is returning 500 on invalid input for admins.
+- Auth: Fix token refresh failing silently when offline for API clients.
+- Frontend: Fix the duplicate request in modal dialog (accessibility pass).
+- UI: Investigate the layout shift in settings page for large accounts.
+- UX: Navigation menu is dropping the last item for the offline mode on the free plan.
+- UI: Toast messages is ignoring the user's locale as part of the database upgrade for admins.
+- Dashboard: Toast messages is leaking memory on long sessions (CSV import) (P3).
+- UI: Fix empty states crashing when the list is empty (dark theme) (P1).
+- Dashboard: Navigation menu is showing stale data after refresh for API clients.
+- UX: Investigate the deadlock in settings page in the mobile app.
+- Frontend: Empty states is ignoring the user's locale.
+- UI: Someday: Fix shortcut overlay leaking memory on long sessions (saved filters).
+- UI: Toast messages is sorting dates as strings.
+- UI: Important: Fix profile page leaking memory on long sessions.
+- UI: Fix shortcut overlay failing silently when offline.
+- UI: Fix toast messages timing out under load during onboarding (P2).
+- UX: Theme switcher is hanging on slow networks.
+- UI: Investigate the layout shift in theme switcher behind the proxy.
+- API: Investigate the encoding bug in error responses as part of the public API v2.
+- Auth: Fix magic links losing state on back navigation (custom domains).
+- Web: Fix the off-by-one error in sidebar.
+- Docs: Investigate the stale cache in contributing guide.
+- Dashboard: Date picker is dropping the last item for admins (P2).
+- API: Investigate the stale cache in webhook endpoint.
+- API: Version header is losing state on back navigation on Safari.
+- API: Fix idempotency keys reporting the wrong timezone (onboarding revamp) after login.
+- Endpoints: OpenAPI schema is showing stale data after refresh.
+- API: Fix version header double-submitting.
+- API: Fix the memory leak in pagination.
+- API: Webhook endpoint is showing stale data after refresh as part of the Postgres 17 upgrade.
+- API: Fix OpenAPI schema losing state on back navigation.
+- API: Fix the duplicate request in GraphQL gateway on first load.
+- API: Fix error responses losing state on back navigation.
+- Endpoints: Investigate the stale cache in rate limiter (P1).
+- API: Fix the memory leak in bulk import endpoint.
+- API: Someday: Fix rate limiter returning 500 on invalid input for the usage-based billing.
+- Auth: OAuth callback is double-submitting for large accounts.
+- Endpoints: Fix the duplicate request in API keys.
+- API: Fix the null pointer in webhook endpoint in the mobile app.
+- Public API: Investigate the deadlock in OpenAPI schema for EU tenants.
+- API: CORS headers is leaking memory on long sessions on first load.
+- API: Important: OpenAPI schema is reporting the wrong timezone.
+- Docs: Fix architecture notes failing silently when offline.
+- API: Request validator is ignoring the user's locale (bulk upload) (P2).
+- Security: Fix the deadlock in session expiry.
+- Auth: Password reset is double-submitting as part of the invoice redesign.
+- Auth: Fix invite links reporting the wrong timezone.
+- Login: Investigate the stale cache in SSO login (first-run flow) on first load.
+- Auth: Investigate the stale cache in SSO login in the export path.
+- Auth: Fix password reset crashing when the list is empty in the mobile app.
+- Auth: Magic links is reporting the wrong timezone on first load.
+- Auth: Investigate the null pointer in 2FA enrollment.
+- Auth: Session expiry is dropping the last item in the export path.
+- Auth: Role permissions is breaking after the last deploy.
+- Auth: Fix the race condition in 2FA enrollment after login.
+- Billing: Investigate the flicker in coupon codes.
+- Billing: Coupon codes is ignoring the user's locale for large accounts (P2).
+- Billing: Plan upgrade is double-submitting after login.
+- Billing: Proration is hanging on slow networks.
+- Subscriptions: Investigate the duplicate request in tax calculation.
+- Billing: Coupon codes is timing out under load for the invoice redesign.
+- API: GraphQL gateway is double-submitting.
+- Billing: Receipt emails is timing out under load.
+- Checkout: Fix proration hanging on slow networks.
+- Payments: Fix coupon codes timing out under load during onboarding.
+- Billing: Plan upgrade is double-submitting (flag service) behind the proxy.
+- Billing: Fix tax calculation sorting dates as strings for admins (P2).
+- Billing: Fix the off-by-one error in usage metering (mobile layout).
+- Subscriptions: Usage metering is breaking after the last deploy for admins (P2).
+- Subscriptions: Investigate the flicker in receipt emails.
+- Billing: Investigate the stale cache in invoice PDF.
+- Payments: Investigate the null pointer in receipt emails after login.
+- Billing: Fix the layout shift in Stripe webhooks during onboarding.
+- Subscriptions: Fix receipt emails showing stale data after refresh.
+- Search: Fix search indexer crashing when the list is empty.
+- Search: Investigate the deadlock in ranking on first load (P2).
+- Indexing: Fix facet filters dropping the last item (P1).
+- Indexing: Investigate the flicker in reindex job for EU tenants.
+- Search: Investigate the flicker in reindex job.
+- Notifications: In-app inbox is crashing when the list is empty as part of the mobile layout in the legacy view.
+- Search: Synonym dictionary is leaking memory on long sessions.
+- Indexing: Investigate the flicker in synonym dictionary.
+- Indexing: Investigate the deadlock in synonym dictionary.
+- Search: Investigate the flicker in search indexer (database upgrade).
+- Discovery: Investigate the stale cache in typo tolerance.
+- Discovery: Search indexer is double-submitting in the legacy view.
+- Search: Investigate the duplicate request in result highlighting as part of the offline mode in the export path.
+- Search: Fix the duplicate request in search indexer.
+- Infrastructure: Investigate the stale cache in base Docker image during onboarding.
+- Alerts: Investigate the deadlock in digest emails (data export request).
+- Notifications: Push notifications is failing silently when offline for invited users.
+- Notifications: Fix the memory leak in in-app inbox (duplicate webhooks).
+- Notifications: Fix email templates double-submitting on first load.
+- Messaging: Email templates is leaking memory on long sessions.
+- Billing: Investigate the deadlock in coupon codes.
+- Notifications: Fix SMS fallback leaking memory on long sessions.
+- Notifications: Fix email templates dropping the last item for the retention emails for API clients.
+- UI: Investigate the flicker in date picker.
+- Email: Fix the race condition in unsubscribe link for API clients.
+- Email: Push notifications is timing out under load for API clients.
+- Web: Toolbar is rendering off-screen on small screens.
+- Database: Fix audit log table showing stale data after refresh.
+- Storage: Fix the memory leak in schema migrations (SSO rollout) in the mobile app.
+- Database: Investigate the stale cache in soft deletes for EU tenants.
+- Database: Fix read replica timing out under load for large accounts.
+- Database: Fix the stale cache in read replica as part of the CSV import.
+- Persistence: Soft deletes is sorting dates as strings.
+- DB: Fix schema migrations sorting dates as strings.
+- Notifications: Fix the stale cache in notification preferences for admins.
+- Database: Read replica is dropping the last item behind the proxy.
+- Database: Investigate the off-by-one error in nightly backups.
+- Persistence: Fix the duplicate request in tenant partitioning on the free plan.
+- Auth: Fix the layout shift in SSO login for API clients.
+- Database: Fix the off-by-one error in nightly backups behind the proxy.
+- UI: Shortcut overlay is losing state on back navigation.
+- Database: Fix the stale cache in connection pool.
+- Database: Fix orders index crashing when the list is empty in read-only mode.
+- Storage: Investigate the stale cache in tenant partitioning.
+- DevOps: Fix the layout shift in autoscaling policy.
+- Infrastructure: Fix Terraform state rendering off-screen on small screens.
+- Deploy: Investigate the null pointer in Kubernetes manifests.
+- Infrastructure: Fix the null pointer in CDN cache.
+- Platform: Important: Investigate the race condition in log shipping.
+- Infrastructure: Fix secrets vault reporting the wrong timezone.
+- Infrastructure: Fix Kubernetes manifests losing state on back navigation (request quotas).
+- Infrastructure: Log shipping is reporting the wrong timezone as part of the k8s move.
+- Deploy: Base Docker image is failing silently when offline as part of the onboarding revamp on first load.
+- CI: Investigate the encoding bug in release workflow after login.
+- Tests: Investigate the duplicate request in release workflow.
+- CI: Important: Preview deployments is reporting the wrong timezone after login.
+- CI: Investigate the duplicate request in coverage gate for EU tenants.
+- Build: Fix the flicker in nightly build.
+- CI: Fix e2e suite sorting dates as strings (public API v2) for admins.
+- CI: Investigate the layout shift in dependency cache in the mobile app.
+- Build: Fix nightly build rendering off-screen on small screens (P3).
+- CI: Investigate the memory leak in e2e suite for API clients (P2).
+- CI: Fix the null pointer in nightly build on first load (P3).
+- CI: Fix coverage gate returning 500 on invalid input for invited users.
+- Alerts: Investigate the duplicate request in email templates after login.
+- Tests: Test sharding is dropping the last item.
+- CI: Coverage gate is leaking memory on long sessions in the mobile app.
+- CI: Test sharding is leaking memory on long sessions on first load.
+- CI: Fix e2e suite showing stale data after refresh (P3).
+- Docs: Fix API reference returning 500 on invalid input.
+- Docs: Fix the stale cache in changelog (multi-currency).
+- README: Contributing guide is crashing when the list is empty (usage-based billing).
+- Docs: Fix the memory leak in changelog (request quotas) on the free plan.
+- Docs: Fix onboarding guide leaking memory on long sessions on the free plan.
+- Docs: Fix the flicker in architecture notes.
+- Docs: API reference is losing state on back navigation for the search v2 in the legacy view.
+- Documentation: Onboarding guide is ignoring the user's locale.
+- Documentation: Fix incident runbook ignoring the user's locale on the free plan.
+- Docs: Fix onboarding guide sorting dates as strings as part of the mobile layout.
+- Documentation: Fix the off-by-one error in contributing guide.
+- Docs: Deployment guide is breaking after the last deploy behind the proxy.
+
+## T5
+
+- UI: Settings page is returning 500 on invalid input for admins.
+- UX: Navigation menu is dropping the last item for the offline mode on the free plan.
+- UI: Fix empty states crashing when the list is empty (dark theme) (P1).
+- Dashboard: Navigation menu is showing stale data after refresh for API clients.
+- UX: Investigate the deadlock in settings page in the mobile app.
+- UI: Important: Fix profile page leaking memory on long sessions.
+- UI: Investigate the layout shift in theme switcher behind the proxy.
+- UI: Shortcut overlay is losing state on back navigation.
+
+## T6
+
+- Docs: Remove dead code from API reference.
+- Web: Cover sidebar empty input with an e2e test as part of the bulk upload.
+- UI: Let users pick bulk actions from profile page on Safari.
+- UX: Add bulk actions to modal dialog.
+- Frontend: Support a copy-to-clipboard action in data table.
+- UI: Profile data table p95 latency for API clients.
+- Dashboard: Write a how-to for chart widget limits and quotas as part of the alerts hub after login (P1).
+- UI: Audit login form for privilege escalation on the free plan.
+- UI: Split settings page into smaller units on first load.
+- UI: Rename the theme switcher config keys.
+- API: Investigate the encoding bug in error responses as part of the public API v2.
+- UI: Cover date picker empty input with an e2e test after login (P2).
+- API: Cover CORS headers happy path with an e2e test (P2).
+- API: Cache webhook endpoint results to cut render time.
+- API: Fix OpenAPI schema losing state on back navigation.
+- API: Add tests for bulk import endpoint retry behaviour.
+- Public API: Add a dry-run mode to version header (accessibility pass) after login.
+- Endpoints: Investigate the stale cache in rate limiter (P1).
+- API: Add a regression test for bulk import endpoint permission checks for the SAML rollout.
+- Public API: Investigate the deadlock in OpenAPI schema for EU tenants.
+- API: Speed up version header query time on first load (P3).
+- Endpoints: Speed up GraphQL gateway render time for the invoice redesign.
+- API: Add tests for CORS headers happy path for large accounts.
+- API: Document rate limiter rollback procedure for API clients.
+- Docs: Fix architecture notes failing silently when offline.
+- API: Someday: Document rate limiter rollback procedure in the legacy view.
+- Auth: Let users pick undo support from invite links.
+- Auth: Password reset is double-submitting as part of the invoice redesign.
+- Alerts: Let users pick an audit trail from digest emails after login.
+- Auth: Remove dead code from SSO login.
+- Auth: Audit magic links for privilege escalation for invited users.
+- Identity: Cover magic links permission checks with an e2e test as part of the feature flags in the export path.
+- Auth: Rotate the secrets used by OAuth callback for the free trial in the export path.
+- Auth: Support a dry-run mode in account lockout.
+- Billing: Coupon codes is ignoring the user's locale for large accounts (P2).
+- Checkout: Support CSV export in usage metering in the export path.
+- Billing: Coupon codes is timing out under load for the invoice redesign.
+- Billing: Add saved presets to refund flow as part of the saved filters.
+- Tests: Upgrade lint step to the OpenTelemetry SDK (CSV import) on the free plan.
+- Billing: Add tests for refund flow timezone edges during onboarding (P3).
+- Payments: Investigate the null pointer in receipt emails after login.
+- Search: Add tests for search indexer retry behaviour after login.
+- Search: Add a regression test for result highlighting concurrent writes in the legacy view.
+- Search: Important: Speed up autocomplete query time on the free plan.
+- Search: Speed up ranking cold start.
+- Infrastructure: Let users pick an audit trail from base Docker image.
+- Notifications: Split bounce handling into smaller units for the free trial on first load.
+- Notifications: Cache notification preferences results to cut p95 latency in the mobile app (P2).
+- Web: Toolbar is rendering off-screen on small screens.
+- Storage: Add tests for tenant partitioning error states.
+- Persistence: Soft deletes is sorting dates as strings.
+- UI: Add tests for theme switcher permission checks for admins.
+- Database: Replace the hand-rolled read replica state machine (P2).
+- Database: Add tests for schema migrations happy path.
+- Database: Fix the stale cache in connection pool.
+- DB: Sanitize untrusted input in orders index after login.
+- DevOps: Add pagination cursors to CDN cache.
+- Infrastructure: Let users pick per-tenant limits from CDN cache for the offline mode during onboarding.
+- Infrastructure: Add per-tenant limits to autoscaling policy for API clients.
+- Infrastructure: Add tests for staging environment retry behaviour as part of the rate limits.
+- Infrastructure: Add CSRF protection to TLS certificates on the free plan (P3).
+- Deploy: Base Docker image is failing silently when offline as part of the onboarding revamp on first load.
+- Tests: Write a how-to for dependency cache upgrade steps during onboarding (P2).
+- CI: Speed up release workflow query time.
+- Pipeline: Let users pick a copy-to-clipboard action from e2e suite.
+- CI: Document lint step rollback procedure (data export request) (P2).
+- Build: Add tests for e2e suite timezone edges for the throttling.
+- Tests: Test sharding is dropping the last item.
+- Build: Add pagination cursors to coverage gate.
+- CI: Fix e2e suite showing stale data after refresh (P3).
+- Docs: Fix the stale cache in changelog (multi-currency).
+- Infrastructure: Add an audit trail to CDN cache on first load.
+- Persistence: Speed up audit log table cold start in the export path.
+- Storage: Someday: Let users pick inline editing from read replica (public API v2) on the free plan.
+- Docs: Add tests for contributing guide retry behaviour for large accounts.
+- README: Support date range filter in deployment guide.
+- Docs: Cache onboarding guide results to cut query time.
+- README: Extract API reference logic into a shared module (responsive layout).
+
+## T7
+
+- UI: Add sorting by priority to empty states (CSV import).
+- Web: Cover sidebar empty input with an e2e test as part of the bulk upload.
+- Dashboard: Toast messages is leaking memory on long sessions (CSV import) (P3).
+- UI: Write a how-to for sidebar rollback procedure (CSV import).
+- Public API: Rotate the secrets used by version header for the bulk upload.
+- API: Request validator is ignoring the user's locale (bulk upload) (P2).
+- Auth: Speed up 2FA enrollment memory use for the CSV import for invited users.
+- Tests: Upgrade lint step to the OpenTelemetry SDK (CSV import) on the free plan.
+- Notifications: Add a regression test for bounce handling happy path (CSV import).
+- Database: Fix the stale cache in read replica as part of the CSV import.
+
+## T8
+
+- **Docs:** Document API reference local setup for the spreadsheet import for invited users.
+- **Notifications:** Fix bounce handling losing state on back navigation (CSV import) for EU tenants.
+- **CI:** Lint step is dropping the last item (CSV import).
+- **Infrastructure:** Add an audit trail to Terraform state as part of the spreadsheet import on the free plan.
+- **Notifications:** Document push notifications configuration for the spreadsheet import.
+- **UI:** Upgrade empty states to Python 3.13 as part of the bulk upload behind the proxy.
+- **Notifications:** Investigate the flicker in unsubscribe link as part of the spreadsheet import for invited users.
+- **UI:** Fix settings page leaking memory on long sessions as part of the bulk upload.
+- **CI:** Add pagination cursors to test sharding as part of the spreadsheet import.
+- **Tests:** Replace the hand-rolled release workflow state machine (CSV import).
+- **Discovery:** Split autocomplete into smaller units (CSV import).
+- **Infrastructure:** Staging environment is ignoring the user's locale for the CSV import.
+- **Auth:** Password reset is reporting the wrong timezone (spreadsheet import) on Safari.
+- **Auth:** Let users pick inline editing from OAuth callback as part of the CSV import in the export path.
+- **Database:** Let users pick bulk actions from audit log table as part of the CSV import on first load.
+- **Auth:** Write a how-to for session expiry limits and quotas for the CSV import.
+- **README:** Add tests for architecture notes retry behaviour as part of the CSV import in the export path.
+- **UX:** Support a dry-run mode in search box as part of the CSV import.
+- **Tests:** Preview deployments is dropping the last item as part of the CSV import.
+- **Database:** Document read replica rollback procedure as part of the CSV import for admins.
+- **API:** Clean up feature flags in API keys for the CSV import.
+- **Payments:** Support undo support in invoice PDF for the CSV import on the free plan.
+- **DevOps:** TLS certificates is returning 500 on invalid input as part of the CSV import in the export path.
+- **Docs:** Investigate the deadlock in incident runbook as part of the CSV import.
+- **Messaging:** Remove dead code from notification preferences (CSV import).
+- **CI:** Let users pick bulk actions from dependency cache as part of the CSV import in the export path.
+- **CI:** Cover test sharding permission checks with an e2e test (bulk upload) in the export path.
+- **Public API:** Let users pick keyboard navigation from request validator (CSV import).
+- **Infrastructure:** Fix secrets vault timing out under load for the CSV import on first load.
+- **CI:** Dependency cache is dropping the last item for the CSV import in the mobile app.
+- **UI:** Investigate the duplicate request in sidebar (CSV import).
+- **Docs:** Add pagination cursors to changelog as part of the CSV import on the free plan.
+- **API:** Profile OpenAPI schema memory use for the CSV import during onboarding.
+- **Notifications:** Add a progress indicator to digest emails for the CSV import for admins.
+- **Docs:** Investigate the stale cache in contributing guide as part of the CSV import.
+- **Infrastructure:** Rename the CDN cache config keys for the bulk upload.
+- **CI:** Upgrade coverage gate to React 19 (spreadsheet import) in the export path.
+- **Database:** Support CSV export in read replica (spreadsheet import).
+- **Database:** Add a regression test for audit log table retry behaviour as part of the CSV import after login.
+- **UI:** Add tests for sidebar permission checks (spreadsheet import) for API clients.
+- **Docs:** Audit changelog for privilege escalation (spreadsheet import).
+- **UI:** Toolbar is double-submitting for the CSV import in the export path.
+- **UI:** Write a how-to for theme switcher configuration for the bulk upload.
+- **UX:** Fix the stale cache in toast messages (CSV import).
+- **Database:** Rename the soft deletes config keys as part of the spreadsheet import for API clients.
+- **API:** Version header is hanging on slow networks as part of the CSV import for EU tenants.
+
+## T9
+
+- Deploy: Fix the encoding bug in CDN cache (P1).
+- UI: Add pagination cursors to toolbar on Safari.
+- UI: Let users pick bulk actions from profile page on Safari.
+- UX: Add bulk actions to modal dialog.
+- UX: Split theme switcher into smaller units during onboarding.
+- UI: Cover profile page happy path with an e2e test during onboarding.
+- UI: Let users pick an audit trail from search box in the export path.
+- API: Version header is losing state on back navigation on Safari.
+- Public API: Rotate the secrets used by version header for the bulk upload.
+- API: Profile rate limiter query time on first load.
+- Public API: Add a dry-run mode to version header (accessibility pass) after login.
+- API: Add dark theme support to OpenAPI schema for large accounts.
+- Auth: Audit magic links for privilege escalation for invited users.
+- Auth: Investigate the stale cache in SSO login in the export path.
+- UI: Add tests for theme switcher empty input (SOC 2 audit).
+- Checkout: Cache tax calculation results to cut initial load (invoice redesign) on Safari.
+- Billing: Add tests for refund flow timezone edges during onboarding (P3).
+- Billing: Add CSRF protection to Stripe webhooks for admins.
+- Billing: Add a regression test for plan upgrade permission checks as part of the database upgrade.
+- Search: Speed up ranking cold start.
+- Infrastructure: Upgrade TLS certificates to Playwright for invited users.
+- Email: Push notifications is timing out under load for API clients.
+- Database: Read replica is dropping the last item behind the proxy.
+- Database: Fix the off-by-one error in nightly backups behind the proxy.
+- Auth: Rotate the secrets used by 2FA enrollment.
+- Deploy: Upgrade base Docker image to React 19.
+- Platform: Replace the hand-rolled Kubernetes manifests state machine behind the proxy.
+- Infrastructure: Rotate the secrets used by base Docker image for EU tenants.
+- Infrastructure: Log shipping is reporting the wrong timezone as part of the k8s move.
+- CI: Add tests for lint step permission checks after login.
+- CI: Let users pick pagination cursors from test sharding for API clients.
+- Billing: Add inline editing to coupon codes.
+- Database: Write a how-to for schema migrations rollback procedure in the legacy view.
+- Docs: Fix onboarding guide leaking memory on long sessions on the free plan.
+- Messaging: Add a regression test for notification preferences pagination limits.
+- README: Support date range filter in deployment guide.
+- Infra: Support dark theme support in log shipping.
+

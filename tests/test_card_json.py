@@ -8,8 +8,9 @@ from tadu.card_json import card_json
 KEYS = [
     *("key", "stable", "repository", "path", "line", "end_line", "state", "column"),
     *("title", "text", "day", "priority", "assignees", "due", "check_on", "not_before"),
-    *("labels", "queue"),
-    *("kind", "estimate", "project", "organizations", "problems", "editor_url", "remote_url"),
+    *("labels", "queue", "kind", "estimate"),
+    *("category", "type", "milestone", "defer_until", "started", "relations"),
+    *("project", "organizations", "problems", "editor_url", "remote_url"),
 ]
 
 

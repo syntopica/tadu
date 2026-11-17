@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-f44a968f-51d9-4ba1-8e3e-9f6864d3d6ac",
+  "title": "Ship doctor and sync (plan tasks 2-6)",
+  "state": "done",
+  "category": "tooling",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-11",
+  "result": "`tadu doctor` checks TODO.md, TODO_LOG.md, the history index and the rule block read-only; `tadu sync` rewrites only the marked rule block, dry-run by default; the tadu-create and tadu-work skills ship with the plugin manifests.",
+  "evidence": [
+    "uv run pytest (87 passed); uv run tadu doctor . exits 0"
+  ]
+}

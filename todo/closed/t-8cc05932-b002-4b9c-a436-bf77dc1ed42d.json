@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-8cc05932-b002-4b9c-a436-bf77dc1ed42d",
+  "title": "Two repositories in folders with the same name",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "Roots given as paths are named by full path when their folder names collide, in listings, derived keys and MCP writes; a directory given twice is read once; a write never picks a repository by a shared name or a relative path",
+  "evidence": [
+    "tests/test_root_labels.py, test_path_cards.py::test_same_folder_name_in_two_places_stays_apart, test_mcp_repository_root.py; with the MCP SDK client, add to two api folders is refused without a full path and lands only in the one named"
+  ]
+}

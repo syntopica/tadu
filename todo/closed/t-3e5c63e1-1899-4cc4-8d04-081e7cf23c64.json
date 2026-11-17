@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-3e5c63e1-1899-4cc4-8d04-081e7cf23c64",
+  "title": "Separate dates, unclassified items, unchanged output for existing files and contradiction checks",
+  "state": "done",
+  "category": "format",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "Amends the 2026-11-17 item-kinds entry: Due: is only the deadline, Check on: is when to look again and Not before: when work may start; an item without Kind: is unclassified (kind null, --kind unclassified), never a task by default; list lines print as before and show a kind only as [column/kind]; doctor F004 warns about contradicting fields (Not before or Check on after Due, [~] with Not before ahead or Kind: later, Queue: ready on waiting or later); next, inbox and urgent honour the new dates",
+  "evidence": [
+    "tests/test_field_contradictions.py, test_inbox_cards.py, test_next_cards.py, test_urgent_cards.py, test_run_list.py::test_unclassified_and_check_before; tadu 0.1.0 and this version print identical list, show, feed and doctor output on the baseline TODO.md and a legacy backlog, and their JSON keeps every key and value; pytest 941 passed on Python 3.12, 3.13 and 3.14, coverage 100%"
+  ]
+}

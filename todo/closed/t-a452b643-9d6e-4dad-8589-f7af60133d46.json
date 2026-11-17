@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-a452b643-9d6e-4dad-8589-f7af60133d46",
+  "title": "tadu next, tadu inbox and tadu urgent",
+  "state": "done",
+  "category": "agent-ergonomics",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "Commands for work alone, what waits on a person and what is urgent, grouped by who acts (do, decide, chase, check, blocked); each names the others on stderr; the board's Waiting on me shows the same inbox from the server",
+  "evidence": [
+    "tests/test_run_next.py, test_run_inbox.py, test_run_urgent.py, test_inbox_cards.py, test_board_payload.py::test_waiting_on_me_is_the_inbox_of_me; replayed the three requests on a sample backlog"
+  ]
+}

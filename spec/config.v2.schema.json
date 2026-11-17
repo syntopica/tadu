@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/syntopica/tadu/blob/main/spec/config.v2.schema.json",
+  "title": "tadu repository config, todo/tadu.json",
+  "description": "Settings that are about the backlog as a whole, not one task.",
+  "type": "object",
+  "required": [
+    "tadu",
+    "categories"
+  ],
+  "properties": {
+    "tadu": {
+      "description": "Format version the repository is on. Task files may still carry older versions.",
+      "const": 2
+    },
+    "categories": {
+      "description": "Allowed task categories: slug -> display name.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minProperties": 1
+    },
+    "types": {
+      "description": "Allowed task types. Default when absent: bug feature chore test docs refactor perf security.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "archive": {
+      "description": "Optional. Absent = no archive: closed tasks stay in todo/closed/. tadu archive --write moves closed tasks that match either rule into todo/archive/, whole and unchanged.",
+      "type": "object",
+      "properties": {
+        "after_days": {
+          "description": "Archive closed tasks whose closed date is more than this many days ago.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "keep_closed": {
+          "description": "Keep at most this many tasks in closed/; the oldest (by closed date) beyond it are archived.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "month_folders_min": {
+          "description": "A year of the archive is split into month folders (YYYY/MM/) only when its months would hold at least this many tasks on average (counting months that have tasks). Default 10: twelve tasks in a year stay in one folder.",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "after_days"
+          ]
+        },
+        {
+          "required": [
+            "keep_closed"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "milestones": {
+      "description": "Allowed milestones: slug -> name and optional due date.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "due": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "stale_after_days": {
+      "description": "doctor warns when a task has been in progress longer than this (from started). Default 14.",
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "patternProperties": {
+    "^x-[a-z0-9][a-z0-9-]*$": {}
+  },
+  "additionalProperties": false
+}

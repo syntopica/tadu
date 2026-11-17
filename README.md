@@ -2,25 +2,27 @@
 
 tadu is a backlog format for repositories that coding agents maintain, plus the tools that keep it honest.
 
-- `TODO.md` is the active backlog.
-- `TODO_LOG.md` records closed work with its evidence.
-- `TODO_HISTORY_INDEX.jsonl` is an optional index of the conversations already reviewed.
+A repository keeps its backlog in one of two formats:
 
-The format is specified in [spec/todo-format-v1.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md).
+- Format 1: `TODO.md` is the active backlog and `TODO_LOG.md` records closed work with its evidence ([spec/todo-format-v1.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md)).
+- Format 2: one JSON file per task under `todo/`, with `todo/tadu.json` declaring the categories, types and policies ([spec/todo-format-v2.md](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v2.md)). Agents query it instead of reading it, and parallel branches merge without conflicts.
+- In both, `TODO_HISTORY_INDEX.jsonl` is an optional index of the conversations already reviewed.
 
-Fifteen commands:
+The commands:
 
-- `tadu init` starts the backlog in a repository that has none.
-- `tadu doctor` checks a repository against the format and never writes.
+- `tadu init` starts the backlog in a repository that has none (`--format 2` for a task backlog).
+- `tadu doctor` checks a repository against its format and never writes.
 - `tadu sync` updates the marked rule block in an agent instruction file.
-- `tadu add` puts one new item into `TODO.md`, such as a decision for a person.
+- `tadu add` puts one new item into the backlog, such as a decision for a person; on a task backlog it creates a task file.
 - `tadu mark` sets an open item's state: blocked with its blocker named, open again, or in progress.
-- `tadu close` moves one finished item from `TODO.md` into `TODO_LOG.md`.
-- `tadu list` prints the items of one or more repositories, or of a workspace, as lines or JSON.
-- `tadu show` prints one item by its key.
+- `tadu close` closes one open item: into `TODO_LOG.md`, or (format 2) into `todo/closed/`.
+- `tadu list` prints the items of one or more repositories, or of a workspace, as lines or JSON, with filters an agent can aim with.
+- `tadu show` prints one item by its key, with the relations that point at it.
 - `tadu next` lists the tasks an agent can do now without a person.
 - `tadu inbox` lists what waits on a person: decisions, follow-ups and checks whose day has come, their blocked tasks.
 - `tadu urgent` lists what is urgent, high priority or due soon, by who has to act.
+- `tadu ready` prints what can be worked on now; `tadu similar` finds existing items like a new one.
+- `tadu set` and `tadu claim` change and take tasks of a task backlog; `tadu archive`, `tadu fmt` and `tadu migrate` maintain it (see [Task backlog](#task-backlog-format-2)).
 - `tadu feed` prints the recently closed items of one or more repositories, or of a workspace, as JSON.
 - `tadu board` serves a read-only kanban page for a workspace.
 - `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
@@ -88,7 +90,7 @@ Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` w
 
 ## List and show items
 
-`tadu list` reads the open items of the repository roots given (default `.`) and prints one line per item as `repository:path:line [column] priority title`, with `-` for no priority; an item with a `Kind:` shows it in the brackets, as `[backlog/decision]`, so a backlog without kinds prints exactly as before. The title is the item's first paragraph, so a hard-wrapped item shows whole; a title over 160 characters is cut to 157 plus `...` in this listing (`--json` and `show` stay full):
+`tadu list` reads the open items of the repository roots given (default `.`) and prints one line per item as `repository:path:line [column] priority title`, with `-` for no priority and `due YYYY-MM-DD` after the priority when the item has a due date; an item with a `Kind:` shows it in the brackets, as `[backlog/decision]`, so a backlog without kinds prints exactly as before. The title is the item's first paragraph, so a hard-wrapped item shows whole; a title over 160 characters is cut to 157 plus `...` in this listing (`--json` and `show` stay full):
 
 ```bash
 tadu list shop
@@ -107,9 +109,13 @@ shop:TODO.md:54 [backlog/task] - **Billing:** Move invoices to the new VAT rate.
 
 The kind tells the work you can do apart from the rest: `Kind: task` for work you can do, `Kind: decision` for a choice that must be made, `Kind: waiting` for something another person or organization owes, `Kind: later` for something not to do now. An item without `Kind:` is unclassified; tadu never guesses a kind from the text, and `--kind unclassified` lists what is left to sort. Three dates keep apart what used to share `Due:`: `Due:` is the deadline, `Check on:` the day to look at the item again (chase it, revisit it, verify it) and `Not before:` the day before which it cannot start. The kind never changes an item's state or column, and a blocked `[!]` item may be of any kind; the spec's Item kinds section says what to write in each. `--kind` and `--check-before` filter on them, and `next`, `inbox` and `urgent` (below) read them to say who has to act.
 
-`--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--kind` (a kind or `unclassified`), `--label`, `--due-before`, `--check-before`, `--include-cancelled` and `--open`, which keeps only open items. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. A path is named by its directory, unless another path given has a directory of the same name: then both are named by their full path, so `~/acme/api` and `~/globex/api` never look alike. A directory given twice is read once. `--view NAME` applies a saved view of the workspace (see below); filter flags given beside it win, and it needs `--workspace`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
+`--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--kind` (a kind or `unclassified`), `--label`, `--due-before`, `--check-before` and `--include-cancelled`, and, for an agent aiming at the right items without reading the files, `--category` and `--type` (comma-separated, any of), `--milestone`, `--text REGEX` (over title and text), `--due-within N` (overdue included), `--overdue`, `--min-priority`, `--open` (open items only: closed ones are not even read, so it is the fastest query for pending work) and `--history` (closed items of all time instead of `--done-days`). `--sort priority|due|closed` orders them. At most `--limit` items print (default 100, `0` for all), from `--offset`; when more match, a note on standard error says how many and how to get them, so a long answer is never cut short silently (a pipe such as `tadu list | grep` sees only that page: add `--limit 0`). A task of a task backlog prints as `repository:t-8c41d2e7 [column] priority title`, its shortest unique id prefix. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. A path is named by its directory, unless another path given has a directory of the same name: then both are named by their full path, so `~/acme/api` and `~/globex/api` never look alike. A directory given twice is read once. `--view NAME` applies a saved view of the workspace (see below); filter flags given beside it win, and it needs `--workspace`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
 
-`tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Check on:`, `Not before:`, `Labels:`, `Queue:`, `Kind:` and `Estimate:` fields, described in the spec; `doctor` warns about malformed ones (`F001`), repeated IDs (`F002`), field lines that are not read (`F003`) and fields that contradict each other or the item's state (`F004`), such as `Not before:` after `Due:` or `Kind: later` on an item in progress.
+`tadu show KEY` prints the full text of one item, or with `--json` the same object as `list`, followed by the relations that point at it (what it blocks, its duplicates, what was discovered from it). A task id may be given as a unique prefix of at least 10 characters; an ambiguous prefix lists the candidates. An item without an `ID:` field has a derived key, which `list --json` shows. It exits `1` when no item has that key. Items may carry optional `ID:`, `Priority:`, `Assignees:`, `Due:`, `Check on:`, `Not before:`, `Labels:`, `Queue:`, `Kind:` and `Estimate:` fields, described in the spec; `doctor` warns about malformed ones (`F001`), repeated IDs (`F002`), field lines that are not read (`F003`) and fields that contradict each other or the item's state (`F004`), such as `Not before:` after `Due:` or `Kind: later` on an item in progress.
+
+`tadu ready` prints the open items nothing holds back, most urgent first: pending and in-progress items with no open `blocked_by` task and no future `defer_until` (format 2). It takes the same paths or `--workspace`, `--json`, `--limit` and `--offset`.
+
+`tadu similar "TEXT"` prints the open and closed items of all time most like the text, best first, each with the share of words they have in common (0 to 1). Run it before adding an item: deciding whether one of them is the same work is the agent's call. `--limit` (default 5) and `--open` narrow it.
 
 `tadu feed` is the recently-done feed: the done and cancelled `TODO_LOG.md` entries of the last `--done-days` days (default 14), newest first by their closing date, one JSON object per line with the same keys as `list --json`. It takes the same repository paths or `--workspace DIR`; entries closed on the same day keep their repository and log order.
 
@@ -287,6 +293,35 @@ tadu close --match "Fix the header" --evidence "tests/test_header.py passes" --r
 - A close whose result would give `doctor` an error the files did not already have is refused before anything is written. An item that was the last one leaves `TODO.md` with its legend.
 - `TODO_LOG.md` is written first, then `TODO.md`, each atomically, under an exclusive lock on the repository directory (POSIX) and only when neither file changed since it was read. If the second write fails, the message names the line to delete by hand.
 
+## Task backlog (format 2)
+
+A task backlog keeps each task in `todo/open/<id>.json` or `todo/closed/<id>.json`, with the settings in `todo/tadu.json`; the spec has every field. Start one, or convert a format 1 backlog (dry run first, as always):
+
+```bash
+tadu init --format 2 --write        # a new repository
+tadu migrate                        # prints the plan
+tadu migrate --write                # writes todo/, removes TODO.md and TODO_LOG.md (git keeps them)
+```
+
+Then work through the commands, never by editing the JSON by hand:
+
+```bash
+tadu add --title "Reject duplicate webhook deliveries" --category billing --type bug --priority high --write
+tadu set t-8c41d2e7 due=2026-11-20 "labels+=webhooks" --write
+tadu claim t-8c41d2e7 --as agent:claude --write
+tadu close --id t-8c41d2e7 --evidence "pnpm test -- webhook-idempotency passes" --write
+```
+
+- `add` shows similar open and closed tasks before writing, and records `created` and `created_by` (`--created-by`, or `$TADU_ACTOR`). Repeatable options (`--label`, `--note`, `--done-when`, `--link`, `--blocked-by`, `--related`, `--assignee`) take one value each time; ids may be unique prefixes.
+- `set ID key=value ...` changes fields (`key+=v` and `key-=v` for lists, `key=` to remove); it never changes `id`, `started` or `closed`, and does not close a task.
+- `claim` sets the assignee, `in_progress` and `started` at once; it refuses a blocked, deferred or closed task, and one someone else has in progress unless `--force`.
+- `close` appends `closed`, `result` (default: the title) and `evidence` and moves the file to `closed/`, or cancels with `--resolution` or `--duplicate-of ID`. It reports each task that waited on the closed one and changes none of them; decide whether each moves to pending. `--match TEXT` picks the one open task whose title contains it.
+- `archive` moves old closed tasks to `todo/archive/YYYY/` (or `YYYY/MM/` for a busy year) as the archive policy in `tadu.json` says; without a policy nothing moves. `fmt` rewrites files that are not in canonical form.
+
+Every command is a dry run until `--write`, exits `2` when it refuses, and validates before writing, so none can produce a file `doctor` would reject. `doctor` checks a task backlog with the `C` and `J` codes below.
+
+Reading a task backlog is fast for open work at any size (`list --open`, `ready`: about 0.4 s with 2,500 open tasks). Commands that go through all of history (`list --history`, the default `list` window, `similar`, `add`, `show` and `doctor`) read every task file once, then keep what they built in an item cache outside the repository: `$TADU_CACHE_DIR`, else `$XDG_CACHE_HOME/tadu`, else `~/.cache/tadu`. Each run still checks every file's size, inode and timestamps and rebuilds only what changed, so an edit, a `git checkout` or a pull is always seen; files changed in the last two seconds are re-read until they are older. The cache holds plain JSON, never code, and nothing in the repository; delete it at any time, or set `TADU_NO_CACHE=1` to turn it off.
+
 ## Write the rule block
 
 `tadu sync` puts the maintenance rule into the repository's instruction file between `<!-- tadu:rule v4 -->` and `<!-- /tadu:rule -->` marker lines. It edits `AGENTS.md`, or `CLAUDE.md` when there is no `AGENTS.md`. Run it without flags first: that prints a diff and changes nothing.
@@ -324,7 +359,7 @@ AGENTS.md: up to date
 - `--file docs/rules.md` selects another instruction file, given relative to the repository root. `sync` refuses a root that is not a directory and a file that resolves outside the root, and exits `2`; it also exits `2` for unbalanced markers and for a file that is not valid UTF-8.
 - `--adopt-legacy` replaces an older, unmarked section headed "Continuous TODO" instead of appending a second rule. The section ends at the next Markdown heading of any level, at the next line starting with `<!--`, or at the end of the file. Use it only when that section holds nothing but the standard rule. When it holds repository-specific lines, run plain `tadu sync . --write` and keep those lines by hand under a "TODO conventions specific to this repository" heading after the block.
 
-A repository synced before the current block version gets an `R004` warning; run `tadu sync . --write` to update it. Version 2 added the closed-entry template and names the `Evidence:` and `Resolution:` lines the log check requires; version 3 adds `tadu close`, tells agents to run `tadu doctor .` before committing, and says how to install tadu; version 4 adds item kinds and `next`, `inbox`, `urgent`, `add` and `mark`, so an agent working alone records a decision for a person instead of waiting for one.
+A repository synced before the current block version gets an `R004` warning; run `tadu sync . --write` to update it. Version 2 added the closed-entry template and names the `Evidence:` and `Resolution:` lines the log check requires; version 3 adds `tadu close`, tells agents to run `tadu doctor .` before committing, and says how to install tadu; version 4 adds item kinds and `next`, `inbox`, `urgent`, `add` and `mark`, so an agent working alone records a decision for a person instead of waiting for one, tells agents to query the backlog instead of reading it whole, to run `tadu similar` before adding an item, and how to work a task backlog (format 2) through its commands.
 
 ## Adopt the log check
 
@@ -357,7 +392,7 @@ pipx run --spec tadu==<version> tadu doctor .
 
 ### After every agent edit, in Claude Code
 
-`tadu hook claude` reads a Claude Code `PostToolUse` event on standard input. When the tool call changed a backlog file (an `Edit` or `Write` of `TODO.md`, `TODO_LOG.md` or `TODO_HISTORY_INDEX.jsonl`, a shell command that writes one, or `tadu close --write`), it runs the doctor checks on that repository and hands any errors back to the agent as context. It prints nothing otherwise, never blocks the tool call and always exits `0`. Shell commands are matched as text and never run.
+`tadu hook claude` reads a Claude Code `PostToolUse` event on standard input. When the tool call changed a backlog file (an `Edit` or `Write` of `TODO.md`, `TODO_LOG.md`, `TODO_HISTORY_INDEX.jsonl` or a task file under `todo/`, a shell command that writes one, or a `tadu close`, `add`, `set`, `claim`, `archive`, `fmt` or `migrate` run with `--write`), it runs the doctor checks on that repository and hands any errors back to the agent as context. It prints nothing otherwise, never blocks the tool call and always exits `0`. Shell commands are matched as text and never run.
 
 The plugin below installs it. Without the plugin, add it to `.claude/settings.json` or `~/.claude/settings.json`:
 
@@ -412,6 +447,31 @@ Branches that close work in the same month both append to the same section of `T
 | W003 | warning | a workspace repository could not be scanned |
 | W004 | error | the workspace file or local configuration is invalid |
 | E001 | error | a file could not be read (not valid UTF-8, or an I/O error) |
+| C001 | error | `todo/tadu.json` is missing |
+| C002 | error | `todo/tadu.json` is not valid |
+| C003 | warning | `todo/archive/` holds tasks but `tadu.json` has no archive policy |
+| C004 | warning | a `TODO.md` next to a task backlog is ignored |
+| J001 | error | a task file is not JSON, not an object, or has no usable `tadu` version |
+| J002 | warning | a task file from a newer format version: read, never rewritten |
+| J003 | error | a task is invalid (missing key, bad value, or a rule of its state) |
+| J004 | warning | a task file is not in canonical form; `tadu fmt` rewrites it |
+| J005 | error | a task file's name differs from its id |
+| J006 | error | a task is in the wrong folder for its state, or its archive year or month is wrong |
+| J007 | error | two task files have the same id |
+| J008 | warning | a category is not declared in `tadu.json` |
+| J009 | warning | a type is not declared in `tadu.json` |
+| J010 | warning | an open task needs triage: priority `untriaged`, category `general` or type `untriaged` |
+| J011 | warning | a task has an unknown key (kept; probably a typo) |
+| J012 | error | a relation points to a task that does not exist |
+| J013 | error | `blocked_by` relations form a cycle |
+| J014 | warning | a blocked task's `blocked_by` tasks are all closed and it has no `blocker` |
+| J015 | warning | a pending or in-progress task waits on an open `blocked_by` task |
+| J016 | warning | a `blocked_by` task was cancelled |
+| J017 | warning | a line of a task file looks like a secret; the value is never printed |
+| J018 | warning | a task has been in progress longer than `stale_after_days` |
+| J019 | warning | a milestone is not declared in `tadu.json` |
+| J020 | error | a relation points to the task itself |
+| J021 | warning | `duplicate_of` points to a task that is itself a duplicate |
 
 ## Skills
 

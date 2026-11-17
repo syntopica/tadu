@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-de9739e5-21c5-4cc8-bd1c-a41340a066c5",
+  "title": "Add a recently-done feed from the logs",
+  "state": "done",
+  "category": "board",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Smallest next step: list the closed entries of all workspace repositories, newest first, as a JSON command."
+  ],
+  "closed": "2026-11-05",
+  "result": "Added `tadu feed`: done and cancelled log entries of the given repositories or workspace, newest first, as JSON lines with the `list --json` keys.",
+  "evidence": [
+    "tests/test_run_feed.py, tests/test_recently_done.py and tests/test_add_feed_parser.py pass; full gate (pytest 100% coverage, ruff, mypy, codeality-py gate) green."
+  ]
+}

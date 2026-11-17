@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-42c0f89c-9425-4edb-bab5-0b2c3102db9e",
+  "title": "Final-review fixes for doctor and sync",
+  "state": "done",
+  "category": "tooling",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "`sync --write` is atomic and keeps line endings and mode; the legacy section ends at any heading; rule markers count only as whole lines outside fences; empty files, bare log labels, mistyped or unsorted index records and undecodable files are reported; the README is a verified walkthrough.",
+  "evidence": [
+    "uv run pytest (168 passed); uv run tadu doctor . exits 0."
+  ]
+}

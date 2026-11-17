@@ -15,4 +15,10 @@ def add_init_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser
     init.add_argument(
         "--file", default=None, help="instruction file (default: AGENTS.md, else CLAUDE.md)"
     )
+    init.add_argument(
+        "--format",
+        choices=("1", "2"),
+        default="1",
+        help="1: TODO.md and TODO_LOG.md (default); 2: a task backlog, one JSON file per task",
+    )
     init.add_argument("--write", action="store_true", help="apply instead of printing the diff")

@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-b56523ee-336d-47ab-b4d9-13ec09fdec31",
+  "title": "Show item history from `git log`",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "low",
+  "notes": [
+    "Smallest next step: print the commits that touched an item's line span, for one key."
+  ]
+}

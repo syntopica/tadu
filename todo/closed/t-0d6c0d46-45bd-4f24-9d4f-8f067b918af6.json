@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-0d6c0d46-45bd-4f24-9d4f-8f067b918af6",
+  "title": "Rule block v4, version 0.2.0 and the HTTP test on Python 3.12.3",
+  "state": "done",
+  "category": "tooling",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "The rule block teaches kinds, next, inbox, urgent, add and mark (R004 for v3); version 0.2.0 with CHANGELOG.md; the board handler test accepts the HTTP/0.9-style 400 that Python 3.12.3 sends for a bad request line",
+  "evidence": [
+    "tests/test_rule_block_text.py, test_run_sync.py with the Prettier 3 reflowed v4 fixture; test_board_handler.py passes on Python 3.12.3, 3.13.15 and 3.14.7"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-8a000aad-0d26-41d6-a2f7-6b3110e1b1fd",
+  "title": "`tadu close` refuses an item whose continuation line starts with a backtick run followed by text that holds a backtick (`` ```a`b ``), which CommonMark reads as prose, not a fence",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "It fails safe (exit 2, nothing written). `FENCE_LINE_PATTERN` is shared with `sync` and `doctor`, so fix it there with tests for all three."
+  ],
+  "closed": "2026-10-21",
+  "result": "The shared fence pattern follows CommonMark 4.5: backtick info strings cannot contain backticks; tilde info and fence capture remain intact. Close accepts the prose, sync preserves the existing rule block, and doctor sees it. Independent review returned no findings.",
+  "evidence": [
+    "Four regressions failed before the fix; afterward 45 targeted tests and all 381 tests passed. The full AGENTS gate passed with 100% coverage, Ruff, mypy, codeality-py, deptry and pip-audit. Installed CLI fixtures verify sync, doctor and close."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-148fce1b-5536-4be9-9619-047caee85396",
+  "title": "Add an MCP adapter as an optional extra",
+  "state": "done",
+  "category": "board",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Core keeps no dependencies. Smallest next step: expose `list` and `show` as read-only tools in an `mcp` extra."
+  ],
+  "closed": "2026-11-17",
+  "result": "tadu mcp serves next, inbox, urgent, list, show, add, mark and close over stdio with no dependencies, so it ships in core instead of an extra; each call runs the tadu command of that name; add, mark and close write to exactly one repository, never chosen by a shared folder name",
+  "evidence": [
+    "tests/test_run_mcp.py (a real stdio process), test_mcp_call.py, test_mcp_handle.py, test_mcp_repository_root.py; the official MCP Python SDK client (mcp 2.3.0, protocol 2025-11-25) listed and called every tool on a sample backlog; pytest 925 passed, coverage 100%"
+  ]
+}

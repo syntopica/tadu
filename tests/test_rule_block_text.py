@@ -32,3 +32,18 @@ def test_block_names_the_required_labels_and_the_spec() -> None:
     assert "`[x]` entry needs an `Evidence:` line" in text
     assert "`[-]` entry a\n  `Resolution:` line" in text
     assert "https://github.com/syntopica/tadu/blob/main/spec/todo-format-v1.md" in text
+    assert "https://github.com/syntopica/tadu/blob/main/spec/todo-format-v2.md" in text
+
+
+def test_block_teaches_querying_and_the_task_commands() -> None:
+    text = " ".join(rule_block_text().split())
+    for phrase in (
+        "Do not read the backlog files whole",
+        "tadu similar",
+        "tadu ready",
+        "never edit task files by hand",
+        "tadu claim ID --as agent:<name>",
+        "--duplicate-of ID",
+        "Never put secrets in the backlog",
+    ):
+        assert phrase in text

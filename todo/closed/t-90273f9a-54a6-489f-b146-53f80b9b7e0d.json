@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-90273f9a-54a6-489f-b146-53f80b9b7e0d",
+  "title": "tadu sync overwrote an edit made while it ran",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-11-17",
+  "result": "sync writes only if the instruction file still holds what it read (a missing file is created only while still missing) and exits 2 otherwise; a failed write is reported instead of raising; the changed-file message names the files",
+  "evidence": [
+    "tests/test_run_sync_race.py fails against the previous run_sync (exit 0, edit lost) and passes now; tests/test_write_if_unchanged.py"
+  ]
+}

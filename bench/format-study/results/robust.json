@@ -1,0 +1,362 @@
+[
+ {
+  "format": "md_fields",
+  "slip": "broken checkbox marker",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 0.0,
+  "silent_damage": 1.0
+ },
+ {
+  "format": "md_fields",
+  "slip": "continuation not indented",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 0.0,
+  "silent_damage": 1.0
+ },
+ {
+  "format": "md_fields",
+  "slip": "field glued to previous line",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "md_fields",
+  "slip": "unindented note inside item",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 0.0,
+  "silent_damage": 1.0
+ },
+ {
+  "format": "jsonl",
+  "slip": "unescaped quote",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "jsonl",
+  "slip": "trailing comma",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "jsonl",
+  "slip": "raw newline in a string",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "jsonl",
+  "slip": "missing closing brace",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json",
+  "slip": "unescaped quote",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json",
+  "slip": "trailing comma",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json",
+  "slip": "raw newline in a string",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json",
+  "slip": "missing closing brace",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "yaml",
+  "slip": "unquoted colon",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "yaml",
+  "slip": "one extra space of indent",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "yaml",
+  "slip": "tab indent",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "yaml",
+  "slip": "key dedented",
+  "trials": 30,
+  "items": 120,
+  "mean_affected": 120.0,
+  "max_affected": 120,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json_dir",
+  "slip": "unescaped quote",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json_dir",
+  "slip": "trailing comma",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json_dir",
+  "slip": "raw newline in a string",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "json_dir",
+  "slip": "missing closing brace",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "csv",
+  "slip": "unescaped quote",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 0.0,
+  "silent_damage": 1.0
+ },
+ {
+  "format": "csv",
+  "slip": "unquoted comma",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "csv",
+  "slip": "unbalanced opening quote",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 29.566666666666666,
+  "max_affected": 110,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "csv",
+  "slip": "missing column",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "sqldump",
+  "slip": "unescaped quote",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "sqldump",
+  "slip": "missing semicolon",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 0.0,
+  "max_affected": 0,
+  "reported": 0.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "sqldump",
+  "slip": "statement split over two lines",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "sqldump",
+  "slip": "missing value",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "md_dir",
+  "slip": "front matter not closed",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "md_dir",
+  "slip": "no space after colon",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "md_dir",
+  "slip": "list without brackets",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "md_dir",
+  "slip": "indented key",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "rec",
+  "slip": "continuation without +",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "rec",
+  "slip": "blank line inside a record",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ },
+ {
+  "format": "rec",
+  "slip": "field name in wrong case",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 0.4666666666666667,
+  "silent_damage": 0.5333333333333333
+ },
+ {
+  "format": "rec",
+  "slip": "colon missing",
+  "trials": 30,
+  "items": 720,
+  "mean_affected": 1.0,
+  "max_affected": 1,
+  "reported": 1.0,
+  "silent_damage": 0.0
+ }
+]

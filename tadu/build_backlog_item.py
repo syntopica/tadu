@@ -9,6 +9,8 @@ from tadu.field_values import field_values
 from tadu.item_span_end import item_span_end
 from tadu.parse_item_day import parse_item_day
 from tadu.parse_item_fields import parse_item_fields
+from tadu.task_extras import TaskExtras
+from tadu.title_category import title_category
 
 if TYPE_CHECKING:
     import re
@@ -36,4 +38,5 @@ def build_backlog_item(
         text="\n".join(lines[first:end]),
         fields=fields,
         problems=problems,
+        extras=TaskExtras(category=title_category(title)),
     )

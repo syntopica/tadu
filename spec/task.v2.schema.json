@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/syntopica/tadu/blob/main/spec/task.v2.schema.json",
+  "title": "tadu task, format version 2",
+  "description": "One task per file: todo/open/<id>.json, todo/closed/<id>.json, or (when archiving is enabled) todo/archive/YYYY/<id>.json or todo/archive/YYYY/MM/<id>.json. Vocabulary checks (categories, types) and cross-file checks (unique ids, blocked_by targets, cycles) are done by the checker against todo/tadu.json.",
+  "type": "object",
+  "required": [
+    "tadu",
+    "id",
+    "title",
+    "state",
+    "category",
+    "type",
+    "priority"
+  ],
+  "properties": {
+    "tadu": {
+      "description": "Format version of this file. Readers upgrade older versions; a tool must not rewrite a file with a higher version than it knows.",
+      "const": 2
+    },
+    "id": {
+      "description": "t- plus a lowercase UUID4 (122 random bits, no practical collision even across branches). Never changes; equals the file name. Tools display the shortest unique prefix of at least 8 hex digits, and refuse an ambiguous prefix instead of guessing.",
+      "type": "string",
+      "pattern": "^t-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "title": {
+      "description": "One line, imperative, no trailing period needed.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[^\\n\\r]*\\S[^\\n\\r]*$"
+    },
+    "state": {
+      "description": "tadu v1 markers: [ ] pending, [~] in_progress, [!] blocked, [x] done, [-] cancelled.",
+      "enum": [
+        "pending",
+        "in_progress",
+        "blocked",
+        "done",
+        "cancelled"
+      ]
+    },
+    "category": {
+      "description": "Required. Area of the product; a key of categories in todo/tadu.json, or general (always allowed: tadu's existing fallback category, used by migration when unknown; doctor lists open general tasks for triage).",
+      "$ref": "#/$defs/slug"
+    },
+    "type": {
+      "description": "Required. Kind of work; one of types in todo/tadu.json (default list: bug feature chore test docs refactor perf security), or untriaged (always allowed: not decided yet; doctor lists open untriaged tasks).",
+      "$ref": "#/$defs/slug"
+    },
+    "priority": {
+      "description": "Required. untriaged = nobody has decided yet (migration and quick captures use it); doctor lists open untriaged tasks. Sort order: urgent, high, untriaged, normal, low, so unknown work surfaces for triage instead of sinking.",
+      "enum": [
+        "urgent",
+        "high",
+        "normal",
+        "low",
+        "untriaged"
+      ]
+    },
+    "labels": {
+      "description": "Free topic slugs (dark-mode, csv-import). Category and type have their own fields.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/slug"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "milestone": {
+      "description": "Release or milestone this task belongs to; a key of milestones in todo/tadu.json (doctor warns otherwise).",
+      "$ref": "#/$defs/slug"
+    },
+    "created": {
+      "description": "Day the task was recorded.",
+      "$ref": "#/$defs/date"
+    },
+    "created_by": {
+      "description": "Who recorded the task: a person id of the workspace, or agent:<name> for an AI agent (agent:claude). Set by tadu add.",
+      "$ref": "#/$defs/actor"
+    },
+    "started": {
+      "description": "Day work began. Set by the tool the first time the task moves to in_progress (tadu claim, tadu set state=in_progress); never moved back. doctor flags in-progress work older than stale_after_days.",
+      "$ref": "#/$defs/date"
+    },
+    "due": {
+      "description": "Deadline, when there is one.",
+      "$ref": "#/$defs/date"
+    },
+    "defer_until": {
+      "description": "Not before this day: tadu ready hides the task until then. 'Not now' without cancelling it.",
+      "$ref": "#/$defs/date"
+    },
+    "queue": {
+      "description": "Only meaningful while pending: ready = can be started now.",
+      "enum": [
+        "backlog",
+        "ready"
+      ]
+    },
+    "assignees": {
+      "description": "Who works on it: person ids of the workspace, or agent:<name> for an AI agent. Never emails or names. tadu claim sets it.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/actor"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "estimate": {
+      "description": "Minutes.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 999999999
+    },
+    "parent": {
+      "description": "Id of the epic or parent task.",
+      "$ref": "#/$defs/id"
+    },
+    "blocked_by": {
+      "description": "Tasks that must be closed before this one can proceed. The reverse ('blocks') is computed, never stored. When the last of them closes, tadu close reports this task; the agent decides whether it moves to pending.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "related": {
+      "description": "Tasks about the same thing, without an order between them. Stored on one side; tadu show lists both directions.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "discovered_from": {
+      "description": "The task whose work revealed this one (an agent found it while doing that task). tadu show lists, for a task, what was discovered from it.",
+      "$ref": "#/$defs/id"
+    },
+    "blocker": {
+      "description": "The external condition it waits for (a decision, a vendor, credentials). A blocked task needs blocker, blocked_by, or both.",
+      "$ref": "#/$defs/text"
+    },
+    "unblock": {
+      "description": "The smallest action that would unblock it.",
+      "$ref": "#/$defs/text"
+    },
+    "notes": {
+      "description": "Description and context as Markdown, one element per line: \"\" is a blank line, and readers join the elements with \\n. Any Markdown round-trips, code blocks and lists included, and diffs and merges work line by line.",
+      "$ref": "#/$defs/lines"
+    },
+    "done_when": {
+      "description": "Acceptance criteria as Markdown lines (usually one criterion per line): what must be true to close it as done.",
+      "$ref": "#/$defs/lines"
+    },
+    "links": {
+      "description": "URLs or other URIs: pull requests, issues, documents, designs.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "closed": {
+      "description": "Day it was closed (done or cancelled). Retention and archiving use this, never file times.",
+      "$ref": "#/$defs/date"
+    },
+    "result": {
+      "description": "What changed (done).",
+      "$ref": "#/$defs/text"
+    },
+    "evidence": {
+      "description": "Proof as Markdown lines (usually one proof per line): test command, commit, PR, report (done).",
+      "$ref": "#/$defs/lines"
+    },
+    "resolution": {
+      "description": "Why it no longer applies, or what replaced it (cancelled).",
+      "$ref": "#/$defs/text"
+    },
+    "superseded_by": {
+      "description": "The task that replaced this one (cancelled).",
+      "$ref": "#/$defs/id"
+    },
+    "duplicate_of": {
+      "description": "Closed as a duplicate of this task (state cancelled). Set by tadu close --duplicate-of; tadu show lists, for a task, its duplicates.",
+      "$ref": "#/$defs/id"
+    },
+    "files": {
+      "description": "Repository paths the work touched.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    }
+  },
+  "patternProperties": {
+    "^x-[a-z0-9][a-z0-9-]*$": {
+      "description": "Team extensions; tools keep them untouched."
+    }
+  },
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "done"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "closed",
+          "result",
+          "evidence"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "cancelled"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "closed",
+          "resolution"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "anyOf": [
+          {
+            "required": [
+              "blocker"
+            ]
+          },
+          {
+            "required": [
+              "blocked_by"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "pending",
+              "in_progress",
+              "blocked"
+            ]
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "closed"
+              ]
+            },
+            {
+              "required": [
+                "result"
+              ]
+            },
+            {
+              "required": [
+                "resolution"
+              ]
+            },
+            {
+              "required": [
+                "superseded_by"
+              ]
+            },
+            {
+              "required": [
+                "duplicate_of"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "duplicate_of"
+        ]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "const": "cancelled"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^t-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+      "format": "date",
+      "description": "A real calendar date, YYYY-MM-DD. The pattern checks the shape; tadu also rejects impossible days such as 2026-02-30."
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\n\\r]*\\S[^\\n\\r]*$"
+    },
+    "lines": {
+      "description": "Multi-line text as an array of lines. No element contains a line break; leading and trailing blank lines are trimmed by the canonical writer.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\n\\r]*$"
+      },
+      "minItems": 1
+    },
+    "actor": {
+      "description": "A person id of the workspace, or agent:<name> for an AI agent.",
+      "type": "string",
+      "pattern": "^(agent:)?[a-z0-9][a-z0-9-]*$"
+    }
+  }
+}

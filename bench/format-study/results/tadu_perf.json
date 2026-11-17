@@ -1,0 +1,758 @@
+[
+ {
+  "scale": "S",
+  "what": "startup (tadu --version)",
+  "format": "format 1",
+  "ms": 240.457449999667,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "startup (tadu --version)",
+  "format": "format 2",
+  "ms": 249.53209700106527,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "startup (tadu --version)",
+  "format": "format 2 + cache",
+  "ms": 246.44922299921745,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 1",
+  "ms": 293.5304820020974,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 2",
+  "ms": 340.66442999755964,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 2 + cache",
+  "ms": 279.3631650019961,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list high+urgent",
+  "format": "format 1",
+  "ms": 290.9292379990802,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list high+urgent",
+  "format": "format 2",
+  "ms": 267.6688550018298,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list high+urgent",
+  "format": "format 2 + cache",
+  "ms": 296.2369389970263,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list high+urgent, --open",
+  "format": "format 1",
+  "ms": 269.17544000025373,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list high+urgent, --open",
+  "format": "format 2",
+  "ms": 236.83320099735283,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list high+urgent, --open",
+  "format": "format 2 + cache",
+  "ms": 268.6705760024779,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list due before a date",
+  "format": "format 1",
+  "ms": 241.39930100136553,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list due before a date",
+  "format": "format 2",
+  "ms": 354.3831940005475,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "list due before a date",
+  "format": "format 2 + cache",
+  "ms": 246.81955400228617,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "history of a label (all time)",
+  "format": "format 1",
+  "ms": 305.7695390016306,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "history of a label (all time)",
+  "format": "format 2",
+  "ms": 309.1188590005913,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "history of a label (all time)",
+  "format": "format 2 + cache",
+  "ms": 204.64133899804438,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "ready",
+  "format": "format 1",
+  "ms": 203.48778500192566,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "ready",
+  "format": "format 2",
+  "ms": 199.30465099969297,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "ready",
+  "format": "format 2 + cache",
+  "ms": 164.6931510003924,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "similar (open + closed)",
+  "format": "format 1",
+  "ms": 210.52204399893526,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "similar (open + closed)",
+  "format": "format 2",
+  "ms": 266.46688200344215,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "similar (open + closed)",
+  "format": "format 2 + cache",
+  "ms": 199.79363300080877,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "doctor",
+  "format": "format 1",
+  "ms": 195.49038199693314,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "doctor",
+  "format": "format 2",
+  "ms": 337.6981830006116,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "doctor",
+  "format": "format 2 + cache",
+  "ms": 207.97952800057828,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "close one task (--write)",
+  "format": "format 1",
+  "ms": 246.91848800284788,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "close one task (--write)",
+  "format": "format 2 + cache",
+  "ms": 180.44305199873634,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "add one task (--write)",
+  "format": "format 2",
+  "ms": 243.16325600011623,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "add one task (--write)",
+  "format": "format 2 + cache",
+  "ms": 203.61476199832396,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "set a field (--write)",
+  "format": "format 2",
+  "ms": 193.0830130004324,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "set a field (--write)",
+  "format": "format 2 + cache",
+  "ms": 172.6769279994187,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "show one task",
+  "format": "format 2",
+  "ms": 228.1147729991062,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "show one task",
+  "format": "format 2 + cache",
+  "ms": 181.55745200056117,
+  "exit": 0
+ },
+ {
+  "scale": "S",
+  "what": "migrate --write (once)",
+  "format": "1 -> 2",
+  "ms": 341.41898400048376,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "startup (tadu --version)",
+  "format": "format 1",
+  "ms": 181.1084920009307,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "startup (tadu --version)",
+  "format": "format 2",
+  "ms": 164.65204999985872,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "startup (tadu --version)",
+  "format": "format 2 + cache",
+  "ms": 168.00122200220358,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 1",
+  "ms": 405.1499529996363,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 2",
+  "ms": 748.0772560011246,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 2 + cache",
+  "ms": 293.450239001686,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list high+urgent",
+  "format": "format 1",
+  "ms": 428.9096070024243,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list high+urgent",
+  "format": "format 2",
+  "ms": 697.2745589991973,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list high+urgent",
+  "format": "format 2 + cache",
+  "ms": 280.1876310004445,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list high+urgent, --open",
+  "format": "format 1",
+  "ms": 203.38482900115196,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list high+urgent, --open",
+  "format": "format 2",
+  "ms": 209.66631600094843,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list high+urgent, --open",
+  "format": "format 2 + cache",
+  "ms": 179.3099570022605,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list due before a date",
+  "format": "format 1",
+  "ms": 368.26038700019126,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list due before a date",
+  "format": "format 2",
+  "ms": 676.6810349981824,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "list due before a date",
+  "format": "format 2 + cache",
+  "ms": 271.09756999925594,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "history of a label (all time)",
+  "format": "format 1",
+  "ms": 476.3571250005043,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "history of a label (all time)",
+  "format": "format 2",
+  "ms": 800.6899309984874,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "history of a label (all time)",
+  "format": "format 2 + cache",
+  "ms": 543.2188119993953,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "ready",
+  "format": "format 1",
+  "ms": 215.5711759987753,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "ready",
+  "format": "format 2",
+  "ms": 236.4309639997373,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "ready",
+  "format": "format 2 + cache",
+  "ms": 178.07278499822132,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "similar (open + closed)",
+  "format": "format 1",
+  "ms": 492.6193749997765,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "similar (open + closed)",
+  "format": "format 2",
+  "ms": 928.6389939989022,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "similar (open + closed)",
+  "format": "format 2 + cache",
+  "ms": 430.9836569991603,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "doctor",
+  "format": "format 1",
+  "ms": 274.82870499807177,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "doctor",
+  "format": "format 2",
+  "ms": 1164.158536001196,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "doctor",
+  "format": "format 2 + cache",
+  "ms": 541.2218109995592,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "close one task (--write)",
+  "format": "format 1",
+  "ms": 1032.2187659985502,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "close one task (--write)",
+  "format": "format 2 + cache",
+  "ms": 191.56202899830532,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "add one task (--write)",
+  "format": "format 2",
+  "ms": 823.0322710005566,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "add one task (--write)",
+  "format": "format 2 + cache",
+  "ms": 608.3485239978472,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "set a field (--write)",
+  "format": "format 2",
+  "ms": 224.04929800177342,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "set a field (--write)",
+  "format": "format 2 + cache",
+  "ms": 221.72653999950853,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "show one task",
+  "format": "format 2",
+  "ms": 825.3228739995393,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "show one task",
+  "format": "format 2 + cache",
+  "ms": 289.3774170006509,
+  "exit": 0
+ },
+ {
+  "scale": "M",
+  "what": "migrate --write (once)",
+  "format": "1 -> 2",
+  "ms": 2807.489655999234,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "startup (tadu --version)",
+  "format": "format 1",
+  "ms": 182.4508829995466,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "startup (tadu --version)",
+  "format": "format 2",
+  "ms": 166.0556999995606,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "startup (tadu --version)",
+  "format": "format 2 + cache",
+  "ms": 162.9346709996753,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 1",
+  "ms": 996.8772930005798,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 2",
+  "ms": 3209.0299539995613,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list, default (open + done 14 days)",
+  "format": "format 2 + cache",
+  "ms": 1019.9336890000268,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list high+urgent",
+  "format": "format 1",
+  "ms": 1726.0559290007222,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list high+urgent",
+  "format": "format 2",
+  "ms": 3661.825395000051,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list high+urgent",
+  "format": "format 2 + cache",
+  "ms": 618.6142300030042,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list high+urgent, --open",
+  "format": "format 1",
+  "ms": 259.54887099942425,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list high+urgent, --open",
+  "format": "format 2",
+  "ms": 399.9398949999886,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list high+urgent, --open",
+  "format": "format 2 + cache",
+  "ms": 231.3783030003833,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list due before a date",
+  "format": "format 1",
+  "ms": 1056.3819790004345,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list due before a date",
+  "format": "format 2",
+  "ms": 2310.2155179985857,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "list due before a date",
+  "format": "format 2 + cache",
+  "ms": 575.3156709979521,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "history of a label (all time)",
+  "format": "format 1",
+  "ms": 1197.28645700161,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "history of a label (all time)",
+  "format": "format 2",
+  "ms": 2680.1007710018894,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "history of a label (all time)",
+  "format": "format 2 + cache",
+  "ms": 1017.9735419987992,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "ready",
+  "format": "format 1",
+  "ms": 255.1292009993631,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "ready",
+  "format": "format 2",
+  "ms": 379.5576990014524,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "ready",
+  "format": "format 2 + cache",
+  "ms": 227.23088400016422,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "similar (open + closed)",
+  "format": "format 1",
+  "ms": 1509.1566549999698,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "similar (open + closed)",
+  "format": "format 2",
+  "ms": 2909.1216409979097,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "similar (open + closed)",
+  "format": "format 2 + cache",
+  "ms": 1390.5204469992896,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "doctor",
+  "format": "format 1",
+  "ms": 552.7081159998488,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "doctor",
+  "format": "format 2",
+  "ms": 4106.843679001031,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "doctor",
+  "format": "format 2 + cache",
+  "ms": 1256.6866650013253,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "close one task (--write)",
+  "format": "format 1",
+  "ms": 7761.57774800231,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "close one task (--write)",
+  "format": "format 2 + cache",
+  "ms": 592.3513419984374,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "add one task (--write)",
+  "format": "format 2",
+  "ms": 3022.8811880006106,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "add one task (--write)",
+  "format": "format 2 + cache",
+  "ms": 1830.616330000339,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "set a field (--write)",
+  "format": "format 2",
+  "ms": 280.3954810005962,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "set a field (--write)",
+  "format": "format 2 + cache",
+  "ms": 201.51595900097163,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "show one task",
+  "format": "format 2",
+  "ms": 3158.6398580002424,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "show one task",
+  "format": "format 2 + cache",
+  "ms": 1186.9219229993178,
+  "exit": 0
+ },
+ {
+  "scale": "L",
+  "what": "migrate --write (once)",
+  "format": "1 -> 2",
+  "ms": 13900.87478499845,
+  "exit": 0
+ }
+]

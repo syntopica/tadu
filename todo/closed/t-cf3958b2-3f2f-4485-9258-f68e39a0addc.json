@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-cf3958b2-3f2f-4485-9258-f68e39a0addc",
+  "title": "`tadu sync` on a path that does not exist",
+  "state": "done",
+  "category": "bugs",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-12",
+  "result": "`sync` (and so `init`) refuses a root that is not a directory with exit 2; it used to print a diff and exit 0, and traceback with `--write`.",
+  "evidence": [
+    "tests/test_run_sync.py::test_missing_root_is_refused; `tadu sync /nonexistent/x --write` prints \"not a directory\" and exits 2; uv run codeality-py gate all passed."
+  ]
+}

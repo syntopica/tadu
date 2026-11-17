@@ -1,0 +1,596 @@
+## T1
+- t-966b67d4 Audit magic links for privilege escalation for invited users
+- t-3ddae75e Read replica is dropping the last item behind the proxy
+- t-876d016c Profile rate limiter query time on first load
+- t-4bbe2c33 Investigate the stale cache in typo tolerance
+- t-ad2cda49 Support a progress indicator in autocomplete
+- t-df503295 Add dark theme support to bulk import endpoint
+- t-32ab8685 Add keyboard navigation to toast messages (invoice redesign)
+- t-1089435c Add tests for autocomplete empty input for the audit log for API clients
+- t-5e2263d8 Cache OpenAPI schema results to cut initial load
+- t-f387a620 Cover CDN cache happy path with an e2e test as part of the saved filters
+- t-09953018 Fix orders index crashing when the list is empty in read-only mode
+- t-983d5a0a Fix the memory leak in in-app inbox (duplicate webhooks)
+- t-3e214449 Remove dead code from nightly backups
+- t-76066dbd Speed up audit log table cold start in the export path
+- t-4b124f5d Split TLS certificates into smaller units after login
+- t-babf5549 Support a dry-run mode in invoice PDF for API clients
+- t-e612cb61 Speed up ranking cold start
+- t-63380e31 Fix the encoding bug in CDN cache
+- t-efae42f1 Upgrade base Docker image to React 19
+- t-93a6d9e6 Add dark theme support to OpenAPI schema for large accounts
+- t-6822355f Support bulk actions in base Docker image
+- t-c29e27dd Fix facet filters dropping the last item
+- t-d76d2a58 Upgrade receipt emails to pnpm 10
+- t-eb6ff6e5 Let users pick saved presets from proration
+- t-02c5cac1 Investigate the race condition in log shipping
+- t-e8e20d95 Webhook endpoint is showing stale data after refresh as part of the Postgres 17 upgrade
+- t-c8edd643 Remove dead code from push notifications in the export path
+- t-b0afa984 Rename the role permissions config keys for API clients
+- t-4d270944 Add a regression test for account lockout permission checks on first load
+- t-5abca268 Write a how-to for coupon codes upgrade steps
+- t-ba2d5c56 Support a dry-run mode in account lockout
+- t-59478fff Profile notification preferences query time for EU tenants
+- t-7fdbe25d Document CORS headers rollback procedure after login
+- t-4623ea13 Rotate the secrets used by autoscaling policy in the mobile app
+- t-8fd5f00e Settings page is returning 500 on invalid input for admins
+- t-30e80e24 Preview deployments is reporting the wrong timezone after login
+- t-e852ca68 Profile release workflow render time as part of the team invites
+- t-ab31658e API reference is losing state on back navigation for the search v2 in the legacy view
+- t-b3269fb8 Add a regression test for bounce handling happy path (CSV import)
+- t-86b1533c Add a regression test for coverage gate concurrent writes on first load
+- t-d4fe6ab7 Add dark theme support to vacuum schedule on first load
+- t-0146d016 Add tests for SSO login empty input
+- t-098de84c Add tests for search indexer retry behaviour after login
+- t-658c7c20 Add tests for settings page timezone edges during onboarding
+- t-bd06cc94 Audit nightly build for privilege escalation (database upgrade) in the legacy view
+- t-bd50c210 Cache idempotency keys results to cut query time
+- t-90432780 Cache proration results to cut render time
+- t-30b6bd28 Clean up feature flags in CORS headers
+- t-05a2f4d6 Clean up feature flags in OpenAPI schema for the translations in the mobile app
+- t-b6a7c56f Clean up feature flags in onboarding wizard for admins
+- t-d390caa3 Clean up feature flags in orders index on Safari
+- t-f5d9f05a Extract chart widget logic into a shared module
+- t-7c6e8af9 Fix empty states crashing when the list is empty (dark theme)
+- t-4a9d5fda Fix profile page leaking memory on long sessions
+- t-90ba2b9b Fix the flicker in architecture notes
+- t-2726b50c Fix the flicker in nightly build
+- t-efc907ba Fix token refresh failing silently when offline for API clients
+- t-0c798200 Investigate the deadlock in settings page in the mobile app
+- t-49e69a03 Investigate the duplicate request in result highlighting as part of the offline mode in the export path
+- t-7890ea5d Investigate the encoding bug in release workflow after login
+- t-06971725 Investigate the flicker in synonym dictionary
+- t-956b2ca1 Investigate the layout shift in theme switcher behind the proxy
+- t-e8306745 Investigate the stale cache in rate limiter
+- t-da98f2d0 Let users pick a copy-to-clipboard action from tenant partitioning on first load
+- t-9e4a5500 Let users pick an audit trail from base Docker image
+- t-e0867185 Let users pick bulk actions from contributing guide as part of the uptime page in the mobile app
+- t-8c8e2a9b Let users pick dark theme support from shortcut overlay in the export path
+- t-cddcf526 Let users pick inline editing from receipt emails for EU tenants
+- t-1595607e Let users pick per-tenant limits from error responses
+- t-add96a81 Navigation menu is dropping the last item for the offline mode on the free plan
+- t-b33243bd Navigation menu is showing stale data after refresh for API clients
+- t-26e5d652 Onboarding guide is ignoring the user's locale
+- t-8f658853 OpenAPI schema is reporting the wrong timezone
+- t-1522f2e6 OpenAPI schema is showing stale data after refresh
+- t-91e5a376 Password reset is double-submitting as part of the invoice redesign
+- t-5384d7a2 Remove dead code from dependency cache
+- t-4b68c886 Rename the log shipping config keys
+- t-133aad6d Rotate the secrets used by role permissions
+- t-44305129 Sanitize untrusted input in connection pool during onboarding
+- t-4611a7ed Shortcut overlay is losing state on back navigation
+- t-0aab3e59 Speed up autocomplete query time on the free plan
+- t-0ca5442c Speed up invite links memory use
+- t-495a817b Support an audit trail in onboarding guide as part of the performance budget during onboarding
+- t-d229e6dc Support an audit trail in result highlighting for the audit log
+- t-067dc5fa Support inline editing in bulk import endpoint on Safari
+- t-d1771377 Upgrade navigation menu to Tailwind 4
+- t-fd6efe1d Write a how-to for chart widget limits and quotas as part of the alerts hub after login
+- t-226b4ba7 Write a how-to for e2e suite upgrade steps for large accounts
+- t-53a2e53f Write a how-to for notification preferences failure modes on Safari
+
+## T2
+- t-966b67d4 Audit magic links for privilege escalation for invited users
+- t-3ddae75e Read replica is dropping the last item behind the proxy
+- t-876d016c Profile rate limiter query time on first load
+- t-e612cb61 Speed up ranking cold start
+- t-63380e31 Fix the encoding bug in CDN cache
+- t-efae42f1 Upgrade base Docker image to React 19
+- t-93a6d9e6 Add dark theme support to OpenAPI schema for large accounts
+- t-6822355f Support bulk actions in base Docker image
+- t-c29e27dd Fix facet filters dropping the last item
+- t-d76d2a58 Upgrade receipt emails to pnpm 10
+- t-eb6ff6e5 Let users pick saved presets from proration
+- t-873f773d Add tests for theme switcher empty input (SOC 2 audit)
+- t-64b85e6b Let users pick bulk actions from profile page on Safari
+- t-d18fbfab Add tests for lint step permission checks after login
+- t-679f5390 Let users pick an audit trail from search box in the export path
+- t-9de74314 Rotate the secrets used by version header for the bulk upload
+- t-518f07da Fix the off-by-one error in nightly backups behind the proxy
+- t-cb48b418 Investigate the stale cache in SSO login in the export path
+- t-db1c0cc0 Upgrade TLS certificates to Playwright for invited users
+- t-7bd65afe Add pagination cursors to toolbar on Safari
+- t-eae95313 Add CSRF protection to Stripe webhooks for admins
+- t-6ee41066 Cover profile page happy path with an e2e test during onboarding
+- t-48fa5e5d Push notifications is timing out under load for API clients
+- t-0a8f0308 Log shipping is reporting the wrong timezone as part of the k8s move
+- t-2604cd3f Rename the theme switcher config keys
+- t-e0d4de97 Speed up API keys query time
+- t-bd06d738 Split search indexer into smaller units as part of the customer domains
+- t-0ffb12ac Support date range filter in in-app inbox as part of the webhook idempotency
+- t-820fc1ee Fix OpenAPI schema losing state on back navigation
+- t-ae47ae25 Speed up settings page cold start as part of the saved filters after login
+- t-2ad4179d Support an audit trail in request validator in read-only mode
+- t-7269e49b Cache onboarding guide results to cut p95 latency
+- t-dcc26f7a Add tests for profile page timezone edges (offline support)
+- t-a88f9be4 Let users pick an audit trail from digest emails after login
+- t-f9c8f0e2 Support dark theme support in log shipping
+- t-86c83b34 Let users pick pagination cursors from test sharding for API clients
+- t-f0c72ba1 Add a dry-run mode to version header (accessibility pass) after login
+- t-488f7891 Fix onboarding guide leaking memory on long sessions on the free plan
+- t-fca02ea5 Rotate the secrets used by base Docker image for EU tenants
+- t-f5688e13 Version header is losing state on back navigation on Safari
+- t-2c547442 Add inline editing to coupon codes
+- t-b7a9ed7d Cache tax calculation results to cut initial load (invoice redesign) on Safari
+- t-0900faea Rotate the secrets used by 2FA enrollment
+- t-89e56dcb Add bulk actions to modal dialog
+- t-51054a67 Replace the hand-rolled Kubernetes manifests state machine behind the proxy
+- t-06b36e22 Add a regression test for plan upgrade permission checks as part of the database upgrade
+- t-1819db93 Support date range filter in deployment guide
+- t-60b3cbcb Investigate the encoding bug in error responses as part of the public API v2
+- t-dd74ec49 Investigate the deadlock in ranking on first load
+- t-cd1fb7ac Split theme switcher into smaller units during onboarding
+- t-fb4725ba Add a regression test for notification preferences pagination limits
+- t-74ec0b78 Add tests for refund flow timezone edges during onboarding
+- t-1db35f39 Write a how-to for schema migrations rollback procedure in the legacy view
+- t-c60161cd Clean up feature flags in bulk import endpoint for API clients
+
+## T3
+- t-32ab8685 Add keyboard navigation to toast messages (invoice redesign)
+- t-8fd5f00e Settings page is returning 500 on invalid input for admins
+- t-658c7c20 Add tests for settings page timezone edges during onboarding
+- t-b6a7c56f Clean up feature flags in onboarding wizard for admins
+- t-f5d9f05a Extract chart widget logic into a shared module
+- t-7c6e8af9 Fix empty states crashing when the list is empty (dark theme)
+- t-4a9d5fda Fix profile page leaking memory on long sessions
+- t-0c798200 Investigate the deadlock in settings page in the mobile app
+- t-956b2ca1 Investigate the layout shift in theme switcher behind the proxy
+- t-8c8e2a9b Let users pick dark theme support from shortcut overlay in the export path
+- t-add96a81 Navigation menu is dropping the last item for the offline mode on the free plan
+- t-b33243bd Navigation menu is showing stale data after refresh for API clients
+- t-4611a7ed Shortcut overlay is losing state on back navigation
+- t-d1771377 Upgrade navigation menu to Tailwind 4
+- t-fd6efe1d Write a how-to for chart widget limits and quotas as part of the alerts hub after login
+- t-873f773d Add tests for theme switcher empty input (SOC 2 audit)
+- t-64b85e6b Let users pick bulk actions from profile page on Safari
+- t-679f5390 Let users pick an audit trail from search box in the export path
+- t-7bd65afe Add pagination cursors to toolbar on Safari
+- t-6ee41066 Cover profile page happy path with an e2e test during onboarding
+- t-2604cd3f Rename the theme switcher config keys
+- t-ae47ae25 Speed up settings page cold start as part of the saved filters after login
+- t-dcc26f7a Add tests for profile page timezone edges (offline support)
+- t-d26aa0ac Fix the duplicate request in modal dialog (accessibility pass)
+- t-b2d96388 Audit sidebar for privilege escalation for the audit log in the export path
+- t-00b3d8f5 Add inline editing to shortcut overlay
+- t-e40e9510 Add a copy-to-clipboard action to modal dialog
+- t-423af258 Fix the deadlock in toast messages during onboarding
+- t-1a2aab86 Add a regression test for sidebar pagination limits for large accounts
+- t-90b38275 Add pagination cursors to toolbar
+- t-1a7e0305 Add sorting by priority to empty states (CSV import)
+- t-02cfac4c Add tests for settings page error states after login
+- t-6f6d78e6 Audit settings page for privilege escalation for API clients
+- t-40d4b01c Clean up feature flags in theme switcher
+- t-c783d064 Clean up feature flags in toast messages on the free plan
+- t-0dbb1465 Empty states is ignoring the user's locale
+- t-cb166f3e Fix shortcut overlay failing silently when offline
+- t-8fc6979c Fix the off-by-one error in sidebar
+- t-22f8c29a Investigate the duplicate request in toolbar for large accounts
+- t-233c2391 Let users pick undo support from date picker
+- t-290872fb Remove dead code from chart widget
+- t-06c853c9 Rename the toast messages config keys for the SSO rollout in the legacy view
+- t-42942c26 Split settings page into smaller units on first load
+- t-f1598e45 Support keyboard navigation in chart widget in the legacy view
+- t-03b8e9c9 Toast messages is ignoring the user's locale as part of the database upgrade for admins
+- t-87f9dcff Upgrade empty states to React 19
+- t-89e56dcb Add bulk actions to modal dialog
+- t-8e2c8e06 Cover date picker empty input with an e2e test after login
+- t-4bf5083b Investigate the flicker in date picker
+- t-e59e641f Add an audit trail to sidebar (churn emails)
+- t-030e1be2 Support a copy-to-clipboard action in chart widget in the mobile app
+- t-fe59e277 Toolbar is rendering off-screen on small screens
+- t-1470392b Add tests for theme switcher permission checks for admins
+- t-51c1db2c Add date range filter to shortcut overlay
+- t-e9046270 Add a progress indicator to onboarding wizard
+- t-79070f06 Add a regression test for chart widget permission checks during onboarding
+- t-adb1ac70 Add a regression test for search box retry behaviour
+- t-13da84d7 Add a regression test for toast messages empty input
+- t-ab846b13 Add keyboard navigation to shortcut overlay for admins
+- t-778759ff Audit navigation menu for privilege escalation in the mobile app
+- t-34fb9db4 Cache chart widget results to cut query time for the performance budget
+- t-d7c28a71 Clean up feature flags in settings page
+- t-efee7f07 Clean up feature flags in settings page on the free plan
+- t-fe95d2c9 Cover sidebar empty input with an e2e test as part of the bulk upload
+- t-f9b3ee20 Date picker is dropping the last item for admins
+- t-da18dddd Extract onboarding wizard logic into a shared module during onboarding
+- t-698fc23f Fix toast messages timing out under load during onboarding
+- t-f0d729f5 Investigate the layout shift in settings page for large accounts
+- t-acdf3a8b Let users pick keyboard navigation from toolbar as part of the team invites for API clients
+- t-16aea4d6 Let users pick undo support from profile page
+- t-a3fcca9c Remove dead code from theme switcher in read-only mode
+- t-8e18cc29 Rename the profile page config keys for invited users
+- t-8438d4d5 Replace the hand-rolled toast messages state machine for large accounts
+- t-fc7a0b40 Speed up toolbar initial load for invited users
+- t-fb0744da Split empty states into smaller units
+- t-1ce23268 Support a copy-to-clipboard action in data table
+- t-5c8aae31 Support dark theme support in sidebar
+- t-d947091f Support inline editing in settings page during onboarding
+- t-36a4d9fb Support pagination cursors in toast messages in the legacy view
+- t-1b8ef134 Theme switcher is hanging on slow networks
+- t-53a03e50 Toast messages is sorting dates as strings
+- t-6ac0560f Upgrade date picker to pnpm 10
+- t-550585ee Write a how-to for sidebar rollback procedure (CSV import)
+- t-cd1fb7ac Split theme switcher into smaller units during onboarding
+- t-76c7365e Profile empty states p95 latency
+- t-0430ad90 Audit login form for privilege escalation on the free plan
+- t-3e742c37 Clean up feature flags in search box
+- t-f30e45dc Cover empty states pagination limits with an e2e test for admins
+- t-a01c479c Extract toast messages logic into a shared module
+- t-653800c5 Fix shortcut overlay leaking memory on long sessions (saved filters)
+- t-e3227af5 Let users pick a retry button from profile page
+- t-beb31e77 Let users pick pagination cursors from chart widget for the gift notes
+- t-402ffff7 Profile data table p95 latency for API clients
+- t-aed8800c Support a progress indicator in shortcut overlay for the webhook idempotency
+- t-3c04fd01 Support a retry button in empty states as part of the team invites for large accounts
+- t-e542b7a7 Toast messages is leaking memory on long sessions (CSV import)
+- t-d9b78575 Write a how-to for toast messages rollback procedure for the metered billing
+
+## T4
+- t-3ddae75e Read replica is dropping the last item behind the proxy
+- t-4bbe2c33 Investigate the stale cache in typo tolerance
+- t-09953018 Fix orders index crashing when the list is empty in read-only mode
+- t-983d5a0a Fix the memory leak in in-app inbox (duplicate webhooks)
+- t-63380e31 Fix the encoding bug in CDN cache
+- t-c29e27dd Fix facet filters dropping the last item
+- t-02c5cac1 Investigate the race condition in log shipping
+- t-e8e20d95 Webhook endpoint is showing stale data after refresh as part of the Postgres 17 upgrade
+- t-8fd5f00e Settings page is returning 500 on invalid input for admins
+- t-30e80e24 Preview deployments is reporting the wrong timezone after login
+- t-ab31658e API reference is losing state on back navigation for the search v2 in the legacy view
+- t-7c6e8af9 Fix empty states crashing when the list is empty (dark theme)
+- t-4a9d5fda Fix profile page leaking memory on long sessions
+- t-90ba2b9b Fix the flicker in architecture notes
+- t-2726b50c Fix the flicker in nightly build
+- t-efc907ba Fix token refresh failing silently when offline for API clients
+- t-0c798200 Investigate the deadlock in settings page in the mobile app
+- t-49e69a03 Investigate the duplicate request in result highlighting as part of the offline mode in the export path
+- t-7890ea5d Investigate the encoding bug in release workflow after login
+- t-06971725 Investigate the flicker in synonym dictionary
+- t-956b2ca1 Investigate the layout shift in theme switcher behind the proxy
+- t-e8306745 Investigate the stale cache in rate limiter
+- t-add96a81 Navigation menu is dropping the last item for the offline mode on the free plan
+- t-b33243bd Navigation menu is showing stale data after refresh for API clients
+- t-26e5d652 Onboarding guide is ignoring the user's locale
+- t-8f658853 OpenAPI schema is reporting the wrong timezone
+- t-1522f2e6 OpenAPI schema is showing stale data after refresh
+- t-91e5a376 Password reset is double-submitting as part of the invoice redesign
+- t-4611a7ed Shortcut overlay is losing state on back navigation
+- t-518f07da Fix the off-by-one error in nightly backups behind the proxy
+- t-cb48b418 Investigate the stale cache in SSO login in the export path
+- t-48fa5e5d Push notifications is timing out under load for API clients
+- t-0a8f0308 Log shipping is reporting the wrong timezone as part of the k8s move
+- t-820fc1ee Fix OpenAPI schema losing state on back navigation
+- t-d26aa0ac Fix the duplicate request in modal dialog (accessibility pass)
+- t-301f199a Investigate the deadlock in coupon codes
+- t-7d240ad6 OAuth callback is double-submitting for large accounts
+- t-14effa23 Fix the memory leak in bulk import endpoint
+- t-9b5198eb Soft deletes is sorting dates as strings
+- t-e387c214 Investigate the stale cache in contributing guide
+- t-c28070a3 Investigate the stale cache in soft deletes for EU tenants
+- t-d2692120 Fix the duplicate request in API keys
+- t-423af258 Fix the deadlock in toast messages during onboarding
+- t-e41f2361 Fix the layout shift in autoscaling policy
+- t-58fee39b Fix idempotency keys reporting the wrong timezone (onboarding revamp) after login
+- t-cf390b1d Fix audit log table showing stale data after refresh
+- t-56b242cc Investigate the duplicate request in email templates after login
+- t-3f3a12cd Base Docker image is failing silently when offline as part of the onboarding revamp on first load
+- t-3bf472ef CORS headers is leaking memory on long sessions on first load
+- t-7c89d003 Coverage gate is leaking memory on long sessions in the mobile app
+- t-4fd2aa82 Deployment guide is breaking after the last deploy behind the proxy
+- t-776dd39d Email templates is leaking memory on long sessions
+- t-0dbb1465 Empty states is ignoring the user's locale
+- t-d00874ef Fix e2e suite sorting dates as strings (public API v2) for admins
+- t-90054178 Fix email templates dropping the last item for the retention emails for API clients
+- t-934e5b30 Fix error responses losing state on back navigation
+- t-e5ed5b34 Fix incident runbook ignoring the user's locale on the free plan
+- t-5153a94a Fix invite links reporting the wrong timezone
+- t-01286c90 Fix onboarding guide sorting dates as strings as part of the mobile layout
+- t-4a14b3ca Fix read replica timing out under load for large accounts
+- t-07d9a948 Fix schema migrations sorting dates as strings
+- t-cb166f3e Fix shortcut overlay failing silently when offline
+- t-e63feab0 Fix the duplicate request in tenant partitioning on the free plan
+- t-9f4b1b12 Fix the memory leak in pagination
+- t-b27059dd Fix the memory leak in schema migrations (SSO rollout) in the mobile app
+- t-8fc6979c Fix the off-by-one error in sidebar
+- t-9c2612d7 Fix the race condition in unsubscribe link for API clients
+- t-2c5390c5 Fix the stale cache in changelog (multi-currency)
+- t-78485611 Fix the stale cache in connection pool
+- t-807353a9 Fix version header double-submitting
+- t-d8d8f220 GraphQL gateway is double-submitting
+- t-f5a5c701 Investigate the deadlock in digest emails (data export request)
+- t-5f8b1ce6 Investigate the duplicate request in coverage gate for EU tenants
+- t-22f8c29a Investigate the duplicate request in toolbar for large accounts
+- t-551bc955 Investigate the flicker in coupon codes
+- t-c7b201c8 Investigate the flicker in reindex job
+- t-0af8117e Investigate the flicker in search indexer (database upgrade)
+- t-e618468b Investigate the null pointer in Kubernetes manifests
+- t-b9fdc0d6 Investigate the null pointer in receipt emails after login
+- t-fec8f90b Magic links is reporting the wrong timezone on first load
+- t-1c56173d Plan upgrade is double-submitting after login
+- t-7626f779 Push notifications is failing silently when offline for invited users
+- t-84d5c50e Role permissions is breaking after the last deploy
+- t-b17c3f1b Search indexer is double-submitting in the legacy view
+- t-98f37036 Synonym dictionary is leaking memory on long sessions
+- t-03b8e9c9 Toast messages is ignoring the user's locale as part of the database upgrade for admins
+- t-488f7891 Fix onboarding guide leaking memory on long sessions on the free plan
+- t-f5688e13 Version header is losing state on back navigation on Safari
+- t-60b3cbcb Investigate the encoding bug in error responses as part of the public API v2
+- t-dd74ec49 Investigate the deadlock in ranking on first load
+- t-ffc3f7e1 Fix receipt emails showing stale data after refresh
+- t-4bf5083b Investigate the flicker in date picker
+- t-c003e532 Investigate the off-by-one error in nightly backups
+- t-72604ca8 Fix magic links losing state on back navigation (custom domains)
+- t-d86a77dd Coupon codes is timing out under load for the invoice redesign
+- t-b9333264 Investigate the memory leak in e2e suite for API clients
+- t-5654cf1f Test sharding is dropping the last item
+- t-2afe500b Investigate the layout shift in dependency cache in the mobile app
+- t-1969c5f0 Investigate the null pointer in 2FA enrollment
+- t-fe59e277 Toolbar is rendering off-screen on small screens
+- t-8ddc7bcf Fix the null pointer in webhook endpoint in the mobile app
+- t-c9b04c6b Architecture notes is returning 500 on invalid input as part of the onboarding revamp
+- t-4f421b16 Coupon codes is ignoring the user's locale for large accounts
+- t-f9b3ee20 Date picker is dropping the last item for admins
+- t-219e2f66 Fix Kubernetes manifests losing state on back navigation (request quotas)
+- t-4af31e46 Fix SMS fallback leaking memory on long sessions
+- t-cb2abc9c Fix architecture notes failing silently when offline
+- t-88dd2f7d Fix coverage gate returning 500 on invalid input for invited users
+- t-5fb925f1 Fix email templates double-submitting on first load
+- t-7e269c31 Fix password reset crashing when the list is empty in the mobile app
+- t-d6f7a84c Fix secrets vault reporting the wrong timezone
+- t-254e49b2 Fix tax calculation sorting dates as strings for admins
+- t-3dabf088 Fix the duplicate request in search indexer
+- t-a1f99677 Fix the layout shift in Stripe webhooks during onboarding
+- t-3ec7ea26 Fix the null pointer in CDN cache
+- t-26abe12c Fix the off-by-one error in contributing guide
+- t-46211d7d Fix the off-by-one error in usage metering (mobile layout)
+- t-5de3265d Fix the race condition in 2FA enrollment after login
+- t-67fb7511 Fix the stale cache in notification preferences for admins
+- t-393d2948 Fix the stale cache in read replica as part of the CSV import
+- t-698fc23f Fix toast messages timing out under load during onboarding
+- t-ad819f37 In-app inbox is crashing when the list is empty as part of the mobile layout in the legacy view
+- t-0912b873 Investigate the deadlock in OpenAPI schema for EU tenants
+- t-a6966678 Investigate the deadlock in synonym dictionary
+- t-1e05b964 Investigate the duplicate request in tax calculation
+- t-8ce62a34 Investigate the flicker in reindex job for EU tenants
+- t-f0d729f5 Investigate the layout shift in settings page for large accounts
+- t-40fd80aa Investigate the stale cache in base Docker image during onboarding
+- t-6b5a61f6 Investigate the stale cache in invoice PDF
+- t-6112e165 Investigate the stale cache in tenant partitioning
+- t-f612a2fc Investigate the stale cache in webhook endpoint
+- t-9b9b26b6 Proration is hanging on slow networks
+- t-6ea5ce4f Request validator is ignoring the user's locale (bulk upload)
+- t-fbfb550c Session expiry is dropping the last item in the export path
+- t-4ec960fb Test sharding is leaking memory on long sessions on first load
+- t-1b8ef134 Theme switcher is hanging on slow networks
+- t-53a03e50 Toast messages is sorting dates as strings
+- t-86ce1756 Usage metering is breaking after the last deploy for admins
+- t-98a5d66d Fix search indexer crashing when the list is empty
+- t-df93ca32 Fix rate limiter returning 500 on invalid input for the usage-based billing
+- t-8f1f1552 Fix nightly build rendering off-screen on small screens
+- t-9e26ff01 Contributing guide is crashing when the list is empty (usage-based billing)
+- t-51f9b1cd Fix API reference returning 500 on invalid input
+- t-9f5317c3 Fix Terraform state rendering off-screen on small screens
+- t-39f9c840 Fix coupon codes timing out under load during onboarding
+- t-d5940886 Fix e2e suite showing stale data after refresh
+- t-724b7e98 Fix proration hanging on slow networks
+- t-653800c5 Fix shortcut overlay leaking memory on long sessions (saved filters)
+- t-0cdb7d14 Fix the deadlock in session expiry
+- t-6349be64 Fix the duplicate request in GraphQL gateway on first load
+- t-9eb51d4f Fix the layout shift in SSO login for API clients
+- t-799bcbea Fix the memory leak in changelog (request quotas) on the free plan
+- t-d4139385 Fix the null pointer in nightly build on first load
+- t-5e52c8cb Fix the off-by-one error in CORS headers
+- t-3460d9ec Investigate the duplicate request in release workflow
+- t-04721005 Investigate the flicker in receipt emails
+- t-b2f6706c Investigate the stale cache in SSO login (first-run flow) on first load
+- t-639759c1 Plan upgrade is double-submitting (flag service) behind the proxy
+- t-e8ff3d42 Receipt emails is timing out under load
+- t-e542b7a7 Toast messages is leaking memory on long sessions (CSV import)
+
+## T5
+- t-8fd5f00e Settings page is returning 500 on invalid input for admins
+- t-7c6e8af9 Fix empty states crashing when the list is empty (dark theme)
+- t-4a9d5fda Fix profile page leaking memory on long sessions
+- t-0c798200 Investigate the deadlock in settings page in the mobile app
+- t-956b2ca1 Investigate the layout shift in theme switcher behind the proxy
+- t-add96a81 Navigation menu is dropping the last item for the offline mode on the free plan
+- t-b33243bd Navigation menu is showing stale data after refresh for API clients
+- t-4611a7ed Shortcut overlay is losing state on back navigation
+
+## T6
+- t-966b67d4 Audit magic links for privilege escalation for invited users
+- t-76066dbd Speed up audit log table cold start in the export path
+- t-e612cb61 Speed up ranking cold start
+- t-ba2d5c56 Support a dry-run mode in account lockout
+- t-098de84c Add tests for search indexer retry behaviour after login
+- t-e8306745 Investigate the stale cache in rate limiter
+- t-9e4a5500 Let users pick an audit trail from base Docker image
+- t-91e5a376 Password reset is double-submitting as part of the invoice redesign
+- t-0aab3e59 Speed up autocomplete query time on the free plan
+- t-fd6efe1d Write a how-to for chart widget limits and quotas as part of the alerts hub after login
+- t-64b85e6b Let users pick bulk actions from profile page on Safari
+- t-2604cd3f Rename the theme switcher config keys
+- t-820fc1ee Fix OpenAPI schema losing state on back navigation
+- t-a88f9be4 Let users pick an audit trail from digest emails after login
+- t-9b5198eb Soft deletes is sorting dates as strings
+- t-2e6d25f4 Cache webhook endpoint results to cut render time
+- t-99ceca24 Add a regression test for bulk import endpoint permission checks for the SAML rollout
+- t-d61d74a9 Add an audit trail to CDN cache on first load
+- t-72e8db3a Add tests for contributing guide retry behaviour for large accounts
+- t-3f3a12cd Base Docker image is failing silently when offline as part of the onboarding revamp on first load
+- t-3078a469 Extract API reference logic into a shared module (responsive layout)
+- t-2c5390c5 Fix the stale cache in changelog (multi-currency)
+- t-78485611 Fix the stale cache in connection pool
+- t-b9fdc0d6 Investigate the null pointer in receipt emails after login
+- t-491a65ad Let users pick a copy-to-clipboard action from e2e suite
+- t-154c50a0 Rotate the secrets used by OAuth callback for the free trial in the export path
+- t-1e962696 Sanitize untrusted input in orders index after login
+- t-03567a0c Speed up GraphQL gateway render time for the invoice redesign
+- t-e25ff38b Split bounce handling into smaller units for the free trial on first load
+- t-42942c26 Split settings page into smaller units on first load
+- t-38db7209 Support CSV export in usage metering in the export path
+- t-a06ff047 Upgrade lint step to the OpenTelemetry SDK (CSV import) on the free plan
+- t-f0c72ba1 Add a dry-run mode to version header (accessibility pass) after login
+- t-89e56dcb Add bulk actions to modal dialog
+- t-1819db93 Support date range filter in deployment guide
+- t-60b3cbcb Investigate the encoding bug in error responses as part of the public API v2
+- t-8e2c8e06 Cover date picker empty input with an e2e test after login
+- t-d86a77dd Coupon codes is timing out under load for the invoice redesign
+- t-5654cf1f Test sharding is dropping the last item
+- t-94282e1c Add pagination cursors to CDN cache
+- t-419d5e47 Cover CORS headers happy path with an e2e test
+- t-0a4cc7ef Cache onboarding guide results to cut query time
+- t-fe59e277 Toolbar is rendering off-screen on small screens
+- t-1470392b Add tests for theme switcher permission checks for admins
+- t-0bf6a091 Add a regression test for result highlighting concurrent writes in the legacy view
+- t-26d931ed Add saved presets to refund flow as part of the saved filters
+- t-f49934ef Add tests for bulk import endpoint retry behaviour
+- t-9aae859e Add tests for e2e suite timezone edges for the throttling
+- t-da16c05b Add tests for schema migrations happy path
+- t-4523886e Add tests for tenant partitioning error states
+- t-b4ac63dc Cache notification preferences results to cut p95 latency in the mobile app
+- t-4f421b16 Coupon codes is ignoring the user's locale for large accounts
+- t-62dc967e Cover magic links permission checks with an e2e test as part of the feature flags in the export path
+- t-fe95d2c9 Cover sidebar empty input with an e2e test as part of the bulk upload
+- t-190166d6 Document lint step rollback procedure (data export request)
+- t-6ae317f5 Document rate limiter rollback procedure for API clients
+- t-cb2abc9c Fix architecture notes failing silently when offline
+- t-0912b873 Investigate the deadlock in OpenAPI schema for EU tenants
+- t-4fd01b54 Let users pick per-tenant limits from CDN cache for the offline mode during onboarding
+- t-2fc3c316 Remove dead code from SSO login
+- t-ea6965d6 Replace the hand-rolled read replica state machine
+- t-f2894bd6 Speed up release workflow query time
+- t-1ce23268 Support a copy-to-clipboard action in data table
+- t-e2542654 Write a how-to for dependency cache upgrade steps during onboarding
+- t-74ec0b78 Add tests for refund flow timezone edges during onboarding
+- t-72c4325a Speed up version header query time on first load
+- t-e6a7ba4b Add CSRF protection to TLS certificates on the free plan
+- t-5d244ddf Add pagination cursors to coverage gate
+- t-0b889748 Add per-tenant limits to autoscaling policy for API clients
+- t-3c097301 Add tests for CORS headers happy path for large accounts
+- t-1269f835 Add tests for staging environment retry behaviour as part of the rate limits
+- t-0430ad90 Audit login form for privilege escalation on the free plan
+- t-d8026ab1 Document rate limiter rollback procedure in the legacy view
+- t-d5940886 Fix e2e suite showing stale data after refresh
+- t-9adf8df7 Let users pick inline editing from read replica (public API v2) on the free plan
+- t-d87d1c99 Let users pick undo support from invite links
+- t-402ffff7 Profile data table p95 latency for API clients
+- t-849de4af Remove dead code from API reference
+
+## T7
+- t-b3269fb8 Add a regression test for bounce handling happy path (CSV import)
+- t-9de74314 Rotate the secrets used by version header for the bulk upload
+- t-1a7e0305 Add sorting by priority to empty states (CSV import)
+- t-a06ff047 Upgrade lint step to the OpenTelemetry SDK (CSV import) on the free plan
+- t-fe95d2c9 Cover sidebar empty input with an e2e test as part of the bulk upload
+- t-393d2948 Fix the stale cache in read replica as part of the CSV import
+- t-6ea5ce4f Request validator is ignoring the user's locale (bulk upload)
+- t-550585ee Write a how-to for sidebar rollback procedure (CSV import)
+- t-0fc78818 Speed up 2FA enrollment memory use for the CSV import for invited users
+- t-e542b7a7 Toast messages is leaking memory on long sessions (CSV import)
+
+## T8
+- t-6fde8e5d Document API reference local setup for the spreadsheet import for invited users
+- t-4dd05c73 Fix bounce handling losing state on back navigation (CSV import) for EU tenants
+- t-f71f33d4 Lint step is dropping the last item (CSV import)
+- t-b1a4adce Add an audit trail to Terraform state as part of the spreadsheet import on the free plan
+- t-02ffd56f Document push notifications configuration for the spreadsheet import
+- t-ff63b845 Upgrade empty states to Python 3.13 as part of the bulk upload behind the proxy
+- t-948de8f1 Investigate the flicker in unsubscribe link as part of the spreadsheet import for invited users
+- t-50379d40 Fix settings page leaking memory on long sessions as part of the bulk upload
+- t-2219e690 Add pagination cursors to test sharding as part of the spreadsheet import
+- t-ebd3969a Replace the hand-rolled release workflow state machine (CSV import)
+- t-4d4d303b Split autocomplete into smaller units (CSV import)
+- t-d02e3d8d Staging environment is ignoring the user's locale for the CSV import
+- t-193c6ef0 Password reset is reporting the wrong timezone (spreadsheet import) on Safari
+- t-46d72a5e Let users pick inline editing from OAuth callback as part of the CSV import in the export path
+- t-a0b40854 Let users pick bulk actions from audit log table as part of the CSV import on first load
+- t-03a2d2f5 Write a how-to for session expiry limits and quotas for the CSV import
+- t-1a45accd Add tests for architecture notes retry behaviour as part of the CSV import in the export path
+- t-bcde86e7 Support a dry-run mode in search box as part of the CSV import
+- t-7ac4bd61 Preview deployments is dropping the last item as part of the CSV import
+- t-c3af7880 Document read replica rollback procedure as part of the CSV import for admins
+- t-83776bc5 Clean up feature flags in API keys for the CSV import
+- t-ba9be7e4 Support undo support in invoice PDF for the CSV import on the free plan
+- t-d56bee56 TLS certificates is returning 500 on invalid input as part of the CSV import in the export path
+- t-ccb0a68c Investigate the deadlock in incident runbook as part of the CSV import
+- t-4551990b Remove dead code from notification preferences (CSV import)
+- t-181a8b30 Let users pick bulk actions from dependency cache as part of the CSV import in the export path
+- t-826f1f05 Cover test sharding permission checks with an e2e test (bulk upload) in the export path
+- t-92bf2e66 Let users pick keyboard navigation from request validator (CSV import)
+- t-d87dd604 Fix secrets vault timing out under load for the CSV import on first load
+- t-4ef61d32 Dependency cache is dropping the last item for the CSV import in the mobile app
+- t-2ce47b70 Investigate the duplicate request in sidebar (CSV import)
+- t-33220c7e Add pagination cursors to changelog as part of the CSV import on the free plan
+- t-2d088224 Profile OpenAPI schema memory use for the CSV import during onboarding
+- t-8f9b0144 Add a progress indicator to digest emails for the CSV import for admins
+- t-301d3193 Investigate the stale cache in contributing guide as part of the CSV import
+- t-14481fd4 Rename the CDN cache config keys for the bulk upload
+- t-0a3d60f5 Upgrade coverage gate to React 19 (spreadsheet import) in the export path
+- t-29c0b554 Support CSV export in read replica (spreadsheet import)
+- t-ffdbcce8 Add a regression test for audit log table retry behaviour as part of the CSV import after login
+- t-c1113198 Add tests for sidebar permission checks (spreadsheet import) for API clients
+- t-c0d00286 Audit changelog for privilege escalation (spreadsheet import)
+- t-4bcf2f37 Toolbar is double-submitting for the CSV import in the export path
+- t-5f250bef Write a how-to for theme switcher configuration for the bulk upload
+- t-60df962a Fix the stale cache in toast messages (CSV import)
+- t-9ccfbc95 Rename the soft deletes config keys as part of the spreadsheet import for API clients
+- t-47b0bc50 Version header is hanging on slow networks as part of the CSV import for EU tenants
+
+## T9
+- t-966b67d4 Audit magic links for privilege escalation for invited users
+- t-3ddae75e Read replica is dropping the last item behind the proxy
+- t-876d016c Profile rate limiter query time on first load
+- t-e612cb61 Speed up ranking cold start
+- t-63380e31 Fix the encoding bug in CDN cache
+- t-efae42f1 Upgrade base Docker image to React 19
+- t-93a6d9e6 Add dark theme support to OpenAPI schema for large accounts
+- t-873f773d Add tests for theme switcher empty input (SOC 2 audit)
+- t-64b85e6b Let users pick bulk actions from profile page on Safari
+- t-d18fbfab Add tests for lint step permission checks after login
+- t-679f5390 Let users pick an audit trail from search box in the export path
+- t-9de74314 Rotate the secrets used by version header for the bulk upload
+- t-518f07da Fix the off-by-one error in nightly backups behind the proxy
+- t-cb48b418 Investigate the stale cache in SSO login in the export path
+- t-db1c0cc0 Upgrade TLS certificates to Playwright for invited users
+- t-7bd65afe Add pagination cursors to toolbar on Safari
+- t-eae95313 Add CSRF protection to Stripe webhooks for admins
+- t-6ee41066 Cover profile page happy path with an e2e test during onboarding
+- t-48fa5e5d Push notifications is timing out under load for API clients
+- t-0a8f0308 Log shipping is reporting the wrong timezone as part of the k8s move
+- t-f9c8f0e2 Support dark theme support in log shipping
+- t-86c83b34 Let users pick pagination cursors from test sharding for API clients
+- t-f0c72ba1 Add a dry-run mode to version header (accessibility pass) after login
+- t-488f7891 Fix onboarding guide leaking memory on long sessions on the free plan
+- t-fca02ea5 Rotate the secrets used by base Docker image for EU tenants
+- t-f5688e13 Version header is losing state on back navigation on Safari
+- t-2c547442 Add inline editing to coupon codes
+- t-b7a9ed7d Cache tax calculation results to cut initial load (invoice redesign) on Safari
+- t-0900faea Rotate the secrets used by 2FA enrollment
+- t-89e56dcb Add bulk actions to modal dialog
+- t-51054a67 Replace the hand-rolled Kubernetes manifests state machine behind the proxy
+- t-06b36e22 Add a regression test for plan upgrade permission checks as part of the database upgrade
+- t-1819db93 Support date range filter in deployment guide
+- t-cd1fb7ac Split theme switcher into smaller units during onboarding
+- t-fb4725ba Add a regression test for notification preferences pagination limits
+- t-74ec0b78 Add tests for refund flow timezone edges during onboarding
+- t-1db35f39 Write a how-to for schema migrations rollback procedure in the legacy view
