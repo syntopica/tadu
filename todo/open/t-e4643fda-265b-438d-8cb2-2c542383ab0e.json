@@ -11,6 +11,8 @@
   "notes": [
     "Observed 2026-11-17 migrating teleporte-web (commit d405b1a4): for `- [ ] **Lead:** text` items under `## Section`, migrate used the bold lead as the category and only the rest of the first source line as the title, so titles read \"with the\", \"every\", \"saved views and a\" and about 98 one-item categories appeared. The text before the line break was lost from the notes, notes kept the source indentation, and the files were not in `tadu fmt` form (J004).",
     "Evidence: teleporte-web commit 87824a2f repaired 216 items with a script; compare `git show d405b1a4^:TODO.md` with the migrated `todo/open/*.json`.",
-    "Smallest next step: a migrate fixture with a `**Lead:** text` item that wraps onto three lines under a `##` heading, asserting title = lead, category = section slug, full text in notes, and doctor clean."
+    "Smallest next step: a migrate fixture with a `**Lead:** text` item that wraps onto three lines under a `##` heading, asserting title = lead, category = section slug, full text in notes, and doctor clean.",
+    "",
+    "Second case, 2026-11-17, nubenode (commit e94f215): migrate also dropped (a) wrapped continuation lines that start at column 0 inside an item, (b) `- Evidence:` sub-bullets of open items, (c) section prose between a heading and its first item. A shingle comparison found 178 of 1,912 TODO.md lines and 625 of 5,511 TODO_LOG.md lines lost or mostly lost; one closed task kept 4% of its text. Repaired in nubenode commit f5755f0 by rebuilding notes from the source with wrapped lines joined."
   ]
 }
