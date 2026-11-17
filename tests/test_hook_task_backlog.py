@@ -3,6 +3,7 @@ from pathlib import Path
 from task_backlog import task_backlog
 
 from tadu.hook_backlog_root import hook_backlog_root
+from tadu.hook_report import hook_report
 from tadu.nearest_backlog_root import nearest_backlog_root
 from tadu.task_file_root import task_file_root
 
@@ -40,3 +41,7 @@ def test_task_commands_that_write(tmp_path: Path) -> None:
     assert hook_backlog_root(bash("sed -i s/a/b/ todo/open/t-1.json", root)) == root
     assert hook_backlog_root(bash("tadu add --title x", root)) is None
     assert hook_backlog_root(bash("tadu list --write-only-in-name", root)) is None
+
+
+def test_a_clean_task_backlog_raises_no_hook_report(tmp_path: Path) -> None:
+    assert hook_report(task_backlog(tmp_path / "shop", []), 5) is None
