@@ -5,8 +5,10 @@ from __future__ import annotations
 import re
 
 from tadu.item_state_pattern import ITEM_STATE_PATTERN
+from tadu.legacy_closing_fields import legacy_closing_fields
 from tadu.read_v1_continuation import read_v1_continuation
 from tadu.split_blocker import split_blocker
+from tadu.split_bold_title import split_bold_title
 from tadu.split_long_title import split_long_title
 from tadu.stable_task_id import stable_task_id
 from tadu.task_defaults import DEFAULT_TASK_TYPES, UNKNOWN_CATEGORY, UNKNOWN_PRIORITY, UNKNOWN_TYPE
@@ -28,7 +30,9 @@ def v1_task(
     marker, day, text = match.groups() if match else (" ", None, block[0])
     prefix = CATEGORY.match(text)
     shown = prefix.group(1) if prefix else section or "General"
-    title, lead = split_long_title((text[prefix.end() :] if prefix else text).strip())
+    bold_title, bold_rest = split_bold_title((text[prefix.end() :] if prefix else text).strip())
+    title, lead = split_long_title(bold_title)
+    lead = " ".join(part for part in (lead, bold_rest) if part)
     parts = read_v1_continuation(block[1:])
     notes = [lead, *([""] if parts.notes else []), *parts.notes] if lead else parts.notes
     fields, bullets, state = parts.fields, parts.bullets, STATES[marker]
@@ -38,6 +42,16 @@ def v1_task(
     if state == "blocked" and notes:
         blocker, unblock, notes = split_blocker(notes)
     estimate = fields.get("Estimate", "")
+    closing = legacy_closing_fields(
+        state,
+        day,
+        {
+            "title": title.rstrip("."),
+            "result": " ".join(bullets.get("Result", [])),
+            "evidence": [line for line in bullets.get("Evidence", []) if line],
+            "resolution": " ".join(bullets.get("Resolution", [])),
+        },
+    )
     task: dict[str, object] = {
         "tadu": TASK_FORMAT_VERSION,
         "id": fields.get("ID") or stable_task_id(source, title),
@@ -56,10 +70,8 @@ def v1_task(
         "unblock": unblock,
         "notes": notes,
         "done_when": parts.done_when,
-        "closed": day,
-        "result": " ".join(bullets.get("Result", [])),
-        "evidence": [line for line in bullets.get("Evidence", []) if line],
-        "resolution": " ".join(bullets.get("Resolution", [])),
+        "created": None if closing["closed"] else day,
+        **closing,
         "files": [
             f.strip(" `.") for f in ", ".join(bullets.get("Files", [])).split(",") if f.strip(" `.")
         ],

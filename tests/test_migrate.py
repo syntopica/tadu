@@ -170,7 +170,7 @@ def test_migrate_command(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> 
     assert main(["migrate", str(root)]) == 0
     out = capsys.readouterr().out
     assert "would write 3 open and 3 closed tasks, 5 categories" in out
-    assert "Same id again': a done task needs result; a done task needs evidence" in out
+    assert "Same id again" not in out
     assert (root / "TODO.md").exists()
     (root / ".todo.migrating").mkdir()
     (root / ".todo.migrating" / "stale.json").write_text("{}")
