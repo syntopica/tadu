@@ -1,10 +1,13 @@
 {
   "tadu": 2,
   "id": "t-fd2eb4da-c108-44a0-92c5-1656b4554f5e",
-  "title": "Shared board step 2: let editors move and edit cards, committed as the person who edited",
+  "title": "Shared board step 2: card changes become pull requests (or issues) opened as the person who made them",
   "state": "pending",
   "category": "board",
   "type": "feature",
   "priority": "low",
-  "created": "2026-11-18"
+  "created": "2026-11-18",
+  "notes": [
+    "Design: board spec, section Shared mode. Branch plus pull request that patches the task file, opened with the user's GitHub App user token so GitHub enforces rights; never push to a default branch; reuse the file-hash check."
+  ]
 }

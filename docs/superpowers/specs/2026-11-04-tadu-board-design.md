@@ -224,38 +224,41 @@ file's modification time and size are unchanged.
 4. Cross-repository `Depends on:` by ID, a "recently done" feed from the logs,
    item history from `git log`, ageing of blocked items, saved views.
 
-## Shared mode (proposed 2026-11-18, owner delegated the choice)
+## Shared mode (revised 2026-11-18 on the owner's proposal)
 
 Owner intent: host the board on a server, point it at the repositories, and let
-several people use it, each seeing only the repositories they have access to
-(for example one person sees theirs, another sees different ones).
+several people use it. Each person logs in with GitHub and sees only what
+GitHub says they can see. Anyone may read open-source repositories; a person
+with no write access proposes changes as issues or pull requests.
 
-Plan, in three steps that each ship alone:
+Design:
 
-1. **Read-only shared board.** One process serves one workspace on a server.
-   - Identity comes from a reverse proxy in front of it (Cloudflare Access or
-     Tailscale serve), not from login code in tadu: tadu stays standard
-     library only. The server listens on loopback only, so the proxy is the sole
-     way in, and it trusts one configured identity header (the user's email).
-   - Visibility is deny-by-default and lives in the workspace file: each
-     person lists the projects or organizations they may see. The server
-     filters in `workspace_cards` before building any payload, so another
-     person's task text never reaches the browser, not even in the JSON.
-     A request from an identity that is not a listed person gets nothing.
-   - The server reads its own clones of the repositories with a read-only
-     credential (deploy key or fine-grained token) and refreshes them on an
-     interval. It never writes.
-2. **Edits.** Move and edit cards through the shared mutation function in
-   "Later", step 2. Each person has a role per project (`viewer` or `editor`) in
-   the workspace file. The commit is authored as the person who edited, on the
-   server's clone, and pushed with a separate write credential; the file-hash
-   check refuses a stale edit.
-3. **Visibility from the forge.** Derive each person's visible repositories
-   from GitHub permissions instead of the workspace file, once the explicit
-   list becomes a chore.
+- **Identity and visibility come from GitHub.** Login is the GitHub OAuth web
+  flow of a GitHub App, written with the standard library (`urllib`, a signed
+  session cookie), so tadu keeps no dependencies. A card is shown when its
+  repository is in the workspace and the logged-in user can read it on GitHub
+  (private repositories need access; public ones are readable by any login).
+  The workspace file keeps only the grouping into projects and organizations;
+  it no longer lists who may see what. The filter runs in `workspace_cards`
+  before any payload is built, so another user's task text never reaches the
+  browser, not even in the JSON. Deny by default: a failed or expired GitHub
+  check hides the repository.
+- **Reading repositories.** The server keeps its own clones, read through the
+  App's installation credential, and refreshes them on an interval. The user's
+  token is used only to ask GitHub which repositories that user can read, and
+  that answer is cached briefly per user.
+- **Changes are pull requests.** A move or an edit on a card becomes a branch
+  and a pull request that changes the task file, opened with the user's own
+  GitHub App user token, so GitHub enforces the rights and the author is the
+  person. People with write access can merge from GitHub; the board shows the
+  card as changed once it is merged. A request to add a task may open an issue
+  instead. The server never pushes to a default branch. The file-hash check
+  from "Later", step 2, still guards the patch it builds.
+- **Not decided:** where the server runs and behind which hostname; whether to
+  give editors with write access a direct-commit button later.
 
-Not decided here: which proxy (Cloudflare Access reaches people outside a
-tailnet; Tailscale serve needs them on it), and where the server runs.
+Steps, each shippable alone: (1) read-only shared board with GitHub login and
+per-user visibility; (2) card changes as pull requests, then issues.
 
 ## Calls made in this draft, not yet confirmed by the owner
 
