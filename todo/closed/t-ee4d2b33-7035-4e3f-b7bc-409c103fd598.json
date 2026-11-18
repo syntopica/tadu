@@ -2,11 +2,16 @@
   "tadu": 2,
   "id": "t-ee4d2b33-7035-4e3f-b7bc-409c103fd598",
   "title": "Register tadu mcp in the Claude Code plugin and teach the tadu-work skill next, add --kind decision and mark",
-  "state": "pending",
+  "state": "done",
   "category": "adoption",
   "type": "chore",
   "priority": "normal",
   "notes": [
     "The plugin manifest and skills are not in this checkout. A .mcp.json at the plugin root registers the server; check that the plugin's plugin.json does not override it."
+  ],
+  "closed": "2026-11-18",
+  "result": "Register tadu mcp in the Claude Code plugin and teach the tadu-work skill next, add --kind decision and mark",
+  "evidence": [
+    ".mcp.json at the plugin root registers 'tadu mcp'; plugin.json has no mcpServers override; 'tadu mcp' answers initialize; the skills' rule-block.md already teaches tadu next, add --kind decision and mark"
   ]
 }
