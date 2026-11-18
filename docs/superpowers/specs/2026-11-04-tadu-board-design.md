@@ -224,14 +224,38 @@ file's modification time and size are unchanged.
 4. Cross-repository `Depends on:` by ID, a "recently done" feed from the logs,
    item history from `git log`, ageing of blocked items, saved views.
 
-## Pending owner decision
+## Shared mode (proposed 2026-11-18, owner delegated the choice)
 
-Who besides the owner opens a company workspace's board (for example an
-agency's), and whether those people only look or also move and edit cards. That
-answer decides whether the board stays a local tool or also runs as a shared
-server with authentication, and how edits from people who do not use agents
-reach the repositories. The read-only first version does not depend on it, and
-neither does anything above step 2 of "Later".
+Owner intent: host the board on a server, point it at the repositories, and let
+several people use it, each seeing only the repositories they have access to
+(for example one person sees theirs, another sees different ones).
+
+Plan, in three steps that each ship alone:
+
+1. **Read-only shared board.** One process serves one workspace on a server.
+   - Identity comes from a reverse proxy in front of it (Cloudflare Access or
+     Tailscale serve), not from login code in tadu: tadu stays standard
+     library only. The server listens on loopback only, so the proxy is the sole
+     way in, and it trusts one configured identity header (the user's email).
+   - Visibility is deny-by-default and lives in the workspace file: each
+     person lists the projects or organizations they may see. The server
+     filters in `workspace_cards` before building any payload, so another
+     person's task text never reaches the browser, not even in the JSON.
+     A request from an identity that is not a listed person gets nothing.
+   - The server reads its own clones of the repositories with a read-only
+     credential (deploy key or fine-grained token) and refreshes them on an
+     interval. It never writes.
+2. **Edits.** Move and edit cards through the shared mutation function in
+   "Later", step 2. Each person has a role per project (`viewer` or `editor`) in
+   the workspace file. The commit is authored as the person who edited, on the
+   server's clone, and pushed with a separate write credential; the file-hash
+   check refuses a stale edit.
+3. **Visibility from the forge.** Derive each person's visible repositories
+   from GitHub permissions instead of the workspace file, once the explicit
+   list becomes a chore.
+
+Not decided here: which proxy (Cloudflare Access reaches people outside a
+tailnet; Tailscale serve needs them on it), and where the server runs.
 
 ## Calls made in this draft, not yet confirmed by the owner
 

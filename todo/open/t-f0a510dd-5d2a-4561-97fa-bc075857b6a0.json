@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-f0a510dd-5d2a-4561-97fa-bc075857b6a0",
+  "title": "Shared board step 1: serve one workspace to several people, each seeing only their projects",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "notes": [
+    "Design: board spec, section Shared mode, step 1. Listen on loopback, trust one identity header from the proxy, filter in workspace_cards before the payload is built."
+  ],
+  "done_when": [
+    "A request with an identity header of a listed person returns only the cards of that person's projects, in the page and the JSON; an unknown or missing identity gets 403; a test proves another person's task text is absent from the payload"
+  ]
+}
