@@ -1,0 +1,15 @@
+{
+  "tadu": 2,
+  "id": "t-00499a2b-505c-4c6c-b3a1-9436a032f5cc",
+  "title": "Make tadu migrate keep prose between items and sections that hold no item",
+  "state": "pending",
+  "category": "bugs",
+  "type": "bug",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "discovered_from": "t-9fedd57b-37b6-4fd2-90d4-bc102aa44bd3",
+  "notes": [
+    "Found 2026-11-18 migrating ~/p (format 1 TODO.md at d73013e) with d3c3907: section-intro prose survives, but 206 TODO.md lines are dropped silently: paragraphs between items (the parked-summary paragraphs under '## Parked: waiting on you', e.g. 'Money and subscriptions', 'Accounts only you can open'), sections with prose and no item ('## Mailbox pass, Cristian's accounts (2026-09-25)'), the file header blockquotes, and TODO_LOG.md prose such as '#### Routing table' tables and '### How this file was pruned'.",
+    "Smallest next step: report every dropped line in the dry run (count plus first lines), then attach mid-section prose to the preceding item's notes and keep item-less sections and log prose as a closed note task per section."
+  ]
+}
