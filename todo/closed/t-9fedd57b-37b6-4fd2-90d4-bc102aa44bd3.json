@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-9fedd57b-37b6-4fd2-90d4-bc102aa44bd3",
   "title": "Make tadu migrate keep the prose between a ## heading and its first item",
-  "state": "pending",
+  "state": "done",
   "category": "bugs",
   "type": "bug",
   "priority": "low",
@@ -10,5 +10,10 @@
   "discovered_from": "t-e4643fda-265b-438d-8cb2-2c542383ab0e",
   "notes": [
     "Found in nubenode (commit e94f215): migrate drops section prose, which a task has no field for. Smallest next step: decide where it goes, such as the notes of the section's first item, then add a fixture."
+  ],
+  "closed": "2026-11-18",
+  "result": "Make tadu migrate keep the prose between a ## heading and its first item",
+  "evidence": [
+    "migrate keeps section prose in the first item's notes (tadu/with_section_prose.py, test_section_prose_goes_to_the_notes_of_the_first_item); uv run codeality-py gate passes, 1091 tests, 100% coverage"
   ]
 }

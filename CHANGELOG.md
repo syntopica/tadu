@@ -60,3 +60,5 @@ keeps its keys and values, with `kind`, `check_on` and `not_before` added
   of raising a traceback.
 - The "changed since read" message names the files and no longer says
   "closing" for every command.
+- `tadu migrate` keeps the prose between a `##` heading and its first item: the
+  first item of the section carries it in its notes instead of dropping it.

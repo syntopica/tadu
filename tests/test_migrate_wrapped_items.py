@@ -40,3 +40,13 @@ def test_only_a_short_plain_label_is_a_category() -> None:
     assert is_category_prefix("CI portability")
     assert not is_category_prefix("Coverage database hardening (final review minors)")
     assert not is_category_prefix("one two three four")
+
+
+def test_section_prose_goes_to_the_notes_of_the_first_item(tmp_path: Path) -> None:
+    (tmp_path / "TODO.md").write_text(
+        "# TODO\n\nIntro before any section.\n\n## Release\n\nShip it in order.\nCheck the tag.\n\n"
+        "- [ ] First\n  - Evidence: seen\n- [ ] Second\n  Plain note.\n"
+    )
+    first, second = migration_tasks(tmp_path)[0]
+    assert first["notes"] == ["Ship it in order.", "Check the tag.", "", "Evidence: seen"]
+    assert second["notes"] == ["Plain note."]

@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-66c022cd-4120-4966-be1c-55c833ce6143",
   "title": "Bring the quality gate under its 10 s test budget",
-  "state": "pending",
+  "state": "done",
   "category": "tooling",
   "type": "chore",
   "priority": "normal",
@@ -20,5 +20,10 @@
     "Options: a .python-version with 3.14 so the gate runs there; pytest-xdist in the quality group (needs a uv.lock update); one shared Node process for the board JS tests (about 1.3 s, mind module state such as store.js); or a higher budget if the owner's machine is still over.",
     "",
     "Already done: the board asset import check no longer compiles a regular expression per import (commit 514e08a, 0.5 to 1.0 s to 0.03 s)."
+  ],
+  "closed": "2026-11-18",
+  "result": "Bring the quality gate under its 10 s test budget",
+  "evidence": [
+    "On the owner's machine 2026-11-18 'uv run codeality-py gate' passes, pytest step 5.43 s against the 10 s budget (plain pytest 4.18 s); the 12-20 s was sandbox-only"
   ]
 }
