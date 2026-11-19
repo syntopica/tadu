@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-5590a6a2-9d0c-4532-af39-7aa109ab9f44",
+  "title": "Decide whether tadu migrate refuses a TODO.md with loose text or keeps it as untriaged tasks",
+  "state": "blocked",
+  "category": "bugs",
+  "type": "chore",
+  "priority": "normal",
+  "kind": "decision",
+  "created": "2026-11-19",
+  "discovered_from": "t-00499a2b-505c-4c6c-b3a1-9436a032f5cc",
+  "blocker": "Waiting for the owner's answer: refuse and list, or keep loose TODO.md text as untriaged tasks.",
+  "notes": [
+    "Today (session 17 choice) migrate refuses and lists every TODO.md line that sits in no item (unplaced_refusal in migration_refusal); only TODO_LOG.md prose becomes closed tasks. The 2026-11-18 report on ~/p had 206 such lines, so the owner would move them by hand.",
+    "Option A, keep the refusal: nothing is ever guessed, but a large backlog needs manual edits first. Option B, drop the refusal: loose_text_task already turns each block into a pending untriaged task holding the text whole, so migrate runs in one go; the cost is untriaged tasks to sort afterwards.",
+    "Recommended: B, with the loose blocks listed in the dry run as the log's are. Not changed without the owner's answer: it reverses a deliberate choice."
+  ]
+}
