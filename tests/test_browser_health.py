@@ -44,8 +44,8 @@ def test_the_board_stays_while_all_is_well(
     checks: list[str] = []
     page.on("request", lambda request: checks.append(request.url))
     for _ in range(3):
-        page.clock.run_for(EVERY)
-        page.wait_for_timeout(200)
+        with page.expect_request(lambda request: request.url.endswith("/api/session")):
+            page.clock.run_for(EVERY)
     assert sum(url.endswith("/api/session") for url in checks) == 3
     assert shows_board(page)
     assert page.title() == "All work · tadu"
@@ -58,8 +58,7 @@ def test_an_ended_session_leaves_without_a_click(
     live_team_board.stop()
     (live_team_board.workspace / "tadu-workspace.sessions.json").unlink()
     live_team_board.start()
-    page.clock.run_for(EVERY)
-    wait_for_title(page, SIGN_IN_TITLE)
+    run_until_title(page, SIGN_IN_TITLE, EVERY)
     assert not shows_board(page)
     assert page.url.endswith("#view=all")
 
