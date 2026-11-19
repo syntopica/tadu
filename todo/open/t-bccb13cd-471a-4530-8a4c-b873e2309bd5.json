@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-bccb13cd-471a-4530-8a4c-b873e2309bd5",
+  "title": "Review how board proposals behave with several branches (dev, main, features)",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-19",
+  "related": [
+    "t-f4d09f0e-0b1b-4589-b45b-2c8bb99f19c4"
+  ],
+  "notes": [
+    "Today every proposal targets the repository's GitHub default branch only (proposals = pr, merge or direct, see docs/team-board.md).",
+    "The server checkout must match the default branch's backlog files, or the board answers 409; a checkout on dev or a feature branch refuses every proposal.",
+    "With a dev/main split the PR or commit lands on the default branch, not on dev; there is no per-repository target branch setting.",
+    "In merge and direct modes the default branch moves on every change, so the checkout goes stale until pulled; with several branches the backlog on dev and main can diverge.",
+    "Questions to settle: a target branch per repository, which branch the board reads, how a merge into dev reaches main, and whether the checkout should pull itself."
+  ],
+  "done_when": [
+    "The branch behavior is decided, documented in docs/team-board.md and covered by tests, or a decision task records why it stays default-branch only"
+  ]
+}

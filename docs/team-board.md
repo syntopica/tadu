@@ -422,6 +422,8 @@ proposals = "merge"   # "pr" (default), "merge" or "direct"
 
 Someone who may not push always gets an issue, in every mode, and GitHub's own rules (branch protection, required reviews) still bind the person. The answer starts with `merged: <url>`, `committed: <url>` or `proposed: <url>`. The card changes once the server's checkout is pulled, so in these two modes keep the checkouts very current: until then the next change to that repository answers 409 (the checkout no longer matches the default branch).
 
+**Several branches (not settled).** Every proposal targets the repository's GitHub default branch, and the server's checkout must match it. With a `dev`/`main` split, a change lands on the default branch, not on `dev`, and no setting picks another target branch. In `merge` and `direct` modes the default branch moves on every change, so a checkout left on another branch, or not pulled, refuses the next change. How this should work with several branches is still to be reviewed.
+
 ## Security model
 
 What is protected:
