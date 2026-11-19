@@ -1,0 +1,11 @@
+{
+  "tadu": 2,
+  "id": "t-1c056558-647c-44e3-ae27-95f0757e8c25",
+  "title": "Add message-like task types for agents to hand work to each other",
+  "state": "pending",
+  "category": "agent-ergonomics",
+  "type": "feature",
+  "priority": "low",
+  "kind": "later",
+  "created": "2026-11-19"
+}

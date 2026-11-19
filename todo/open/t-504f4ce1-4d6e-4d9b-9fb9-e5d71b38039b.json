@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-504f4ce1-4d6e-4d9b-9fb9-e5d71b38039b",
+  "title": "Add a tadu prime command that prints the workflow context an agent needs for this backlog",
+  "state": "pending",
+  "category": "agent-ergonomics",
+  "type": "feature",
+  "priority": "high",
+  "kind": "task",
+  "created": "2026-11-19",
+  "notes": [
+    "Today the rule block written by tadu sync is static; a command can print the live state (next tasks, inbox, urgent) plus the commands to use."
+  ],
+  "done_when": [
+    "tadu prime prints a short, current briefing and a test covers it"
+  ]
+}

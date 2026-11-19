@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-e123e76f-28d1-443a-8842-33d76652f53f",
+  "title": "Sync tasks with GitHub Issues in both directions",
+  "state": "pending",
+  "category": "adoption",
+  "type": "feature",
+  "priority": "low",
+  "kind": "later",
+  "created": "2026-11-19",
+  "notes": [
+    "Match by issue URL so a second repository's issue never overwrites the first one's task."
+  ]
+}

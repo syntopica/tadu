@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-64772d10-231b-4d1d-9957-f9ab7f1c25bd",
+  "title": "Add duplicates and supersedes links between tasks",
+  "state": "pending",
+  "category": "format",
+  "type": "feature",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-19",
+  "notes": [
+    "Only blocked_by, parent and related exist. Two more link types let an agent say a task replaces or repeats another."
+  ],
+  "done_when": [
+    "spec, doctor, show and list understand both links, with tests"
+  ]
+}

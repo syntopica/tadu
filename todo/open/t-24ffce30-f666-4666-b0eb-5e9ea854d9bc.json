@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-24ffce30-f666-4666-b0eb-5e9ea854d9bc",
+  "title": "Summarise old closed tasks to save agent context",
+  "state": "pending",
+  "category": "agent-ergonomics",
+  "type": "feature",
+  "priority": "low",
+  "kind": "later",
+  "created": "2026-11-19",
+  "notes": [
+    "Archive keeps everything; this would add a short digest for agents to read instead."
+  ]
+}

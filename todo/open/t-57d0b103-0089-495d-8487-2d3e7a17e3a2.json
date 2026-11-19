@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-57d0b103-0089-495d-8487-2d3e7a17e3a2",
+  "title": "Hide the children of a deferred parent from tadu ready",
+  "state": "pending",
+  "category": "format",
+  "type": "feature",
+  "priority": "high",
+  "kind": "task",
+  "created": "2026-11-19",
+  "notes": [
+    "A task deferred to a date or indefinitely should keep its children out of ready until it wakes; add an option to list them anyway."
+  ],
+  "done_when": [
+    "ready omits children of a deferred parent and a flag lists them, with tests"
+  ]
+}

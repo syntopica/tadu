@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-9069bf01-2106-4f5f-b410-577d4beefb05",
+  "title": "Refuse to open a backlog written by a newer tadu format than the binary knows",
+  "state": "pending",
+  "category": "compatibility",
+  "type": "feature",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-19",
+  "notes": [
+    "An old tadu should stop with an actionable message instead of misreading newer files."
+  ],
+  "done_when": [
+    "an older binary exits with a clear error on a newer format and a test covers it"
+  ]
+}

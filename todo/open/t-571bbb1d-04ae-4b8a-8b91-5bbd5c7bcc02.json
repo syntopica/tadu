@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-571bbb1d-04ae-4b8a-8b91-5bbd5c7bcc02",
+  "title": "Audit rule files for contradictions and near-duplicates",
+  "state": "pending",
+  "category": "tooling",
+  "type": "feature",
+  "priority": "low",
+  "kind": "later",
+  "created": "2026-11-19",
+  "notes": [
+    "Preview by default; applying merges and keeps a backup of each source."
+  ]
+}

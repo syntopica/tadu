@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-1352f2da-fc68-4c3d-98ee-f1a44b896521",
+  "title": "Give child tasks hierarchical ids under their parent",
+  "state": "pending",
+  "category": "format",
+  "type": "feature",
+  "priority": "low",
+  "kind": "later",
+  "created": "2026-11-19",
+  "notes": [
+    "Epic, task and sub-task readable at a glance; parent already exists."
+  ]
+}
