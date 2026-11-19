@@ -374,6 +374,7 @@ uv run playwright install chromium   # once, for the tests that drive the board 
 uv run pytest                    # the test suite, one worker per CPU core, with the `browser` tests
 uv run pytest -m node            # the board's scripts and page audits that need Node.js (slow)
 uv run pytest -m crash           # stop every writing command at each file change (slow)
+TADU_LIVE_GITHUB_TOKEN=$(gh auth token) uv run pytest -m live   # the GitHub client against the real API (read only, needs internet)
 uv run codeality-py gate         # every Python check: ruff, mypy, structural rules, deptry, pip-audit, tests
 ```
 
@@ -384,7 +385,7 @@ The gate is what a change must pass:
 | Lint and format | `uv run ruff check . && uv run ruff format --check tadu tests` | the rules in `ruff.toml` |
 | Types | `uv run mypy tadu tests` | strict mode (`mypy.ini`) |
 | Structure | `uv run codeality-py check` | one function or class per module, named after it, and short files (limits in `codeality-py.toml`) |
-| Tests | `uv run pytest --cov=tadu` | 100% line and branch coverage; `-m node` and `-m crash` run apart |
+| Tests | `uv run pytest --cov=tadu` | 100% line and branch coverage; `-m node`, `-m crash` and `-m live` run apart |
 | Duplicated code | `npm run duplicates` (also a test) | no clone [jscpd](https://github.com/kucherenko/jscpd) finds anywhere in the repository (`.jscpd.json`) |
 | Accessibility | `uv run pytest -m node` | no violation [axe-core](https://github.com/dequelabs/axe-core) finds in any state of the board page, and WCAG AA contrast for every text colour in both themes (`tests/test_board_contrast.py`, part of the suite) |
 | The board in a browser | `uv run pytest` (the `browser` tests, Chromium through Playwright) | in Chromium, no console error and no failed request while it blocks an item, drags a card, adds an item and shows every view, light and dark, on a desktop and a phone; no horizontal overflow on the phone |
