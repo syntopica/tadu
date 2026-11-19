@@ -45,6 +45,7 @@ data = [
   "tadu/item_date_prefix_pattern.py",
   "tadu/item_state_pattern.py",
   "tadu/label_pattern.py",
+  "tadu/leftover_patterns.py",
   "tadu/legacy_rule_heading_pattern.py",
   "tadu/legacy_rule_section_pattern.py",
   "tadu/list_marker_pattern.py",

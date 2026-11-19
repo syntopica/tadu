@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from tadu.backlog_item import BacklogItem
 from tadu.field_problem import FieldProblem
 from tadu.item_fields import ItemFields
+from tadu.kinds import KINDS
 from tadu.priorities import PRIORITIES
 from tadu.relative_posix import relative_posix
 from tadu.task_date import task_date
@@ -27,10 +28,11 @@ def task_item(file: TaskFile, root: Path) -> BacklogItem:
     """The item for one task; `root` is the repository checkout the path is shown relative to.
 
     An untriaged priority is shown as no priority, as in tadu v1; the text is the file itself.
+    `defer_until` is the item's not-before day, so next, inbox and urgent leave it out until then.
     """
     task = file.task
     estimate = task.get("estimate")
-    priority = task_str(task, "priority")
+    priority, kind = task_str(task, "priority"), task_str(task, "kind")
     fields = ItemFields(
         id=task_str(task, "id"),
         priority=priority if priority in PRIORITIES else None,
@@ -39,6 +41,9 @@ def task_item(file: TaskFile, root: Path) -> BacklogItem:
         labels=task_strings(task, "labels"),
         queue=task_str(task, "queue") or "backlog",
         estimate=estimate if isinstance(estimate, int) and not isinstance(estimate, bool) else None,
+        kind=kind if kind in KINDS else None,
+        check_on=task_date(task, "check_on"),
+        not_before=task_date(task, "defer_until"),
     )
     extras = TaskExtras(
         category=task_str(task, "category"),

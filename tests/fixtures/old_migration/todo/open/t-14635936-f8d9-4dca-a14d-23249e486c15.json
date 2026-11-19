@@ -1,0 +1,12 @@
+{
+  "tadu": 2,
+  "id": "t-14635936-f8d9-4dca-a14d-23249e486c15",
+  "title": "Maybe rewrite the CLI in Rust",
+  "state": "pending",
+  "category": "later",
+  "type": "untriaged",
+  "priority": "high",
+  "notes": [
+    "Not before: 2027-01-01"
+  ]
+}

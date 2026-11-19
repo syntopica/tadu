@@ -8,6 +8,8 @@ import os
 from typing import TYPE_CHECKING
 
 from tadu.item_cache_settings import ITEM_CACHE_VERSION
+from tadu.leftover_patterns import CACHE_TEMPORARY
+from tadu.remove_stale_temporaries import remove_stale_temporaries
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -26,6 +28,7 @@ def write_item_cache(path: Path, entries: dict[str, list[object]]) -> None:
         )
         # writes: a derived, git-ignored cache; it is replaced in one step and a failed write is skipped
         temporary.replace(path)
+        remove_stale_temporaries(path.parent, CACHE_TEMPORARY)
     except OSError:
         with contextlib.suppress(OSError):
             # writes: a derived, git-ignored cache; it is replaced in one step and a failed write is skipped

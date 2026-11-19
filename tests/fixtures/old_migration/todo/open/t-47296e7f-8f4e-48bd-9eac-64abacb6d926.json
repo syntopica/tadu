@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-47296e7f-8f4e-48bd-9eac-64abacb6d926",
+  "title": "Decide the retry policy",
+  "state": "pending",
+  "category": "billing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "ID: t-66161023-f3a9-43a3-94df-589ca752fa13",
+    "Kind: decision"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "tadu": 2,
+  "categories": {
+    "billing": "Billing",
+    "ci-portability": "CI portability",
+    "general": "General",
+    "later": "Later"
+  }
+}

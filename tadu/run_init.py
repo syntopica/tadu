@@ -10,6 +10,8 @@ from tadu.create_missing_file import create_missing_file
 from tadu.fresh_log_text import fresh_log_text
 from tadu.fresh_todo_text import fresh_todo_text
 from tadu.is_blocked_target import is_blocked_target
+from tadu.leftover_patterns import REPOSITORY_TEMPORARY
+from tadu.remove_stale_temporaries import remove_stale_temporaries
 from tadu.run_sync import run_sync
 
 if TYPE_CHECKING:
@@ -29,4 +31,6 @@ def run_init(path: str, file: str | None, *, write: bool, today: date) -> int:
         return status
     for target, text in targets:
         create_missing_file(target, text, write=write)
+    if write:  # a write killed late leaves nothing to write here, only its temporary file
+        remove_stale_temporaries(root, REPOSITORY_TEMPORARY)
     return 0

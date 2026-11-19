@@ -7,8 +7,10 @@ from typing import TYPE_CHECKING
 
 from tadu.close_item import close_item
 from tadu.close_plan import ClosePlan
+from tadu.finish_close import finish_close
 from tadu.fresh_todo_text import fresh_todo_text
 from tadu.introduced_errors import introduced_errors
+from tadu.logged_entry import logged_entry
 from tadu.split_text_lines import split_text_lines
 
 if TYPE_CHECKING:
@@ -20,13 +22,28 @@ if TYPE_CHECKING:
 def plan_close(
     root: Path, texts: tuple[str, str], first: int, closing: Closing
 ) -> ClosePlan | None:
-    """The plan for closing the item at line index `first`; an emptied backlog gets the legend."""
+    """The plan for closing the item at line index `first`; an emptied backlog gets the legend.
+
+    An item a stopped close already logged is finished instead: removed, its entry completed.
+    """
     todo_text, log_text = texts
     (todo, todo_newline), (log, log_newline) = (
         split_text_lines(todo_text),
         split_text_lines(log_text),
     )
-    new_todo, new_log = close_item(todo, log, first, closing)
+    entry = logged_entry(todo, log, first)
+    if entry is None:
+        new_todo, new_log = close_item(todo, log, first, closing)
+    else:
+        finished = finish_close((todo, log), first, entry, closing)
+        if isinstance(finished, str):
+            print(f"{root / 'TODO.md'}:{first + 1}: {finished}", file=sys.stderr)
+            return None
+        new_todo, new_log = finished
+        print(
+            f"{root / 'TODO.md'}:{first + 1}: already logged at TODO_LOG.md:{entry.line} by a "
+            "close that stopped halfway; finishing it"
+        )
     after_todo = todo_newline.join(new_todo)
     if not after_todo.strip():
         after_todo = todo_newline.join(fresh_todo_text().split("\n"))

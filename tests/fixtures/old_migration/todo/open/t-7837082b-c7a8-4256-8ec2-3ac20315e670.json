@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-7837082b-c7a8-4256-8ec2-3ac20315e670",
+  "title": "Switch to live carrier rates",
+  "state": "blocked",
+  "category": "billing",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "blocker": "Waiting for the carrier's production key.",
+  "unblock": "Ask Ana to chase it.",
+  "notes": [
+    "Kind: waiting"
+  ]
+}

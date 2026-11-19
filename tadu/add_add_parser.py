@@ -47,15 +47,17 @@ def add_add_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser]
         help="item priority; untriaged is for tasks (format 2: default untriaged)",
     )
     add.add_argument(
-        "--kind", choices=KINDS, help="format 1: task, decision, waiting or later (default: none)"
+        "--kind", choices=KINDS, help="task, decision, waiting or later (default: none)"
     )
     add.add_argument("--milestone", help="format 2: milestone slug declared in todo/tadu.json")
     add.add_argument("--due", help="deadline, YYYY-MM-DD")
     add.add_argument("--defer-until", help="format 2: not before this day, YYYY-MM-DD")
-    add.add_argument("--check-on", help="format 1: YYYY-MM-DD, when to look at it again")
-    add.add_argument("--not-before", help="format 1: YYYY-MM-DD, it cannot start before this day")
-    add.add_argument("--assignees", help="format 1: comma-separated person ids")
-    add.add_argument("--labels", help="format 1: comma-separated labels")
+    add.add_argument("--check-on", help="YYYY-MM-DD, when to look at it again")
+    add.add_argument(
+        "--not-before", help="YYYY-MM-DD, it cannot start before this day (format 2: defer_until)"
+    )
+    add.add_argument("--assignees", help="comma-separated person ids")
+    add.add_argument("--labels", help="comma-separated labels")
     add.add_argument("--queue", choices=QUEUES, help="ready = can start now")
     add.add_argument("--estimate", type=non_negative_int, help="minutes")
     add.add_argument("--no-id", action="store_true", help="format 1: do not give the item an ID")

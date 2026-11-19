@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-55161023-f3a9-43a3-94df-589ca752fa13",
+  "title": "Reject duplicate webhook deliveries",
+  "state": "pending",
+  "category": "billing",
+  "type": "bug",
+  "priority": "high",
+  "labels": [
+    "webhooks"
+  ],
+  "blocked_by": [
+    "t-66161023-f3a9-43a3-94df-589ca752fa13"
+  ],
+  "notes": [
+    "Kind: task",
+    "",
+    "Check on: 2026-11-10",
+    "",
+    "Not before: 2026-11-05"
+  ]
+}

@@ -2,21 +2,26 @@
 
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING
 
 from tadu.canonical_task_text import canonical_task_text
 from tadu.finding import Finding
 from tadu.secret_lines import secret_lines
 from tadu.task_format_version import TASK_FORMAT_VERSION
+from tadu.task_id_pattern import TASK_ID_PATTERN
 from tadu.task_problems import task_problems
 from tadu.task_str import task_str
+from tadu.task_strings import task_strings
 
 if TYPE_CHECKING:
     from tadu.task_file import TaskFile
 
+LOST_ID = re.compile(f"ID: ({TASK_ID_PATTERN.pattern.strip('^$')})")
+
 
 def task_file_findings(file: TaskFile) -> tuple[Finding, ...]:
-    """Newer version, secrets, schema problems, then form and file name of a valid task.
+    """Newer version, secrets, schema problems, then form, file name and lost ID of a valid task.
 
     Returns the findings and stops early: an invalid task is not judged on its form.
     """
@@ -46,4 +51,12 @@ def task_file_findings(file: TaskFile) -> tuple[Finding, ...]:
     task_id = task_str(file.task, "id")
     if file.path.stem != task_id:
         findings.append(Finding("J005", "error", path, 0, f"file name does not match id {task_id}"))
+    for note in task_strings(file.task, "notes"):
+        lost = LOST_ID.fullmatch(note)
+        if lost and lost.group(1) != task_id:
+            message = (
+                f"notes hold `{note}`, an ID that an older tadu's migrate lost; "
+                "tadu migrate --recover gives it back"
+            )
+            findings.append(Finding("J022", "warning", path, 0, message))
     return tuple(findings)

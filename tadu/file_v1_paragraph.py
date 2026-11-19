@@ -14,10 +14,15 @@ ID_TEXT = re.compile(TASK_ID_PATTERN.pattern.strip("^$"))
 
 
 def file_v1_paragraph(lines: list[str], parts: V1ItemParts) -> None:
-    """`Depends on:` with task ids -> blocked_by, `Done when:` -> done_when, anything else -> notes."""
+    """`Depends on:` with task ids -> blocked_by, `Done when:` -> done_when, anything else -> notes.
+
+    A `Depends on:` that says more than its ids stays in the notes whole as well.
+    """
     text = " ".join(lines)
     if text.startswith("Depends on:") and ID_TEXT.search(text):
         parts.blocked_by += ID_TEXT.findall(text)
+        if re.sub(r"[\s,;.]|\band\b", "", ID_TEXT.sub("", text[len("Depends on:") :])):
+            parts.notes += ([""] if parts.notes else []) + lines
     elif lines[0].startswith("Done when:"):
         first = lines[0][len("Done when:") :].strip()
         parts.done_when += (

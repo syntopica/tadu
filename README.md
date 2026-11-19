@@ -86,6 +86,8 @@ AGENTS.md:0: error R003 no TODO maintenance rule
 
 Exit status: `0` when there are no errors (warnings alone still exit `0`), `1` when at least one error is reported. A clean repository prints nothing. Add `--json` for one JSON object per finding. A file that cannot be read as UTF-8 produces an `E001` finding and the other checks and roots still run.
 
+doctor also finds what a tadu command stopped halfway (by Ctrl-C, a killed process or a crash) leaves behind. Each file is replaced by renaming a complete temporary copy over it, so no file is ever half written, but a command that writes two files can stop between them: a close in `TODO.md` and `TODO_LOG.md` (`T005`), a close of a task in `open/` and `closed/` (`J007`) a migration that left `TODO.md` or `TODO_LOG.md` beside `todo/` (`C004`), a `tadu migrate --recover` that did not finish (`C005`) and an `archive` that left tasks due to move (`C006`). Running the same command again finishes each of them (see the close, migrate and archive sections). A temporary `.<name>.<random>.tmp` copy, or the `.todo.migrating/` folder of a migration, is reported as `I001`; the next tadu write to the same folder removes temporary copies older than a minute, and `tadu migrate` starts over from a stale `.todo.migrating/`. Two log entries with the same `ID:` (`L007`, as an older tadu left when a stopped close was run again) are for you to merge by hand.
+
 `tadu doctor --workspace DIR` checks the items of every repository registered in the workspace (paths are then optional; with only `--workspace`, the per-repository checks are not run). It reports unknown assignees of open items (`W001`), IDs shared between repositories (`W002`), repositories that could not be scanned (`W003`) and an invalid workspace (`W004`, an error). Giving neither paths nor `--workspace` exits `2`.
 
 ## List and show items
@@ -107,7 +109,7 @@ shop:TODO.md:48 [backlog/later] - **Billing:** Check whether retries dropped aft
 shop:TODO.md:54 [backlog/task] - **Billing:** Move invoices to the new VAT rate.
 ```
 
-The kind tells the work you can do apart from the rest: `Kind: task` for work you can do, `Kind: decision` for a choice that must be made, `Kind: waiting` for something another person or organization owes, `Kind: later` for something not to do now. An item without `Kind:` is unclassified; tadu never guesses a kind from the text, and `--kind unclassified` lists what is left to sort. Three dates keep apart what used to share `Due:`: `Due:` is the deadline, `Check on:` the day to look at the item again (chase it, revisit it, verify it) and `Not before:` the day before which it cannot start. The kind never changes an item's state or column, and a blocked `[!]` item may be of any kind; the spec's Item kinds section says what to write in each. `--kind` and `--check-before` filter on them, and `next`, `inbox` and `urgent` (below) read them to say who has to act.
+The kind tells the work you can do apart from the rest: `Kind: task` for work you can do, `Kind: decision` for a choice that must be made, `Kind: waiting` for something another person or organization owes, `Kind: later` for something not to do now. An item without `Kind:` is unclassified; tadu never guesses a kind from the text, and `--kind unclassified` lists what is left to sort. Three dates keep apart what used to share `Due:`: `Due:` is the deadline, `Check on:` the day to look at the item again (chase it, revisit it, verify it) and `Not before:` the day before which it cannot start. The kind never changes an item's state or column, and a blocked `[!]` item may be of any kind; the spec's Item kinds section says what to write in each. `--kind` and `--check-before` filter on them, and `next`, `inbox` and `urgent` (below) read them to say who has to act. A task backlog (format 2) has the same three as its `kind`, `check_on` and `defer_until` keys, so all of this works the same there.
 
 `--json` prints one object per item; its keys are listed in the spec. The filters are `--project`, `--org`, `--role`, `--assignee`, `--column`, `--priority`, `--kind` (a kind or `unclassified`), `--label`, `--due-before`, `--check-before` and `--include-cancelled`, and, for an agent aiming at the right items without reading the files, `--category` and `--type` (comma-separated, any of), `--milestone`, `--text REGEX` (over title and text), `--due-within N` (overdue included), `--overdue`, `--min-priority`, `--open` (open items only: closed ones are not even read, so it is the fastest query for pending work) and `--history` (closed items of all time instead of `--done-days`). `--sort priority|due|closed` orders them. At most `--limit` items print (default 100, `0` for all), from `--offset`; when more match, a note on standard error says how many and how to get them, so a long answer is never cut short silently (a pipe such as `tadu list | grep` sees only that page: add `--limit 0`). A task of a task backlog prints as `repository:t-8c41d2e7 [column] priority title`, its shortest unique id prefix. `--workspace DIR` reads every repository of a workspace instead of paths; giving both exits `2`. A path is named by its directory, unless another path given has a directory of the same name: then both are named by their full path, so `~/acme/api` and `~/globex/api` never look alike. A directory given twice is read once. `--view NAME` applies a saved view of the workspace (see below); filter flags given beside it win, and it needs `--workspace`. Done and cancelled items come from `TODO_LOG.md` entries of the last `--done-days` days (default 14). Repositories that cannot be scanned are reported on standard error and do not change the exit status.
 
@@ -176,7 +178,7 @@ tadu add --title "Raise the acquirer limit or split large charges." --category C
   Raising the limit needs a contract change; splitting ships today.
 ```
 
-The item gets a new `ID:` unless `--no-id`, then the fields given (`--kind`, `--priority`, `--assignees`, `--due`, `--check-on`, `--not-before`, `--labels`, `--queue`, `--estimate`; without `--kind` the item is left unclassified), then one paragraph per `--note`. A value the fields table does not allow, a blank or multi-line argument, a category containing `*` and a note that would read as a field, a list item or a fence exit `2` before anything is written. A `TODO.md` with irregular line endings or an unclosed fence is refused, and so is a change that would give `doctor` an error; the write is atomic, under the same lock as `close`, and only when the file did not change since it was read.
+The item gets a new `ID:` unless `--no-id`, then the fields given (`--kind`, `--priority`, `--assignees`, `--due`, `--check-on`, `--not-before`, `--labels`, `--queue`, `--estimate`; without `--kind` the item is left unclassified), then one paragraph per `--note`. A value the fields table does not allow, a blank or multi-line argument, a category containing `*` and a note that would read as a field, a list item or a fence exit `2` before anything is written. A `TODO.md` with irregular line endings or an unclosed fence is refused, and so is a change that would give `doctor` an error; the write is atomic, under the same lock as `close`, and only when the file did not change since it was read. The options of a task backlog are written in their format 1 spelling: `--label` and `--assignee` join `Labels:` and `Assignees:`, `--defer-until` is `Not before:`, each `--done-when` a `Done when:` paragraph and `--blocked-by` (whole task ids) a `Depends on:` paragraph, as `tadu migrate` reads them back; `--type`, `--milestone`, `--parent`, `--discovered-from`, `--created-by`, `--related` and `--link` have no place in `TODO.md` and are refused, never dropped.
 
 ## Change an item's state or fields
 
@@ -298,6 +300,7 @@ tadu close --match "Fix the header" --evidence "tests/test_header.py passes" --r
 - No match, or more than one, exits `2` and lists the candidates with their line numbers. Blank or multi-line values exit `2`. Each file keeps its own line endings; a file mixing CRLF and LF, or holding a bare CR or a Unicode line separator, is refused, and so is an item whose indentation leaves a code fence open.
 - A close whose result would give `doctor` an error the files did not already have is refused before anything is written. An item that was the last one leaves `TODO.md` with its legend.
 - `TODO_LOG.md` is written first, then `TODO.md`, each atomically, under an exclusive lock on the repository directory (POSIX) and only when neither file changed since it was read. If the second write fails, the message names the line to delete by hand.
+- A close stopped between the two writes (Ctrl-C, a killed process, a crash) leaves the item in both files, which `doctor` reports as `T005`. Run the same close again to finish it: the item is removed from `TODO.md` and nothing is logged twice. The entry already written is the record, so its date, title and category stay; evidence the new run gives that the entry lacks is added as another `Evidence:` line, and a `Result:` the entry has none of, or text the item gained since, goes in before its proof. Run on another day than the entry's, it adds that day as `Close run again: YYYY-MM-DD`, as the entry keeps its own. A close asking for another state, or another `Result:` or `Resolution:` than the entry has, is refused and names what is recorded, so nothing is replaced. Items without an `ID:` cannot be matched and are closed as usual.
 
 ## Task backlog (format 2)
 
@@ -309,7 +312,29 @@ tadu migrate                        # prints the plan
 tadu migrate --write                # writes todo/, removes TODO.md and TODO_LOG.md (git keeps them)
 ```
 
+A migration only ends once nothing of the Markdown files is missing from `todo/`, and then they are removed. Run on a task backlog with `TODO.md` or `TODO_LOG.md` still beside it (a migration that stopped, by this tadu or an older one; files edited or added since; a file written by hand next to `todo/`), `tadu migrate` completes it:
+
+- each item becomes its task, or merges into the task already made of it: a task's own values are never replaced, and what the item holds that the task lacks (a line edited since, a value the task changed since) is added to its notes under a line saying where it came from;
+- a `Kind:`, `Check on:` or `Not before:` line an older migrate left in the notes becomes its key, tasks take back the IDs an older migrate lost, and the headers are added to `tadu.json`;
+- text of `TODO.md` outside its items is refused, as by a first migration, and a task file a newer tadu wrote is left as it is, keeping the Markdown files; a completion that stops is finished by running it again.
+
+A backlog with an item a stopped close left both open and closed (`T005`) is refused by a first migration until that close is finished, or the task would be migrated twice.
+
+An older tadu's migrate, whose files are gone, lost more: an `ID:` line with another line right below it (how `tadu close` writes a log entry), so the task got a new id, its `ID:` line stayed in its notes (`doctor` reports `J022`) and whatever named it points at nothing (`J012`); the `Kind:`, `Check on:` and `Not before:` fields, left as note lines; the words of a `Depends on:`, a value it could not parse, the first of a repeated field, the prose entries of the log and the headers. `tadu migrate --recover` brings them back from git. It reads `TODO.md` and `TODO_LOG.md` from the commit before the migration (the one that first added `todo/tadu.json`; failing that, the one before the latest commit that deleted them), or from `--from REV`, and completes the migration as above, but for what happened since: a task deleted since is not made again, and a value changed since stays without a note, as the change was yours. A task takes its real ID back in the folder it is in now (`open/`, `closed/` or `archive/`) and every relation naming the lost id follows; a real ID another task file has is refused and named, and so is an id doctor's `J005` or `J007` makes ambiguous. A recovery is done once per commit. Before it writes anything else, `todo/tadu.json` marks it pending (`x-format-1-recovering`), and `doctor` warns about it (`C005`) until a run of it finishes; a recovery that stops, at any point, or refuses something is therefore never silent, and running it again finishes it. A recovery from another commit waits until the pending one is finished. Once it finishes, the commit moves to `x-format-1-recovered`, and running it again from that commit (by any name) changes nothing, so a task, a note or a header it brought and you removed since stays removed; to redo a finished one, drop its commit from that list. Like every command it is a dry run until `--write`:
+
+```bash
+tadu migrate --recover          # lists each change
+tadu migrate --recover --write
+```
+
 Legacy items convert to valid tasks: a title over 200 characters, or written as a bold lead sentence, keeps its first sentence and moves the rest into the notes; a done or cancelled item with no day, result, evidence or resolution gets the migration day and a "legacy item migrated without a recorded ..." line; a dated open item keeps its day as `created`. The plan lists any task that still fails the checks, so nothing is lost silently.
+
+Fields are read as `doctor` reads them: a field line starts a paragraph, and only the first line of a name counts. Each one lands in the task key that holds it: `Kind:` is `kind`, `Check on:` is `check_on` and `Not before:` is `defer_until`. What no key can hold stays in the task's notes as its own line: a value that does not parse, a repeated field and `Queue: ready` on an item that is not pending. A migration never drops text:
+
+- A line of `TODO.md` outside every item (a line after an item, a `###` subsection, a section without items) belongs to a task only a person can name, so the migration refuses, dry run included, and lists each such line with its file and line number; move it into an item, then run again.
+- In `TODO_LOG.md`, each block written outside the dated entries, such as a prose entry of an old log, becomes a closed task holding the block whole in its notes. Only what is sure becomes a key: the title is its heading (or first line), and `closed` the day its heading gives; a month or a year gives its first day and the note says so, as it does that the log recorded no state or evidence. The plan lists these blocks.
+- A `Depends on:` that says more than its task ids stays in the notes whole, besides giving `blocked_by`, and an entry without a closing day says in its notes that it is closed on the migration day.
+- The header of each file (its title, the quoted summary such as a history coverage note, the log marker) is kept verbatim in `todo/tadu.json` as `x-format-1-header`.
 
 Then work through the commands, never by editing the JSON by hand:
 
@@ -320,13 +345,13 @@ tadu claim t-8c41d2e7 --as agent:claude --write
 tadu close --id t-8c41d2e7 --evidence "pnpm test -- webhook-idempotency passes" --write
 ```
 
-- `add` shows similar open and closed tasks before writing, and records `created` and `created_by` (`--created-by`, or `$TADU_ACTOR`). Repeatable options (`--label`, `--note`, `--done-when`, `--link`, `--blocked-by`, `--related`, `--assignee`) take one value each time; ids may be unique prefixes.
+- `add` shows similar open and closed tasks before writing, and records `created` and `created_by` (`--created-by`, or `$TADU_ACTOR`). Repeatable options (`--label`, `--note`, `--done-when`, `--link`, `--blocked-by`, `--related`, `--assignee`) take one value each time; ids may be unique prefixes. `--kind` and `--check-on` are stored as `kind` and `check_on`; the format 1 spellings work too: `--not-before` is `defer_until`, and the comma lists of `--labels` and `--assignees` join the repeated ones. An option the task cannot hold is refused (`--no-id`, or `--not-before` and `--defer-until` on different days), never dropped.
 - `set ID key=value ...` changes fields (`key+=v` and `key-=v` for lists, `key=` to remove); it never changes `id`, `started` or `closed`, and does not close a task.
 - `claim` sets the assignee, `in_progress` and `started` at once; it refuses a blocked, deferred or closed task, and one someone else has in progress unless `--force`.
-- `close` appends `closed`, `result` (default: the title) and `evidence` and moves the file to `closed/`, or cancels with `--resolution` or `--duplicate-of ID`. It reports each task that waited on the closed one and changes none of them; decide whether each moves to pending. `--match TEXT` picks the one open task whose title contains it.
+- `close` appends `closed`, `result` (default: the title) and `evidence` and moves the file to `closed/`, or cancels with `--resolution` or `--duplicate-of ID`. It reports each task that waited on the closed one and changes none of them; decide whether each moves to pending. `--match TEXT` picks the one open task whose title contains it. The closed file is written before the open one is deleted; a close stopped in between leaves both, which `doctor` reports as `J007`, and other commands on that task say so. Run the same close again (by `--id` or `--match`) to finish it, on the same terms as a format 1 close: the closed file's `closed` date, `result` and `resolution` stay, new evidence is appended, a result that was only the default (the title) takes the one given, and another state, result, resolution or duplicate is refused. An open copy edited since is refused too, with the keys that differ.
 - `archive` moves old closed tasks to `todo/archive/YYYY/` (or `YYYY/MM/` for a busy year) as the archive policy in `tadu.json` says; without a policy nothing moves. `fmt` rewrites files that are not in canonical form.
 
-Every command is a dry run until `--write`, exits `2` when it refuses, and validates before writing, so none can produce a file `doctor` would reject. `doctor` checks a task backlog with the `C` and `J` codes below.
+Every command is a dry run until `--write`, exits `2` when it refuses, and validates before writing, so none can produce a file `doctor` would reject. Like the commands of a `TODO.md` backlog, they hold an exclusive lock on the repository directory (POSIX) while they read and write, so two of them never interleave. `doctor` checks a task backlog with the `C` and `J` codes below.
 
 Reading a task backlog is fast for open work at any size (`list --open`, `ready`: about 0.4 s with 2,500 open tasks). Commands that go through all of history (`list --history`, the default `list` window, `similar`, `add`, `show` and `doctor`) read every task file once, then keep what they built in an item cache outside the repository: `$TADU_CACHE_DIR`, else `$XDG_CACHE_HOME/tadu`, else `~/.cache/tadu`. Each run still checks every file's size, inode and timestamps and rebuilds only what changed, so an edit, a `git checkout` or a pull is always seen; files changed in the last two seconds are re-read until they are older. The cache holds plain JSON, never code, and nothing in the repository; delete it at any time, or set `TADU_NO_CACHE=1` to turn it off.
 
@@ -429,12 +454,14 @@ Branches that close work in the same month both append to the same section of `T
 | T002 | warning | `TODO.md` does not quote the five state markers |
 | T003 | error | a closed top-level item (`[x]` or `[-]`) is still in `TODO.md` |
 | T004 | error | `TODO.md` is empty |
+| T005 | error | an open item's `ID:` is on a closed `TODO_LOG.md` entry: a close stopped halfway; run it again |
 | L001 | warning | `TODO_LOG.md` is missing |
 | L002 | error (warning without the log marker) | a closed `[x]` entry has no `Evidence:` content |
 | L003 | error (warning without the log marker) | an obsolete `[-]` entry has no `Resolution:` content |
 | L004 | warning | the `tadu:log` marker is missing |
 | L005 | error | the `tadu:log` marker date does not parse |
 | L006 | warning | `TODO_LOG.md` is empty |
+| L007 | warning | two `TODO_LOG.md` entries have the same `ID:`, as an older tadu left when a stopped close was run again |
 | H001 | error | an index line is not a JSON object |
 | H002 | error | an index record lacks a required key |
 | H003 | error | `review_status` is not one of the known statuses |
@@ -455,17 +482,20 @@ Branches that close work in the same month both append to the same section of `T
 | W003 | warning | a workspace repository could not be scanned |
 | W004 | error | the workspace file or local configuration is invalid |
 | E001 | error | a file could not be read (not valid UTF-8, or an I/O error) |
+| I001 | warning | a temporary file, or the `.todo.migrating/` folder, of a tadu write that stopped halfway |
 | C001 | error | `todo/tadu.json` is missing |
 | C002 | error | `todo/tadu.json` is not valid |
 | C003 | warning | `todo/archive/` holds tasks but `tadu.json` has no archive policy |
-| C004 | warning | a `TODO.md` next to a task backlog is ignored |
+| C004 | warning | a `TODO.md` or `TODO_LOG.md` next to a task backlog is ignored; `tadu migrate --write` brings what it holds into `todo/` and removes it |
+| C005 | warning | a `tadu migrate --recover` started and did not finish (it stopped, or refused something); run it again |
+| C006 | warning | closed tasks are due to move under the archive policy; `tadu archive --write` moves them |
 | J001 | error | a task file is not JSON, not an object, or has no usable `tadu` version |
 | J002 | warning | a task file from a newer format version: read, never rewritten |
 | J003 | error | a task is invalid (missing key, bad value, or a rule of its state) |
 | J004 | warning | a task file is not in canonical form; `tadu fmt` rewrites it |
 | J005 | error | a task file's name differs from its id |
 | J006 | error | a task is in the wrong folder for its state, or its archive year or month is wrong |
-| J007 | error | two task files have the same id |
+| J007 | error | two task files have the same id; in `open/` and `closed/`, a close stopped halfway: run it again |
 | J008 | warning | a category is not declared in `tadu.json` |
 | J009 | warning | a type is not declared in `tadu.json` |
 | J010 | warning | an open task needs triage: priority `untriaged`, category `general` or type `untriaged` |
@@ -480,6 +510,8 @@ Branches that close work in the same month both append to the same section of `T
 | J019 | warning | a milestone is not declared in `tadu.json` |
 | J020 | error | a relation points to the task itself |
 | J021 | warning | `duplicate_of` points to a task that is itself a duplicate |
+| J022 | warning | the notes hold an `ID:` line of another id: the task's ID, which an older tadu's migrate lost; `tadu migrate --recover` gives it back |
+| J023 | warning | keys of an open task contradict each other or its state: `defer_until` or `check_on` after `due`, in progress while `defer_until` is ahead or `kind` is later, `queue` ready on a waiting or later task (format 1's `F004`) |
 
 ## Skills
 
@@ -500,3 +532,7 @@ For other agents, copy `skills/<name>/` into the agent's skills directory.
 ## License
 
 MIT
+
+## Working on tadu
+
+`uv run pytest` runs the test suite, in parallel (pytest-xdist, one worker per core; add `-n 0` for one process, as a debugger needs); with `--cov=tadu` it must keep 100% coverage. It leaves out the crash tests, which take a few minutes on one core and under a minute on four: `uv run pytest -m crash` stops every command that writes (each format's `init`, `add`, `mark`, `set`, `claim`, `close`, `fmt`, `archive`, `migrate`, its completion and `--recover`) right before each filesystem change it makes, with SIGKILL (no cleanup runs) and with Ctrl-C, in a real process. After each stop, `doctor` must tell every half-done state from a finished one (there is no exception), and the same command run again must end exactly as it does when nothing stops it; the commands that only read must write nothing. Run them before changing how a command writes. `tests/fixtures/old_migration` is what an older tadu's migrate wrote of a backlog, kept to test `--recover` and the completion of an older migration.

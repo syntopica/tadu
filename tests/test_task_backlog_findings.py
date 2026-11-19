@@ -6,6 +6,7 @@ import pytest
 from sample_task import sample_task
 from task_backlog import task_backlog
 
+from tadu.check_leftover_files import check_leftover_files
 from tadu.check_task_backlog import check_task_backlog
 from tadu.cli import main
 from tadu.doctor_checks import DOCTOR_CHECKS
@@ -28,6 +29,7 @@ def test_a_clean_backlog_and_the_checks_it_gets(tmp_path: Path) -> None:
     assert codes(root) == []
     assert check_task_backlog(root) == ()
     assert doctor_checks_for(root)[0] is check_task_backlog
+    assert doctor_checks_for(root)[-1] is check_leftover_files
     assert doctor_checks_for(tmp_path / "v1") == DOCTOR_CHECKS
 
 
@@ -84,7 +86,7 @@ def test_archive_layouts(tmp_path: Path) -> None:
         (folder / f"{ident(number)}.json").write_text(
             json.dumps(sample_task(number, "done"), indent=2) + "\n"
         )
-    assert codes(root) == ["J006"]
+    assert codes(root) == ["C006", "J006"]
 
 
 def test_vocabulary_findings(tmp_path: Path) -> None:
@@ -143,6 +145,46 @@ def test_todo_md_beside_a_task_backlog(tmp_path: Path) -> None:
     assert codes(root) == ["C004"]
 
 
+def test_a_log_left_by_a_migration_that_stopped_is_c004_too(tmp_path: Path) -> None:
+    root = task_backlog(tmp_path, [])
+    (root / "TODO_LOG.md").write_text("# TODO Log\n")
+    assert [(f.code, f.path, f.message) for f in task_backlog_findings(root, TODAY)] == [
+        (
+            "C004",
+            str(root / "TODO_LOG.md"),
+            (
+                "TODO_LOG.md is ignored next to a task backlog; tadu migrate --write brings what it "
+                "holds into todo/ and removes it"
+            ),
+        )
+    ]
+
+
+def test_a_task_both_open_and_closed_is_a_close_that_stopped(tmp_path: Path) -> None:
+    root = task_backlog(tmp_path, [sample_task(1, "done"), sample_task(2, "done")])
+    todo = root / "todo"
+    (todo / "open" / f"{ident(1)}.json").parent.mkdir()
+    (todo / "open" / f"{ident(1)}.json").write_text(json.dumps(sample_task(1), indent=2) + "\n")
+    archived = todo / "archive" / "2026" / f"{ident(2)}.json"
+    archived.parent.mkdir(parents=True)
+    archived.write_text(json.dumps(sample_task(2, "done"), indent=2) + "\n")
+    found = [f for f in task_backlog_findings(root, TODAY) if f.code == "J007"]
+    assert [(f.path, f.message) for f in found] == [
+        (
+            str(todo / "closed" / f"{ident(1)}.json"),
+            (
+                f"id also used by {todo / 'open' / (ident(1) + '.json')}; a close that stopped "
+                f"halfway leaves the task in open/ and closed/: run tadu close --id {ident(1)} "
+                "again to finish it"
+            ),
+        ),
+        (
+            str(archived),
+            f"id also used by {todo / 'closed' / (ident(2) + '.json')}",
+        ),
+    ]
+
+
 def test_doctor_command_on_a_task_backlog(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -152,3 +194,24 @@ def test_doctor_command_on_a_task_backlog(
     out = capsys.readouterr().out
     assert "error J003 state must be one of pending" in out
     assert "T001" not in out
+
+
+def test_tasks_due_under_the_archive_policy_are_a_warning(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    policy = {"tadu": 2, "categories": {"core": "Core"}, "archive": {"after_days": 30}}
+    old = [sample_task(number, "done", closed=f"2024-01-0{number}") for number in (1, 2)]
+    root = task_backlog(tmp_path, [*old, sample_task(3, "done", closed="2026-11-15")], policy)
+    found = [
+        (f.severity, f.message) for f in task_backlog_findings(root, TODAY) if f.code == "C006"
+    ]
+    assert found == [
+        (
+            "warning",
+            "2 task file(s) are due to move under the archive policy; run tadu archive --write",
+        )
+    ]
+    assert main(["archive", str(root), "--write"]) == 0
+    capsys.readouterr()
+    assert "C006" not in codes(root)
+    assert "C006" not in codes(task_backlog(tmp_path / "no-policy", old))

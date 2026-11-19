@@ -17,7 +17,10 @@ def check_todo_file(root: Path) -> tuple[Finding, ...]:
     """Report a missing backlog, a missing legend and closed items left active."""
     path = root / "TODO.md"
     if not path.is_file():
-        return (Finding("T001", "error", str(path), 0, "no TODO.md"),)
+        # A todo/ without tadu.json is a task backlog whose `tadu init --format 2` stopped.
+        hint = "; todo/ has no tadu.json: run tadu init --format 2 --write again"
+        message = "no TODO.md" + (hint if (root / "todo").is_dir() else "")
+        return (Finding("T001", "error", str(path), 0, message),)
     text = read_text_exact(path)
     if not text.strip():
         return (Finding("T004", "error", str(path), 0, "TODO.md is empty"),)

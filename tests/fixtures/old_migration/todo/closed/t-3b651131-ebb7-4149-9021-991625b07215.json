@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-3b651131-ebb7-4149-9021-991625b07215",
+  "title": "Export the lock",
+  "state": "done",
+  "category": "ci-portability",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "ID: t-88161023-f3a9-43a3-94df-589ca752fa13"
+  ],
+  "closed": "2026-10-21",
+  "result": "The workflow exports it with hashes.",
+  "evidence": [
+    "actionlint passes"
+  ]
+}

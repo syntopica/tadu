@@ -9,13 +9,17 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tadu.canonical_task_text import canonical_task_text
+from tadu.format_1_header import format_1_header
 from tadu.fresh_todo_config_text import fresh_todo_config_text
+from tadu.leftover_patterns import MIGRATION_STAGING
+from tadu.legacy_report import legacy_report
 from tadu.migration_refusal import migration_refusal
-from tadu.migration_tasks import V1_FILES, migration_tasks
+from tadu.migration_tasks import migration_tasks
 from tadu.task_location import task_location
 from tadu.task_problems import task_problems
 from tadu.task_states import OPEN_TASK_STATES
 from tadu.todo_layout import TODO_CONFIG, TODO_DIR
+from tadu.v1_texts import V1_FILES, v1_texts
 
 if TYPE_CHECKING:
     import argparse
@@ -41,6 +45,7 @@ def run_migrate(args: argparse.Namespace) -> int:
     print(
         f"tadu migrate: {verb} {opened} open and {len(tasks) - opened} closed tasks, {len(categories)} categories"
     )
+    print(legacy_report(root), end="")
     for task in tasks:
         problems = task_problems({k: v for k, v in task.items() if v not in (None, "", [])})
         if problems:
@@ -48,13 +53,15 @@ def run_migrate(args: argparse.Namespace) -> int:
     if not args.write:
         print("tadu migrate: then remove TODO.md and TODO_LOG.md (dry run: add --write)")
         return 0
-    staging = root / ".todo.migrating"
+    staging = root / MIGRATION_STAGING
     # writes: builds todo/ in a staging folder and renames it into place; nothing is half written
     shutil.rmtree(staging, ignore_errors=True)  # left by an interrupted run
     # writes: builds todo/ in a staging folder and renames it into place; nothing is half written
     staging.mkdir()
     # writes: builds todo/ in a staging folder and renames it into place; nothing is half written
-    (staging / TODO_CONFIG).write_text(fresh_todo_config_text(categories), encoding="utf-8")
+    (staging / TODO_CONFIG).write_text(
+        fresh_todo_config_text(categories, format_1_header(v1_texts(root))), encoding="utf-8"
+    )
     for task in tasks:
         target = task_location(staging, task)
         # writes: builds todo/ in a staging folder and renames it into place; nothing is half written

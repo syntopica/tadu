@@ -7,9 +7,15 @@ import stat
 import tempfile
 from pathlib import Path
 
+from tadu.leftover_patterns import REPOSITORY_TEMPORARY
+from tadu.remove_stale_temporaries import remove_stale_temporaries
+
 
 def write_file_atomically(target: Path, text: str) -> None:
-    """Write `text` to a sibling temp file, fsync it, then rename it over `target`."""
+    """Write `text` to a sibling temp file, fsync it, then rename it over `target`.
+
+    Temporary files that earlier writes were killed before renaming are removed afterwards.
+    """
     mode = stat.S_IMODE(target.stat().st_mode) if target.exists() else 0o644
     # path-name: only names the temporary file beside the target.
     descriptor, name = tempfile.mkstemp(dir=target.parent, prefix=f".{target.name}.", suffix=".tmp")
@@ -23,3 +29,4 @@ def write_file_atomically(target: Path, text: str) -> None:
     except BaseException:
         Path(name).unlink(missing_ok=True)
         raise
+    remove_stale_temporaries(target.parent, REPOSITORY_TEMPORARY)
