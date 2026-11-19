@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-16e0540f-7d2f-4c1e-ab05-d6e0d3f8cea4",
+  "title": "Choose a second GitHub account with read-only access to test the board issue path",
+  "state": "pending",
+  "category": "board",
+  "type": "test",
+  "priority": "normal",
+  "kind": "decision",
+  "created": "2026-11-19",
+  "notes": [
+    "Pick the account, then add it as a read-only collaborator on syntopica/tadu-board-scratch, sign in with it to the board, press Start, and check that an issue opens instead of a pull request. Verified already: the GitHub App tadu board scratch test (syntopica, installed only on that repo) opened a pull request for CristianDeluxe, who has push rights. Credentials: 1Password BusiRocket item 'tadu board GitHub App (scratch test)'. Rate limits remain unverified."
+  ]
+}

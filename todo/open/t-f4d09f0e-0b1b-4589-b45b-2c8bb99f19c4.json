@@ -2,13 +2,17 @@
   "tadu": 2,
   "id": "t-f4d09f0e-0b1b-4589-b45b-2c8bb99f19c4",
   "title": "Check shared board proposals against the real GitHub API",
-  "state": "pending",
+  "state": "blocked",
   "category": "board",
   "type": "test",
   "priority": "normal",
   "created": "2026-11-19",
+  "blocked_by": [
+    "t-16e0540f-7d2f-4c1e-ab05-d6e0d3f8cea4"
+  ],
   "notes": [
-    "Step 2 was built and tested only against the fake GitHub. Unverified: App user token limits, rate limits, branch protection on ref creation, the App's Contents, Pull requests and Issues write permissions."
+    "Step 2 was built and tested only against the fake GitHub. Unverified: App user token limits, rate limits, branch protection on ref creation, the App's Contents, Pull requests and Issues write permissions.",
+    "Real GitHub check done 2026-11-19 for the pull request path (PR 1 on syntopica/tadu-board-scratch). Left: the issue path for a user without push rights, and rate limits."
   ],
   "done_when": [
     "One proposal and one issue were opened on a scratch repository by a signed-in test user, and the board showed the URL"
