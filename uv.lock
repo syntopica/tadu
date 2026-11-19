@@ -1999,7 +1999,7 @@ quality = [
     { name = "playwright", specifier = ">=1.45" },
     { name = "pytest", specifier = ">=9.1.1,<10" },
     { name = "pytest-cov", specifier = ">=7.1,<8" },
-    { name = "pytest-xdist", specifier = ">=3.6" },
+    { name = "pytest-xdist", specifier = ">=3.8,<4" },
     { name = "ruff", specifier = ">=0.17,<1" },
     { name = "syntopica-codeality-py", specifier = ">=0.2.5,<1" },
     { name = "types-jsonschema" },

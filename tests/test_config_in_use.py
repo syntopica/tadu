@@ -48,7 +48,7 @@ def test_every_command_takes_the_config_options(capsys: pytest.CaptureFixture[st
     for command in ("list", "close", "board", "hook"):
         with pytest.raises(SystemExit):
             main([command, "--help"])
-        assert "[--config FILE | --no-config]" in capsys.readouterr().out
+        assert " ".join(capsys.readouterr().out.split()).count("[--config FILE | --no-config]") == 1
 
 
 @pytest.mark.parametrize("command", sorted(CONFIG_OPTIONS))

@@ -27,7 +27,7 @@ def check_log_ids(root: Path) -> tuple[Finding, ...]:
     if not log.is_file():
         return ()
     try:
-        closed = scan_items(read_text_exact(log).splitlines(), "", "TODO_LOG.md", "x-")
+        closed = scan_items(read_text_exact(log).splitlines(), "", "TODO_LOG.md", lambda match: match.group(1) in "x-")
         opened = read_open_items(root, ".", "") if todo.is_file() else ()
     except UnreadableFileError:
         return ()

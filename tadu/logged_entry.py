@@ -16,9 +16,9 @@ def logged_entry(todo: list[str], log: list[str], first: int) -> BacklogItem | N
     One is there when a close wrote the entry and stopped before removing the item. An item
     without an `ID:` is never matched.
     """
-    opened = scan_items(todo, "", "TODO.md", " ~!")
+    opened = scan_items(todo, "", "TODO.md", lambda match: match.group(1) in " ~!")
     uid = next((item.fields.id for item in opened if item.line == first + 1), None)
     if uid is None:
         return None
-    closed = scan_items(log, "", "TODO_LOG.md", "x-")
+    closed = scan_items(log, "", "TODO_LOG.md", lambda match: match.group(1) in "x-")
     return next((entry for entry in closed if entry.fields.id == uid), None)

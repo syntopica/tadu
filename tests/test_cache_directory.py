@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,7 @@ def test_explicit_directory_wins(monkeypatch: pytest.MonkeyPatch) -> None:
     assert cache_directory() == Path("/somewhere")
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="macOS and Windows keep the cache elsewhere")
 def test_xdg_then_home(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.delenv("TADU_CACHE_DIR")
     monkeypatch.setenv("XDG_CACHE_HOME", "/xdg")

@@ -114,7 +114,7 @@ def test_every_field_read_in_format_1_is_a_key_or_a_note_line(tmp_path: Path) ->
     items = [
         item
         for name, states in (("TODO.md", " ~!"), ("TODO_LOG.md", "x-"))
-        for item in scan_items(read_text_exact(tmp_path / name).splitlines(), "", name, states)
+        for item in scan_items(read_text_exact(tmp_path / name).splitlines(), "", name, lambda match: match.group(1) in states)
     ]
     assert len(items) == len(tasks) == 6
     assert {
