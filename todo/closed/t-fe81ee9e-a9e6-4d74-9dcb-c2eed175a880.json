@@ -2,14 +2,23 @@
   "tadu": 2,
   "id": "t-fe81ee9e-a9e6-4d74-9dcb-c2eed175a880",
   "title": "Stamp started only when tadu set moves a task into in_progress",
-  "state": "pending",
+  "state": "done",
   "category": "bugs",
   "type": "bug",
   "priority": "normal",
   "created": "2026-11-18",
+  "started": "2026-11-19",
+  "assignees": [
+    "agent:claude"
+  ],
   "notes": [
     "Observed 2026-11-18 in the vexa backlog: `tadu set ID type=perf priority=high` on 36 tasks already `in_progress` without `started` (migrated from format 1) wrote `\"started\": \"<today>\"`, a false first-day date, and `tadu set ID started=` then refuses (\"set by tadu itself\").",
     "Cause: `tadu/run_set.py:30` tests only the new state (`task.get(\"state\") == \"in_progress\" and \"started\" not in task`), not the transition the spec describes (\"moving to in_progress sets started once\").",
     "Next step: also require `old.task.get(\"state\") != \"in_progress\"`, plus a test that setting another field on such a task leaves `started` absent."
+  ],
+  "closed": "2026-11-19",
+  "result": "run_task_change stamps started only on a move into in_progress.",
+  "evidence": [
+    "tests/test_mark_in_both_formats.py::test_set_on_a_task_already_in_progress_does_not_stamp_started fails without the change and passes with it; full suite 2247 passed, ruff, mypy clean"
   ]
 }

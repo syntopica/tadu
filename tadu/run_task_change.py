@@ -20,7 +20,8 @@ if TYPE_CHECKING:
 def run_task_change(command: str, args: argparse.Namespace, changes: list[str], today: date) -> int:
     """Apply the `key=value` changes to the task --id (or --match) names; exit 2 when refused.
 
-    Moving a task to in_progress records `started` the first time, and never moves it back.
+    Moving a task into in_progress records `started` the first time, and never moves it back;
+    changing other fields of a task already in progress leaves `started` as it was.
     """
     try:
         todo = task_backlog_dir(args.path)
@@ -28,7 +29,8 @@ def run_task_change(command: str, args: argparse.Namespace, changes: list[str], 
         task = dict(old.task)
         for change in changes:
             task = apply_task_change(task, change, todo)
-        if task.get("state") == "in_progress" and "started" not in task:
+        moved_in = task.get("state") == "in_progress" and old.task.get("state") != "in_progress"
+        if moved_in and "started" not in task:
             task["started"] = today.isoformat()
         changed = sorted(
             key

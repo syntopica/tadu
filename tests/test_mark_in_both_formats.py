@@ -41,6 +41,15 @@ def test_mark_blocks_and_unblocks_a_task(
     assert "started" in marked
 
 
+def test_set_on_a_task_already_in_progress_does_not_stamp_started(tmp_path: Path) -> None:
+    root = task_backlog(tmp_path, [sample_task(1, "in_progress")])
+    assert main(["set", ONE, "priority=high", "--root", str(root), "--write"]) == 0
+    assert "started" not in task(root)
+    assert main(["set", ONE, "state=pending", "--root", str(root), "--write"]) == 0
+    assert main(["set", ONE, "state=in_progress", "--root", str(root), "--write"]) == 0
+    assert "started" in task(root)
+
+
 def test_mark_refuses_what_a_task_cannot_take(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:

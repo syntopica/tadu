@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-f0a510dd-5d2a-4561-97fa-bc075857b6a0",
   "title": "Shared board step 1: log in with GitHub and show each person only the repositories GitHub lets them read",
-  "state": "pending",
+  "state": "done",
   "category": "board",
   "type": "feature",
   "priority": "normal",
@@ -12,5 +12,10 @@
   ],
   "done_when": [
     "A logged-in GitHub user sees only cards of workspace repositories they can read on GitHub, in the page and the JSON; no login or a failed check gets nothing; a test with a stubbed GitHub proves another user's private task text is absent from the payload"
+  ],
+  "closed": "2026-11-19",
+  "result": "Shared board step 1 already shipped with tadu board --auth github.",
+  "evidence": [
+    "Built by the session 23 merge (readable_repositories, team_board_handler, GitHub sign-in); tests/test_team_board_handler.py::test_each_person_sees_only_what_they_read shows a person sees only the cards of repositories they read, and test_signed_out_sees_the_sign_in_page_and_no_cards that no login gets none; full suite 2247 passed"
   ]
 }

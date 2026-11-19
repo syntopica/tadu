@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-00499a2b-505c-4c6c-b3a1-9436a032f5cc",
   "title": "Make tadu migrate keep prose between items and sections that hold no item",
-  "state": "pending",
+  "state": "done",
   "category": "bugs",
   "type": "bug",
   "priority": "normal",
@@ -11,5 +11,10 @@
   "notes": [
     "Found 2026-11-18 migrating ~/p (format 1 TODO.md at d73013e) with d3c3907: section-intro prose survives, but 206 TODO.md lines are dropped silently: paragraphs between items (the parked-summary paragraphs under '## Parked: waiting on you', e.g. 'Money and subscriptions', 'Accounts only you can open'), sections with prose and no item ('## Mailbox pass, Cristian's accounts (2026-09-25)'), the file header blockquotes, and TODO_LOG.md prose such as '#### Routing table' tables and '### How this file was pruned'.",
     "Smallest next step: report every dropped line in the dry run (count plus first lines), then attach mid-section prose to the preceding item's notes and keep item-less sections and log prose as a closed note task per section."
+  ],
+  "closed": "2026-11-19",
+  "result": "Already fixed by the session 17 merge (unplaced_refusal, log_runs, loose_text_task); no code change needed.",
+  "evidence": [
+    "Repro of the reported cases (paragraph between items, item-less section, header blockquote, log tables and prose): tadu migrate refuses a TODO.md with loose lines and lists each one by line number; after moving them into items, migrate --write keeps header, section prose and item prose, and turns TODO_LOG.md prose blocks into closed tasks. Tests: tests/test_migrate_loses_nothing.py, test_legacy_report.py"
   ]
 }
