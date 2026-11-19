@@ -6,13 +6,13 @@ import os
 import sys
 from datetime import UTC, datetime
 
-from tadu.command_runners import DATED_COMMANDS, LOCKED_COMMANDS, PLAIN_COMMANDS
+from tadu.command_runners import DATED_COMMANDS, PLAIN_COMMANDS
 from tadu.config_error import ConfigError
 from tadu.file_command_call import file_command_call
+from tadu.lock_when_writing import lock_when_writing
 from tadu.parse_command_line import parse_command_line
 from tadu.quiet_broken_pipe import quiet_broken_pipe
 from tadu.run_command import run_command
-from tadu.with_backlog_lock import with_backlog_lock
 from tadu.without_gc import without_gc
 from tadu.workspace_error import WorkspaceError
 
@@ -46,9 +46,7 @@ def main(argv: list[str] | None = None) -> int:
     def command() -> int:
         return run_command(runner, *arguments, **options)
 
-    if name in LOCKED_COMMANDS:
-        unlocked, root = command, getattr(args, "root", None) or args.path
-        command = lambda: with_backlog_lock(root, unlocked)  # noqa: E731
+    command = lock_when_writing(name, args, command)
 
     if name in ("board", "mcp"):  # a server: keep collecting garbage
         return quiet_broken_pipe(command)

@@ -1,6 +1,8 @@
 """Every field tadu reads in a format 1 backlog is in its task after tadu migrate."""
 
 import json
+import re
+from functools import partial
 from pathlib import Path
 
 import pytest
@@ -107,6 +109,10 @@ def held(task: dict[str, object], fields: ItemFields) -> list[str]:
     ]
 
 
+def held_in(states: str, match: re.Match[str]) -> bool:
+    return match.group(1) in states
+
+
 def test_every_field_read_in_format_1_is_a_key_or_a_note_line(tmp_path: Path) -> None:
     (tmp_path / "TODO.md").write_text(EVERY_FIELD)
     (tmp_path / "TODO_LOG.md").write_text(LOG)
@@ -114,7 +120,9 @@ def test_every_field_read_in_format_1_is_a_key_or_a_note_line(tmp_path: Path) ->
     items = [
         item
         for name, states in (("TODO.md", " ~!"), ("TODO_LOG.md", "x-"))
-        for item in scan_items(read_text_exact(tmp_path / name).splitlines(), "", name, lambda match: match.group(1) in states)
+        for item in scan_items(
+            read_text_exact(tmp_path / name).splitlines(), "", name, partial(held_in, states)
+        )
     ]
     assert len(items) == len(tasks) == 6
     assert {

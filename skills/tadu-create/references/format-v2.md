@@ -78,13 +78,15 @@ as `null`, `""` or `[]`.
 | `category` | slug declared in `tadu.json`, or `general` | yes | product area; `general` = not decided |
 | `type` | slug declared in `tadu.json`, or `untriaged` | yes | kind of work (`bug`, `feature`, ...) |
 | `priority` | `urgent` `high` `normal` `low` `untriaged` | yes | `untriaged` = not decided; it sorts between high and normal |
+| `kind` | `task` `decision` `waiting` `later` | | the next move: work to do, a choice a person must make, something another person or organization owes, not now; absent = unclassified (format 1's `Kind:`) |
 | `labels` | slugs | | topics and epics |
 | `milestone` | slug declared in `tadu.json` | | release or milestone |
 | `created` | date | set by `tadu add` | day recorded |
 | `created_by` | person id or `agent:<name>` | set by `tadu add` | who recorded it |
 | `started` | date | set by tadu | first day in progress; never moved back |
 | `due` | date | | deadline |
-| `defer_until` | date | | not before this day: hidden from `tadu ready` until then |
+| `defer_until` | date | | not before this day: left out of `tadu ready`, `next`, `inbox` and `urgent` until then (format 1's `Not before:`) |
+| `check_on` | date | | the day to look at it again, to chase, revisit or verify it; not a deadline (format 1's `Check on:`) |
 | `queue` | `backlog` `ready` | | ready = can start now (pending only) |
 | `assignees` | person ids or `agent:<name>` | | who works on it |
 | `estimate` | whole minutes, 1 to 999999999 | | effort |
@@ -128,7 +130,7 @@ There is no `updated` field: every parallel edit would conflict on it, and git a
 {
   "tadu": 2,
   "categories": { "board": "Board", "docs": "Docs" },
-  "types": ["bug", "feature", "chore", "test", "docs", "refactor", "perf", "security", "decision"],
+  "types": ["bug", "feature", "chore", "test", "docs", "refactor", "perf", "security", "design"],
   "milestones": { "v0-2": { "name": "0.2", "due": "2026-12-15" } },
   "stale_after_days": 14,
   "archive": { "after_days": 180, "keep_closed": 500, "month_folders_min": 10 }
@@ -145,7 +147,10 @@ There is no `updated` field: every parallel edit would conflict on it, and git a
   gets month folders only when its months would average at least that many tasks, counting months
   that have tasks, so a quiet year stays one folder. Archiving uses the `closed` date in the file,
   never file times.
-- Any other key is an error, except `x-` keys.
+- Any other key is an error, except `x-` keys. `tadu migrate` keeps the headers of `TODO.md` and
+  `TODO_LOG.md` verbatim as `x-format-1-header` (file name to lines); `tadu migrate --recover`
+  marks the commit it is recovering from as `x-format-1-recovering` until it finishes (doctor's
+  C005), then records it in `x-format-1-recovered`, so that it is never redone.
 
 ## Relations
 
@@ -181,11 +186,11 @@ so none can produce a file doctor would reject.
 | command | what it does |
 |---|---|
 | `tadu init --format 2` | creates `todo/tadu.json` and the agent rule block |
-| `tadu migrate` | converts `TODO.md` and `TODO_LOG.md` into task files, then removes them (git keeps their history) |
-| `tadu add --title T --category C --type Y --priority P` | shows similar open and closed tasks first, then writes `open/<id>.json` with `created` and `created_by` (`--created-by` or `$TADU_ACTOR`) |
+| `tadu migrate` | converts `TODO.md` and `TODO_LOG.md` into task files, then removes them (git keeps their history); run beside a task backlog with them still there, it completes the migration and removes them; `--recover` brings back, from that history, what an older tadu's migrate lost |
+| `tadu add --title T --category C --type Y --priority P` | shows similar open and closed tasks first, then writes `open/<id>.json` with `created` and `created_by` (`--created-by` or `$TADU_ACTOR`); `--kind K` and `--check-on D` set `kind` and `check_on`, `--not-before D` sets `defer_until`, and an option the task cannot hold is refused |
 | `tadu set ID key=value ...` | changes fields; `key+=v` and `key-=v` for lists, `key=` to remove; moving to `in_progress` sets `started` once |
 | `tadu claim ID --as WHO` | sets the assignee, `in_progress` and `started` at once; refused for a blocked, deferred or closed task, or one someone else has in progress (`--force` takes it over) |
-| `tadu close --id ID --evidence E` | appends `closed`, `result` (default: the title) and `evidence`, moves the file to `closed/`, reports the tasks that waited on it; `--resolution R` or `--duplicate-of ID` cancel instead |
+| `tadu close --id ID --evidence E` | appends `closed`, `result` (default: the title) and `evidence`, moves the file to `closed/`, reports the tasks that waited on it; `--resolution R` or `--duplicate-of ID` cancel instead. Run again on a task a stopped close left in `open/` and `closed/`, it finishes that close: the closed file is kept and gains only new evidence |
 | `tadu archive` | applies the archive policy, moving files unchanged |
 | `tadu fmt` | rewrites files that are not in canonical form |
 | `tadu list`, `show`, `ready`, `similar`, `feed`, `board` | read both formats |
@@ -204,14 +209,16 @@ rule block checks; format 1's TODO and log checks do not apply.
 | C001 | error | `todo/tadu.json` is missing |
 | C002 | error | `todo/tadu.json` is not valid |
 | C003 | warning | `archive/` holds tasks but there is no archive policy |
-| C004 | warning | a `TODO.md` next to a task backlog is ignored |
+| C004 | warning | a `TODO.md` or `TODO_LOG.md` next to a task backlog is ignored; `tadu migrate --write` brings what it holds into `todo/` and removes it |
+| C005 | warning | a `tadu migrate --recover` started and did not finish (it stopped, or refused something); run it again |
+| C006 | warning | closed tasks are due to move under the archive policy; `tadu archive --write` moves them |
 | J001 | error | a task file is not JSON, not an object, or has no usable `tadu` version |
 | J002 | warning | a task file from a newer format version: read, never rewritten |
 | J003 | error | a task is invalid (missing key, bad value, state rule) |
 | J004 | warning | a task file is not in canonical form; `tadu fmt` fixes it |
 | J005 | error | the file name differs from the id |
 | J006 | error | a task is in the wrong folder for its state, or its archive year or month is wrong, or a year mixes both layouts |
-| J007 | error | two files have the same id |
+| J007 | error | two files have the same id; in `open/` and `closed/`, a close stopped before deleting the open file: run it again to finish it |
 | J008 | warning | a category not declared in `tadu.json` |
 | J009 | warning | a type not declared in `tadu.json` |
 | J010 | warning | an open task needs triage: priority `untriaged`, category `general` or type `untriaged` |
@@ -221,11 +228,14 @@ rule block checks; format 1's TODO and log checks do not apply.
 | J014 | warning | blocked, but every `blocked_by` task is closed and no `blocker` is set |
 | J015 | warning | pending or in progress while a `blocked_by` task is still open |
 | J016 | warning | a `blocked_by` task was cancelled (block on its replacement when it has one) |
-| J017 | warning | a line looks like a secret (private key, cloud or API key, token); the value is never shown |
+| J017 | warning | a line looks like a secret (private key, cloud or API key, token, password in a URL, credential assignment); the value is never shown |
 | J018 | warning | in progress for longer than `stale_after_days` |
 | J019 | warning | a milestone not declared in `tadu.json` |
 | J020 | error | a relation points to the task itself |
 | J021 | warning | `duplicate_of` points to a task that is itself a duplicate |
+| J022 | warning | the notes hold an `ID:` line of another id, the ID an older tadu's migrate lost; `tadu migrate --recover` gives it back |
+| J023 | warning | keys of an open task contradict each other or its state, as format 1's F004: `defer_until` or `check_on` after `due`, in progress while `defer_until` is ahead or `kind` is later, `queue` ready on a waiting or later task |
+| I001 | warning | a temporary `.<name>.<random>.tmp` file, or the `.todo.migrating/` folder, of a tadu write that stopped halfway |
 
 ## Versions
 
