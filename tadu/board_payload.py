@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING
 
-from tadu.access_allows import access_allows
 from tadu.backlog_format import backlog_format
 from tadu.card_json import card_json
 from tadu.columns import COLUMNS
@@ -19,6 +18,7 @@ from tadu.view_summary import view_summary
 from tadu.workspace_cards import workspace_cards
 from tadu.workspace_id import workspace_id
 from tadu.workspace_structure import workspace_structure
+from tadu.writable_keys import writable_keys
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -89,13 +89,7 @@ def board_payload(
             for entry in loaded.repositories
             if entry.key in local.paths
         },
-        "writable": [
-            entry.key
-            for entry in loaded.repositories
-            if access_allows(state.allow, "write")
-            and access_allows(entry.access, "write")
-            and entry.key in local.paths
-        ],
+        "writable": writable_keys(state.allow, loaded, local),
         "tools": {name: tool["inputSchema"] for name, tool in operation_tools(state.allow).items()},
         "today": today.isoformat(),
         "workspace_id": workspace_id(state.workspace),

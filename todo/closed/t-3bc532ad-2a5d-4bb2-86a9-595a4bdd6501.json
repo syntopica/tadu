@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-3bc532ad-2a5d-4bb2-86a9-595a4bdd6501",
   "title": "Bring the quality gate back to green after the session merges: 5 codeality findings and 99.90% coverage",
-  "state": "pending",
+  "state": "done",
   "category": "tooling",
   "type": "chore",
   "priority": "normal",
@@ -12,5 +12,10 @@
   ],
   "done_when": [
     "uv run codeality-py gate passes, or the budget is raised on purpose"
+  ],
+  "closed": "2026-11-19",
+  "result": "Bring the quality gate back to green after the session merges: 5 codeality findings and 99.90% coverage",
+  "evidence": [
+    "uv run codeality-py gate passes: ruff, mypy, codeality-py check 0 findings, pytest 2280 passed at 100.00% coverage; suite budget raised 10 s to 60 s on purpose"
   ]
 }

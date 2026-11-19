@@ -7,8 +7,8 @@ test-roots = ["tests"]
 import-package = "tadu"
 respect-gitignore = true
 coverage-threshold = 100
-# The suite runs in well under a second; a slow test is a design smell here.
-test-budget-seconds = 10
+# The suite is 2000+ tests (about 40 s with coverage on one machine): raised on purpose from 10 s.
+test-budget-seconds = 60
 
 [limits]
 max-file-lines = 80
@@ -23,6 +23,9 @@ data = [
   "tadu/admin_operations.py",
   "tadu/attention_operations.py",
   "tadu/backlog_file_names.py",
+  "tadu/board_operation.py",
+  "tadu/board_post_paths.py",
+  "tadu/board_sign_in_params.py",
   "tadu/backlog_write_pattern.py",
   "tadu/board_asset_name_pattern.py",
   "tadu/board_body_limit.py",
@@ -53,6 +56,7 @@ data = [
   "tadu/field_line_pattern.py",
   "tadu/git_log_format.py",
   "tadu/history_operations.py",
+  "tadu/hook_operation.py",
   "tadu/index_required_keys.py",
   "tadu/item_cache_settings.py",
   "tadu/item_date_prefix_pattern.py",
@@ -72,6 +76,7 @@ data = [
   "tadu/log_marker_pattern.py",
   "tadu/lookup_operations.py",
   "tadu/mark_operation.py",
+  "tadu/mcp_operation.py",
   "tadu/loopback_hosts.py",
   "tadu/mark_fields.py",
   "tadu/mark_states.py",
@@ -110,7 +115,10 @@ data = [
   "tadu/todo_layout.py",
   "tadu/uri_pattern.py",
   "tadu/view_keys.py",
+  "tadu/v1_file_names.py",
+  "tadu/visible_repositories.py",
   "tadu/workspace_file_names.py",
+  "tadu/workspace_help.py",
   "tadu/workspace_keys.py",
   "tadu/year_heading_pattern.py",
 ]

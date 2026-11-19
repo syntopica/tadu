@@ -1,13 +1,19 @@
 import json
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Any, cast
 
+import pytest
 from board_server import BoardServer, post, serve_board
 from board_workspace import board_workspace
 from changes_workspace import changes_workspace
 from history_workspace import ID, history_workspace
 from response import Response
 
+from tadu import board_call as board_call_module
 from tadu.board_body_limit import BOARD_BODY_LIMIT
+from tadu.board_call import board_call
+from tadu.captured_run import INTERNAL_ERROR
 
 
 def call(board: BoardServer, name: str, arguments: object, **headers: str) -> Response:
@@ -95,3 +101,14 @@ def test_history_and_changes_are_calls_too(tmp_path: Path) -> None:
         arguments = {"since": "2026-11-01", "until": "2026-11-30", "json": True}
         changes = answer(call(board, "changes", arguments))
         assert len(str(changes["output"]).splitlines()) == 9
+
+
+def test_an_internal_error_hides_its_trace_on_a_board_for_strangers(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(
+        board_call_module, "run_operation", lambda *_a: (INTERNAL_ERROR, "", "trace")
+    )
+    state = SimpleNamespace(workspace=tmp_path, allow="read", main=None)
+    status, body, _type = board_call("/api/op/list", b"{}", cast("Any", state), trace=False)
+    assert (status, json.loads(body)["errors"]) == (200, "tadu list: internal error\n")

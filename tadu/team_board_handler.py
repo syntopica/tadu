@@ -2,18 +2,17 @@
 
 from __future__ import annotations
 
-from http import HTTPStatus
 from typing import TYPE_CHECKING, ClassVar, override
 
 from tadu.authorize_post import authorize_post
 from tadu.board_answer import BoardAnswer
-from tadu.board_data_path import BOARD_CHECK_PATH
 from tadu.board_handler import BoardHandler
 from tadu.board_operation_path import BOARD_OPERATION_PATH
 from tadu.board_path import board_path
+from tadu.board_post_paths import POST_PATHS
 from tadu.client_address import client_address
 from tadu.cookie_name import cookie_name
-from tadu.cross_site_refusal import cross_site_refusal
+from tadu.host_refusal import host_refusal
 from tadu.into_subfolder import into_subfolder
 from tadu.json_error import json_error
 from tadu.rate_limited import rate_limited
@@ -29,9 +28,6 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from tadu.github_sign_in import GithubSignIn
-
-
-POST_PATHS = frozenset({SIGN_OUT_PATH, BOARD_CHECK_PATH})
 
 
 class TeamBoardHandler(BoardHandler):
@@ -109,12 +105,7 @@ class TeamBoardHandler(BoardHandler):
         The 403 is cross_site_refusal's: the data or the session asked for by a page that
         is not the board's.
         """
-        if self.headers.get("Host") not in self.state.allowed_hosts:
-            status = HTTPStatus.MISDIRECTED_REQUEST
-            send_board_response(self, json_error(status, status.phrase.lower()))
-            return
-        path = board_path(self.path, self.sign_in.base_path)
-        refusal = cross_site_refusal(self.state.allowed_hosts, path, self.headers)
+        refusal = host_refusal(self.state.allowed_hosts, self.headers, self.sign_in, self.path)
         if refusal is not None:
             send_board_response(self, refusal)
             return
