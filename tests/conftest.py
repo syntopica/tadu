@@ -7,12 +7,15 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from board_clock import BoardClock
 from board_run import RunningBoard, refuse_to_serve, running_board
+from board_server import BoardServer
 from browser import chromium
 from fake_github import FakeGithub, fake_github
 from fake_github_web import fake_github_web
 from hypothesis import settings
 from live_board import LiveBoard
+from team_board import serve_team_board
 from team_workspace import team_workspace
 
 if TYPE_CHECKING:
@@ -55,6 +58,39 @@ def board_github() -> Iterator[FakeGithub]:
     """A fake GitHub where Ana-Dev reads acme/shop and acme/vault."""
     with fake_github({"Ana-Dev": {"acme/shop", "acme/vault"}}) as fake:
         yield fake
+
+
+@pytest.fixture
+def github() -> Iterator[FakeGithub]:
+    """A fake GitHub: Ana-Dev reads acme/shop and acme/vault, bo reads acme/shop."""
+    with fake_github({"Ana-Dev": {"acme/shop", "acme/vault"}, "bo": {"acme/shop"}}) as fake:
+        yield fake
+
+
+@pytest.fixture
+def shop_github() -> Iterator[FakeGithub]:
+    """A fake GitHub where Ana-Dev reads acme/shop."""
+    with fake_github({"Ana-Dev": {"acme/shop"}}) as fake:
+        yield fake
+
+
+@pytest.fixture
+def clock(monkeypatch: pytest.MonkeyPatch) -> BoardClock:
+    """`time.time` moved by hand, starting at a fixed moment."""
+    return BoardClock(monkeypatch)
+
+
+@pytest.fixture
+def board_url() -> str | None:
+    """The public URL a team board is served behind; None is its own address."""
+    return None
+
+
+@pytest.fixture
+def board(tmp_path: Path, github: FakeGithub, board_url: str | None) -> Iterator[BoardServer]:
+    """A team board over team_workspace, signing in with the github fixture."""
+    with serve_team_board(team_workspace(tmp_path), github, board_url) as server:
+        yield server
 
 
 @pytest.fixture

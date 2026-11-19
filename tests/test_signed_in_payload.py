@@ -3,6 +3,7 @@ from datetime import date
 from pathlib import Path
 
 from fake_github import FakeGithub, fake_github
+from storefront_workspace import STOREFRONT_WORKSPACE
 from team_workspace import team_workspace
 
 from tadu.board_payload import board_payload
@@ -33,18 +34,7 @@ def test_only_the_readable_repositories_reach_the_page(tmp_path: Path) -> None:
     with fake_github({"Ana-Dev": {"acme/shop"}}) as github:
         seen = payload(github, workspace, "Ana-Dev")
     assert [c["title"] for c in seen["cards"]] == ["shop item."]  # type: ignore[attr-defined]
-    assert seen["workspace"] == {
-        "organizations": [{"id": "acme", "name": "Acme"}],
-        "projects": [
-            {
-                "key": "storefront",
-                "name": "storefront",
-                "repositories": ["shop"],
-                "roles": [{"role": "client", "org": "acme"}],
-            }
-        ],
-        "repositories": [{"key": "shop", "access": "admin"}],
-    }
+    assert seen["workspace"] == STOREFRONT_WORKSPACE
     assert seen["views"] == [{"name": "mine", "criteria": "assignee=ana"}]
     assert seen["problems"] == []
     assert (seen["user"], seen["me"]) == ("Ana-Dev", "ana")

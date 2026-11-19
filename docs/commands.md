@@ -183,7 +183,8 @@ tadu migrate --write    # write todo/, then remove the converted files (git keep
   marker) is kept verbatim in `todo/tadu.json` as `x-format-1-header`.
 - The files are written into a staging folder (`.todo.migrating/`) and renamed to `todo/` at once,
   so an interrupted run leaves no half-written `todo/`. It refuses a repository that has no
-  `TODO.md`, with exit status `2`. A backlog with an item a stopped close left both open and closed
+  `TODO.md`, with exit status `2`, and one whose `todo/` folder is not a task backlog
+  (`todo/ already exists; move it away first`). A backlog with an item a stopped close left both open and closed
   (`T005`) is refused until that close is finished, or the task would be migrated twice.
 
 Run `tadu sync . --write` afterwards to update the agent rules.

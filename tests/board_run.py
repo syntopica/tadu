@@ -4,7 +4,6 @@ done window, the sign-in, the public URL, the sign-in limit and the trusted prox
 """
 
 import functools
-import http.client
 import io
 import socket
 import sys
@@ -18,8 +17,9 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 
 import pytest
-from board_server import Response
 from fake_github import SECRET, FakeGithub
+from response import Response
+from send_request import send_request
 from team_workspace import team_workspace
 
 from tadu.board_state import BoardState
@@ -58,16 +58,7 @@ class RunningBoard:
     def request(self, method: str, path: str, headers: dict[str, str]) -> Response:
         """A request to the address and port the board is bound to."""
         address, port = self.server.server_address[:2]
-        connection = http.client.HTTPConnection(str(address), port, timeout=5)
-        try:
-            connection.putrequest(method, path, skip_host=True, skip_accept_encoding=True)
-            for name, value in headers.items():
-                connection.putheader(name, value)
-            connection.endheaders()
-            reply = connection.getresponse()
-            return Response(reply.status, reply.headers, reply.read())
-        finally:
-            connection.close()
+        return send_request((str(address), port), method, path, headers)
 
 
 def free_port() -> int:

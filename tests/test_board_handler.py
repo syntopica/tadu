@@ -4,11 +4,12 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
-from board_server import BoardServer, Response, get, send, serve_board, with_header
+from board_server import BoardServer, get, send, serve_board, with_header
 from board_workspace import board_workspace
+from check_board_headers import check_board_headers
+from response import Response
 
 from tadu.board_handler import BoardHandler
-from tadu.board_headers import BOARD_HEADERS
 
 ASSETS = ("/", "/app.js", "/card-visible.js", "/board.css")
 
@@ -20,9 +21,7 @@ def board(tmp_path: Path) -> Iterator[BoardServer]:
 
 
 def check_headers(response: Response) -> None:
-    for name, value in BOARD_HEADERS.items():
-        assert response.headers[name] == value
-    assert not any(h.lower().startswith("access-control") for h in response.headers)
+    check_board_headers(response)
     assert "Set-Cookie" not in response.headers
 
 

@@ -6,15 +6,12 @@ from pathlib import Path
 
 import pytest
 import test_migrate
+from markup_words import MARKUP
 from test_migrate_keeps_fields import EVERY_FIELD, LOG
 
 from tadu.cli import main
 from tadu.v1_layout import DATE_HEADING
 
-# Words of the format 1 markup itself, which a task holds as its keys instead.
-MARKUP = {"smallest", "unblock", "depends", "on", "done", "when", "not", "before", "check", "id"}
-MARKUP |= {"result", "evidence", "resolution", "files", "priority", "assignees", "due", "labels"}
-MARKUP |= {"queue", "kind", "estimate", "sh", "x"}
 LOOSE = """# TODO
 
 ## Section intro

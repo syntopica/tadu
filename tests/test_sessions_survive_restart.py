@@ -2,29 +2,18 @@
 
 import json
 import shutil
-from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 from board_clock import BoardClock
 from board_server import BoardServer
-from fake_github import FakeGithub, fake_github
+from fake_github import FakeGithub
 from team_board import call, serve_team_board, sign_in_as
 from team_workspace import team_workspace
+from token_of import token_of
 
 from tadu.sign_in_settings import IDLE_TIMEOUT_SECONDS
 from tadu.workspace_file_names import SESSIONS_FILE
-
-
-@pytest.fixture
-def clock(monkeypatch: pytest.MonkeyPatch) -> BoardClock:
-    return BoardClock(monkeypatch)
-
-
-@pytest.fixture
-def github() -> Iterator[FakeGithub]:
-    with fake_github({"Ana-Dev": {"acme/shop", "acme/vault"}, "bo": {"acme/shop"}}) as fake:
-        yield fake
 
 
 @pytest.fixture
@@ -41,14 +30,6 @@ def seen(board: BoardServer, cookie: str) -> list[str] | int:
     body = json.loads(response.body)
     assert body["user"] in {"Ana-Dev", "bo"}
     return sorted(card["repository"] for card in body["cards"])
-
-
-def token_of(board: BoardServer, cookie: str, now: float) -> str:
-    assert board.state.github is not None
-    session = board.state.github.sessions.find(cookie.partition("=")[2], now)
-    assert session is not None
-    assert session.token is not None
-    return session.token
 
 
 def test_people_stay_signed_in_across_restarts(workspace: Path, github: FakeGithub) -> None:

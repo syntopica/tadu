@@ -27,9 +27,8 @@ def github() -> Iterator[FakeGithub]:
 
 
 @pytest.fixture
-def board(tmp_path: Path, github: FakeGithub) -> Iterator[BoardServer]:
-    with serve_team_board(team_workspace(tmp_path), github, URL) as server:
-        yield server
+def board_url() -> str:
+    return URL
 
 
 def titles(board: BoardServer, path: str, cookie: str) -> list[str]:

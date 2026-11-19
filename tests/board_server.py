@@ -6,19 +6,15 @@ from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from response import Response
+from send_request import send_request
+
 from tadu.allowed_hosts import allowed_hosts
 from tadu.board_state import BoardState
 from tadu.cli import main
 from tadu.make_board_handler import make_board_handler
 
 TOKEN = "test-token"  # noqa: S105
-
-
-@dataclass(frozen=True)
-class Response:
-    status: int
-    headers: http.client.HTTPMessage
-    body: bytes
 
 
 @dataclass(frozen=True)
@@ -30,16 +26,7 @@ class BoardServer:
 
     def request(self, method: str, path: str, headers: dict[str, str]) -> Response:
         port = self.port or int(self.host.rpartition(":")[2])
-        connection = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
-        try:
-            connection.putrequest(method, path, skip_host=True, skip_accept_encoding=True)
-            for name, value in headers.items():
-                connection.putheader(name, value)
-            connection.endheaders()
-            reply = connection.getresponse()
-            return Response(reply.status, reply.headers, reply.read())
-        finally:
-            connection.close()
+        return send_request(("127.0.0.1", port), method, path, headers)
 
 
 @contextmanager

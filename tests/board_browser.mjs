@@ -21,12 +21,15 @@ if (out) {
 async function open(viewport, scheme, view) {
   const page = await browser.newPage();
   page.on("console", (message) => {
-    if (["error", "warn"].includes(message.type())) result.console.push(message.text());
+    // Chrome asks for /favicon.ico on its own; the board has none, and Chromium on Linux never asks.
+    const favicon = message.location().url?.endsWith("/favicon.ico");
+    if (["error", "warn"].includes(message.type()) && !favicon) result.console.push(message.text());
   });
   page.on("pageerror", (error) => result.console.push(error.message));
   page.on("response", (response) => {
-    if (response.status() >= 400) result.failed.push(`${response.status()} ${response.request().method()} ${new URL(response.url()).pathname}`);
+    if (response.status() >= 400 && !response.url().endsWith("/favicon.ico")) result.failed.push(`${response.status()} ${response.request().method()} ${new URL(response.url()).pathname}`);
   });
+  await page.bringToFront();
   await page.setViewport(viewport);
   await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: scheme }]);
   await page.goto(`${url}#view=${view}`, { waitUntil: "load" });
@@ -61,9 +64,11 @@ await click(page, "#detail .change-actions", "Edit");
 await page.waitForSelector("#change:not([hidden])");
 await shot(page, "edit-dialog");
 await page.keyboard.press("Escape");
+await page.waitForSelector("#change", { hidden: true });
 await click(page, "#detail .change-actions", "Block");
 await page.waitForSelector("#change input[name=note]");
-await page.type("#change input[name=note]", "Waiting on the payments team.");
+await page.focus("#change input[name=note]");
+await page.keyboard.type("Waiting on the payments team.");
 await click(page, "#change", "Preview");
 await page.waitForFunction(() => document.querySelector("#change .change-output").textContent !== "");
 await shot(page, "block-preview");
@@ -77,9 +82,11 @@ await page.setDragInterception(true);
 await source.dragAndDrop(target);
 await notice(page);
 await page.setDragInterception(false);
+await page.waitForNetworkIdle({ idleTime: 300 });
 await page.click("#new-item");
 await page.waitForSelector("#change input[name=title]");
-await page.type("#change input[name=title]", "Fix the cart rounding");
+await page.focus("#change input[name=title]");
+await page.keyboard.type("Fix the cart rounding");
 await click(page, "#change", "Preview");
 await page.waitForFunction(() => document.querySelector("#change .change-output").textContent !== "");
 await shot(page, "new-item");
@@ -87,10 +94,14 @@ await click(page, "#change", "Apply");
 await notice(page);
 await page.click("#filter-add");
 await page.waitForSelector("#filter-menu:not([hidden])");
+await page.waitForFunction(() => document.activeElement?.closest("#filter-menu"));
 await shot(page, "filter-menu");
 await page.keyboard.type("priority");
+await page.waitForSelector("#filter-menu-list .menu-option.field");
 await page.keyboard.press("Enter");
+await page.waitForSelector("#filter-menu-list .menu-option.value");
 await page.keyboard.press("Enter");
+await page.waitForSelector("#active-chips .filter-chip");
 await page.keyboard.press("Escape");
 await page.keyboard.press("Escape");
 result.chips = await page.$$eval("#active-chips .filter-chip", (chips) => chips.map((chip) => chip.textContent));

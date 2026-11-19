@@ -5,6 +5,7 @@ import pytest
 from a11y_workspace import a11y_workspace
 from board_states import board_state
 from board_workspace import board_workspace
+from storefront_workspace import STOREFRONT_WORKSPACE
 
 from tadu.board_payload import board_payload
 from tadu.board_state import BoardState
@@ -29,18 +30,7 @@ def test_cards_me_columns_and_time(tmp_path: Path) -> None:
     assert payload["columns"] == ["backlog", "ready", "in_progress", "blocked", "done", "cancelled"]
     assert payload["done_days"] == 14
     assert payload["workspace_id"] == workspace_id(tmp_path)
-    assert payload["workspace"] == {
-        "organizations": [{"id": "acme", "name": "Acme"}],
-        "projects": [
-            {
-                "key": "storefront",
-                "name": "storefront",
-                "repositories": ["shop"],
-                "roles": [{"role": "client", "org": "acme"}],
-            }
-        ],
-        "repositories": [{"key": "shop", "access": "admin"}],
-    }
+    assert payload["workspace"] == STOREFRONT_WORKSPACE
     assert str(payload["generated_at"]).startswith("20")
 
 

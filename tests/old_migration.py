@@ -14,6 +14,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from markup_words import MARKUP
 
 FIXTURE = Path(__file__).parent / "fixtures" / "old_migration"
 REAL_IDS = {
@@ -23,10 +24,6 @@ REAL_IDS = {
     "Recommend merge=union": "t-99161023-f3a9-43a3-94df-589ca752fa13",
 }
 needs_git = pytest.mark.skipif(shutil.which("git") is None, reason="needs git")
-# Words of the format 1 markup itself, which a task holds as its keys instead.
-MARKUP = {"smallest", "unblock", "depends", "on", "done", "when", "not", "before", "check", "id"}
-MARKUP |= {"result", "evidence", "resolution", "files", "priority", "assignees", "due", "labels"}
-MARKUP |= {"queue", "kind", "estimate", "sh", "x"}
 
 
 def leftovers(root: Path) -> Path:

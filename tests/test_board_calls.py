@@ -1,10 +1,11 @@
 import json
 from pathlib import Path
 
-from board_server import BoardServer, Response, post, serve_board
+from board_server import BoardServer, post, serve_board
 from board_workspace import board_workspace
 from changes_workspace import changes_workspace
 from history_workspace import ID, history_workspace
+from response import Response
 
 from tadu.board_body_limit import BOARD_BODY_LIMIT
 

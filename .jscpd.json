@@ -14,6 +14,10 @@
     "**/package-lock.json",
     "bench/format-study/results/**",
     "bench/format-study/proposal/**",
-    "tests/fixtures/**"
+    "tests/fixtures/**",
+    "AGENTS.md",
+    "skills/*/references/**",
+    "docs/superpowers/**",
+    "bench/format-study/textdb.py"
   ]
 }

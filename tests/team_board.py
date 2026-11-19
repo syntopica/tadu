@@ -7,8 +7,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
-from board_server import BoardServer, Response
+from board_server import BoardServer
 from fake_github import FakeGithub, pkce_challenge
+from response import Response
 
 from tadu.allowed_hosts import allowed_hosts
 from tadu.board_memory import board_memory

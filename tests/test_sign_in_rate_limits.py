@@ -7,8 +7,9 @@ from pathlib import Path
 
 import pytest
 from board_clock import BoardClock
-from board_server import BoardServer, Response
+from board_server import BoardServer
 from fake_github import FakeGithub, fake_github
+from response import Response
 from team_board import call, serve_team_board, sign_in_as
 from team_workspace import team_workspace
 

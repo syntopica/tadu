@@ -1,16 +1,15 @@
 import json
 import time
 from collections.abc import Iterator
-from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
-from board_server import BoardServer, Response
+from board_server import BoardServer
+from check_board_headers import check_board_headers
 from fake_github import FakeGithub, fake_github, pkce_challenge
-from team_board import call, cookies, serve_team_board, sign_in_as, state_part
-from team_workspace import team_workspace
+from response import Response
+from team_board import call, cookies, sign_in_as, state_part
 
-from tadu.board_headers import BOARD_HEADERS
 from tadu.token_grant import TokenGrant
 
 
@@ -20,16 +19,8 @@ def github() -> Iterator[FakeGithub]:
         yield fake
 
 
-@pytest.fixture
-def board(tmp_path: Path, github: FakeGithub) -> Iterator[BoardServer]:
-    with serve_team_board(team_workspace(tmp_path), github) as server:
-        yield server
-
-
 def check_headers(response: Response) -> None:
-    for name, value in BOARD_HEADERS.items():
-        assert response.headers[name] == value
-    assert not any(h.lower().startswith("access-control") for h in response.headers)
+    check_board_headers(response)
 
 
 def titles(response: Response) -> list[str]:

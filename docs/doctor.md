@@ -176,7 +176,7 @@ entries and attach one entry's `Evidence:` to the other.
 | C002 | error | `todo/tadu.json` is not valid |
 | C003 | warning | `todo/archive/` holds tasks but `tadu.json` has no archive policy |
 | C004 | warning | a `TODO.md` or `TODO_LOG.md` next to a task backlog is ignored; `tadu migrate --write` brings what it holds into `todo/` and removes it |
-| C005 | warning | a `tadu migrate --recover` started and did not finish (it stopped, or refused something); run it again |
+| C005 | warning | an earlier `tadu migrate --recover` did not finish, because it stopped or refused something; run it again |
 | C006 | warning | closed tasks are due to move under the archive policy; `tadu archive --write` moves them |
 
 ### Task files (J)

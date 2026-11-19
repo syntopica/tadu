@@ -6,7 +6,7 @@ import time
 from urllib.parse import parse_qs, urlsplit
 
 from board_run import RunningBoard, Settings, check_cards
-from board_server import Response
+from response import Response
 from team_board import cookies, state_part
 
 SIGNING_IN = "192.0.2.1"  # the address a person signs in from, behind the proxy

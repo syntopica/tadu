@@ -3,8 +3,9 @@ from collections.abc import Iterator, Mapping
 from pathlib import Path
 
 import pytest
-from board_server import BoardServer, Response, post
+from board_server import BoardServer, post
 from fake_github import FakeGithub, fake_github
+from response import Response
 from team_board import serve_team_board, sign_in_as
 from team_workspace import team_workspace
 

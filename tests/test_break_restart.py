@@ -1,13 +1,12 @@
 """A repository's GitHub identity survives restarts, so a taken-over name never shows."""
 
 import json
-from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 from board_clock import BoardClock
 from board_server import BoardServer
-from fake_github import FakeGithub, fake_github
+from fake_github import FakeGithub
 from team_board import call, serve_team_board, sign_in_as
 from team_workspace import team_workspace
 
@@ -18,17 +17,6 @@ UNCONFIRMED = (
     "a repository is hidden because the board cannot confirm it is still the same "
     "repository on GitHub; the board's operator has been told which"
 )
-
-
-@pytest.fixture
-def clock(monkeypatch: pytest.MonkeyPatch) -> BoardClock:
-    return BoardClock(monkeypatch)
-
-
-@pytest.fixture
-def github() -> Iterator[FakeGithub]:
-    with fake_github({"Ana-Dev": {"acme/shop", "acme/vault"}, "bo": {"acme/shop"}}) as fake:
-        yield fake
 
 
 @pytest.fixture

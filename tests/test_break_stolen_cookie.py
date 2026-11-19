@@ -6,42 +6,25 @@ from pathlib import Path
 
 import pytest
 from board_clock import BoardClock
-from board_server import BoardServer, Response
-from fake_github import FakeGithub, fake_github
+from board_server import BoardServer
+from fake_github import FakeGithub
+from response import Response
 from team_board import call, serve_team_board, sign_in_as
 from team_workspace import team_workspace
+from token_of import token_of
 
 from tadu.sign_in_settings import ACCESS_SECONDS, IDLE_TIMEOUT_SECONDS
 
 
 @pytest.fixture
-def clock(monkeypatch: pytest.MonkeyPatch) -> BoardClock:
-    return BoardClock(monkeypatch)
-
-
-@pytest.fixture
-def github() -> Iterator[FakeGithub]:
-    with fake_github({"Ana-Dev": {"acme/shop"}}) as fake:
-        yield fake
-
-
-@pytest.fixture
-def board(tmp_path: Path, github: FakeGithub, clock: BoardClock) -> Iterator[BoardServer]:
+def board(tmp_path: Path, shop_github: FakeGithub, clock: BoardClock) -> Iterator[BoardServer]:
     assert clock.now
-    with serve_team_board(team_workspace(tmp_path), github) as server:
+    with serve_team_board(team_workspace(tmp_path), shop_github) as server:
         yield server
 
 
 def cards(board: BoardServer, cookie: str) -> Response:
     return call(board, "GET", "/api/cards", cookie)
-
-
-def token_of(board: BoardServer, cookie: str, now: float) -> str:
-    assert board.state.github is not None
-    session = board.state.github.sessions.find(cookie.partition("=")[2], now)
-    assert session is not None
-    assert session.token is not None
-    return session.token
 
 
 def test_the_victim_signing_out_ends_the_thiefs_copy(board: BoardServer) -> None:
@@ -66,19 +49,19 @@ def test_a_stolen_cookie_dies_when_the_session_goes_unused(
 
 
 def test_a_revoked_app_refuses_a_copy_that_has_not_loaded_yet(
-    board: BoardServer, github: FakeGithub
+    board: BoardServer, shop_github: FakeGithub
 ) -> None:
     stolen = sign_in_as(board, "Ana-Dev")
-    github.revoke_app("Ana-Dev")
+    shop_github.revoke_app("Ana-Dev")
     assert cards(board, stolen).status == 401
 
 
 def test_revoking_the_app_on_github_ends_the_thiefs_copy_within_minutes(
-    board: BoardServer, github: FakeGithub, clock: BoardClock
+    board: BoardServer, shop_github: FakeGithub, clock: BoardClock
 ) -> None:
     stolen = sign_in_as(board, "Ana-Dev")
     assert cards(board, stolen).status == 200
-    github.revoke_app("Ana-Dev")
+    shop_github.revoke_app("Ana-Dev")
     fresh = sign_in_as(board, "Ana-Dev")
     for _ in range(ACCESS_SECONDS // 60 - 1):
         clock.advance(60)
@@ -110,11 +93,11 @@ def test_a_tampered_cookie_is_nobody(board: BoardServer, forge: object) -> None:
 
 
 def test_a_cookie_from_before_a_restart_is_nobody(
-    tmp_path: Path, github: FakeGithub, board: BoardServer
+    tmp_path: Path, shop_github: FakeGithub, board: BoardServer
 ) -> None:
     cookie = sign_in_as(board, "Ana-Dev")
     (tmp_path / "again").mkdir()
-    with serve_team_board(team_workspace(tmp_path / "again"), github) as restarted:
+    with serve_team_board(team_workspace(tmp_path / "again"), shop_github) as restarted:
         assert cards(restarted, cookie).status == 401
 
 
