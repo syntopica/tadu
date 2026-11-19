@@ -8,6 +8,8 @@ def test_values() -> None:
             "img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
         ),
         "Referrer-Policy": "no-referrer",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Resource-Policy": "same-origin",
         "X-Content-Type-Options": "nosniff",
         "Cache-Control": "no-store",
     }

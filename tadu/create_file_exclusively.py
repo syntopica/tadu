@@ -7,8 +7,12 @@ import tempfile
 from pathlib import Path
 
 
-def create_file_exclusively(target: Path, text: str) -> None:
-    """Write `text` to a sibling temp file, then hard-link it to `target`; FileExistsError if taken."""
+def create_file_exclusively(target: Path, text: str, *, mode: int = 0o644) -> None:
+    """Write `text` to a sibling temp file, then hard-link it to `target`; FileExistsError if taken.
+
+    The file has `mode` from the start: the temporary file is created readable by its
+    owner only and given `mode` before it is linked into place.
+    """
     # path-name: only names the temporary file beside the target.
     descriptor, name = tempfile.mkstemp(dir=target.parent, prefix=f".{target.name}.", suffix=".tmp")
     try:
@@ -16,7 +20,7 @@ def create_file_exclusively(target: Path, text: str) -> None:
             handle.write(text)
             handle.flush()
             os.fsync(handle.fileno())
-        Path(name).chmod(0o644)
+        Path(name).chmod(mode)
         Path(target).hardlink_to(name)
     finally:
         Path(name).unlink(missing_ok=True)

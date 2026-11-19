@@ -13,5 +13,14 @@ if TYPE_CHECKING:
 
 
 def make_board_handler(state: BoardState) -> type[BaseHTTPRequestHandler]:
-    """A BoardHandler subclass that answers for this state."""
-    return type("BoundBoardHandler", (BoardHandler,), {"state": state})
+    """A BoardHandler subclass that answers for this state.
+
+    With `state.github`, a TeamBoardHandler that signs people in with GitHub.
+    """
+    if state.github is None:
+        return type("BoundBoardHandler", (BoardHandler,), {"state": state})
+    from tadu.team_board_handler import TeamBoardHandler  # noqa: PLC0415 - loaded only when signing in with GitHub
+
+    return type(
+        "BoundTeamBoardHandler", (TeamBoardHandler,), {"state": state, "sign_in": state.github}
+    )

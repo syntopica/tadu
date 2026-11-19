@@ -13,7 +13,7 @@ export function renderList(store, sets, content) {
   store.list = null;
   if (store.view === "mine" && !store.payload.me) {
     store.navKeys = [];
-    content.replaceChildren(meMissing());
+    content.replaceChildren(meMissing(store.payload.user));
     return;
   }
   if (sets.shown.length === 0) {

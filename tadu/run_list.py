@@ -11,6 +11,7 @@ from tadu.card_page import card_page
 from tadu.filter_from_args import filter_from_args
 from tadu.format_card_line import format_card_line
 from tadu.history_days import history_days
+from tadu.list_view import list_view
 from tadu.load_cards import load_cards
 from tadu.merge_filters import merge_filters
 from tadu.print_problems import print_problems
@@ -18,7 +19,6 @@ from tadu.query_from_args import query_from_args
 from tadu.select_cards import select_cards
 from tadu.short_keys import short_keys
 from tadu.workspace_error import WorkspaceError
-from tadu.workspace_view import workspace_view
 
 if TYPE_CHECKING:
     import argparse
@@ -33,7 +33,7 @@ def run_list(args: argparse.Namespace, today: date) -> int:
         card_filter = filter_from_args(args)
         # shortcut: the view reads the workspace file a second time; pass the loaded workspace if it grows slow.
         if args.view is not None:
-            card_filter = merge_filters(workspace_view(args.workspace, args.view), card_filter)
+            card_filter = merge_filters(list_view(args), card_filter)
     except WorkspaceError as error:
         print(f"tadu list: {error}", file=sys.stderr)
         return 2

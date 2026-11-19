@@ -19,6 +19,8 @@ def test_defaults() -> None:
         None,
         14,
     )
+    assert (parsed.auth, parsed.public_url) == ("token", None)
+    assert (parsed.sign_in_limit, parsed.proxy_hops) == (None, None)
 
 
 def test_options() -> None:
@@ -27,10 +29,21 @@ def test_options() -> None:
     )
     assert (parsed.host, parsed.port, parsed.done_days) == ("::1", 8123, 3)
     assert parser().parse_args(["board", "--workspace", "w", "--port", "0"]).port == 0
+    team = parser().parse_args(
+        ["board", "--workspace", "w", "--auth", "github", "--public-url", "https://B.example/"]
+    )
+    assert (team.auth, team.public_url) == ("github", "https://b.example")
 
 
 @pytest.mark.parametrize(
-    "argv", [["board"], ["board", "--workspace", "w", "--done-days", "-1"], ["board", "x"]]
+    "argv",
+    [
+        ["board"],
+        ["board", "--workspace", "w", "--done-days", "-1"],
+        ["board", "x"],
+        ["board", "--workspace", "w", "--auth", "password"],
+        ["board", "--workspace", "w", "--public-url", "board.example.com"],
+    ],
 )
 def test_rejected(argv: list[str]) -> None:
     with pytest.raises(SystemExit):

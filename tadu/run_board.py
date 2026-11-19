@@ -2,20 +2,15 @@
 
 from __future__ import annotations
 
-import secrets
 import sys
 from contextlib import suppress
-from datetime import UTC, datetime
-from pathlib import Path
 from typing import TYPE_CHECKING
 
-from tadu.allowed_hosts import allowed_hosts
 from tadu.bind_board_server import bind_board_server
-from tadu.board_state import BoardState
-from tadu.load_cards import load_cards
-from tadu.loopback_hosts import LOOPBACK_HOSTS
+from tadu.board_preflight import board_preflight
+from tadu.board_warnings import board_warnings
 from tadu.make_board_handler import make_board_handler
-from tadu.workspace_error import WorkspaceError
+from tadu.serving_board_state import serving_board_state
 from tadu.workspace_port import workspace_port
 
 if TYPE_CHECKING:
@@ -23,11 +18,9 @@ if TYPE_CHECKING:
 
 
 def run_board(args: argparse.Namespace) -> int:
-    """Check the workspace loads, then serve it until interrupted."""
-    today = datetime.now(UTC).astimezone().date()
-    try:
-        load_cards((), args.workspace, args.done_days, today)
-    except WorkspaceError as error:
+    """Check the workspace loads (and the GitHub sign-in is ready), then serve until interrupted."""
+    team, error = board_preflight(args)
+    if error is not None:
         print(f"tadu board: {error}", file=sys.stderr)
         return 2
     port = workspace_port(args.workspace) if args.port is None else args.port
@@ -38,17 +31,14 @@ def run_board(args: argparse.Namespace) -> int:
         return 2
     with server:
         port = server.server_address[1]
-        if args.host not in LOOPBACK_HOSTS:
-            print(
-                f"tadu board: warning: listening on {args.host}; only requests whose "
-                f"Host header is {args.host}:{port} are served",
-                file=sys.stderr,
-            )
-        token = secrets.token_urlsafe(32)
-        hosts = allowed_hosts(args.host, port)
-        state = BoardState(Path(args.workspace), args.done_days, token, hosts)
+        state = serving_board_state(args, port, team(port) if team is not None else None)
+        for warning in board_warnings(args, state, port):
+            print(f"tadu board: warning: {warning}", file=sys.stderr)
         server.RequestHandlerClass = make_board_handler(state)
-        print(f"http://{args.host}:{port}/?token={token}", flush=True)
+        if state.github is None:
+            print(f"http://{args.host}:{port}/?token={state.token}", flush=True)
+        else:
+            print(f"{state.github.public_url}/", flush=True)
         with suppress(KeyboardInterrupt):
             server.serve_forever()
     return 0

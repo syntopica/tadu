@@ -57,7 +57,7 @@ def test_bind_failure_exits_two(
     def refuse(*_args: object) -> None:
         raise OSError(48, "Address already in use")
 
-    monkeypatch.setattr("tadu.bind_board_server.ThreadingHTTPServer", refuse)
+    monkeypatch.setattr("tadu.bind_board_server.BoardHttpServer", refuse)
     workspace = str(board_workspace(tmp_path))
     assert main(["board", "--workspace", workspace, "--port", "8123"]) == 2
     captured = capsys.readouterr()

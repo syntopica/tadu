@@ -79,3 +79,21 @@ def test_duplicate_view_name_and_unknown_reference() -> None:
         "duplicate view name: v",
         "view v: unknown org ghost",
     ]
+
+
+def test_github_logins_must_look_like_logins_and_name_one_person() -> None:
+    people = (
+        PersonEntry("ana", "Ana", None, "Ana-Dev"),
+        PersonEntry("ana2", "Ana again", None, "ana-dev"),
+        PersonEntry("bo", "Bo", None, "@bo"),
+        PersonEntry("cy", "Cy", None, "-cy"),
+        PersonEntry("di", "Di", None, "d" * 40),
+        PersonEntry("ed", "Ed", None, "ed-1"),
+        PersonEntry("fi", "Fi", None),
+    )
+    assert workspace_problems(make(people=people)) == [
+        "person bo: github must be a GitHub login, such as octocat",
+        "person cy: github must be a GitHub login, such as octocat",
+        "person di: github must be a GitHub login, such as octocat",
+        "duplicate person github: ana-dev",
+    ]

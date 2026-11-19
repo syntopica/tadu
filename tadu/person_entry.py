@@ -7,8 +7,9 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class PersonEntry:
-    """A person id, display name and optional organization id."""
+    """A person id, display name, optional organization id and optional GitHub login."""
 
     id: str
     name: str
     organization: str | None
+    github: str | None = None

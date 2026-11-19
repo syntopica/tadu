@@ -5,9 +5,13 @@ __pycache__/
 .coverage
 coverage/
 .pytest_cache/
+.hypothesis/
 .mypy_cache/
 .ruff_cache/
 build/
 dist/
 .superpowers/
 .codeality-ui/
+venv/
+node_modules/
+htmlcov/

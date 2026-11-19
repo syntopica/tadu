@@ -16,6 +16,7 @@ version = 1
 key = "shop"
 remote = "git@github.com:example/shop.git"
 backlog = "."
+github_id = 4242
 
 [[repository]]
 key = "api"
@@ -58,7 +59,7 @@ def test_loads_valid_workspace(tmp_path: Path) -> None:
     workspace = load_workspace(tmp_path)
     assert workspace.root == tmp_path
     assert workspace.repositories == (
-        RepositoryEntry("shop", "git@github.com:example/shop.git", "."),
+        RepositoryEntry("shop", "git@github.com:example/shop.git", ".", 4242),
         RepositoryEntry("api", None, "docs"),
     )
     assert workspace.projects == (
@@ -133,6 +134,12 @@ def test_problems_are_joined(tmp_path: Path) -> None:
         ("[[person]]\nname = 'N'\n", "person: id"),
         ("[[person]]\nid = 'p'\n", "person: name"),
         ("[[person]]\nid = 'p'\nname = 'N'\norganization = 1\n", "person: organization"),
+        ("[[person]]\nid = 'p'\nname = 'N'\ngithub = 1\n", "person: github"),
+        ("[[repository]]\nkey = 'r'\ngithub_id = '1'\n", "repository r: github_id"),
+        ("[[repository]]\nkey = 'r'\ngithub_id = 0\n", "repository r: github_id"),
+        ("[[repository]]\nkey = 'r'\ngithub_id = -3\n", "repository r: github_id"),
+        ("[[repository]]\nkey = 'r'\ngithub_id = true\n", "repository r: github_id"),
+        ("[[repository]]\nkey = 'r'\ngithub_id = 1.0\n", "repository r: github_id"),
     ],
 )
 def test_malformed_shapes_name_table_and_key(tmp_path: Path, body: str, fragment: str) -> None:

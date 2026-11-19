@@ -220,7 +220,7 @@ rule block checks; format 1's TODO and log checks do not apply.
 | J014 | warning | blocked, but every `blocked_by` task is closed and no `blocker` is set |
 | J015 | warning | pending or in progress while a `blocked_by` task is still open |
 | J016 | warning | a `blocked_by` task was cancelled (block on its replacement when it has one) |
-| J017 | warning | a line looks like a secret (private key, cloud or API key, token); the value is never shown |
+| J017 | warning | a line looks like a secret (private key, cloud or API key, token, password in a URL, credential assignment); the value is never shown |
 | J018 | warning | in progress for longer than `stale_after_days` |
 | J019 | warning | a milestone not declared in `tadu.json` |
 | J020 | error | a relation points to the task itself |

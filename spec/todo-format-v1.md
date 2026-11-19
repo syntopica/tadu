@@ -381,10 +381,14 @@ name = "Studio"
 id = "ana"
 name = "Ana"
 organization = "studio"
+github = "ana-studio"
 ```
 
 - `[[repository]]`: `key` is required and unique. `remote` is optional and is
-  used to link a card to its line on a known forge. `backlog` is optional,
+  used to link a card to its line on a known forge. `github_id` is optional, a
+  whole number above 0: the GitHub id of the repository its remote names; a board
+  that signs in with GitHub hides the repository when GitHub gives its remote
+  another id. `backlog` is optional,
   default `.`: the directory holding `TODO.md`, relative to the checkout and
   without `..`, so a monorepo can register a nested backlog as its own entry.
 - `[[project]]`: `key` is required; `name` defaults to the key; `repositories`
@@ -393,7 +397,10 @@ organization = "studio"
   a list of organization IDs, all of which must exist.
 - `[[organization]]`: `id` and `name`, both required; IDs are unique.
 - `[[person]]`: `id` and `name` are required, `organization` is optional and
-  must name an organization; IDs are unique.
+  must name an organization; IDs are unique. `github` is optional: the person's
+  GitHub login (letters, digits and single inner hyphens, at most 39
+  characters), unique regardless of case. A board that signs people in with
+  GitHub takes the person with the signed-in login as `me`.
 - `[[view]]`: a saved filter set. `name` is required and unique; the optional
   `project`, `org`, `role`, `assignee`, `column`, `priority`, `kind`, `label`,
   `due_before` and `check_before` (TOML dates), `include_cancelled` and `open` (booleans) are the
@@ -429,12 +436,65 @@ shop = "../shop"
 
 In either file, an unknown top-level key or table is an error naming it: the
 workspace file allows `version`, `repository`, `project`, `organization`,
-`person` and `view`; the local file allows `version`, `me`, `editor_url` and `paths`.
+`person` and `view`; the local file allows `version`, `me`, `editor_url`, `paths`
+and the option tables of a config file (see [Config files](#config-files)), which
+give the commands run on the workspace their options.
+
+A board that signs in with GitHub also keeps `tadu-workspace.github-ids.json`
+in the workspace directory: `{"version": 1, "github_ids": {"<repository key>":
+<id>}}`, keys sorted, written by the board as it first sees each repository. Any
+other shape is an error.
+It also keeps `tadu-workspace.sessions.json`, its signed-in sessions, each
+GitHub token sealed by the person's session cookie; like the local file it is
+per machine and not meant to be committed.
 
 A malformed workspace is an error. Problems reading or parsing either file
 stop at the first one found. A workspace file that parses but names an unknown
 repository, organization or person, or repeats a key or ID, reports every such
 cross-reference problem together in one error.
+
+## Config files
+
+A config file gives commands the options their command line leaves out. The
+user's file is TOML, starts with `version = 1`, and holds only `[defaults]` and
+tables named after commands; a workspace's local file holds the same tables
+beside its own keys.
+
+```toml
+version = 1
+
+[defaults]
+workspace = "~/work/acme-workspace"
+
+[board]
+auth = "github"
+public_url = "https://example.com/tadu"
+port = 8123
+```
+
+- A table's keys are the command's long options with `_` for `-`. The tables
+  and their keys: `doctor` (`workspace`, `json`), `sync` (`file`), `init`
+  (`file`, `format`), `list` (`workspace`, `done_days`, `view`, `json`, `sort`,
+  `limit`), `show` (`workspace`, `done_days`, `json`), `ready` (`workspace`,
+  `json`, `limit`), `next` and `inbox` (`workspace`, `json`), `urgent`
+  (`workspace`, `json`, `days`), `similar` (`workspace`, `limit`), `feed`
+  (`workspace`, `done_days`), `board` (`workspace`, `host`, `port`,
+  `done_days`, `auth`, `public_url`, `sign_in_limit`, `proxy_hops`,
+  `idle_timeout`) and `mcp`
+  (`workspace`). `[defaults]` takes any of them and gives it to every command
+  that has it. Any other table or key is an error naming it.
+- `json` takes a boolean; every other key a string or an integer, read as the
+  flag reads its argument, so it is held to the same rules and choices.
+- A `workspace` is resolved against the directory of the file that gives it,
+  after a leading `~` expands; the local file cannot give one.
+- An option takes the first value of: the command line, the local file of the
+  command's workspace (its command table, then `[defaults]`), the user's file
+  (the same), the option's built-in default. The workspace is the command
+  line's, else the user's file's. A command that reads repository paths drops
+  a workspace the user's file gives, and a view with it, when the command line
+  names paths or when the current directory holds a `TODO.md` or a
+  `todo/tadu.json` (its default path); `doctor` and `board` have no default
+  path and keep it. `--no-config` reads no table of either file.
 
 ## Columns
 

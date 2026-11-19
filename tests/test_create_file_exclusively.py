@@ -17,3 +17,10 @@ def test_existing_file_is_never_replaced(tmp_path: Path) -> None:
         create_file_exclusively(tmp_path / "TODO.md", "# TODO\n")
     assert (tmp_path / "TODO.md").read_text() == "mine\n"
     assert [path.name for path in tmp_path.iterdir()] == ["TODO.md"]
+
+
+def test_the_mode_is_the_files_from_the_start(tmp_path: Path) -> None:
+    create_file_exclusively(tmp_path / "open.txt", "x")
+    create_file_exclusively(tmp_path / "own.txt", "x", mode=0o600)
+    assert (tmp_path / "open.txt").stat().st_mode & 0o777 == 0o644
+    assert (tmp_path / "own.txt").stat().st_mode & 0o777 == 0o600

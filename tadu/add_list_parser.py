@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import date
 from typing import TYPE_CHECKING
 
+from tadu.add_json_argument import add_json_argument
 from tadu.add_query_arguments import add_query_arguments
 from tadu.add_scope_arguments import add_scope_arguments
 from tadu.columns import COLUMNS
@@ -20,7 +21,7 @@ def add_list_parser(commands: argparse._SubParsersAction[argparse.ArgumentParser
     listing = commands.add_parser("list", help="print backlog items as lines or JSON")
     add_scope_arguments(listing)
     listing.add_argument("--view", help="saved view of the workspace; flags given beside it win")
-    listing.add_argument("--json", action="store_true", help="one JSON object per item")
+    add_json_argument(listing, "one JSON object per item")
     listing.add_argument("--project", help="project id")
     listing.add_argument("--org", help="organization id")
     listing.add_argument("--role", help="organization role")

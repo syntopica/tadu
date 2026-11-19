@@ -348,6 +348,15 @@ code {
   color: var(--muted);
 }
 
+.account-login {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 2px;
+  padding: 6px 10px;
+  overflow-wrap: anywhere;
+}
+
 .theme-toggle {
   color: var(--muted);
   font-size: 13px;
@@ -2678,4 +2687,69 @@ body.detail-open .main {
   * {
     transition: none !important;
   }
+}
+
+/* The sign-in page of a board that signs in with GitHub. */
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.login-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 380px;
+  padding: 32px 28px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.login-card .brand {
+  padding: 0;
+}
+
+.login-card h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.login-card p {
+  margin: 0 0 8px;
+}
+
+/* The warning that the GitHub session ends soon for lack of use. */
+.session-warning {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 12px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--raised);
+  color: var(--text);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.session-warning[hidden] {
+  display: none;
+}
+
+.session-warning p {
+  flex: 1 1 16em;
+  margin: 0;
+  font-weight: 600;
 }

@@ -25,9 +25,10 @@ class BoardServer:
     host: str
     token: str
     state: BoardState
+    port: int | None = None
 
     def request(self, method: str, path: str, headers: dict[str, str]) -> Response:
-        port = int(self.host.rpartition(":")[2])
+        port = self.port or int(self.host.rpartition(":")[2])
         connection = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
         try:
             connection.putrequest(method, path, skip_host=True, skip_accept_encoding=True)

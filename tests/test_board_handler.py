@@ -95,7 +95,7 @@ def test_log_omits_the_query(board: BoardServer, capfd: pytest.CaptureFixture[st
     # Python 3.12.3 answers a bad request line as HTTP/0.9, without a status line;
     # later releases send `HTTP/1.0 400`. Either way it is the 400 error, never the page.
     assert answer.startswith(b"HTTP/1.0 400") or b"Error code: 400" in answer
-    assert b"/app.js" not in answer
+    assert b'src="app.js"' not in answer
     err = capfd.readouterr().err
     assert "GET /api/cards 200" in err
     assert "POST / 405" in err
