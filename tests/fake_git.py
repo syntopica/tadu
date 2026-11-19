@@ -24,6 +24,7 @@ class FakeGit:
     commits: dict[str, str] = field(default_factory=dict)
     refs: dict[str, dict[str, str]] = field(default_factory=dict)
     blobs: dict[str, bytes] = field(default_factory=dict)
+    protected: set[str] = field(default_factory=set)
     created: list[tuple[str, str, str, dict[str, object]]] = field(default_factory=list)
     serial: "itertools.count[int]" = field(default_factory=lambda: itertools.count(1))
 
@@ -63,6 +64,28 @@ class FakeGit:
         if tail in made:
             return 201, made[tail]
         return self.post_git(repository, tail, body, number)
+
+    def change(
+        self, repository: str, login: str, call: str, body: dict[str, object]
+    ) -> tuple[int, object]:
+        """Answer a PUT (merge a pull request) or PATCH (move a branch) under /repos/<repository>/.
+
+        `call` is the method and what follows the repository, such as `PATCH git/refs/heads/main`.
+
+        Only pushers may; a repository in `protected` refuses both, as a protected branch does.
+        """
+        self.created.append((call, repository, login, body))
+        method, tail = call.split(" ", 1)
+        if login not in self.pushers.get(repository, set()):
+            return 403, {"message": "Resource not accessible by integration"}
+        ref = tail.removeprefix("git/refs/")
+        if repository in self.protected:
+            return 405, {"message": "Protected branch"}
+        if method == "PATCH" and ref in self.refs.get(repository, {}):
+            self.refs[repository][ref] = str(body["sha"])
+        elif not (method == "PUT" and tail.startswith("pulls/")):
+            return 404, {"message": "Not Found"}
+        return 200, {}
 
     def post_git(
         self, repository: str, tail: str, body: dict[str, object], number: int

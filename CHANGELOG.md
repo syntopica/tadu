@@ -19,6 +19,10 @@ on Windows; Linux keeps `~/.cache/tadu`). Commands import only what they run.
 
 ### Added
 
+- `proposals = "pr" | "merge" | "direct"` on a `[[repository]]` of a team board's workspace:
+  a change by someone who may push is merged at once (`merge`) or committed to the default branch
+  (`direct`) instead of waiting as a pull request (`pr`, the default). A refused merge or commit
+  falls back to a pull request; someone who may not push still gets an issue.
 - A team board (`--auth github --allow write`) no longer writes the server's checkout: a
   change becomes a branch and a pull request, or an issue for someone who cannot push, opened
   with the person's own GitHub token; a checkout that differs from the default branch answers

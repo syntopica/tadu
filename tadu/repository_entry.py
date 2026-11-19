@@ -11,6 +11,8 @@ class RepositoryEntry:
 
     `access` is the most a tool may do to it through the workspace: read, write or admin.
     `github_id`, when the workspace gives one, is the id its GitHub remote must name.
+    `proposals` is how a team board applies a change by someone who may push: a pull request
+    to review (`pr`), one merged at once (`merge`) or a commit on the default branch (`direct`).
     """
 
     key: str
@@ -18,3 +20,4 @@ class RepositoryEntry:
     backlog: str = "."
     access: str = "admin"
     github_id: int | None = None
+    proposals: str = "pr"

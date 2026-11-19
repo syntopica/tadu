@@ -14,7 +14,7 @@ from tadu.proposal_reply import proposal_reply
 class RepositoryApi:
     """GitHub's API for `owner/name`, called as the person the token belongs to.
 
-    Both calls raise what proposal_reply raises. `path` is what follows the repository's
+    Every call raises what proposal_reply raises. `path` is what follows the repository's
     own address: empty, or starting with `/`.
     """
 
@@ -29,6 +29,14 @@ class RepositoryApi:
     def post(self, path: str, body: dict[str, object]) -> dict[str, object]:
         """The JSON object a POST of `body` answers."""
         return proposal_reply(github_send(self.url(path), self.token, body))
+
+    def put(self, path: str, body: dict[str, object]) -> dict[str, object]:
+        """The JSON object a PUT of `body` answers."""
+        return proposal_reply(github_send(self.url(path), self.token, body, "PUT"))
+
+    def patch(self, path: str, body: dict[str, object]) -> dict[str, object]:
+        """The JSON object a PATCH of `body` answers."""
+        return proposal_reply(github_send(self.url(path), self.token, body, "PATCH"))
 
     def url(self, path: str) -> str:
         """The address of `path` in the repository."""

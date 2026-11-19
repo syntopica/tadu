@@ -37,6 +37,30 @@ class FakeHandler(BaseHTTPRequestHandler):
         login = self.github.token_login(token)
         return None if login in {None, "", "revoked"} else login
 
+    def do_PUT(self) -> None:
+        self.write_other("PUT")
+
+    def do_PATCH(self) -> None:
+        self.write_other("PATCH")
+
+    def write_other(self, method: str) -> None:
+        """A PUT or PATCH under /repos/: merging a pull request, moving a branch."""
+        self.github.requests.append(f"{method} {self.path}")
+        raw = self.rfile.read(int(self.headers.get("Content-Length", "0")))
+        login = self.login()
+        found = (
+            None
+            if login is None
+            else self.repository_part(login, self.path.removeprefix("/api/repos/"))
+        )
+        if login is None:
+            self.reply(401, {"message": "Bad credentials"})
+        elif found is not None:
+            repository, tail = found
+            self.reply(
+                *self.github.git.change(repository, login, f"{method} {tail}", json.loads(raw))
+            )
+
     def do_POST(self) -> None:
         github = self.github
         github.requests.append(f"POST {self.path}")
@@ -151,6 +175,7 @@ class FakeHandler(BaseHTTPRequestHandler):
             body = {
                 "id": github.repo_id(name),
                 "full_name": name,
+                "html_url": f"https://github.test/{name}",
                 "default_branch": github.git.default_branch,
                 "permissions": {"pull": True, "push": push},
             }

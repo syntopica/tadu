@@ -399,17 +399,34 @@ A board with `--auth github` never writes the server's checkouts. When a person 
 
 1. runs the change on a temporary copy of that one repository's backlog files, so the checkout stays byte-identical, and removes the copy afterwards;
 2. compares the copy with the original and keeps the files that changed (a change that touches anything but backlog files is refused);
-3. with the person's own token, opens a **proposal**: for someone who may push to the repository, one commit on a new branch `tadu/<operation>-<random>` and a pull request against the default branch; the default branch itself is never written. For someone who may not push, an **issue** that holds the operation, its arguments and a diff, and no branch.
+3. with the person's own token, opens a **proposal**: for someone who may push to the repository, one commit on a new branch `tadu/<operation>-<random>` and a pull request against the default branch; the default branch itself is never written (unless the repository sets [`proposals`](#merge-or-commit-at-once-proposals)). For someone who may not push, an **issue** that holds the operation, its arguments and a diff, and no branch.
 
 The answer is `proposed: <url>`, and the card changes on the board only once the pull request is merged (and the checkout pulled) or the issue is handled. GitHub names the person as the author of everything, and holds them to their own rights: if GitHub refuses a step, the person gets a short error and nothing is left half made on the server.
 
 The pull request is built from the repository as GitHub holds it, so **the server's checkout must match the default branch**. Before anything is created, the board compares the blobs of the backlog files on the default branch with the checkout's; when they differ it answers HTTP 409 (`the repository changed since the board last read it; refresh and try again`) and creates nothing. Keep the checkouts current (see [Keep the checkouts current](#keep-the-checkouts-current)); a checkout on another branch or with local edits will refuse every proposal. Only repositories with a GitHub remote can receive a proposal.
 
+### Merge or commit at once: `proposals`
+
+A pull request to review is the default, and it is too heavy to move one's own task. Per repository, `tadu-workspace.toml` says how a change by **someone who may push** is applied:
+
+```toml
+[[repository]]
+key = "shop"
+remote = "https://github.com/acme/shop"
+proposals = "merge"   # "pr" (default), "merge" or "direct"
+```
+
+- `pr`: a branch and a pull request to review, as above.
+- `merge`: the same pull request, merged (squashed) at once with the person's token. If GitHub refuses the merge (a required review or check), the pull request stays open for review and the answer says so.
+- `direct`: one commit on the default branch, made with the person's token and moved forward only (never forced). If GitHub refuses it (a protected branch), a pull request is opened instead and the answer says so.
+
+Someone who may not push always gets an issue, in every mode, and GitHub's own rules (branch protection, required reviews) still bind the person. The answer starts with `merged: <url>`, `committed: <url>` or `proposed: <url>`. The card changes once the server's checkout is pulled, so in these two modes keep the checkouts very current: until then the next change to that repository answers 409 (the checkout no longer matches the default branch).
+
 ## Security model
 
 What is protected:
 
-- A change is only ever proposed with the signed-in person's own token and rights; the board's server holds no credential that can write to a repository, and it never writes the default branch.
+- A change is only ever proposed with the signed-in person's own token and rights; the board's server holds no credential that can write to a repository, and it writes the default branch only for a repository whose `proposals` is `direct` and a person GitHub lets push there.
 - A private repository's items, key, project, organizations and scan problems reach only people who can read it on GitHub. Repositories they cannot read are not even scanned for them.
 - A repository whose GitHub identity cannot be confirmed (see [Repository ids](#repository-ids-tadu-workspacegithub-idsjson)) is shown to nobody.
 - A workspace that stops loading shows people a message that names nothing; the details go to standard error.

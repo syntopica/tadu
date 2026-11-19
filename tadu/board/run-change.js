@@ -49,8 +49,8 @@ export async function runChange(store, preview) {
       }
       const warned = outcome === "warned" ? " tadu doctor reports errors in this backlog; see Doctor." : "";
       const output = answer.output.trim();
-      // A team board proposes the change (a pull request or an issue) instead of writing it.
-      const result = output.startsWith("proposed: ") ? output : "done.";
+      // A team board proposes the change (a pull request, a merge, a commit or an issue) instead of writing it.
+      const result = /^(proposed|merged|committed): /.test(output) ? output : "done.";
       store.notice = `${change.spec.title}: ${result}${warned}`;
       loadBoard();
     }

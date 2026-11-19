@@ -12,8 +12,8 @@ from tadu.github_reply import GithubReply
 from tadu.github_session import GithubSession
 
 
-def github_send(url: str, token: str, body: dict[str, object]) -> GithubReply:
-    """A POST of `body` as JSON with the token, as github_call sends its GET.
+def github_send(url: str, token: str, body: dict[str, object], method: str = "POST") -> GithubReply:
+    """A POST (or `method`) of `body` as JSON with the token, as github_call sends its GET.
 
     The same bearer auth (never ~/.netrc) and the same reading of the answer. A redirect is
     never followed, so a POST is neither sent twice nor turned into a GET: its status is the
@@ -22,8 +22,13 @@ def github_send(url: str, token: str, body: dict[str, object]) -> GithubReply:
     try:
         with GithubSession() as session:
             session.auth = OAuth2(token={"access_token": token, "token_type": "Bearer"})
-            response = session.post(
-                url, json=body, headers=HEADERS, timeout=TIMEOUT_SECONDS, allow_redirects=False
+            response = session.request(
+                method,
+                url,
+                json=body,
+                headers=HEADERS,
+                timeout=TIMEOUT_SECONDS,
+                allow_redirects=False,
             )
     except (requests.RequestException, OAuth2Error):
         return GithubReply(0)

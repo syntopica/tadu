@@ -11,9 +11,13 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class ProposalRequest:
-    """The person who asked, the operation and its arguments, and the files it changes."""
+    """The person who asked, the operation and its arguments, and the files it changes.
+
+    `mode` is how the repository has a pusher's change applied (see PROPOSAL_MODES).
+    """
 
     login: str
     operation: str
     arguments: dict[str, object]
     changes: list[FileChange]
+    mode: str = "pr"

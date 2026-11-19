@@ -28,4 +28,4 @@ def resolve_proposal_target(workspace: Path, repository: str | None) -> Proposal
     if name is None:
         msg = "this repository has no GitHub remote, so a change to it cannot be proposed"
         raise ProposalError(msg)
-    return ProposalTarget(key, name, entry.backlog, source)
+    return ProposalTarget(key, name, entry.backlog, source, entry.proposals)
