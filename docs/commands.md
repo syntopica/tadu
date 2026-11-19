@@ -168,10 +168,10 @@ tadu migrate --write    # write todo/, then remove the converted files (git keep
   `Check on:` is `check_on` and `Not before:` is `defer_until`. What no key can hold stays in the
   task's notes as its own line: a value that does not parse, a repeated field and `Queue: ready`
   on an item that is not pending.
-- A migration never drops text. A line of `TODO.md` outside every item (a line after an item, a
-  `###` subsection, a section without items) belongs to a task only a person can name, so the
-  migration refuses, dry run included, and lists each such line with its file and line number;
-  move it into an item, then run again. In `TODO_LOG.md`, each block written outside the dated
+- A migration never drops text. A block of `TODO.md` outside every item (text after an item, a
+  `###` subsection, a section without items) becomes a pending task holding the block whole in
+  its notes, untriaged, for a person to sort or merge; the plan lists each block with its file
+  and line number. In `TODO_LOG.md`, each block written outside the dated
   entries, such as a prose entry of an old log, becomes a closed task holding the block whole in
   its notes; only what is sure becomes a key: the title is its heading (or first line), and
   `closed` the day its heading gives (a month or a year gives its first day, and the note says so,
@@ -201,8 +201,8 @@ stopped, by this tadu or an older one; files edited or added since; a file writt
   task changed since) is added to its notes under a line saying where it came from;
 - a `Kind:`, `Check on:` or `Not before:` line an older migrate left in the notes becomes its key,
   tasks take back the IDs an older migrate lost, and the headers are added to `tadu.json`;
-- text of `TODO.md` outside its items is refused, as by a first migration, and a task file a newer
-  tadu wrote is left as it is, keeping the Markdown files; a completion that stops is finished by
+- text of `TODO.md` outside its items becomes pending tasks to triage, as in a first migration, and
+  a task file a newer tadu wrote is left as it is, keeping the Markdown files; a completion that stops is finished by
   running it again.
 
 ### Recovering what an older migrate lost

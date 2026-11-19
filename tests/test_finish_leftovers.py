@@ -110,10 +110,6 @@ def test_what_cannot_be_done_keeps_the_files(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     root = leftovers(tmp_path)
-    (root / "TODO.md").write_text((root / "TODO.md").read_text() + "\nLoose line.\n")
-    assert main(["migrate", str(root), "--write"]) == 2
-    assert "TODO.md:52: Loose line." in capsys.readouterr().err
-    shutil.copy(FIXTURE / "TODO.md", root / "TODO.md")
     newer = next((root / "todo" / "open").glob("t-14635936*.json"))
     newer.write_text(json.dumps({**json.loads(newer.read_text()), "tadu": 3}))
     assert main(["migrate", str(root), "--write"]) == 2
@@ -123,6 +119,17 @@ def test_what_cannot_be_done_keeps_the_files(
         (root / "todo" / "tadu.json").write_text(broken)
         assert main(["migrate", str(root), "--write"]) == 2
         assert "tadu.json: not valid" in capsys.readouterr().err
+
+
+def test_loose_text_left_in_todo_md_becomes_a_pending_task(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = leftovers(tmp_path)
+    (root / "TODO.md").write_text((root / "TODO.md").read_text() + "\nLoose line.\n")
+    assert main(["migrate", str(root), "--write"]) == 0
+    capsys.readouterr()
+    assert not (root / "TODO.md").exists()
+    assert "Loose line" in tasks(root)
 
 
 def test_a_real_id_another_task_has_or_a_failed_write_keeps_the_files(

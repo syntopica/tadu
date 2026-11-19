@@ -20,6 +20,7 @@ from tadu.task_location import task_location
 from tadu.task_problems import task_problems
 from tadu.task_states import OPEN_TASK_STATES
 from tadu.todo_layout import TODO_CONFIG, TODO_DIR
+from tadu.unplaced_report import unplaced_report
 from tadu.v1_texts import v1_texts
 
 if TYPE_CHECKING:
@@ -46,6 +47,7 @@ def run_migrate(args: argparse.Namespace) -> int:
     print(
         f"tadu migrate: {verb} {opened} open and {len(tasks) - opened} closed tasks, {len(categories)} categories"
     )
+    print(unplaced_report(root), end="")
     print(legacy_report(root), end="")
     for task in tasks:
         problems = task_problems({k: v for k, v in task.items() if v not in (None, "", [])})

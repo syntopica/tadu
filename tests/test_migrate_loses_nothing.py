@@ -102,34 +102,32 @@ def test_every_word_of_every_line_is_kept(
     assert lost == []
 
 
-def test_loose_text_in_todo_md_is_refused_and_nothing_is_written(
+def test_loose_text_in_todo_md_becomes_pending_tasks_and_is_listed(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     (tmp_path / "TODO.md").write_text(LOOSE)
-    for write in ([], ["--write"]):
-        assert main(["migrate", str(tmp_path), *write]) == 2
-        assert capsys.readouterr().err.splitlines() == [
-            (
-                f"tadu migrate: {tmp_path}: 4 line(s) of TODO.md are in no item, and no task would "
-                "hold them; move each into an item (indented under it) or into a new item, then "
-                "run again:"
-            ),
-            "  TODO.md:7: ### A subsection",
-            "  TODO.md:12: Trailing prose after the item, at top level.",
-            "  TODO.md:14: ## Empty section",
-            "  TODO.md:16: Prose of a section that has no item.",
-        ]
+    assert main(["migrate", str(tmp_path)]) == 0
+    assert capsys.readouterr().out.splitlines()[1:5] == [
+        (
+            "tadu migrate: 3 block(s) of TODO.md outside its items become pending tasks to "
+            "triage, each holding its text whole in its notes:"
+        ),
+        "  TODO.md:7: ### A subsection",
+        "  TODO.md:12: Trailing prose after the item, at top level.",
+        "  TODO.md:14: ## Empty section",
+    ]
     assert not (tmp_path / "todo").exists()
-    assert (tmp_path / "TODO.md").read_text() == LOOSE
+    words_after = migrated(tmp_path, LOOSE, "# TODO Log\n")
+    assert {"subsection", "trailing", "prose"} <= words_after
 
 
-def test_a_long_refusal_is_cut(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    lines = "".join(f"Loose line {n}.\n\n" for n in range(25))
+def test_a_long_report_is_cut(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    lines = "".join(f"### Loose {n}\n\n" for n in range(25))
     (tmp_path / "TODO.md").write_text(f"# TODO\n\n## Area\n\n- [ ] One.\n\n{lines}")
-    assert main(["migrate", str(tmp_path)]) == 2
-    err = capsys.readouterr().err
-    assert "25 line(s) of TODO.md are in no item" in err
-    assert err.endswith("  ... and 5 more\n")
+    assert main(["migrate", str(tmp_path)]) == 0
+    out = capsys.readouterr().out
+    assert "25 block(s) of TODO.md outside its items" in out
+    assert "  ... and 5 more\n" in out
 
 
 def test_the_log_blocks_that_become_closed_tasks_are_listed_first(
