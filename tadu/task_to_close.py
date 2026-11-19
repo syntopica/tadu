@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 def task_to_close(todo: Path, args: argparse.Namespace) -> TaskFile:
     """The task named by --id, else the one open task whose title contains --match."""
     if args.id:
-        return locate_task(todo, args.id)
+        return locate_task(todo, args.id, open_when_split=True)
     if not args.match:
         msg = "give --id, or --match with text from the task's title"
         raise TaskCommandError(msg)

@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-9103ac7d-1a70-40b0-bd0d-a35d5c459371",
+  "title": "Recommend merge=union",
+  "state": "cancelled",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "ID: t-99161023-f3a9-43a3-94df-589ca752fa13"
+  ],
+  "closed": "2026-10-12",
+  "resolution": "Rejected: entries interleave."
+}

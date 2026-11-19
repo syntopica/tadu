@@ -25,3 +25,17 @@ def add_task_command_parsers(commands: argparse._SubParsersAction[argparse.Argum
         command.add_argument(
             "--write", action="store_true", help="apply instead of printing the plan"
         )
+        if name == "migrate":
+            command.add_argument(
+                "--recover",
+                action="store_true",
+                help="bring into a migrated backlog what an older migrate lost (IDs, fields, "
+                "text), read from git",
+            )
+            command.add_argument(
+                "--from",
+                dest="revision",
+                metavar="REV",
+                help="with --recover: the commit that still has TODO.md / TODO_LOG.md "
+                "(default: the one before the commit that deleted them)",
+            )

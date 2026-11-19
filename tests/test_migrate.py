@@ -13,6 +13,7 @@ from tadu.v1_item_blocks import v1_item_blocks
 
 KNOWN = "t-55161023-f3a9-43a3-94df-589ca752fa13"
 OTHER = "t-66161023-f3a9-43a3-94df-589ca752fa13"
+LOGGED = "t-77161023-f3a9-43a3-94df-589ca752fa13"
 TODO = f"""# TODO
 
 ## Billing
@@ -71,12 +72,14 @@ LOG = f"""# TODO Log
   - Evidence: actionlint passes
   - Files: `a.yml`, `b.py`.
 
+  ID: {LOGGED}
+
 - [-] 2026-10-12 — Recommend merge=union.
   - Resolution: Rejected: entries interleave.
 
 - [x] 2026-10-10 — **Tooling:** Same id again.
 
-  ID: {KNOWN}
+  ID: {LOGGED}
 """
 
 
@@ -140,7 +143,8 @@ def test_conversion(tmp_path: Path) -> None:
         "general",
         "Rejected: entries interleave.",
     )
-    assert repeated["id"] != KNOWN
+    assert done["id"] == LOGGED
+    assert repeated["id"] not in (KNOWN, LOGGED)
     assert TASK_ID_PATTERN.match(str(repeated["id"]))
 
 

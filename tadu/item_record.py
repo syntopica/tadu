@@ -24,7 +24,14 @@ def item_record(item: BacklogItem) -> list[object]:
         item.title,
         item.text,
         [fields.id, fields.priority, list(fields.assignees), iso_date(fields.due)],
-        [list(fields.labels), fields.queue, fields.estimate],
+        [
+            list(fields.labels),
+            fields.queue,
+            fields.estimate,
+            fields.kind,
+            iso_date(fields.check_on),
+            iso_date(fields.not_before),
+        ],
         [[problem.line, problem.message] for problem in item.problems],
         [extras.category, extras.task_type, extras.milestone],
         [

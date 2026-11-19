@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 # Bump when the items built from a task file change shape or meaning: older caches are ignored.
-ITEM_CACHE_VERSION = 1
+ITEM_CACHE_VERSION = 3
 # Files changed this recently are never trusted from the cache: a second write within the
 # file system's timestamp resolution could keep the same size and timestamps (as in git's
 # "racy clean" problem), so they are re-read until they are older.

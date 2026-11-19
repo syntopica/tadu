@@ -79,6 +79,15 @@ text after the colon, or an indented continuation line right after it. A bare
 label, or a label that belongs to another entry or section, does not count. An
 empty or whitespace-only `TODO_LOG.md` is a warning.
 
+An `ID:` names one item, which is either open in `TODO.md` or closed in
+`TODO_LOG.md`. An open item whose `ID:` is also on a log entry is an error
+(`T005`): it is what `tadu close` leaves when it stops after writing the log
+entry and before removing the item. Running the same close again finishes it:
+the entry already written stays the record and only gains what it lacks. Work
+closed by mistake comes back as a new item with a new `ID:`. Two log entries
+with the same `ID:` are a warning (`L007`): keep one of them. Items without an
+`ID:` are not matched.
+
 Evidence is a test name, command result, commit, PR, issue or report reference,
 not a transcript. Treat the log as append-only history: correct material
 mistakes with an explicit amendment rather than rewriting past evidence. Archive

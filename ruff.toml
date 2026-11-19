@@ -110,6 +110,12 @@ ignore = [
 "tadu/run_archive.py" = ["T201"]
 "tadu/run_fmt.py" = ["T201"]
 "tadu/run_migrate.py" = ["T201"]
+"tadu/run_recover.py" = ["T201"]
+"tadu/apply_completion.py" = ["T201"]
+"tadu/complete_migration.py" = ["T201"]
+"tadu/print_completion.py" = ["T201"]
+"tadu/finish_leftovers.py" = ["T201"]
+"tadu/migrate_command.py" = ["T201"]
 "tadu/run_task_init.py" = ["T201"]
 "**/conftest.py" = ["D"]
 

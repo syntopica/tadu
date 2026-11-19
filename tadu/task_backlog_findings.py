@@ -6,7 +6,9 @@ from typing import TYPE_CHECKING
 
 from tadu.archive_findings import archive_findings
 from tadu.checked_task_files import checked_task_files
-from tadu.finding import Finding
+from tadu.migration_state_findings import migration_state_findings
+from tadu.same_id_finding import same_id_finding
+from tadu.task_contradiction_findings import task_contradiction_findings
 from tadu.task_location_finding import task_location_finding
 from tadu.task_set_findings import task_set_findings
 from tadu.task_str import task_str
@@ -18,6 +20,7 @@ if TYPE_CHECKING:
     from datetime import date
     from pathlib import Path
 
+    from tadu.finding import Finding
     from tadu.task_file import TaskFile
 
 
@@ -34,8 +37,7 @@ def task_backlog_findings(root: Path, today: date) -> tuple[Finding, ...]:
             continue
         task_id = task_str(file.task, "id") or ""
         if task_id in by_id:
-            message = f"id also used by {by_id[task_id].path}"
-            findings.append(Finding("J007", "error", str(file.path), 0, message))
+            findings.append(same_id_finding(file, by_id[task_id], todo))
         elif task_id:
             # keys: duplicate ids are reported by the check next to it
             by_id[task_id] = file
@@ -44,9 +46,8 @@ def task_backlog_findings(root: Path, today: date) -> tuple[Finding, ...]:
             location = task_location_finding(file, todo)
             findings += [location] if location else []
             findings += task_vocabulary_findings(file, config, today)
+            findings += task_contradiction_findings(file, todo, today)
     findings += task_set_findings(tuple(valid), by_id)
-    findings += archive_findings(tuple(valid), todo, config)
-    if (root / "TODO.md").is_file():
-        message = "TODO.md is ignored next to a task backlog; remove it once migrated"
-        findings.append(Finding("C004", "warning", str(root / "TODO.md"), 0, message))
+    findings += archive_findings(tuple(valid), todo, config, today)
+    findings += migration_state_findings(root, config)
     return tuple(findings)

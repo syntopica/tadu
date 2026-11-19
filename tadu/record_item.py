@@ -21,7 +21,7 @@ Shape = tuple[
     str,
     str,
     tuple[str | None, str | None, list[str], str | None],
-    tuple[list[str], str, int | None],
+    tuple[list[str], str, int | None, str | None, str | None, str | None],
     list[tuple[int, str]],
     tuple[str | None, str | None, str | None],
     tuple[str | None, str | None, list[tuple[str, str]]],
@@ -35,7 +35,10 @@ def record_item(record: object) -> BacklogItem:
     key, stable, path, line, end_line, state, closed, title, text, a, b, problems, c, d = cast(
         "Shape", tuple(record)
     )
-    (item_id, priority, assignees, due), (labels, queue, estimate) = a, b
+    (item_id, priority, assignees, due), (labels, queue, estimate, kind, check_on, not_before) = (
+        a,
+        b,
+    )
     (category, task_type, milestone), (defer_until, started, relations) = c, d
     return BacklogItem(
         key=key,
@@ -55,6 +58,9 @@ def record_item(record: object) -> BacklogItem:
             labels=tuple(labels),
             queue=queue,
             estimate=estimate,
+            kind=kind,
+            check_on=text_day(check_on),
+            not_before=text_day(not_before),
         ),
         problems=tuple(FieldProblem(at, message) for at, message in problems) if problems else (),
         extras=TaskExtras(

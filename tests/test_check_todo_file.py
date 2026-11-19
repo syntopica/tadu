@@ -4,7 +4,14 @@ from tadu.check_todo_file import check_todo_file
 
 
 def test_missing_file_is_t001(tmp_path: Path) -> None:
-    assert [f.code for f in check_todo_file(tmp_path)] == ["T001"]
+    assert [(f.code, f.message) for f in check_todo_file(tmp_path)] == [("T001", "no TODO.md")]
+
+
+def test_t001_beside_a_todo_folder_without_its_config_says_to_rerun_init(tmp_path: Path) -> None:
+    (tmp_path / "todo").mkdir()
+    assert [(f.code, f.message) for f in check_todo_file(tmp_path)] == [
+        ("T001", "no TODO.md; todo/ has no tadu.json: run tadu init --format 2 --write again")
+    ]
 
 
 def test_closed_marker_is_t003_with_line(tmp_path: Path) -> None:

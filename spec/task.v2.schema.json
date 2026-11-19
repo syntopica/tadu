@@ -58,6 +58,15 @@
         "untriaged"
       ]
     },
+    "kind": {
+      "description": "What the next move on the task is: task (work that can be done), decision (a choice a person must make), waiting (something another person or organization owes) or later (not to do now). Absent = unclassified, never assumed to be a task. tadu inbox and tadu urgent read it.",
+      "enum": [
+        "task",
+        "decision",
+        "waiting",
+        "later"
+      ]
+    },
     "labels": {
       "description": "Free topic slugs (dark-mode, csv-import). Category and type have their own fields.",
       "type": "array",
@@ -88,7 +97,11 @@
       "$ref": "#/$defs/date"
     },
     "defer_until": {
-      "description": "Not before this day: tadu ready hides the task until then. 'Not now' without cancelling it.",
+      "description": "Not before this day: tadu ready, next, inbox and urgent leave the task out until then. 'Not now' without cancelling it.",
+      "$ref": "#/$defs/date"
+    },
+    "check_on": {
+      "description": "The day to look at the task again: to chase it, revisit it or verify it. Not a deadline. tadu inbox lists it once the day has come.",
       "$ref": "#/$defs/date"
     },
     "queue": {

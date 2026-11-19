@@ -13,12 +13,14 @@ from tadu.split_blocker import split_blocker
 from tadu.split_bold_title import BOLD_LEAD, split_bold_title
 from tadu.split_long_title import split_long_title
 from tadu.stable_task_id import stable_task_id
-from tadu.task_defaults import DEFAULT_TASK_TYPES, UNKNOWN_CATEGORY, UNKNOWN_PRIORITY, UNKNOWN_TYPE
+from tadu.task_defaults import UNKNOWN_CATEGORY, UNKNOWN_PRIORITY
 from tadu.task_format_version import TASK_FORMAT_VERSION
 from tadu.unique_in_order import unique_in_order
+from tadu.v1_field_keys import v1_field_keys
 from tadu.v1_head import v1_head
 
 STATES = {" ": "pending", "~": "in_progress", "!": "blocked", "x": "done", "-": "cancelled"}
+UNDATED = "The log gave no closing day, so it is closed on the day it was migrated."
 CATEGORY = re.compile(r"^\*\*([^*\n]+):\*\* ")
 
 
@@ -29,6 +31,7 @@ def v1_task(
 
     Unknown values get the defaults: category general, type untriaged, priority untriaged. An
     item without an ID gets a stable one derived from `source` (file and position) and its title.
+    A field format 2 has no key for stays in the notes as its line (see v1_field_keys).
     """
     match = ITEM_STATE_PATTERN.match(block[0])
     marker, day, text = match.groups() if match else (" ", None, block[0])
@@ -47,12 +50,13 @@ def v1_task(
     parts.notes += ([""] if parts.notes and kept else []) + kept
     notes = [lead, *([""] if parts.notes else []), *parts.notes] if lead else parts.notes
     fields, bullets, state = parts.fields, parts.bullets, STATES[marker]
-    labels = [label.strip() for label in fields.get("Labels", "").split(",") if label.strip()]
-    kind = next((label for label in labels if label in DEFAULT_TASK_TYPES), UNKNOWN_TYPE)
+    keys, unheld = v1_field_keys(fields, state)
     blocker = unblock = ""
     if state == "blocked" and notes:
         blocker, unblock, notes = split_blocker(notes)
-    estimate = fields.get("Estimate", "")
+    undated = [UNDATED] if state in ("done", "cancelled") and not day else []
+    for line in [*unheld, *undated]:  # one paragraph each, as the fields were
+        notes = [*notes, *([""] if notes else []), line]
     closing = legacy_closing_fields(
         state,
         day,
@@ -69,13 +73,9 @@ def v1_task(
         "title": title.rstrip("."),
         "state": state,
         "category": re.sub(r"[^a-z0-9]+", "-", shown.lower()).strip("-") or UNKNOWN_CATEGORY,
-        "type": kind,
         "priority": fields.get("Priority", UNKNOWN_PRIORITY),
-        "labels": [label for label in labels if label != kind],
         "due": fields.get("Due"),
-        "queue": "ready" if fields.get("Queue") == "ready" and state == "pending" else None,
         "assignees": [a.strip() for a in fields.get("Assignees", "").split(",") if a.strip()],
-        "estimate": int(estimate) if estimate.isdigit() else None,
         "blocked_by": parts.blocked_by,
         "blocker": blocker,
         "unblock": unblock,
@@ -83,6 +83,7 @@ def v1_task(
         "done_when": parts.done_when,
         "created": None if closing["closed"] else day,
         **closing,
+        **keys,
         "files": unique_in_order(
             f.strip(" `.") for f in ", ".join(bullets.get("Files", [])).split(",")
         ),

@@ -12,6 +12,7 @@ from tadu.closing import Closing
 from tadu.is_task_backlog import is_task_backlog
 from tadu.run_close import run_close
 from tadu.run_task_close import run_task_close
+from tadu.with_backlog_lock import with_backlog_lock
 
 if TYPE_CHECKING:
     import argparse
@@ -21,7 +22,7 @@ def close_command(args: argparse.Namespace) -> int:
     """Refuse empty or multi-line values with exit 2, otherwise run close."""
     day = args.date or datetime.now(UTC).astimezone().date()
     if is_task_backlog(Path(args.path)):
-        return run_task_close(args, day)
+        return with_backlog_lock(args.path, lambda: run_task_close(args, day))
     if args.match is None or args.duplicate_of is not None or args.id is not None:
         print(
             "tadu close: a TODO.md backlog needs --match, and takes no --id or --duplicate-of",

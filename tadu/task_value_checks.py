@@ -12,6 +12,7 @@ from tadu.check_task_slug import check_task_slug
 from tadu.check_task_text import check_task_text
 from tadu.check_task_title import check_task_title
 from tadu.choice_check import choice_check
+from tadu.kinds import KINDS
 from tadu.label_pattern import LABEL_PATTERN
 from tadu.list_check import list_check
 from tadu.queues import QUEUES
@@ -29,6 +30,7 @@ TASK_VALUE_CHECKS = {
     "category": check_task_slug,
     "type": check_task_slug,
     "priority": choice_check(TASK_PRIORITIES),
+    "kind": choice_check(KINDS),
     "labels": list_check(lambda item: bool(LABEL_PATTERN.match(item)), "slugs"),
     "milestone": check_task_slug,
     "created": check_task_date,
@@ -36,6 +38,7 @@ TASK_VALUE_CHECKS = {
     "started": check_task_date,
     "due": check_task_date,
     "defer_until": check_task_date,
+    "check_on": check_task_date,
     "queue": choice_check(QUEUES),
     "assignees": list_check(
         lambda item: bool(ACTOR_PATTERN.match(item)), "person ids or agent:<name>"

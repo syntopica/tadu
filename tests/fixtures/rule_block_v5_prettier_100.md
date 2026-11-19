@@ -21,15 +21,16 @@ conversations more than once.
 - Format 1: when work becomes `[x]` or `[-]`, remove it from `TODO.md` and add a dated entry to
   `TODO_LOG.md` under `## YYYY` and `### YYYY-MM` headings, in the shape below. An `[x]` entry needs
   an `Evidence:` line and a `[-]` entry a `Resolution:` line, each with content.
-- Format 1: give an item a `Kind:` field when it is clear what it is: `task` for work you can do,
-  `decision` for a choice a person must make, `waiting` for something someone else owes, `later` for
-  something not to do now. Leave it out when unclear. `Due:` is the deadline, `Check on:` the day to
-  look at the item again and `Not before:` the day before which it cannot start.
+- Give an item a kind when it is clear what it is (format 1: a `Kind:` field; format 2: `kind`):
+  `task` for work you can do, `decision` for a choice a person must make, `waiting` for something
+  someone else owes, `later` for something not to do now. Leave it out when unclear. `Due:` is the
+  deadline, `Check on:` the day to look at the item again and `Not before:` the day before which it
+  cannot start (format 2: `due`, `check_on`, `defer_until`).
 - Take work with `tadu next`; `tadu inbox` lists what waits on a person and `tadu urgent` what is
-  urgent. When only a person can answer a question while you work alone, record it (format 1:
-  `tadu add --kind decision`; format 2: a task of type `decision`), block the task it holds up
-  (format 1: `tadu mark --state blocked --note "<blocker>"`; format 2: add the decision to its
-  `blocked_by` with `tadu set`), and go on with the next task.
+  urgent. When only a person can answer a question while you work alone, record it
+  (`tadu add --kind decision`), block the task it holds up (format 1:
+  `tadu mark --state blocked --note "<blocker>"`; format 2: add the decision to its `blocked_by`
+  with `tadu set`), and go on with the next task.
 - Format 2: never edit task files by hand. Use `tadu add` (with category, type and priority),
   `tadu set ID key=value`, `tadu claim ID --as agent:<name>` before working on a task, and
   `tadu close --id ID --evidence "<proof>"` (`--resolution`, or `--duplicate-of ID`). Close reports
