@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from tadu.repository_choices import repository_choices
 from tadu.scope_roots import scope_roots
 from tadu.workspace_error import WorkspaceError
 
@@ -29,9 +30,7 @@ def scope_root(scope: Scope) -> tuple[str, Path]:
     path = Path(repository).expanduser() if repository is not None else None
     if path is not None and path.is_absolute() and path.resolve() in distinct:
         return next((label, root) for label, root in roots.items() if root == path.resolve())
-    choices = "; ".join(
-        label if label == str(root) else f"{label} ({root})" for label, root in roots.items()
-    )
+    choices = repository_choices(roots)
     asked = "several repositories" if repository is None else f"no repository {repository}"
     msg = f"{asked}; give --repository as one of: {choices}"
     raise WorkspaceError(msg)
