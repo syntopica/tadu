@@ -17,6 +17,7 @@ This guide is for whoever runs the board. It covers:
 - [Sessions: `tadu-workspace.sessions.json`](#sessions-tadu-workspacesessionsjson)
 - [What people see](#what-people-see)
 - [How much the board asks GitHub](#how-much-the-board-asks-github)
+- [Changes are proposals](#changes-are-proposals)
 - [Security model](#security-model)
 - [Limits](#limits)
 - [Troubleshooting](#troubleshooting)
@@ -40,7 +41,7 @@ The board needs Python 3.12 and tadu (`pip install tadu` or `uv tool install tad
 
 ## 1. Register a GitHub App
 
-A GitHub App is the recommended way to sign in: it asks for no write access at all.
+A GitHub App is the recommended way to sign in. A board that only reads asks for no write access at all; a board started with `--allow write` needs the write permissions listed below, because it opens pull requests and issues for people (see [Changes are proposals](#changes-are-proposals)).
 
 1. Go to the organization's **Settings → Developer settings → GitHub Apps → New GitHub App** (or your own account's settings, for personal repositories).
 2. Fill in:
@@ -50,7 +51,7 @@ A GitHub App is the recommended way to sign in: it asks for no write access at a
    - **Expire user authorization tokens**: keep it checked. Tokens then last 8 hours, and the board renews them while people use it.
    - **Request user authorization (OAuth) during installation**: leave unchecked.
    - **Webhook**: uncheck **Active**. The board needs no webhook.
-   - **Permissions**: none beyond the default **Repository → Metadata: Read-only**, which GitHub adds by itself. Leave every other permission at **No access**.
+   - **Permissions**: for a read-only board, none beyond the default **Repository → Metadata: Read-only**, which GitHub adds by itself; leave every other permission at **No access**. For a board that proposes changes (`--allow write`), also set **Repository → Contents: Read and write**, **Pull requests: Read and write** and **Issues: Read and write**. A token GitHub gives a person holds the intersection of the App's permissions and the person's own rights, so the App never lets anyone do more than they could on GitHub.
    - **Where can this GitHub App be installed?**: **Only on this account**.
 3. Create the app, then on its page note the **Client ID** and click **Generate a new client secret**. Keep the secret somewhere safe: GitHub shows it once.
 4. **Install App** on the organization (and on every other organization or account that owns workspace repositories). Choose **All repositories**, or select at least every repository the workspace lists.
@@ -392,10 +393,23 @@ The board asks GitHub only when someone loads the page or clicks Reload; the pag
 
 In practice: someone who reaches a 100-repository workspace through their organization costs one or two requests every 5 minutes while they use the board, nearly all of them free 304s. A contractor who can read 5 of those 100 costs about 95 requests an hour, for the "cannot read" answers, which is well under their limit.
 
+## Changes are proposals
+
+A board with `--auth github` never writes the server's checkouts. When a person applies a change (add, mark, close, move and the rest; a Preview is only a dry run and never reaches GitHub), the board:
+
+1. runs the change on a temporary copy of that one repository's backlog files, so the checkout stays byte-identical, and removes the copy afterwards;
+2. compares the copy with the original and keeps the files that changed (a change that touches anything but backlog files is refused);
+3. with the person's own token, opens a **proposal**: for someone who may push to the repository, one commit on a new branch `tadu/<operation>-<random>` and a pull request against the default branch; the default branch itself is never written. For someone who may not push, an **issue** that holds the operation, its arguments and a diff, and no branch.
+
+The answer is `proposed: <url>`, and the card changes on the board only once the pull request is merged (and the checkout pulled) or the issue is handled. GitHub names the person as the author of everything, and holds them to their own rights: if GitHub refuses a step, the person gets a short error and nothing is left half made on the server.
+
+The pull request is built from the repository as GitHub holds it, so **the server's checkout must match the default branch**. Before anything is created, the board compares the blobs of the backlog files on the default branch with the checkout's; when they differ it answers HTTP 409 (`the repository changed since the board last read it; refresh and try again`) and creates nothing. Keep the checkouts current (see [Keep the checkouts current](#keep-the-checkouts-current)); a checkout on another branch or with local edits will refuse every proposal. Only repositories with a GitHub remote can receive a proposal.
+
 ## Security model
 
 What is protected:
 
+- A change is only ever proposed with the signed-in person's own token and rights; the board's server holds no credential that can write to a repository, and it never writes the default branch.
 - A private repository's items, key, project, organizations and scan problems reach only people who can read it on GitHub. Repositories they cannot read are not even scanned for them.
 - A repository whose GitHub identity cannot be confirmed (see [Repository ids](#repository-ids-tadu-workspacegithub-idsjson)) is shown to nobody.
 - A workspace that stops loading shows people a message that names nothing; the details go to standard error.

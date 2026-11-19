@@ -48,7 +48,10 @@ export async function runChange(store, preview) {
         store.change = null;
       }
       const warned = outcome === "warned" ? " tadu doctor reports errors in this backlog; see Doctor." : "";
-      store.notice = `${change.spec.title}: done.${warned}`;
+      const output = answer.output.trim();
+      // A team board proposes the change (a pull request or an issue) instead of writing it.
+      const result = output.startsWith("proposed: ") ? output : "done.";
+      store.notice = `${change.spec.title}: ${result}${warned}`;
       loadBoard();
     }
   } catch (error) {

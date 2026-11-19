@@ -66,9 +66,11 @@ def test_a_repository_the_person_cannot_read_is_unknown_to_every_call(
             assert "vault item" not in json.dumps(seen), name
 
 
-def test_a_write_changes_only_what_the_person_reads(tmp_path: Path, github: FakeGithub) -> None:
+def test_a_write_proposes_only_what_the_person_reads(tmp_path: Path, github: FakeGithub) -> None:
     workspace = team_workspace(tmp_path)
     vault = (workspace / "vault" / "TODO.md").read_text()
+    github.git.seed("acme/shop", {"TODO.md": (workspace / "shop" / "TODO.md").read_bytes()})
+    github.git.pushers["acme/shop"] = {"Ana-Dev"}
     with serve_team_board(workspace, github, allow="write") as board:
         ana = sign_in_as(board, "Ana-Dev")
         refused = answer(
@@ -78,7 +80,8 @@ def test_a_write_changes_only_what_the_person_reads(tmp_path: Path, github: Fake
         assert (workspace / "vault" / "TODO.md").read_text() == vault
         added = answer(operate(board, "add", {"title": "Fresh.", "repository": "shop"}, ana))
         assert added["code"] == 0, added
-    assert "Fresh." in (workspace / "shop" / "TODO.md").read_text()
+    assert "proposed:" in str(added["output"])
+    assert "Fresh." not in (workspace / "shop" / "TODO.md").read_text()
     assert (workspace / "vault" / "TODO.md").read_text() == vault
 
 

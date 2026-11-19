@@ -380,7 +380,9 @@ What it guarantees:
   may load its data, check the session or sign out: pages of other sites, and of other origins of
   the same site, are refused.
 - Besides the page's calls, a team board writes only `tadu-workspace.github-ids.json` and
-  `tadu-workspace.sessions.json`, and a POST signs out.
+  `tadu-workspace.sessions.json`, and a POST signs out. It never writes a checkout: a change made
+  with `--allow write` becomes a pull request (or, for someone who cannot push, an issue) opened
+  with the person's own token; see the guide's "Changes are proposals".
 
 Its limits, in short: github.com only (no GitHub Enterprise Server), one process per workspace,
 access changes on GitHub take effect within 5 minutes, items are what the server's checkouts hold

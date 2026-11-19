@@ -178,8 +178,14 @@ def test_a_change_written_with_doctor_errors_closes_and_an_emptied_field_is_refu
     responses.push(answer("wrote\\n", "TODO.md:9: error T003 closed item\\n", 1), [200, CARDS_PAYLOAD]);
     await runChange(store, false);
     await settle();
+    const written = store.notice;
+    responses.push(answer("proposed: https://github.test/acme/shop/pull/3 (the card changes once it is merged)\\n"), [200, CARDS_PAYLOAD]);
+    openChange(store, SPEC);
+    store.change.values.note = "Vendor.";
+    await runChange(store, false);
+    await settle();
     out({
-      emptied, notice: store.notice, change: store.change,
+      emptied, notice: written, proposed: store.notice, change: store.change,
       outcomes: [[0, false], [1, false], [1, true], [2, false]].map(([code, preview]) => changeOutcome(code, preview)),
     });
     """)
@@ -189,6 +195,8 @@ def test_a_change_written_with_doctor_errors_closes_and_an_emptied_field_is_refu
             0,
         ],
         "notice": "Block: Fix it: done. tadu doctor reports errors in this backlog; see Doctor.",
+        "proposed": "Block: Fix it: proposed: https://github.test/acme/shop/pull/3"
+        " (the card changes once it is merged)",
         "change": None,
         "outcomes": ["applied", "warned", "refused", "refused"],
     }

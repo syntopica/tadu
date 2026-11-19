@@ -5,6 +5,8 @@ import time
 import zlib
 from dataclasses import dataclass, field
 
+from fake_git import FakeGit
+
 from tadu.github_sign_in import GithubSignIn
 
 SECRET = "shh"  # noqa: S105
@@ -62,6 +64,7 @@ class FakeGithub:
     verifiers: list[str] = field(default_factory=list)
     challenges: dict[str, str] = field(default_factory=dict)
     not_modified: int = 0
+    git: FakeGit = field(default_factory=FakeGit)
 
     def sign_in(self, public_url: str = "http://board.test:80") -> GithubSignIn:
         return GithubSignIn("client-1", SECRET, public_url, self.url, f"{self.url}/api")

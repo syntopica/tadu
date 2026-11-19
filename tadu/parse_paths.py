@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from tadu.redirected_checkouts import REDIRECTED_CHECKOUTS
 from tadu.visible_repositories import VISIBLE_REPOSITORIES
 from tadu.workspace_error import WorkspaceError
 
@@ -17,6 +18,7 @@ def parse_paths(value: object, directory: Path, workspace: Workspace) -> dict[st
 
     Inside a tool call of a board that signs people in (VISIBLE_REPOSITORIES), the workspace
     holds only what the person may see: the paths of the others are left out, not named.
+    A key in REDIRECTED_CHECKOUTS has that path instead, the copy a proposal is made on.
     """
     if value is None:
         return {}
@@ -36,4 +38,4 @@ def parse_paths(value: object, directory: Path, workspace: Workspace) -> dict[st
             raise WorkspaceError(msg)
         # keys: the keys of one TOML table are unique.
         paths[key] = (directory / Path(path).expanduser()).resolve()
-    return paths
+    return paths | (REDIRECTED_CHECKOUTS.get() or {})

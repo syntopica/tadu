@@ -8,10 +8,10 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from tadu.answer_signed_in import answer_signed_in
-from tadu.board_call import board_call
 from tadu.json_error import json_error
 from tadu.load_workspace import load_workspace
 from tadu.readable_repositories import readable_repositories
+from tadu.team_call import team_call
 from tadu.visible_repositories import VISIBLE_REPOSITORIES
 from tadu.workspace_error import WorkspaceError
 
@@ -29,7 +29,8 @@ def signed_in_call(
 
     That cut holds for everything the operation reads, prints or writes, since the workspace
     it loads (see VISIBLE_REPOSITORIES) never holds the others; a repository the person
-    cannot read is as unknown to it as one that does not exist. Whoever reads none gets 403:
+    cannot read is as unknown to it as one that does not exist. A change is not written but
+    proposed on GitHub as the person (see team_call). Whoever reads none gets 403:
     anyone with a GitHub account can sign in. A workspace that does not load goes to the
     operator on standard error, and the page gets a message that names nothing.
     `call_request` is the path and the body of the request. Answered as answer_signed_in answers.
@@ -47,7 +48,7 @@ def signed_in_call(
             return json_error(HTTPStatus.FORBIDDEN, "no repository you may read")
         cut = VISIBLE_REPOSITORIES.set(readable)
         try:
-            return board_call(*call_request, state, trace=False)
+            return team_call(state, sign_in, session, call_request)
         finally:
             VISIBLE_REPOSITORIES.reset(cut)
 

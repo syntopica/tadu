@@ -19,6 +19,11 @@ on Windows; Linux keeps `~/.cache/tadu`). Commands import only what they run.
 
 ### Added
 
+- A team board (`--auth github --allow write`) no longer writes the server's checkout: a
+  change becomes a branch and a pull request, or an issue for someone who cannot push, opened
+  with the person's own GitHub token; a checkout that differs from the default branch answers
+  409. The GitHub App needs Contents, Pull requests and Issues write. Guide:
+  `docs/team-board.md`.
 - `doctor` (J017) finds more kinds of secret: GitLab, npm, PyPI, SendGrid,
   Shopify, Square, Twilio and Mailchimp tokens, Azure storage keys, passwords in
   URLs, and credentials whose name has a prefix (`aws_secret_access_key = ...`).

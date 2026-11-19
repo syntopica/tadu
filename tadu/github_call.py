@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from urllib.parse import urlsplit
-
 import requests
 from oauthlib.oauth2 import OAuth2Error
 from requests_oauthlib import OAuth2
 
+from tadu.github_answer import github_answer
 from tadu.github_reply import GithubReply
 from tadu.github_session import GithubSession
 
@@ -36,11 +35,4 @@ def github_call(url: str, token: str, etag: str | None = None) -> GithubReply:
             response = session.get(url, headers=headers, timeout=TIMEOUT_SECONDS)
     except (requests.RequestException, OAuth2Error):
         return GithubReply(0)
-    asked, answered = urlsplit(url), urlsplit(response.url)
-    if (asked.scheme, asked.netloc) != (answered.scheme, answered.netloc):
-        return GithubReply(response.history[0].status_code if response.history else 0)
-    try:
-        body: object = response.json()
-    except requests.JSONDecodeError:
-        body = None
-    return GithubReply(response.status_code, body, response.headers.get("ETag"), response.links)
+    return github_answer(url, response)

@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-597dc982-967a-410d-905e-91686a41b09c",
+  "title": "Stop the proposal path leaving item-cache files keyed by its temporary folder",
+  "state": "pending",
+  "category": "board",
+  "type": "bug",
+  "priority": "low",
+  "created": "2026-11-19",
+  "notes": [
+    "Found 2026-11-19 building step 2: for format 2 repositories the item cache is keyed by the temp path, so each proposal may leave a small file in the platform cache directory. Not measured."
+  ]
+}

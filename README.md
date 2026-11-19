@@ -309,7 +309,8 @@ tadu board --workspace . --auth github --port 8123 --public-url https://board.ex
 With `--auth github`, people sign in with their GitHub account and each sees only the items of the
 workspace repositories they can read on GitHub. It runs behind a reverse proxy that terminates
 https. See the [team board guide](https://github.com/syntopica/tadu/blob/main/docs/team-board.md)
-and [the summary](https://github.com/syntopica/tadu/blob/main/docs/workspace-and-board.md#a-board-for-a-team-sign-in-with-github).
+(a change made on a team board is proposed as a pull request or an issue, never written to the
+server) and [the summary](https://github.com/syntopica/tadu/blob/main/docs/workspace-and-board.md#a-board-for-a-team-sign-in-with-github).
 
 ### Config file
 

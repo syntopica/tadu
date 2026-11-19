@@ -1,0 +1,13 @@
+{
+  "tadu": 2,
+  "id": "t-b434c169-6799-4fb5-92f5-6f45d391c384",
+  "title": "Stop team board refusals from printing the server checkout path",
+  "state": "pending",
+  "category": "board",
+  "type": "bug",
+  "priority": "normal",
+  "created": "2026-11-19",
+  "notes": [
+    "Found 2026-11-19: an unknown repository refusal on a team board lists the readable repositories with their server paths (for example add: give --repository as one of: shop (<path>)). Pre-existing, visible to any signed-in person."
+  ]
+}

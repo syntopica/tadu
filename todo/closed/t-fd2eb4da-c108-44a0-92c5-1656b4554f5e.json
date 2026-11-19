@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-fd2eb4da-c108-44a0-92c5-1656b4554f5e",
   "title": "Shared board step 2: card changes become pull requests (or issues) opened as the person who made them",
-  "state": "pending",
+  "state": "done",
   "category": "board",
   "type": "feature",
   "priority": "low",
@@ -10,5 +10,10 @@
   "notes": [
     "Design: board spec, section Shared mode. Branch plus pull request that patches the task file, opened with the user's GitHub App user token so GitHub enforces rights; never push to a default branch; reuse the file-hash check.",
     "The local board already changes items (tadu board --allow write, POST /api/op/<name> running the command); shared mode should route the same calls into a branch and pull request instead of writing the checkout."
+  ],
+  "closed": "2026-11-19",
+  "result": "Team board writes become a branch and pull request (or an issue for people without push) opened with the person's token; the server checkout is no longer written. Checked against the fake GitHub only.",
+  "evidence": [
+    "uv run pytest: 2273 passed; tests/test_team_board_proposals.py proves one commit on a new branch plus a PR, checkout unchanged, issue for a non-writer, 409 on base mismatch, no write to the default ref, preview never reaches GitHub; ruff, ruff format, mypy clean; codeality-py check still the same 5 findings as before; tadu doctor exit 0"
   ]
 }

@@ -42,7 +42,11 @@ class FakeHandler(BaseHTTPRequestHandler):
         github.requests.append(f"POST {self.path}")
         github.authorizations.append(self.headers.get("Authorization", ""))
         length = int(self.headers.get("Content-Length", "0"))
-        form = {k: v[0] for k, v in parse_qs(self.rfile.read(length).decode()).items()}
+        raw = self.rfile.read(length)
+        if self.path.startswith("/api/repos/"):
+            self.write_repository(raw)
+            return
+        form = {k: v[0] for k, v in parse_qs(raw.decode()).items()}
         if self.path != "/login/oauth/access_token" or form.get("client_secret") != SECRET:
             self.reply(404, {})
         elif github.token_moved is not None:
@@ -79,6 +83,26 @@ class FakeHandler(BaseHTTPRequestHandler):
         else:
             github.revoked.add(str(body.get("access_token", "")))
             self.reply(204, b"")
+
+    def repository_part(self, login: str, rest: str) -> tuple[str, str] | None:
+        """The repository and what follows it in `rest`, when `login` may read the repository."""
+        owner, name, tail = [*rest.split("/", 2), "", ""][:3]
+        repository = f"{owner}/{name}"
+        if repository in self.github.readable.get(login, set()) | self.github.public:
+            return repository, tail
+        self.reply(404, {"message": "Not Found"})
+        return None
+
+    def write_repository(self, raw: bytes) -> None:
+        """POST under /repos/: the git data, pull requests and issues of the fake's repositories."""
+        login = self.login()
+        if login is None:
+            self.reply(401, {"message": "Bad credentials"})
+            return
+        found = self.repository_part(login, self.path.removeprefix("/api/repos/"))
+        if found is not None:
+            repository, tail = found
+            self.reply(*self.github.git.post(repository, login, tail, json.loads(raw)))
 
     def refresh(self, refresh: str) -> None:
         github = self.github
@@ -123,7 +147,13 @@ class FakeHandler(BaseHTTPRequestHandler):
         elif name == "acme/nopull":
             self.reply(200, {"id": github.repo_id(name), "permissions": {"pull": False}})
         elif name in github.readable.get(login, set()) | github.public:
-            body = {"id": github.repo_id(name), "full_name": name, "permissions": {"pull": True}}
+            push = login in github.git.pushers.get(name, set())
+            body = {
+                "id": github.repo_id(name),
+                "full_name": name,
+                "default_branch": github.git.default_branch,
+                "permissions": {"pull": True, "push": push},
+            }
             self.reply(200, body)
         else:
             self.reply(404, {"message": "Not Found"})
@@ -142,6 +172,11 @@ class FakeHandler(BaseHTTPRequestHandler):
             self.reply(200, body if login != "nobody" else [])
         elif path == "/api/user/repos":
             self.list_page(login, query)
+        elif "/git/" in path:
+            found = self.repository_part(login, path.removeprefix("/api/repos/"))
+            if found is not None:
+                repository, tail = found
+                self.reply(*self.github.git.get(repository, tail.removeprefix("git/"), query))
         else:
             self.repository(login, path.removeprefix("/api/repos/"))
 

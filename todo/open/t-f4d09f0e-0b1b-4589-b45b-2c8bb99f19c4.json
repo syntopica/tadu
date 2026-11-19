@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-f4d09f0e-0b1b-4589-b45b-2c8bb99f19c4",
+  "title": "Check shared board proposals against the real GitHub API",
+  "state": "pending",
+  "category": "board",
+  "type": "test",
+  "priority": "normal",
+  "created": "2026-11-19",
+  "notes": [
+    "Step 2 was built and tested only against the fake GitHub. Unverified: App user token limits, rate limits, branch protection on ref creation, the App's Contents, Pull requests and Issues write permissions."
+  ],
+  "done_when": [
+    "One proposal and one issue were opened on a scratch repository by a signed-in test user, and the board showed the URL"
+  ]
+}
