@@ -43,11 +43,11 @@ def test_page_assets_never_inject_html() -> None:
 def test_index_has_one_module_script_and_no_inline_style() -> None:
     page = text("index.html")
     assert re.findall(r"<script\b([^>]*)>(.*?)</script>", page, re.DOTALL) == [
-        (' type="module" src="/app.js"', ""),
+        (' type="module" src="app.js"', ""),
     ]
     assert "style=" not in page
     assert "<style" not in page
-    assert '<link rel="stylesheet" href="/board.css">' in page
+    assert '<link rel="stylesheet" href="board.css">' in page
 
 
 def test_modules_export_one_unit_and_import_only_siblings() -> None:
@@ -61,14 +61,41 @@ def test_modules_export_one_unit_and_import_only_siblings() -> None:
             assert unit in EXPORTED.findall(text(module)), (name, unit, module)
 
 
+def test_login_page_has_one_small_script_and_links_only_here() -> None:
+    page = text("login.html")
+    assert page.count("<script") == 1
+    assert '<script type="module" src="login.js"></script>' in page
+    assert "style=" not in page
+    assert "<style" not in page
+    assert re.findall(r'(?:src|href)="([^"]*)"', page) == ["board.css", "login.js", "auth/login"]
+    # The script only keeps the linked view across the sign-in: it loads nothing else.
+    imports = {
+        name: re.findall(r'from "\./([^"]+)"', text(name))
+        for name in ("login.js", "keep-sign-in-hash.js", "sign-in-hash-key.js")
+    }
+    assert imports == {
+        "login.js": ["keep-sign-in-hash.js"],
+        "keep-sign-in-hash.js": ["sign-in-hash-key.js"],
+        "sign-in-hash-key.js": [],
+    }
+
+
 def test_no_external_resources() -> None:
     page = text("index.html")
-    assert all(url.startswith("/") for url in re.findall(r'(?:src|href)="([^"]*)"', page))
+    # Relative: the board's own files wherever it is served, in a subfolder too, and never
+    # another origin's (no scheme, no //host, no path from the host's root).
+    urls = re.findall(r'(?:src|href)="([^"]*)"', page)
+    assert urls == ["board.css", "app.js"]
+    assert not any(re.match(r"[a-z][a-z0-9+.-]*:|/", url) for url in urls)
     style = text("board.css")
     assert "url(" not in style
     assert "@import" not in style
     scripts = every_script()
-    assert re.findall(r"fetch\(([^,)]*)", scripts) == ['"/api/cards"']
+    assert re.findall(r"fetch\(([^,)]*)", scripts) == [
+        '"api/cards"',
+        '"api/session"',
+        '"auth/logout"',
+    ]
     assert "XMLHttpRequest" not in scripts
     assert "WebSocket" not in scripts
     assert "sendBeacon" not in scripts
@@ -82,7 +109,9 @@ def test_links_are_checked_and_isolated() -> None:
     assert "textContent" in scripts
     assert '"X-Tadu-Token": token' in scripts
     assert "sessionStorage" in scripts
-    assert 'replaceState(null, "", `/${window.location.hash}`)' in text("board-token.js")
+    assert 'replaceState(null, "", `${window.location.pathname}${window.location.hash}`)' in text(
+        "board-token.js"
+    )
     assert "cookie" not in scripts.lower()
     assert "anchor.href = url" in text("external-link.js")
     assert 'anchor.rel = "noopener noreferrer"' in text("external-link.js")

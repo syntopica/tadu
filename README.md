@@ -24,7 +24,7 @@ The commands:
 - `tadu ready` prints what can be worked on now; `tadu similar` finds existing items like a new one.
 - `tadu set` and `tadu claim` change and take tasks of a task backlog; `tadu archive`, `tadu fmt` and `tadu migrate` maintain it (see [Task backlog](#task-backlog-format-2)).
 - `tadu feed` prints the recently closed items of one or more repositories, or of a workspace, as JSON.
-- `tadu board` serves a read-only kanban page for a workspace.
+- `tadu board` serves a read-only kanban page for a workspace, to you alone or, with GitHub sign-in, to a team.
 - `tadu hook claude` is a Claude Code hook that runs `doctor` after an agent changes the backlog.
 - `tadu mcp` serves `next`, `inbox`, `urgent`, `list`, `show`, `add`, `mark` and `close` as tools an agent sees without any instruction file.
 
@@ -32,11 +32,11 @@ Contributors need none of it: the rule block that `sync` writes into `AGENTS.md`
 
 ## Requirements
 
-Python 3.12 or newer. tadu has no runtime dependencies; [uv](https://docs.astral.sh/uv/) is only needed to work on tadu itself.
+Python 3.12 or newer. Any Python installer brings the few libraries tadu uses along with it: `cryptography`, `requests` and `requests-oauthlib` (with `oauthlib`), Werkzeug and `limits` for the board's GitHub sign-in, `filelock` for locking a backlog on Windows, and `platformdirs` for each system's cache directory. A command imports only what it runs, so `tadu list` loads none of the sign-in libraries. [uv](https://docs.astral.sh/uv/) is only needed to work on tadu itself. Its test suite also drives the board in a real Chromium through Playwright: run `uv run playwright install chromium` once, or point `TADU_TEST_BROWSER` at a Chromium or Chrome program; without one those tests are skipped, unless `TADU_REQUIRE_BROWSER` is set, as it should be in CI.
 
 ## Install
 
-tadu needs Python 3.12 or newer and nothing else. Install it as a command with any Python installer:
+tadu needs Python 3.12 or newer; the installer brings its libraries. Install it as a command with any Python installer:
 
 ```bash
 uv tool install tadu
@@ -198,7 +198,7 @@ tadu mark --match "over 10,000 EUR" --state open --note "Decided: split charges 
 
 ## Agent tools over MCP
 
-`tadu mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server on standard input and output, with no dependencies. An agent connected to it sees eight tools with their descriptions and a short usage note, so it needs no rule in `AGENTS.md` or `CLAUDE.md` to know when to use them:
+`tadu mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server on standard input and output, built on no MCP library. An agent connected to it sees eight tools with their descriptions and a short usage note, so it needs no rule in `AGENTS.md` or `CLAUDE.md` to know when to use them:
 
 | Tool | Does | Writes |
 | ---- | ---- | ------ |
@@ -261,7 +261,7 @@ tadu doctor --workspace .
 tadu board --workspace .
 ```
 
-`board` prints a URL such as `http://127.0.0.1:41873/?token=...`; open it. The files are rescanned on every request and on Reload. Options: `--host` (default `127.0.0.1`), `--port` and `--done-days` (default 14). Without `--port` the board listens on a port derived from the workspace path (40000 to 49999), so the URL, and the saved views the browser keeps for it, stay the same across restarts; when that port is busy it takes any free port and says so on standard error. `--port 0` asks for any free port; port 80 also accepts the bare host, since browsers omit it.
+`board` prints a URL such as `http://127.0.0.1:41873/?token=...`; open it. The files are rescanned on every request and on Reload. While it is visible, the page checks every 30 seconds that the board still answers to its token: when the board stops, it clears itself until the board is back, then reloads; after a restart, whose token is new, it clears itself and asks for the new URL. Options: `--host` (default `127.0.0.1`), `--port` and `--done-days` (default 14), each of which a [config file](#config-file) can also set. Without `--port` the board listens on a port derived from the workspace path (40000 to 49999), so the URL, and the saved views the browser keeps for it, stay the same across restarts; when that port is busy it takes any free port and says so on standard error. `--port 0` asks for any free port; port 80 also accepts the bare host, since browsers omit it.
 
 The page has six views in its sidebar: My work (open items assigned to `me`), All work, Blocked (all, blocked for me, unassigned), Portfolio, Done (closed in the window, by day) and Board (a column per state, at most 30 cards each, with a link to the full list).
 
@@ -271,7 +271,7 @@ Portfolio counts the scope as a tree, Company > Project > Repository, where each
 
 A search box, a filters popover (assignee, priority, kind, label, state, due before, role, organization and the toggles, where Waiting on me shows what `tadu inbox` lists for `me`) with removable chips, grouping and sorting apply to every list; a decision, waiting or later item carries a badge saying so and a `Check on:` day shows beside the due date, and Group: Kind splits any list into tasks, decisions, waiting on others and later (grouped or filtered by kind, the headings or the chip name the kind and the badges are left out); lists draw only the rows on screen, so a workspace of thousands of items stays fast. Clicking an item opens its detail: full text, company, project, repository and relations, location, ID, fields, parse warnings and the links to the editor and the forge. Keys: `/` or Cmd/Ctrl-K search, G then S opens the scope switcher (type to find a company, project or repository, arrows and Enter to choose), J and K move, Enter opens the detail, E opens the editor, Esc closes. Saved views (with their scope), starred and recent scopes and the light or dark theme are kept in the browser's `localStorage`; under 720 px the page becomes a list with a bottom bar.
 
-The board only reads. It writes no backlog, workspace or index file, and it cannot change a card: every request other than GET answers `405` with `Allow: GET`. Edit the `TODO.md` files, or use `tadu close`.
+The board only reads. It writes no backlog, workspace or index file, and it cannot change a card: every request other than GET answers `405` with `Allow: GET`. With GitHub sign-in (see [below](#a-board-for-a-team-sign-in-with-github)), the board also writes `tadu-workspace.github-ids.json` and `tadu-workspace.sessions.json`, and a POST signs out. Edit the `TODO.md` files, or use `tadu close`.
 
 Who may read it:
 
@@ -280,6 +280,99 @@ Who may read it:
 - No response carries a CORS header, so another page cannot read the data. Responses send `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and a Content-Security-Policy that allows only the page's own script and style.
 - Item text is escaped, never rendered as HTML: only `**bold**` and `` `code` `` in titles are styled, built as elements holding plain text.
 - `--host` other than `127.0.0.1` or `localhost` prints a warning: the server listens on that address, but it still serves only requests whose `Host` header is exactly `<host>:<port>`, so a browser that reaches it by any other name or address gets `421`. `::1` is not supported. An invalid workspace or a port that cannot be bound exits `2`.
+
+### A board for a team: sign in with GitHub
+
+With `--auth github`, the board serves a team: people sign in with their GitHub account, and each of them sees only the items of the workspace repositories they can read on GitHub. [docs/team-board.md](https://github.com/syntopica/tadu/blob/main/docs/team-board.md) is the full guide: registering the GitHub App, preparing the workspace, running behind https, the ids file, how much GitHub is asked, the security model, the limits and troubleshooting.
+
+```bash
+export TADU_GITHUB_CLIENT_ID=Iv23liAbCdEf0123
+export TADU_GITHUB_CLIENT_SECRET=...   # never on the command line
+tadu board --workspace . --auth github --port 8123 --public-url https://board.example.com
+```
+
+- Register a GitHub App whose callback URL is the public URL plus `/auth/callback` and which needs no permission beyond the default read-only Metadata, and install it on the organizations that own the repositories. An OAuth App works too, but must ask for the `repo` scope, which allows writing.
+- Every workspace repository needs a `remote` on `github.com`; one without is shown to nobody, and `board` says so when it starts. Give each `[[person]]` their login (`github = "octocat"`) so that they are `me` when they sign in.
+- Serve it behind a reverse proxy that terminates https, on a subdomain (`https://tadu.example.com`), a domain of its own, or a subfolder of another site (`https://example.com/tadu`, with the proxy keeping or taking away the `/tadu` prefix). `--public-url` is the address people open; it is only valid with `--auth github`. Prefer a subdomain or own domain: in a subfolder, the site's other pages share the board's origin. The guide has Caddy and nginx configurations for each.
+
+What it guarantees:
+
+- Access is checked with each person's own GitHub token, from their repository list with ETags, so a 100-repository workspace costs one or two requests per person every 5 minutes, nearly all of them free `304`s. Repositories they cannot read are not even scanned for them, and nothing about them reaches their browser: not items, keys, projects, organizations, saved views or scan problems.
+- Each workspace repository is tied to its GitHub repository id, learned into `tadu-workspace.github-ids.json` beside the workspace file (or given as `github_id` on the `[[repository]]`), so a private repository renamed away and replaced by another under its old name is hidden from everyone, also after a restart.
+- When in doubt it hides: a repository that cannot be checked (rate limit, GitHub down, SAML) or whose identity cannot be confirmed is hidden, with a notice that names nothing, and the operator gets the details on standard error.
+- Starting and finishing a sign-in is rate limited per address: 10 a minute each by default, as GitLab limits its sign-in paths, with `429` and `Retry-After` beyond it; `--sign-in-limit` (such as `5/minute;50/hour`, or `off`) changes it, and `--proxy-hops 1` reads the client's address from a trusted reverse proxy.
+- Sessions last while they are used: they end after 14 days of inactivity, or the `--idle-timeout` given, such as `8h`; clicking, typing or scrolling on an open page counts as activity, and the page warns 5 minutes before the end, GitHub tokens are renewed in the background, and sessions survive restarts: they are saved in `tadu-workspace.sessions.json` (keep it out of git), each sealed with `cryptography`'s Fernet under a key only the person's cookie gives, so the file signs nobody in and holds no usable token. Cookies are `HttpOnly`, `SameSite=Lax`, and `Secure` and `__Host-` prefixed behind https; signing out ends the session, and a token GitHub refuses ends it within 5 minutes.
+- Signing in uses PKCE and GitHub's account picker (so a shared computer does not sign the next person in as the last), signing out has GitHub revoke the token, and only the board's own page may load its data, check the session or sign out: pages of other sites, and of other origins of the same site, are refused.
+
+Its limits, in short: github.com only (no GitHub Enterprise Server), one process per workspace, access changes on GitHub take effect within 5 minutes, items are what the server's checkouts hold (pull them on a schedule), anyone with a GitHub account can sign in and sees the workspace's public repositories, and a board that first sees a repository after its name was taken over cannot tell unless `github_id` is set. The guide lists them all.
+
+## Config file
+
+Options you would give every time can live in a file instead; a flag on the command line always wins. The user's config file is `config.toml` in tadu's config directory (`~/.config/tadu/config.toml` on Linux, or under `$XDG_CONFIG_HOME`; `~/Library/Application Support/tadu/config.toml` on macOS; `%LOCALAPPDATA%\tadu\config.toml` on Windows), or the file `$TADU_CONFIG` or `--config FILE` names:
+
+```toml
+# ~/.config/tadu/config.toml
+version = 1
+
+[defaults]              # every command that has the option
+workspace = "~/work/acme-workspace"
+json = false
+
+[list]
+sort = "priority"
+limit = 30
+view = "my-urgent"      # a [[view]] of the workspace: filters belong there
+
+[board]
+port = 8123
+```
+
+A workspace's `tadu-workspace.local.toml` takes the same tables, for the commands run on that workspace, and wins over the user's file. That is where a server keeps its board:
+
+```toml
+# /srv/team-workspace/tadu-workspace.local.toml
+version = 1
+
+[paths]
+shop = "/srv/checkouts/shop"
+
+[board]
+auth = "github"
+public_url = "https://tadu.example.com"
+port = 8123
+proxy_hops = 1
+```
+
+```bash
+tadu board --workspace /srv/team-workspace                 # the settings above
+tadu board --workspace /srv/team-workspace --port 9000     # one of them overridden
+```
+
+- **Order:** the command line, then the workspace's local file (`[command]`, then `[defaults]`), then the user's file (the same), then the built-in default. The workspace is `--workspace`, else the user's file's.
+- **A repository keeps to itself.** A command that reads repositories (`list`, `show`, `next`, `inbox`, `urgent`, `ready`, `similar`, `feed`, `mcp`) ignores a workspace from a file when the command line names repository paths, or when it runs in a repository with a backlog (a `TODO.md` or `todo/tadu.json`), which is then its default path; a `view` from a file goes with it. So `tadu list .`, and an agent running `tadu next` in one repository, see that repository only, never the workspace's other items; `--workspace` still reaches the workspace from anywhere. `board` and `doctor`, which have no default path, use the configured workspace wherever they run.
+- **Keys** are the long flags with `_` for `-` (`public_url` for `--public-url`), checked as the flag is: `port = 8123` or `"8123"`, `json = true`. `--no-json` turns off a `json = true`. A `workspace` in the user's file is relative to that file and may start with `~`; the local file cannot name one.
+- **What a file can set:** where a command reads and how it prints or serves, never what one call acts on.
+
+  | Table | Keys |
+  | --- | --- |
+  | `[list]` | `workspace`, `done_days`, `view`, `json`, `sort`, `limit` |
+  | `[show]` | `workspace`, `done_days`, `json` |
+  | `[ready]` | `workspace`, `json`, `limit` |
+  | `[next]`, `[inbox]` | `workspace`, `json` |
+  | `[urgent]` | `workspace`, `json`, `days` |
+  | `[similar]` | `workspace`, `limit` |
+  | `[feed]` | `workspace`, `done_days` |
+  | `[doctor]` | `workspace`, `json` |
+  | `[board]` | `workspace`, `host`, `port`, `done_days`, `auth`, `public_url`, `sign_in_limit`, `proxy_hops`, `idle_timeout` |
+  | `[mcp]` | `workspace` |
+  | `[init]` | `file`, `format` |
+  | `[sync]` | `file` |
+  | `[defaults]` | any key above, for every command that has it |
+
+  Item selectors and contents (`--match`, `--id`, `--title`, `--evidence`, the `list` filters and the like) and `--write` stay on the command line, so a file can never make a command pick another item or write without being asked; a filter set you want by default is a saved `[[view]]`, named by `[list] view`. Who acts is not a setting either: `me` in the local file and `$TADU_ACTOR` say it. The GitHub client secret is read from the environment only.
+- **The board's GitHub settings follow its `auth`.** `public_url`, `sign_in_limit`, `proxy_hops` and `idle_timeout` need `auth = "github"`; a file that sets them without it stops the board, naming the file. `--auth token` on the command line overrides a file's team board as a whole and drops the file's GitHub settings with it, so `tadu board --workspace /srv/team-workspace --auth token` is a private look at a server's workspace.
+- **`--no-config`** (before or after the command) reads neither file's tables, for a script that must not depend on anyone's settings. MCP tool calls run that way, so a tool does what its description says.
+- A file that cannot be used (unknown table or key, a value the flag would refuse, a missing file named by `--config` or `$TADU_CONFIG`) stops the command with exit `2`, naming the file, the table and the key. A value is checked when a command that uses it runs.
 
 ## Close an item
 
@@ -353,7 +446,7 @@ tadu close --id t-8c41d2e7 --evidence "pnpm test -- webhook-idempotency passes" 
 
 Every command is a dry run until `--write`, exits `2` when it refuses, and validates before writing, so none can produce a file `doctor` would reject. Like the commands of a `TODO.md` backlog, they hold an exclusive lock on the repository directory (POSIX) while they read and write, so two of them never interleave. `doctor` checks a task backlog with the `C` and `J` codes below.
 
-Reading a task backlog is fast for open work at any size (`list --open`, `ready`: about 0.4 s with 2,500 open tasks). Commands that go through all of history (`list --history`, the default `list` window, `similar`, `add`, `show` and `doctor`) read every task file once, then keep what they built in an item cache outside the repository: `$TADU_CACHE_DIR`, else `$XDG_CACHE_HOME/tadu`, else `~/.cache/tadu`. Each run still checks every file's size, inode and timestamps and rebuilds only what changed, so an edit, a `git checkout` or a pull is always seen; files changed in the last two seconds are re-read until they are older. The cache holds plain JSON, never code, and nothing in the repository; delete it at any time, or set `TADU_NO_CACHE=1` to turn it off.
+Reading a task backlog is fast for open work at any size (`list --open`, `ready`: about 0.4 s with 2,500 open tasks). Commands that go through all of history (`list --history`, the default `list` window, `similar`, `add`, `show` and `doctor`) read every task file once, then keep what they built in an item cache outside the repository: `$TADU_CACHE_DIR`, else the system's cache directory for tadu (`$XDG_CACHE_HOME/tadu` or `~/.cache/tadu` on Linux, `~/Library/Caches/tadu` on macOS, `%LOCALAPPDATA%\tadu\Cache` on Windows). Each run still checks every file's size, inode and timestamps and rebuilds only what changed, so an edit, a `git checkout` or a pull is always seen; files changed in the last two seconds are re-read until they are older. The cache holds plain JSON, never code, and nothing in the repository; delete it at any time, or set `TADU_NO_CACHE=1` to turn it off.
 
 ## Write the rule block
 
@@ -505,7 +598,7 @@ Branches that close work in the same month both append to the same section of `T
 | J014 | warning | a blocked task's `blocked_by` tasks are all closed and it has no `blocker` |
 | J015 | warning | a pending or in-progress task waits on an open `blocked_by` task |
 | J016 | warning | a `blocked_by` task was cancelled |
-| J017 | warning | a line of a task file looks like a secret; the value is never printed |
+| J017 | warning | a line of a task file looks like a secret (a private key; an AWS, Google, Azure, OpenAI or Anthropic key; a GitHub, GitLab, Slack, npm, PyPI, Stripe, SendGrid, Shopify, Square, Twilio or Mailchimp token; a password in a URL; a credential assignment); the value is never printed |
 | J018 | warning | a task has been in progress longer than `stale_after_days` |
 | J019 | warning | a milestone is not declared in `tadu.json` |
 | J020 | error | a relation points to the task itself |

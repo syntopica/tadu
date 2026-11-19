@@ -1,6 +1,7 @@
 import { currentSets } from "./current-sets.js";
 import { el } from "./el.js";
 import { isPhone } from "./is-phone.js";
+import { renderAccount } from "./render-account.js";
 import { renderBoard } from "./render-board.js";
 import { renderBottomNav } from "./render-bottom-nav.js";
 import { renderChips } from "./render-chips.js";
@@ -20,6 +21,7 @@ export function renderApp(store) {
   const sets = currentSets(store);
   document.body.dataset.view = store.view;
   renderSidebar(store);
+  renderAccount(store);
   renderScopeBar(store);
   renderHead(store, sets);
   renderToolbar(store);

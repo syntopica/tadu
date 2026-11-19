@@ -14,5 +14,6 @@ def test_frozen_fields() -> None:
         "t",
         frozenset({"h:1"}),
     )
+    assert state.github is None
     with pytest.raises(dataclasses.FrozenInstanceError):
         state.token = "x"  # type: ignore[misc]  # noqa: S105

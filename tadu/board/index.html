@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>tadu</title>
-<link rel="stylesheet" href="/board.css">
-<script type="module" src="/app.js"></script>
+<link rel="stylesheet" href="board.css">
+<script type="module" src="app.js"></script>
 </head>
 <body>
 <div class="app">
@@ -42,12 +42,21 @@
 </form>
 </section>
 <div class="sidebar-foot">
+<div class="account" id="account" hidden>
+<p class="account-login"><span data-icon="user"></span><span id="account-login"></span></p>
+<button type="button" class="nav-item theme-toggle" id="sign-out"><span data-icon="arrowRight"></span>Sign out</button>
+</div>
 <p class="read-only" title="tadu board never changes a file: edit TODO.md in your editor."><span data-icon="info"></span> Read only</p>
 <button type="button" class="nav-item theme-toggle" id="theme-toggle"><span data-icon="sun"></span><span id="theme-label">Theme: Auto</span></button>
 </div>
 </aside>
 
 <div class="main" id="main">
+<div class="session-warning" id="session-warning" role="alert" hidden>
+<p id="session-warning-text"></p>
+<button type="button" class="button primary" id="stay-signed-in">Stay signed in</button>
+<button type="button" class="button" id="session-sign-out">Sign out</button>
+</div>
 <header class="phone-top">
 <span class="brand">tadu</span>
 <span class="pill">Read only</span>

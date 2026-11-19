@@ -9,6 +9,7 @@ import { requestRender } from "./request-render.js";
 import { SEARCHABLE_FILTERS } from "./searchable-filters.js";
 import { setView } from "./set-view.js";
 import { setWhere } from "./set-where.js";
+import { signOut } from "./sign-out.js";
 import { snapshotView } from "./snapshot-view.js";
 import { storageKey } from "./storage-key.js";
 import { storeSavedViews } from "./store-saved-views.js";
@@ -114,6 +115,8 @@ export function bindControls(store) {
     store.problemsOpen = !store.problemsOpen;
     requestRender();
   });
+  byId("sign-out").addEventListener("click", signOut);
+  byId("session-sign-out").addEventListener("click", signOut);
   byId("theme-toggle").addEventListener("click", () => {
     store.theme = nextTheme(store.theme);
     applyTheme(store.theme);

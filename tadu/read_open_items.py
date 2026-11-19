@@ -22,4 +22,4 @@ def read_open_items(root: Path, backlog: str, repository: str) -> tuple[BacklogI
         raise UnreadableFileError(file, "no TODO.md")
     path = (PurePosixPath(backlog) / "TODO.md").as_posix()
     lines = read_text_exact(file).splitlines()
-    return scan_items(lines, repository, path, " ~!")
+    return scan_items(lines, repository, path, lambda match: match.group(1) in " ~!")

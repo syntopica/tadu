@@ -9,6 +9,7 @@ from http.server import BaseHTTPRequestHandler
 from typing import TYPE_CHECKING, ClassVar, override
 
 from tadu.authorize_request import authorize_request
+from tadu.board_data_path import BOARD_CHECK_PATH
 from tadu.board_headers import BOARD_HEADERS
 from tadu.board_route import board_route
 from tadu.json_error import json_error
@@ -30,11 +31,15 @@ class BoardHandler(BaseHTTPRequestHandler):
     def parse_request(self) -> bool:
         """Refuse every method but GET before it is dispatched."""
         parsed = super().parse_request()
-        if not parsed or self.command == "GET":
+        if not parsed or self.allows():
             return parsed
         refusal = json_error(HTTPStatus.METHOD_NOT_ALLOWED, "only GET")
         send_board_response(self, refusal, ("Allow", "GET"))
         return False
+
+    def allows(self) -> bool:
+        """Whether the request's method may be dispatched: GET only."""
+        return self.command == "GET"
 
     def do_GET(self) -> None:
         """Authorize, then serve the page, an asset or the cards."""
@@ -56,7 +61,12 @@ class BoardHandler(BaseHTTPRequestHandler):
 
     @override
     def log_request(self, code: int | str = "-", size: int | str = "-") -> None:
-        """Log through log_message with the status only."""
+        """Log through log_message with the status only; a passed check of the page, none.
+
+        Every open page checks once a minute; only the checks that fail say something.
+        """
+        if code == HTTPStatus.OK and self.path.partition("?")[0].endswith(BOARD_CHECK_PATH):
+            return
         self.log_message("%s", code)
 
     @override
@@ -65,6 +75,11 @@ class BoardHandler(BaseHTTPRequestHandler):
 
     @override
     def log_message(self, format: str, *args: object) -> None:
-        """Write method, path without its query string, and status to stderr."""
+        """Write method, path without its query string, and status to stderr.
+
+        Characters that are not printable are written escaped, so a request cannot send
+        terminal control sequences, or a line break, into the operator's log.
+        """
         path = getattr(self, "path", "").partition("?")[0]
-        sys.stderr.write(f"{self.command} {path} {format % args}\n")
+        line = f"{self.command} {path} {format % args}"
+        sys.stderr.write("".join(c if c.isprintable() else f"\\x{ord(c):02x}" for c in line) + "\n")

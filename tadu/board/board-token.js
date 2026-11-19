@@ -6,7 +6,7 @@ export function boardToken() {
   const fromUrl = new URLSearchParams(window.location.search).get("token");
   if (fromUrl) {
     window.sessionStorage.setItem(key, fromUrl);
-    window.history.replaceState(null, "", `/${window.location.hash}`);
+    window.history.replaceState(null, "", `${window.location.pathname}${window.location.hash}`);
   }
   return window.sessionStorage.getItem(key);
 }

@@ -117,6 +117,7 @@ ignore = [
 "tadu/finish_leftovers.py" = ["T201"]
 "tadu/migrate_command.py" = ["T201"]
 "tadu/run_task_init.py" = ["T201"]
+"tadu/cli.py" = ["T201"]
 "**/conftest.py" = ["D"]
 
 [lint.mccabe]

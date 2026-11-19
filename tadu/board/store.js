@@ -10,6 +10,7 @@ export const store = {
   byKey: new Map(),
   error: "",
   loading: false,
+  left: false,
   requests: 0,
   view: "board",
   text: "",

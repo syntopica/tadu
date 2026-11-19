@@ -21,12 +21,13 @@ def mcp_call(
 ) -> dict[str, object]:
     """The `tools/call` result: the command's output as text, an error when it fails.
 
-    The caller has checked that the tool exists.
+    The caller has checked that the tool exists. The command reads no config file: a
+    tool does what its schema says, whatever defaults a person set for their own use.
     """
     problem = mcp_arguments_error(MCP_TOOLS[name]["inputSchema"], arguments)  # type: ignore[arg-type]
     if problem is None:
         try:
-            code, text = run_captured(main, mcp_argv(name, arguments, scope))  # type: ignore[arg-type]
+            code, text = run_captured(main, ["--no-config", *mcp_argv(name, arguments, scope)])  # type: ignore[arg-type]
         except WorkspaceError as error:
             code, text = 2, str(error)
     else:

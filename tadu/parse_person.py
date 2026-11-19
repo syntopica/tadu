@@ -8,9 +8,10 @@ from tadu.required_text import required_text
 
 
 def parse_person(row: dict[str, object]) -> PersonEntry:
-    """Read id, name and the optional organization."""
+    """Read id, name, the optional organization and the optional GitHub login."""
     return PersonEntry(
         required_text(row, "person", "id"),
         required_text(row, "person", "name"),
         optional_text(row, "person", "organization"),
+        optional_text(row, "person", "github"),
     )
