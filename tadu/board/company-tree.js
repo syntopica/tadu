@@ -1,27 +1,29 @@
 import { compareRows } from "./compare-rows.js";
 import { NO_PLACE } from "./no-place.js";
+import { placeTouches } from "./place-touches.js";
 import { projectNode } from "./project-node.js";
 import { repositoryBuckets } from "./repository-buckets.js";
 import { sumBuckets } from "./sum-buckets.js";
 
-// The portfolio's ownership tree inside a scope: Company > Project >
-// Repository. Each project sits under the companies that own it, never
-// under a client, and every row sums distinct repositories, so no card is
-// counted twice within a company. Without projects the rows are the
-// repositories themselves. `keepEmpty` keeps rows that count nothing.
-export function companyTree(cards, index, where, keepEmpty) {
+// The portfolio's ownership tree inside the chosen places: Company >
+// Project > Repository. Each project sits under the companies that own it,
+// never under a client, and every row sums distinct repositories, so no
+// card is counted twice within a company. Without projects the rows are
+// the repositories themselves. `keepEmpty` keeps rows that count nothing.
+export function companyTree(cards, index, places, keepEmpty) {
   const byRepository = repositoryBuckets(cards);
   const shown = (row) => keepEmpty || row.buckets.total > 0;
+  const scope = { places, index };
   if (index.projects.size === 0) {
     const project = { key: "", name: "", relations: [], repositories: [...index.repositories.keys()] };
-    return projectNode(project, "", byRepository, where).children.filter(shown);
+    return projectNode(project, "", byRepository, scope).children.filter(shown);
   }
   return index.companies
-    .filter((company) => where.company === "" || company.id === where.company)
+    .filter((company) => placeTouches(places, { company: company.id, project: "", repository: "" }, index))
     .map((company) => {
       const children = company.projects
-        .filter((key) => where.project === "" || key === where.project)
-        .map((key) => projectNode(index.projects.get(key), company.id, byRepository, where))
+        .filter((key) => placeTouches(places, { company: company.id, project: key, repository: "" }, index))
+        .map((key) => projectNode(index.projects.get(key), company.id, byRepository, scope))
         .filter(shown)
         .sort(compareRows);
       return {

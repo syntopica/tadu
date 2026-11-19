@@ -1,10 +1,10 @@
-import { sameWhere } from "./same-where.js";
+import { samePlaces } from "./same-places.js";
 
-// The starred scopes with `where` added, or removed when already starred.
-export function toggleFavourite(favourites, where) {
-  if (favourites.some((old) => sameWhere(old, where))) {
-    return favourites.filter((old) => !sameWhere(old, where));
+// The starred scopes (each a list of places) with `places` added, or
+// removed when already starred.
+export function toggleFavourite(favourites, places) {
+  if (favourites.some((old) => samePlaces(old, places))) {
+    return favourites.filter((old) => !samePlaces(old, places));
   }
-  const { company, project, repository } = where;
-  return [...favourites, { company, project, repository }];
+  return [...favourites, places];
 }

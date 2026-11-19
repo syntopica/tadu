@@ -28,6 +28,7 @@ import time
 from pathlib import Path
 
 import tokens
+from gen import busiest_topic
 
 HERE = Path(__file__).parent
 READ_MAX_LINES = 2000
@@ -58,11 +59,7 @@ TUNED = {
 
 def tasks(truth: dict) -> list[dict]:
     o, log = truth["open"], truth["log"]
-    topic_counts: dict[str, int] = {}
-    for i in o:
-        if i["topic"]:
-            topic_counts[i["topic"]] = topic_counts.get(i["topic"], 0) + 1
-    topic = max(sorted(topic_counts), key=lambda t: topic_counts[t])
+    topic = busiest_topic(truth)
     import vocab
     canon, variants = vocab.TOPICS[topic]
     topic_re = f"{re.escape(canon)}|{re.escape(variants[0])}"
@@ -382,10 +379,9 @@ def paged(commands):
 JQ = f"{sys.executable} {HERE / 'jq_lite.py'}"
 
 
-def jsonl_jq(t):
-    """The agent writes its own jq-style filter; output is the raw matching records."""
-    f = "TODO_LOG.jsonl" if t.get("log") else "TODO.jsonl"
-    expr = {
+def jq_filter(t):
+    """The jq-style filter an agent writes for a question about JSON records."""
+    return {
         "T1": 'priority in ("urgent","high")',
         "T2": f'due and due <= "{WEEK_END}"',
         "T3": 'category == "ui"',
@@ -396,7 +392,12 @@ def jsonl_jq(t):
         "T8": f'"{t.get("topic")}" in labels',
         "T9": f'due and due < "{TODAY}"',
     }[t["id"]]
-    return [(f"{JQ} {q(expr)} {f}", "keys", None)]
+
+
+def jsonl_jq(t):
+    """The agent writes its own jq-style filter; output is the raw matching records."""
+    f = "TODO_LOG.jsonl" if t.get("log") else "TODO.jsonl"
+    return [(f"{JQ} {q(jq_filter(t))} {f}", "keys", None)]
 
 
 def mddir_grep(t):
@@ -420,15 +421,8 @@ def mddir_grep(t):
 
 def jsondir_jq(t):
     """One JSON file per task, no custom tool: `jq 'select(...) | {id, title}' todo/*.json`."""
-    expr = {
-        "T1": 'priority in ("urgent","high")', "T2": f'due and due <= "{WEEK_END}"',
-        "T3": 'category == "ui"', "T4": '"bug" in labels',
-        "T5": 'category == "ui" and "bug" in labels and priority in ("urgent","high")',
-        "T6": 'state == "blocked"', "T7": f'"{t.get("topic")}" in labels',
-        "T8": f'"{t.get("topic")}" in labels', "T9": f'due and due < "{TODAY}"',
-    }[t["id"]]
     files = "done/*/*.json" if t["id"] == "T8" else "todo/*.json"
-    return [(f"{JQ} --each {q(expr)} {files}", "keys", None)]
+    return [(f"{JQ} --each {q(jq_filter(t))} {files}", "keys", None)]
 
 
 def strategies():

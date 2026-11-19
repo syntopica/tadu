@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-fdd805b2-310a-451f-aa9e-d65380bbd186",
+  "title": "tadu changes: what changed across the backlog in a range of days",
+  "state": "done",
+  "category": "cli",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-b2ab17c6-15c6-4a12-9a7e-34c018c578e0"
+  ],
+  "notes": [
+    "For a retro: who closed what, what got reopened, started or blocked. CLI, MCP and board; the last 14 days by default."
+  ],
+  "closed": "2026-11-18",
+  "result": "tadu changes (grouped text or JSON, --since/--until, --event, --author, --field), the MCP changes tool and the board's Changes view from /api/changes, for both formats and ranges across a migration",
+  "evidence": [
+    "pytest: 1331 tests at 100% coverage, among them tests/test_repository_changes.py, test_run_changes.py, test_board_changes*.py and test_board_changes_js.py (the board filters, groups and describes changes as the command does); a jsdom run of the whole board against a live server; 14 days on 2,000 tasks in 0.4 s"
+  ]
+}

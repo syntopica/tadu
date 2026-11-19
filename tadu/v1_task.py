@@ -75,7 +75,7 @@ def v1_task(
         "due": fields.get("Due"),
         "queue": "ready" if fields.get("Queue") == "ready" and state == "pending" else None,
         "assignees": [a.strip() for a in fields.get("Assignees", "").split(",") if a.strip()],
-        "estimate": int(estimate) if estimate.isdigit() else None,
+        "estimate": int(estimate) if estimate.isdecimal() else None,
         "blocked_by": parts.blocked_by,
         "blocker": blocker,
         "unblock": unblock,

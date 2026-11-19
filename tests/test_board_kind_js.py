@@ -1,7 +1,5 @@
-import json
-
 import pytest
-from board_js import board_js, js_card
+from board_js import board_results, js_card
 
 SCRIPT = """
 class Node {
@@ -36,8 +34,14 @@ out({
   card: [classes(cardBadges(plain, ALL)), classes(cardBadges(waiting, ALL)), classes(cardBadges(waiting, { kind: false, priority: true }))],
   row: [parts(plain), parts(waiting), parts(waiting, { kind: false, priority: true }), parts(plain, { kind: true, priority: false })],
   shown: [
-    ["state", {}], ["priority", {}], ["kind", {}], ["state", { kind: "waiting" }], ["state", { priority: "high" }],
-  ].map(([group, set]) => shownBadges(group, { kind: "", priority: "", ...set })),
+    ["state", []],
+    ["priority", []],
+    ["kind", []],
+    ["state", [{ field: "kind", op: "any", values: ["waiting"] }]],
+    ["state", [{ field: "priority", op: "any", values: ["high"] }]],
+    ["state", [{ field: "priority", op: "any", values: ["high", "low"] }]],
+    ["state", [{ field: "kind", op: "not", values: ["waiting"] }]],
+  ].map(([group, rules]) => shownBadges(group, { rules })),
   detail: [fields(plain), fields(waiting)],
 });
 """
@@ -46,9 +50,7 @@ out({
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
     cards = [js_card(priority="high"), js_card("blocked", kind="waiting")]
-    result = board_js(SCRIPT.replace("ARGS", json.dumps(cards)))
-    assert isinstance(result, dict)
-    return result
+    return board_results(SCRIPT, cards)
 
 
 def test_badge_marks_every_kind_but_task(results: dict[str, object]) -> None:
@@ -81,6 +83,8 @@ def test_a_badge_is_dropped_where_the_list_already_names_its_value(
         {"kind": False, "priority": True},
         {"kind": False, "priority": True},
         {"kind": True, "priority": False},
+        {"kind": True, "priority": True},
+        {"kind": True, "priority": True},
     ]
 
 

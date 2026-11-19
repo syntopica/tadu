@@ -3,7 +3,7 @@ from datetime import date
 from pathlib import Path
 
 import pytest
-from sample_task import sample_task
+from sample_task import sample_id, sample_task
 from task_backlog import task_backlog
 
 from tadu.check_task_backlog import check_task_backlog
@@ -17,10 +17,6 @@ TODAY = date(2026, 11, 16)
 
 def codes(root: Path) -> list[str]:
     return sorted(finding.code for finding in task_backlog_findings(root, TODAY))
-
-
-def ident(number: int) -> str:
-    return str(sample_task(number)["id"])
 
 
 def test_a_clean_backlog_and_the_checks_it_gets(tmp_path: Path) -> None:
@@ -50,10 +46,10 @@ def test_file_findings(tmp_path: Path) -> None:
         json.dumps({k: v for k, v in sample_task(7).items() if k != "id"})
     )
     (open_dir / "newer.json").write_text(json.dumps({**sample_task(2), "tadu": 3}))
-    (open_dir / f"{ident(3)}.json").write_text(json.dumps({**sample_task(3), "state": "odd"}))
-    (open_dir / f"{ident(4)}.json").write_text(json.dumps(sample_task(4)))
+    (open_dir / f"{sample_id(3)}.json").write_text(json.dumps({**sample_task(3), "state": "odd"}))
+    (open_dir / f"{sample_id(4)}.json").write_text(json.dumps(sample_task(4)))
     (open_dir / "renamed.json").write_text(json.dumps(sample_task(5), indent=2) + "\n")
-    (open_dir / f"{ident(6)}.json").write_text(
+    (open_dir / f"{sample_id(6)}.json").write_text(
         json.dumps(sample_task(6, notes=["key: AKIA" + "Q7XJ" * 4]), indent=2) + "\n"
     )
     assert codes(root) == ["J001", "J002", "J003", "J003", "J004", "J005", "J017"]
@@ -62,13 +58,17 @@ def test_file_findings(tmp_path: Path) -> None:
 def test_location_and_duplicate_findings(tmp_path: Path) -> None:
     root = task_backlog(tmp_path, [sample_task(1)])
     todo = root / "todo"
-    (todo / "closed" / f"{ident(2)}.json").parent.mkdir()
-    (todo / "closed" / f"{ident(2)}.json").write_text(json.dumps(sample_task(2), indent=2) + "\n")
-    (todo / "open" / f"{ident(3)}.json").write_text(
+    (todo / "closed" / f"{sample_id(2)}.json").parent.mkdir()
+    (todo / "closed" / f"{sample_id(2)}.json").write_text(
+        json.dumps(sample_task(2), indent=2) + "\n"
+    )
+    (todo / "open" / f"{sample_id(3)}.json").write_text(
         json.dumps(sample_task(3, "done"), indent=2) + "\n"
     )
-    (todo / "closed" / f"{ident(1)}.json").write_text(json.dumps(sample_task(1), indent=2) + "\n")
-    archived = todo / "archive" / "2025" / f"{ident(4)}.json"
+    (todo / "closed" / f"{sample_id(1)}.json").write_text(
+        json.dumps(sample_task(1), indent=2) + "\n"
+    )
+    archived = todo / "archive" / "2025" / f"{sample_id(4)}.json"
     archived.parent.mkdir(parents=True)
     archived.write_text(json.dumps(sample_task(4, "done"), indent=2) + "\n")
     assert codes(root) == ["C003", "J006", "J006", "J006", "J006", "J007"]
@@ -81,7 +81,7 @@ def test_archive_layouts(tmp_path: Path) -> None:
     year = root / "todo" / "archive" / "2026"
     for number, folder in ((1, year), (2, year / "11")):
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / f"{ident(number)}.json").write_text(
+        (folder / f"{sample_id(number)}.json").write_text(
             json.dumps(sample_task(number, "done"), indent=2) + "\n"
         )
     assert codes(root) == ["J006"]
@@ -120,16 +120,16 @@ def test_vocabulary_findings(tmp_path: Path) -> None:
 
 def test_relation_findings(tmp_path: Path) -> None:
     tasks = [
-        sample_task(1, "blocked", blocked_by=[ident(2)]),
-        sample_task(2, "blocked", blocked_by=[ident(1)]),
-        sample_task(3, blocked_by=[ident(4)]),
+        sample_task(1, "blocked", blocked_by=[sample_id(2)]),
+        sample_task(2, "blocked", blocked_by=[sample_id(1)]),
+        sample_task(3, blocked_by=[sample_id(4)]),
         sample_task(4),
-        sample_task(5, "blocked", blocked_by=[ident(6)]),
+        sample_task(5, "blocked", blocked_by=[sample_id(6)]),
         sample_task(6, "done"),
-        sample_task(7, related=[ident(99)], discovered_from=ident(7)),
-        sample_task(8, "cancelled", duplicate_of=ident(9)),
-        sample_task(9, "cancelled", duplicate_of=ident(4)),
-        sample_task(10, "blocked", blocked_by=[ident(8), ident(11)]),
+        sample_task(7, related=[sample_id(99)], discovered_from=sample_id(7)),
+        sample_task(8, "cancelled", duplicate_of=sample_id(9)),
+        sample_task(9, "cancelled", duplicate_of=sample_id(4)),
+        sample_task(10, "blocked", blocked_by=[sample_id(8), sample_id(11)]),
         sample_task(11, "cancelled"),
     ]
     assert codes(task_backlog(tmp_path, tasks)) == [

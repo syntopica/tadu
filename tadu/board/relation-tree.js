@@ -1,5 +1,6 @@
 import { cleanWhere } from "./clean-where.js";
 import { compareRows } from "./compare-rows.js";
+import { placeTouches } from "./place-touches.js";
 import { projectNode } from "./project-node.js";
 import { repositoryBuckets } from "./repository-buckets.js";
 import { sumBuckets } from "./sum-buckets.js";
@@ -8,19 +9,16 @@ import { sumBuckets } from "./sum-buckets.js";
 // organization holding that role over projects in scope, with those
 // projects under it, then the projects with no such relation. This is not
 // ownership: a project may sit under several organizations here.
-export function relationTree(cards, index, where, role, keepEmpty) {
+export function relationTree(cards, index, places, role, keepEmpty) {
   const byRepository = repositoryBuckets(cards);
   const shown = (row) => keepEmpty || row.buckets.total > 0;
   const groups = new Map();
   for (const project of index.projects.values()) {
-    const owner = cleanWhere({ company: where.company, project: project.key }, index).company;
-    const outside =
-      (where.company !== "" && owner !== where.company) ||
-      (where.project !== "" && project.key !== where.project);
-    if (outside) {
+    const place = cleanWhere({ project: project.key }, index);
+    if (!placeTouches(places, place, index)) {
       continue;
     }
-    const node = projectNode(project, owner, byRepository, where);
+    const node = projectNode(project, place.company, byRepository, { places, index });
     if (!shown(node) || node.children.length === 0) {
       continue;
     }
@@ -32,7 +30,7 @@ export function relationTree(cards, index, where, role, keepEmpty) {
           key: `o:${org}`,
           label: name,
           role,
-          filter: org === "" ? null : { organization: org, role },
+          filter: org === "" ? null : { rules: [{ field: "organization", op: "any", values: [`${role}:${org}`] }] },
           children: [],
           last: org === "",
         });

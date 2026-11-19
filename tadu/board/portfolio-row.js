@@ -13,6 +13,7 @@ export function portfolioRow(node, depth, actions) {
   const row = el("div", `prow prow-depth-${depth} prow-${node.kind}`);
   row.setAttribute("role", "row");
   const name = el("div", "prow-name-cell");
+  name.setAttribute("role", "rowheader");
   if (node.children.length > 0) {
     const toggle = el("button", "prow-toggle");
     toggle.type = "button";
@@ -44,15 +45,16 @@ export function portfolioRow(node, depth, actions) {
   name.append(...node.relations.map(relationBadge));
   const blocked = actions.onOpen ? () => actions.onOpen(true) : null;
   row.append(name, ...portfolioCells(node.buckets, node.label, blocked));
+  const end = el("span", "prow-end");
+  end.setAttribute("role", "cell");
   if (actions.onOpen) {
-    const go = el("button", "icon-button small prow-end");
+    const go = el("button", "icon-button small");
     go.type = "button";
     go.setAttribute("aria-label", `Open the items of ${node.label}`);
     go.append(icon("chevronRight"));
     go.addEventListener("click", () => actions.onOpen(false));
-    row.append(go);
-  } else {
-    row.append(el("span", "prow-end"));
+    end.append(go);
   }
+  row.append(end);
   return row;
 }

@@ -1,22 +1,19 @@
 import json
-from datetime import UTC, datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
-from sample_task import sample_task
+from local_today import local_today
+from sample_task import sample_id, sample_task
 from task_backlog import task_backlog
 
 from tadu.cli import main
 
-TODAY = datetime.now(UTC).astimezone().date()
+TODAY = local_today()
 
 
 def day(offset: int) -> str:
     return (TODAY + timedelta(days=offset)).isoformat()
-
-
-def ident(number: int) -> str:
-    return str(sample_task(number)["id"])
 
 
 def shop(tmp_path: Path) -> Path:
@@ -26,10 +23,10 @@ def shop(tmp_path: Path) -> Path:
         ),
         sample_task(2, priority="urgent", category="api", due=day(-2), milestone="v1"),
         sample_task(3, priority="low", category="ui", type="docs"),
-        sample_task(4, "blocked", blocked_by=[ident(1)], title="Waits on task 1"),
+        sample_task(4, "blocked", blocked_by=[sample_id(1)], title="Waits on task 1"),
         sample_task(5, priority="untriaged", defer_until=day(5), title="Later"),
         sample_task(6, "done", closed=day(-30), title="Fix the Safari crash in the toolbar"),
-        sample_task(7, "done", closed=day(-1), duplicate_of=None, discovered_from=ident(1)),
+        sample_task(7, "done", closed=day(-1), duplicate_of=None, discovered_from=sample_id(1)),
     ]
     return task_backlog(tmp_path / "shop", tasks)
 
@@ -96,7 +93,7 @@ def test_show_by_prefix_with_reverse_relations(
     assert "blocks: shop:t-00000004 [blocked] normal Waits on task 1" in lines
     assert "discovered: shop:t-00000007 [done] normal Task 7" in lines
     shown = json.loads(out(capsys, "show", "t-00000001", root, "--json")[0])
-    assert shown["key"] == ident(1)
+    assert shown["key"] == sample_id(1)
 
 
 def test_show_refuses_an_ambiguous_or_unknown_prefix(
@@ -141,5 +138,9 @@ def test_similar(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     assert lines[0] == "1.00 shop:t-00000006 [done] normal Fix the Safari crash in the toolbar"
     assert out(capsys, "similar", "Fix the Safari crashes in the toolbar", root, "--open") == []
     assert out(capsys, "similar", "the of a", root) == []
+    found = json.loads(
+        out(capsys, "similar", "Fix the Safari crashes in the toolbar", root, "--json")[0]
+    )
+    assert (found["key"][:10], found["overlap"]) == ("t-00000006", 1.0)
     assert main(["similar", "x", "--workspace", str(tmp_path)]) == 2
     assert capsys.readouterr().err.startswith("tadu similar: ")

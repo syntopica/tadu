@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-1daa166a-df0f-4592-b05d-ccd85ff71871",
+  "title": "Check the whole repository for copied code and the board for accessibility",
+  "state": "done",
+  "category": "tooling",
+  "type": "chore",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "notes": [
+    "jscpd over every file .gitignore keeps, axe-core on every state of the board page in jsdom, and WCAG AA contrast for the colour tokens; dev dependencies in package.json."
+  ],
+  "closed": "2026-11-18",
+  "result": "npm ci installs jscpd, axe-core and jsdom; .jscpd.json finds 0 clones (tests/test_duplicated_code.py), pytest -m browser audits 18 states with no violation, tests/test_board_contrast.py checks 26 colour pairs in both themes",
+  "evidence": [
+    "pytest: 1406 tests at 100% coverage plus 2 browser tests; npx jscpd: Found 0 clones"
+  ]
+}

@@ -6,6 +6,7 @@ import os
 import uuid
 from typing import TYPE_CHECKING
 
+from tadu.list_values import list_values
 from tadu.resolve_task_ids import resolve_task_ids
 from tadu.task_defaults import UNKNOWN_CATEGORY, UNKNOWN_PRIORITY, UNKNOWN_TYPE
 from tadu.task_format_version import TASK_FORMAT_VERSION
@@ -36,14 +37,14 @@ def new_task(args: argparse.Namespace, today: date, todo: Path) -> dict[str, obj
         "category": args.category or UNKNOWN_CATEGORY,
         "type": args.type or UNKNOWN_TYPE,
         "priority": args.priority or UNKNOWN_PRIORITY,
-        "labels": args.label,
+        "labels": list_values(args.labels),
         "milestone": args.milestone,
         "created": today.isoformat(),
         "created_by": args.created_by or os.environ.get("TADU_ACTOR"),
         "due": args.due,
         "defer_until": args.defer_until,
         "queue": args.queue,
-        "assignees": args.assignee,
+        "assignees": list_values(args.assignees),
         "estimate": args.estimate,
         **single,
         "blocked_by": blocked_by,

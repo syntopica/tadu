@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from tadu.closing import Closing
 
 
-def prepare_close(root: Path, match: str, closing: Closing) -> ClosePlan | None:
+def prepare_close(root: Path, match: str | int, closing: Closing) -> ClosePlan | None:
     """The plan, or None after reporting why the close is refused."""
     texts = read_backlog(root)
     if texts is None:

@@ -1,0 +1,19 @@
+{
+  "path": [
+    "."
+  ],
+  "minTokens": 50,
+  "minLines": 5,
+  "reporters": [
+    "console"
+  ],
+  "exitCode": 1,
+  "ignore": [
+    "**/node_modules/**",
+    "**/uv.lock",
+    "**/package-lock.json",
+    "bench/format-study/results/**",
+    "bench/format-study/proposal/**",
+    "tests/fixtures/**"
+  ]
+}

@@ -1,54 +1,18 @@
-import { activeChips } from "./active-chips.js";
-import { COLUMN_TITLES } from "./column-titles.js";
-import { distinctValues } from "./distinct-values.js";
-import { fillChoice } from "./fill-choice.js";
+import { capitalize } from "./capitalize.js";
 import { fillSelect } from "./fill-select.js";
 import { isPhone } from "./is-phone.js";
-import { KIND_FILTER_TITLES } from "./kind-filter-titles.js";
-import { PRIORITY_TITLES } from "./priority-titles.js";
-import { SEARCHABLE_FILTERS } from "./searchable-filters.js";
+import { ownView } from "./own-view.js";
+import { sortChoices } from "./sort-choices.js";
 
-// Bring the static controls in line with the store: filters, group, sort,
-// layout and the portfolio toolbar.
+// Bring the static controls in line with the store: the filter count, the
+// Display popover (group, sort, the done window, empty columns, cancelled
+// items) and its summary, the layout, and the portfolio toolbar.
 export function renderToolbar(store) {
-  const cards = store.cards;
-  const names = store.index?.orgNames ?? new Map();
   const portfolio = store.view === "portfolio";
   const board = store.view === "board" && !isPhone();
-  document.getElementById("toolbar").hidden = portfolio;
+  document.getElementById("toolbar").hidden = portfolio || ownView(store.view);
   document.getElementById("portfolio-toolbar").hidden = !portfolio;
-  for (const name of SEARCHABLE_FILTERS) {
-    fillChoice(
-      document.getElementById(`filter-${name}`),
-      distinctValues(cards, name),
-      store.filters[name],
-      name === "organization" ? names : undefined,
-    );
-  }
-  fillSelect(
-    document.getElementById("filter-role"),
-    [["", "Any"], ...distinctValues(cards, "role").map((value) => [value, value])],
-    store.filters.role,
-  );
-  fillSelect(
-    document.getElementById("filter-priority"),
-    [["", "Any"], ...Object.entries(PRIORITY_TITLES)],
-    store.filters.priority,
-  );
-  fillSelect(
-    document.getElementById("filter-kind"),
-    [["", "Any"], ...Object.entries(KIND_FILTER_TITLES)],
-    store.filters.kind,
-  );
-  const columns = (store.payload?.columns ?? []).map((column) => [column, COLUMN_TITLES[column]]);
-  fillSelect(document.getElementById("filter-column"), [["", "Any"], ...columns], store.filters.column);
-  document.getElementById("filter-dueBefore").value = store.filters.dueBefore;
-  for (const name of ["unassigned", "noPriority", "waitingOnMe", "showCancelled"]) {
-    document.getElementById(`filter-${name}`).checked = store.filters[name];
-  }
-  document.getElementById("filter-waitingOnMe").disabled = !store.payload?.me;
-  document.getElementById("show-empty").checked = store.showEmpty;
-  const count = activeChips(store.filters, names).filter((chip) => chip.name !== "column").length;
+  const count = store.filters.rules.length + (store.filters.waitingOnMe ? 1 : 0);
   const badge = document.getElementById("filters-count");
   badge.hidden = count === 0;
   badge.textContent = String(count);
@@ -62,27 +26,31 @@ export function renderToolbar(store) {
     ["assignee", "Assignee"],
     ...(store.view === "done" ? [["day", "Closing day"]] : []),
   ];
+  const group = document.getElementById("group");
+  fillSelect(group, board ? [["state", "State"]] : groups, board ? "state" : store.group);
+  group.disabled = board;
+  const sort = document.getElementById("sort");
+  const sorts = sortChoices(store.view);
+  fillSelect(sort, sorts, store.sort);
+  const days = store.payload?.done_days ?? 14;
+  const windows = [...new Set([7, 14, 30, 90, 365, days])].sort((a, b) => a - b);
   fillSelect(
-    document.getElementById("group"),
-    board ? [["state", "State"]] : groups,
-    board ? "state" : store.group,
+    document.getElementById("done-days"),
+    windows.map((count) => [String(count), `${count} days`]),
+    String(days),
   );
-  document.getElementById("group").disabled = board;
-  const sorts = [
-    ["priority", "Priority"],
-    ["due", "Due date"],
-    ["title", "Title"],
-    ["location", "Location"],
-    ...(store.view === "done" ? [["closed", "Closing day"]] : []),
-  ];
-  fillSelect(document.getElementById("sort"), sorts, store.sort);
+  document.getElementById("show-empty").checked = store.showEmpty;
+  document.getElementById("filter-showCancelled").checked = store.filters.showCancelled;
+  const groupTitle = groups.find(([value]) => value === group.value)?.[1] ?? "State";
+  const sortTitle = sorts.find(([value]) => value === sort.value)?.[1] ?? "";
+  document.getElementById("display-summary").textContent = board ? sortTitle : `${groupTitle} · ${sortTitle}`;
   document.getElementById("layout-list").setAttribute("aria-pressed", String(!board));
   document
     .getElementById("layout-board")
     .setAttribute("aria-pressed", String(store.view === "board"));
   const relations = (store.index?.roles ?? []).map((role) => [
     `role:${role}`,
-    `${role[0].toUpperCase()}${role.slice(1)}`,
+    capitalize(role),
   ]);
   fillSelect(
     document.getElementById("portfolio-group"),

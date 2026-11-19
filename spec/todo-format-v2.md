@@ -119,7 +119,8 @@ of `closed`, `result`, `resolution`, `superseded_by`, `duplicate_of`.
 
 **Form.** The same task always gives the same bytes: canonical key order, unknown keys after the
 known ones, `x-` keys last, two-space indent, one array element per line, UTF-8, final newline.
-There is no `updated` field: every parallel edit would conflict on it, and git already records it.
+There is no `updated` field: every parallel edit would conflict on it, and git already records it;
+`tadu show ID --history` reads it there.
 
 ## `todo/tadu.json`
 
@@ -180,7 +181,7 @@ so none can produce a file doctor would reject.
 | command | what it does |
 |---|---|
 | `tadu init --format 2` | creates `todo/tadu.json` and the agent rule block |
-| `tadu migrate` | converts `TODO.md` and `TODO_LOG.md` into task files, then removes them (git keeps their history) |
+| `tadu migrate` | converts `TODO.md`, `TODO_LOG.md` and the log's archived years (`docs/todo-log/YYYY.md`) into task files, then removes them (git keeps their history) |
 | `tadu add --title T --category C --type Y --priority P` | shows similar open and closed tasks first, then writes `open/<id>.json` with `created` and `created_by` (`--created-by` or `$TADU_ACTOR`) |
 | `tadu set ID key=value ...` | changes fields; `key+=v` and `key-=v` for lists, `key=` to remove; moving to `in_progress` sets `started` once |
 | `tadu claim ID --as WHO` | sets the assignee, `in_progress` and `started` at once; refused for a blocked, deferred or closed task, or one someone else has in progress (`--force` takes it over) |
@@ -188,6 +189,7 @@ so none can produce a file doctor would reject.
 | `tadu archive` | applies the archive policy, moving files unchanged |
 | `tadu fmt` | rewrites files that are not in canonical form |
 | `tadu list`, `show`, `ready`, `similar`, `feed`, `board` | read both formats |
+| `tadu show ID --history` | each change git recorded to the task, in every folder it was in, and before a migration to the Markdown item it came from |
 
 `tadu set` never changes `tadu`, `id`, `started` or `closed`, and does not close a task: that is
 `tadu close`, so a closed task always has its proof. Two agents claiming the same task on two

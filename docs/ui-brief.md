@@ -2,7 +2,7 @@
 
 ## What the app is for
 
-tadu keeps one plain-text backlog (`TODO.md`, with closed work in `TODO_LOG.md`) inside each Git repository. `tadu board` is a local, read-only web page that collects the items of every repository registered in a workspace and shows them as a kanban board, so that someone running many repositories (for themselves, or for an agency with several clients) can see in one place what is open, what is in progress, what is blocked, who holds it and what matters most. The files stay the only source of truth: the board never edits anything; to act on a card you open its `path:line` in the editor.
+tadu keeps one plain-text backlog (`TODO.md`, with closed work in `TODO_LOG.md`) inside each Git repository. `tadu board` is a local web page, read-only unless started with `--allow write`, that collects the items of every repository registered in a workspace and shows them as a kanban board, so that someone running many repositories (for themselves, or for an agency with several clients) can see in one place what is open, what is in progress, what is blocked, who holds it and what matters most. The files stay the only source of truth: a change made on the page is a tadu command (`mark`, `close`, `claim`, `add`) run on them, and otherwise you open a card's `path:line` in the editor.
 
 ## Who uses it
 
@@ -26,7 +26,7 @@ A real workspace today: 100 repositories, about 5,500 cards (2,800 backlog, 750 
 
 ## Constraints
 
-- Read-only: no drag and drop that would imply an edit, no create/edit buttons (editing is a later phase).
+- Read-only by default. With `--allow write`, changes are the tadu commands: buttons in the detail, drag and drop between columns (a form asks for what the state needs: a blocker, evidence, a resolution), and New item; each form previews the change before it applies.
 - Served by the Python standard library: static HTML, CSS and vanilla JavaScript, no build step, no external fonts, CDNs or images (Content-Security-Policy allows only the page's own script and style). System font stack.
 - Item text is untrusted: rendered as text, never as HTML.
 - No brand yet: the product name is "tadu", lowercase.

@@ -1,27 +1,36 @@
-import { BOARD_COLUMN_CAP } from "./board-column-cap.js";
 import { boardCard } from "./board-card.js";
+import { BOARD_COLUMN_CAP } from "./board-column-cap.js";
+import { boardColumns } from "./board-columns.js";
 import { columnCounts } from "./column-counts.js";
 import { columnTitle } from "./column-title.js";
 import { columnView } from "./column-view.js";
+import { dragCard } from "./drag-card.js";
+import { dropColumn } from "./drop-column.js";
 import { el } from "./el.js";
 import { formatCount } from "./format-count.js";
 import { icon } from "./icon.js";
 import { setView } from "./set-view.js";
 import { shownBadges } from "./shown-badges.js";
-import { boardColumns } from "./board-columns.js";
+import { showsEmptyColumns } from "./shows-empty-columns.js";
+import { stateRule } from "./state-rule.js";
 
 // The kanban: one column per shown state, each drawing at most
 // BOARD_COLUMN_CAP cards and, when it holds more, linking to the full list.
+// When the page may change a card, dragging it to another column changes
+// its state.
 export function renderBoard(store, sets, content) {
   const counts = columnCounts(sets.shown, store.payload.columns);
   let columns = boardColumns(
     store.payload.columns,
     counts,
-    store.showEmpty,
+    showsEmptyColumns(store),
     store.filters.showCancelled,
   );
-  if (store.filters.column !== "") {
-    columns = [store.filters.column];
+  const state = stateRule(store.filters);
+  if (state?.op === "any") {
+    columns = store.payload.columns.filter((column) => state.values.includes(column));
+  } else if (state !== null) {
+    columns = columns.filter((column) => !state.values.includes(column));
   }
   const board = el("div", "board");
   const keys = [];
@@ -37,12 +46,15 @@ export function renderBoard(store, sets, content) {
     );
     const list = el("div", "column-cards");
     for (const card of cards.slice(0, BOARD_COLUMN_CAP)) {
-      list.append(boardCard(card, store.selected === card.key, shown));
+      const node = boardCard(card, store.selected === card.key, shown);
+      dragCard(node, card, store);
+      list.append(node);
       keys.push(card.key);
     }
     if (cards.length === 0) {
       list.append(el("p", "empty", "Nothing here."));
     }
+    dropColumn(node, column, store);
     node.append(head, list);
     if (cards.length > BOARD_COLUMN_CAP) {
       const more = el("button", "column-more");

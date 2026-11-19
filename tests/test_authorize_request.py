@@ -1,9 +1,11 @@
+from dataclasses import replace
 from pathlib import Path
 
-from tadu.authorize_request import authorize_request
-from tadu.board_state import BoardState
+from board_states import board_state
 
-STATE = BoardState(Path("/w"), 14, "secret", frozenset({"127.0.0.1:1"}))
+from tadu.authorize_request import authorize_request
+
+STATE = replace(board_state(Path("/w"), hosts=frozenset({"127.0.0.1:1"})), token="secret")  # noqa: S106
 HOST = "127.0.0.1:1"
 
 
@@ -29,3 +31,8 @@ def test_wrong_or_missing_token_on_data() -> None:
 
 def test_non_ascii_token_is_refused_not_raised() -> None:
     assert authorize_request(HOST, "sécret", "/api/cards", STATE) == 403
+
+
+def test_only_the_cards_need_the_token() -> None:
+    for route in ("/api/history", "/api/changes", "/api/op/list"):
+        assert authorize_request(HOST, None, route, STATE) is None

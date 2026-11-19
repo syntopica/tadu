@@ -27,6 +27,17 @@ CSV_COLS = ["id", "state", "title", "category", "priority", "due", "queue", "clo
 OPEN = ("pending", "in_progress", "blocked")
 
 
+
+def with_log_entry(log: list[str], day: str, entry: list[str]) -> list[str]:
+    """The log's lines with the entry first in its month, under the year; the month is added when
+    missing, as tadu close writes it."""
+    month = f"### {day[:7]}"
+    if month in log:
+        at = log.index(month) + 1
+        return [*log[:at], "", *entry, *log[at:]]
+    at = log.index(f"## {day[:4]}") + 1
+    return [*log[:at], "", month, "", *entry, *log[at:]]
+
 def _write(p: Path, text: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     tmp = p.with_name(p.name + ".tmp")
@@ -491,14 +502,7 @@ def _hybrid_ops():
             entry += ["", f"  Labels: {', '.join(r['labels'])}"]
         entry += ["", "  - Result: Done as described.", f"  - Evidence: {proof}"]
         log_path = d / "TODO_LOG.md"
-        log = log_path.read_text(encoding="utf-8").splitlines()
-        month = f"### {day[:7]}"
-        if month in log:
-            at = log.index(month) + 1
-            log[at:at] = ["", *entry]
-        else:
-            at = log.index(f"## {day[:4]}") + 1
-            log[at:at] = ["", month, "", *entry]
+        log = with_log_entry(log_path.read_text(encoding="utf-8").splitlines(), day, entry)
         _write(log_path, "\n".join(log) + "\n")
         p.unlink()
 

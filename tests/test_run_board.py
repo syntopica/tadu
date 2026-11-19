@@ -40,6 +40,8 @@ def test_other_host_warns(
         "tadu board: warning: listening on 0.0.0.0; only requests whose Host header is "
         f"0.0.0.0:{port} are served\n"
     )
+    assert main([*argv, "--host", "0.0.0.0", "--allow", "write"]) == 0  # noqa: S104
+    assert capsys.readouterr().err.endswith(" are served, and with the token they may write\n")
     assert main([*argv, "--host", "localhost"]) == 0
     assert capsys.readouterr().err == ""
 

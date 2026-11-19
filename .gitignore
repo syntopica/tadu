@@ -11,3 +11,6 @@ build/
 dist/
 .superpowers/
 .codeality-ui/
+venv/
+node_modules/
+htmlcov/

@@ -1,7 +1,5 @@
-import json
-
 import pytest
-from board_js import board_js, js_card
+from board_js import board_results, js_card
 
 CARDS = [
     js_card("backlog", key="a", repository="b-repo", line=9, title="beta", kind="task"),
@@ -59,9 +57,7 @@ out({
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps(CARDS)))
-    assert isinstance(result, dict)
-    return result
+    return board_results(SCRIPT, CARDS)
 
 
 def test_sorts(results: dict[str, object]) -> None:

@@ -196,13 +196,14 @@ def source_stamp(d: Path, backend: str) -> str:
 
 
 # mdcache: parse Markdown once, keep a SQLite copy keyed by file size + mtime (gitignored).
-CACHE_SCHEMA = """
+ITEM_TABLE = """
 CREATE TABLE item (
   id TEXT PRIMARY KEY, open INTEGER NOT NULL, state TEXT NOT NULL, title TEXT NOT NULL,
   category TEXT, labels TEXT NOT NULL DEFAULT '', priority TEXT, due TEXT, queue TEXT,
   closed TEXT, body TEXT NOT NULL DEFAULT '', result TEXT, evidence TEXT, resolution TEXT,
   files TEXT, seq INTEGER NOT NULL
-);
+);"""
+CACHE_SCHEMA = ITEM_TABLE + """
 CREATE VIRTUAL TABLE item_fts USING fts5(title, body, labels, content='item',
   content_rowid='rowid', tokenize='porter unicode61');
 CREATE TABLE meta (k TEXT PRIMARY KEY, v TEXT);

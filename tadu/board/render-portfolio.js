@@ -3,6 +3,7 @@ import { companyTree } from "./company-tree.js";
 import { el } from "./el.js";
 import { filterTree } from "./filter-tree.js";
 import { isPhone } from "./is-phone.js";
+import { placesCounts } from "./places-counts.js";
 import { plural } from "./plural.js";
 import { portfolioCards } from "./portfolio-cards.js";
 import { portfolioDrill } from "./portfolio-drill.js";
@@ -11,7 +12,6 @@ import { relationTree } from "./relation-tree.js";
 import { requestRender } from "./request-render.js";
 import { statCard } from "./stat-card.js";
 import { treeTotals } from "./tree-totals.js";
-import { whereCounts } from "./where-counts.js";
 
 // Stat cards and the tree of the scope: Company > Project > Repository by
 // ownership, or a relation's organizations over their projects; on a phone,
@@ -19,7 +19,7 @@ import { whereCounts } from "./where-counts.js";
 export function renderPortfolio(store, content) {
   const { groupBy, state, text, collapsed, expanded } = store.portfolio;
   const index = store.index;
-  const cards = portfolioCards(store.cards, state, store.where);
+  const cards = portfolioCards(store.cards, state, store.places);
   const totals = treeTotals(cards);
   const days = store.payload.done_days;
   const stats = el("div", "stats");
@@ -34,8 +34,8 @@ export function renderPortfolio(store, content) {
   const keepEmpty = state === "";
   const rows = filterTree(
     role !== "" && index.roles.includes(role)
-      ? relationTree(cards, index, store.where, role, keepEmpty)
-      : companyTree(cards, index, store.where, keepEmpty),
+      ? relationTree(cards, index, store.places, role, keepEmpty)
+      : companyTree(cards, index, store.places, keepEmpty),
     text,
   );
   const flip = (set, key) => () => {
@@ -66,7 +66,7 @@ export function renderPortfolio(store, content) {
   const heading = role !== "" ? `Projects by ${role}` : structured ? "Companies" : "Repositories";
   head.append(
     el("h2", "", heading),
-    el("span", "muted", [...whereCounts(store.where, index), plural(totals.total, "item")].join(" · ")),
+    el("span", "muted", [...placesCounts(store.places, index), plural(totals.total, "item")].join(" · ")),
     el("span", "muted panel-sort", "Sorted by total, largest first"),
   );
   const table = el("div", "ptable");
@@ -74,16 +74,22 @@ export function renderPortfolio(store, content) {
   const columns = el("div", "prow prow-head");
   columns.setAttribute("role", "row");
   const first = role !== "" ? `${role} / project / repository` : structured ? "Company / project / repository" : "Repository";
-  for (const label of [first, "Total", "Backlog", "In progress", "Blocked", `Done ${days}d`, ""]) {
-    columns.append(el("span", "num", label));
+  for (const label of [first, "Total", "Backlog", "In progress", "Blocked", `Done ${days}d`]) {
+    const header = el("span", "num", label);
+    header.setAttribute("role", "columnheader");
+    columns.append(header);
   }
+  const open = el("span", "num");
+  open.setAttribute("role", "columnheader");
+  open.append(el("span", "visually-hidden", "Open"));
+  columns.append(open);
   table.append(columns);
   const searching = text.trim() !== "";
   const walk = (node, depth) => {
     const open =
       depth === 0
         ? !collapsed.has(node.key)
-        : searching || store.where.project !== "" || expanded.has(node.key);
+        : searching || store.places.some((place) => place.project !== "") || expanded.has(node.key);
     const set = depth === 0 ? collapsed : expanded;
     table.append(portfolioRow(node, depth, { open, onToggle: flip(set, node.key), onOpen: drill(node) }));
     if (open) {
@@ -91,9 +97,9 @@ export function renderPortfolio(store, content) {
     }
   };
   rows.forEach((row) => walk(row, 0));
-  if (rows.length === 0) {
-    table.append(el("p", "empty", "Nothing matches."));
-  }
   panel.append(head, table);
+  if (rows.length === 0) {
+    panel.append(el("p", "empty", "Nothing matches."));
+  }
   content.replaceChildren(stats, panel);
 }

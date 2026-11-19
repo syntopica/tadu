@@ -2,23 +2,10 @@
 
 from __future__ import annotations
 
-from tadu.field_like_pattern import FIELD_LIKE_PATTERN
-from tadu.list_marker_pattern import LIST_MARKER_PATTERN
+from tadu.title_end import title_end
 
 
 def item_title(lines: list[str], fenced: list[bool], first: int, text: str) -> str:
     """`text` plus each following indented line of the same paragraph, single-spaced."""
-    parts = [text.strip()]
-    for index in range(first + 1, len(lines)):
-        line = lines[index].rstrip("\r")
-        stripped = line.strip()
-        if (
-            not stripped
-            or line[0] not in " \t"
-            or fenced[index]
-            or LIST_MARKER_PATTERN.match(stripped)
-            or FIELD_LIKE_PATTERN.match(line)
-        ):
-            break
-        parts.append(stripped)
-    return " ".join(parts)
+    rest = lines[first + 1 : title_end(lines, fenced, first)]
+    return " ".join([text.strip(), *(line.strip() for line in rest)])

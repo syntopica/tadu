@@ -2,6 +2,7 @@ import json
 from datetime import date
 from pathlib import Path
 
+from board_states import board_state
 from board_workspace import board_workspace
 
 from tadu.board_route import board_route
@@ -11,7 +12,7 @@ TODAY = date(2026, 11, 4)
 
 
 def state(workspace: Path) -> BoardState:
-    return BoardState(workspace, 14, "t", frozenset())
+    return board_state(workspace)
 
 
 def test_index_and_assets(tmp_path: Path) -> None:
@@ -43,3 +44,9 @@ def test_unknown_paths(tmp_path: Path) -> None:
         "/a/b.js",
     ):
         assert board_route(path, state(tmp_path), TODAY)[0] == 404
+
+
+def test_the_cards_take_a_done_window(tmp_path: Path) -> None:
+    workspace = board_workspace(tmp_path)
+    status, body, _ = board_route("/api/cards?done_days=30&token=t", state(workspace), TODAY)
+    assert (status, json.loads(body)["done_days"]) == (200, 30)

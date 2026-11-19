@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-b073bd80-ef6b-4fb6-8c24-052c53e66b21",
+  "title": "Filter the board with one scope tree, a Filter menu and chips",
+  "state": "done",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "notes": [
+    "The three scope pickers, the Scope & filters form and the Changes and History filter rows were hard to use: one multi-select scope tree, a + Filter menu with rules as chips, and a Display popover replace them."
+  ],
+  "closed": "2026-11-18",
+  "result": "Scope tree with tri-state ticks, search, counts and Only (a ticked company holds later projects); + Filter menu with quick filters, values with counts and is any of / is not / is empty, chips that edit and remove rules, typed filters in the search box; Display popover; Changes and History share the menu, chips and a day-range button",
+  "evidence": [
+    "pytest: 1427 tests at 100% coverage plus 3 browser tests (Chromium flow and axe on the filter menu, its values, Display and the scope tree); npx jscpd: Found 0 clones"
+  ]
+}

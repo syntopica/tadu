@@ -15,18 +15,23 @@ from tadu.board_state import BoardState
 from tadu.load_cards import load_cards
 from tadu.loopback_hosts import LOOPBACK_HOSTS
 from tadu.make_board_handler import make_board_handler
+from tadu.scope import Scope
 from tadu.workspace_error import WorkspaceError
 from tadu.workspace_port import workspace_port
 
 if TYPE_CHECKING:
     import argparse
+    from collections.abc import Callable
 
 
-def run_board(args: argparse.Namespace) -> int:
-    """Check the workspace loads, then serve it until interrupted."""
+def run_board(args: argparse.Namespace, main: Callable[[list[str]], int]) -> int:
+    """Check the workspace loads, then serve it until interrupted.
+
+    The page may do what --allow permits; its tool calls run `main`, the tadu command line.
+    """
     today = datetime.now(UTC).astimezone().date()
     try:
-        load_cards((), args.workspace, args.done_days, today)
+        load_cards(Scope(workspace=args.workspace), args.done_days, today)
     except WorkspaceError as error:
         print(f"tadu board: {error}", file=sys.stderr)
         return 2
@@ -41,12 +46,13 @@ def run_board(args: argparse.Namespace) -> int:
         if args.host not in LOOPBACK_HOSTS:
             print(
                 f"tadu board: warning: listening on {args.host}; only requests whose "
-                f"Host header is {args.host}:{port} are served",
+                f"Host header is {args.host}:{port} are served"
+                + ("" if args.allow == "read" else f", and with the token they may {args.allow}"),
                 file=sys.stderr,
             )
         token = secrets.token_urlsafe(32)
         hosts = allowed_hosts(args.host, port)
-        state = BoardState(Path(args.workspace), args.done_days, token, hosts)
+        state = BoardState(Path(args.workspace), args.done_days, token, hosts, args.allow, main)
         server.RequestHandlerClass = make_board_handler(state)
         print(f"http://{args.host}:{port}/?token={token}", flush=True)
         with suppress(KeyboardInterrupt):

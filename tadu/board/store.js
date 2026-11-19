@@ -1,5 +1,4 @@
 import { DEFAULT_FILTERS } from "./default-filters.js";
-import { EMPTY_WHERE } from "./empty-where.js";
 
 // The page's one mutable state. Renderers read it; actions change it and
 // call requestRender().
@@ -15,7 +14,7 @@ export const store = {
   text: "",
   filters: { ...DEFAULT_FILTERS },
   scope: "all",
-  where: { ...EMPTY_WHERE },
+  places: [],
   index: null,
   hash: null,
   storedWhere: "",
@@ -23,6 +22,7 @@ export const store = {
   favourites: [],
   recent: [],
   picker: null,
+  menu: null,
   sideOpen: new Set(),
   beforeDrill: null,
   group: "state",
@@ -40,6 +40,21 @@ export const store = {
     collapsed: new Set(),
     expanded: new Set(),
   },
+  changes: {
+    since: "",
+    until: "",
+    payload: null,
+    loading: false,
+    error: "",
+    wanted: "",
+    loadedFor: "",
+    rules: [],
+  },
+  calls: {},
+  doneDays: null,
+  notice: "",
+  change: null,
+  dragging: null,
   saved: [],
   theme: "auto",
   navOpen: false,

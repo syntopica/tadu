@@ -2,7 +2,7 @@ import json
 from datetime import date
 from pathlib import Path
 
-from sample_task import sample_task
+from sample_task import sample_id, sample_task
 from task_backlog import task_backlog
 
 from tadu.read_repository_items import read_repository_items
@@ -25,7 +25,7 @@ def test_task_item_fields(tmp_path: Path) -> None:
         queue="ready",
         assignees=["agent:claude"],
         estimate=30,
-        blocked_by=[str(sample_task(2)["id"])],
+        blocked_by=[sample_id(2)],
         related=[str(sample_task(3)["id"])],
     )
     root = task_backlog(tmp_path, [task])

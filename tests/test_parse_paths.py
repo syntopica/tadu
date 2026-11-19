@@ -1,15 +1,15 @@
 from pathlib import Path
 
 import pytest
+from sample_workspace import sample_workspace
 
 from tadu.parse_paths import parse_paths
-from tadu.repository_entry import RepositoryEntry
 from tadu.workspace import Workspace
 from tadu.workspace_error import WorkspaceError
 
 
 def workspace(directory: Path) -> Workspace:
-    return Workspace(directory, (RepositoryEntry("shop", None),), (), (), ())
+    return sample_workspace(directory)
 
 
 def test_absent_table_is_empty(tmp_path: Path) -> None:

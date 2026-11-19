@@ -10,7 +10,7 @@ import re
 
 from python_paths import path_like, path_names
 
-WRITERS = {"write_file_atomically.py", "create_file_exclusively.py"}
+WRITERS = {"write_file_atomically.py", "create_file_exclusively.py", "write_temp_sibling.py"}
 MUTATORS = {"write_text", "write_bytes", "unlink", "rmdir", "mkdir", "touch", "chmod"}
 MUTATORS |= {"hardlink_to", "symlink_to", "rename"}
 OS_MUTATORS = {"replace", "rename", "remove", "unlink", "rmdir", "makedirs", "mkdir", "fdopen"}

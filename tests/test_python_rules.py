@@ -19,8 +19,8 @@ def test_every_tadu_module_follows_the_rules() -> None:
     assert len(SOURCES) > 250
     assert found == [], (
         "P001 a path's name used as if it identified the path; P002 keys that may collide "
-        "and silently replace an entry; P003 a filesystem write outside write_file_atomically "
-        "and create_file_exclusively; P004 a replace without backlog_unchanged first. Fix the "
+        "and silently replace an entry; P003 a filesystem write outside write_file_atomically, "
+        "create_file_exclusively and write_temp_sibling; P004 a replace without backlog_unchanged first. Fix the "
         "shape, or when it is safe say why with `# path-name: ...`, `# keys: ...` or "
         "`# writes: ...` on the line or in the comments right above it (tests/python_rules.py)."
     )

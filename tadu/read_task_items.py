@@ -28,7 +28,7 @@ def read_task_items(root: Path, backlog: str, cutoff: date) -> tuple[BacklogItem
     archive = todo / ARCHIVE_DIR
     # path-name: year folders inside one archive, unique within it
     years = sorted(p.name for p in archive.iterdir() if p.is_dir()) if archive.is_dir() else []
-    recent = [year for year in years if not year.isdigit() or int(year) >= cutoff.year]
+    recent = [year for year in years if not year.isdecimal() or int(year) >= cutoff.year]
     closed = (
         () if cutoff == date.max else (CLOSED_DIR, *(f"{ARCHIVE_DIR}/{year}" for year in recent))
     )

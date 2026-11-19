@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from tadu.backlog_unchanged import backlog_unchanged
 from tadu.canonical_task_text import canonical_task_text
+from tadu.empty_values import EMPTY_VALUES
 from tadu.task_command_error import TaskCommandError
 from tadu.task_location import task_location
 from tadu.task_problems import task_problems
@@ -27,7 +28,7 @@ def save_task(todo: Path, task: dict[str, object], old: TaskFile | None, *, writ
     if old is not None and not old.writable:
         msg = f"{old.path.name}: written by a newer tadu format; this tool will not rewrite it"
         raise TaskCommandError(msg)
-    cleaned = {key: value for key, value in task.items() if value not in (None, "", [], {})}
+    cleaned = {key: value for key, value in task.items() if value not in EMPTY_VALUES}
     problems = task_problems(cleaned)
     if problems:
         msg = "refused, the task would be invalid: " + "; ".join(problems)

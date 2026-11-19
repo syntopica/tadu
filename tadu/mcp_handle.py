@@ -6,7 +6,6 @@ from importlib.metadata import version
 from typing import TYPE_CHECKING
 
 from tadu.mcp_instructions import MCP_INSTRUCTIONS
-from tadu.mcp_tools import MCP_TOOLS
 from tadu.mcp_versions import MCP_VERSIONS
 
 if TYPE_CHECKING:
@@ -14,9 +13,11 @@ if TYPE_CHECKING:
 
 
 def mcp_handle(
-    message: object, call: Callable[[str, object], dict[str, object]]
+    message: object,
+    tools: dict[str, dict[str, object]],
+    call: Callable[[str, object], dict[str, object]],
 ) -> dict[str, object] | None:
-    """The response, or None for a notification; `call` runs a tool that exists."""
+    """The response, or None for a notification; `call` runs one of `tools`."""
     if not isinstance(message, dict) or not isinstance(message.get("method"), str):
         return {
             "jsonrpc": "2.0",
@@ -38,8 +39,8 @@ def mcp_handle(
     elif method == "ping":
         reply["result"] = {}
     elif method == "tools/list":
-        reply["result"] = {"tools": list(MCP_TOOLS.values())}
-    elif method == "tools/call" and isinstance(params, dict) and params.get("name") in MCP_TOOLS:
+        reply["result"] = {"tools": list(tools.values())}
+    elif method == "tools/call" and isinstance(params, dict) and params.get("name") in tools:
         reply["result"] = call(str(params["name"]), params.get("arguments", {}))
     elif method == "tools/call":
         reply["error"] = {"code": -32602, "message": "Unknown tool"}

@@ -9,7 +9,7 @@ from tadu.closed_task import closed_task
 from tadu.save_task import save_task
 from tadu.task_backlog_dir import task_backlog_dir
 from tadu.task_command_error import TaskCommandError
-from tadu.task_to_close import task_to_close
+from tadu.task_to_change import task_to_change
 from tadu.waiting_report import waiting_report
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ def run_task_close(args: argparse.Namespace, day: date) -> int:
     """
     try:
         todo = task_backlog_dir(args.path)
-        old = task_to_close(todo, args)
+        old = task_to_change(todo, args, open_only=False)
         task = closed_task(old.task, args, day, todo)
         report = waiting_report(todo, task)
         where = save_task(todo, task, old, write=args.write)

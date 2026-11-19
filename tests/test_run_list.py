@@ -1,8 +1,8 @@
 import json
-from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+from local_today import local_today
 
 from tadu.cli import main
 
@@ -102,7 +102,7 @@ def test_open_leaves_out_what_closed_today(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     root = repo(tmp_path)
-    today = datetime.now(UTC).astimezone().date().isoformat()
+    today = local_today().isoformat()
     (root / "TODO_LOG.md").write_text(f"- [x] {today} — **C:** Did.\n  - Evidence: e\n")
     assert main(["list", str(root), "--done-days", "0"]) == 0
     assert "[done]" in capsys.readouterr().out

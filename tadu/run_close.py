@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from tadu.closing import Closing
 
 
-def run_close(path: str, match: str, closing: Closing, *, write: bool) -> int:
+def run_close(path: str, match: str | int, closing: Closing, *, write: bool) -> int:
     """Move the one open item matching `match` to the log; print the diff, apply with write."""
     root = Path(path)
     if not root.is_dir():

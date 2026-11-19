@@ -7,7 +7,7 @@ BOARD_HEADERS = {
         "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; "
         "img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
     ),
-    "Referrer-Policy": "no-referrer",
+    "Referrer-Policy": "same-origin",
     "X-Content-Type-Options": "nosniff",
     "Cache-Control": "no-store",
 }

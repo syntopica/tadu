@@ -8,6 +8,7 @@ from pathlib import Path
 
 from tadu.allowed_hosts import allowed_hosts
 from tadu.board_state import BoardState
+from tadu.cli import main
 from tadu.make_board_handler import make_board_handler
 
 TOKEN = "test-token"  # noqa: S105
@@ -41,10 +42,10 @@ class BoardServer:
 
 
 @contextmanager
-def serve_board(workspace: Path) -> Iterator[BoardServer]:
+def serve_board(workspace: Path, allow: str = "read") -> Iterator[BoardServer]:
     server = ThreadingHTTPServer(("127.0.0.1", 0), BaseHTTPRequestHandler)
     port = server.server_address[1]
-    state = BoardState(workspace, 14, TOKEN, allowed_hosts("127.0.0.1", port))
+    state = BoardState(workspace, 14, TOKEN, allowed_hosts("127.0.0.1", port), allow, main)
     server.RequestHandlerClass = make_board_handler(state)
     thread = threading.Thread(target=server.serve_forever, args=(0.01,), daemon=True)
     thread.start()
@@ -74,3 +75,27 @@ def send(board: BoardServer, method: str, path: str) -> Response:
 
 def with_header(board: BoardServer, path: str, token: str) -> Response:
     return board.request("GET", path, {"Host": board.host, "X-Tadu-Token": token})
+
+
+def post(board: BoardServer, path: str, body: bytes, **headers: str) -> Response:
+    """A call as the board's page makes it; a header given as "" is left out."""
+    sent = {
+        "Host": board.host,
+        "X-Tadu-Token": board.token,
+        "Origin": f"http://{board.host}",
+        "Content-Type": "application/json",
+        "Content-Length": str(len(body)),
+        **headers,
+    }
+    port = int(board.host.rpartition(":")[2])
+    connection = http.client.HTTPConnection("127.0.0.1", port, timeout=30)
+    try:
+        connection.putrequest("POST", path, skip_host=True, skip_accept_encoding=True)
+        for name, value in sent.items():
+            if value:
+                connection.putheader(name, value)
+        connection.endheaders(body)
+        reply = connection.getresponse()
+        return Response(reply.status, reply.headers, reply.read())
+    finally:
+        connection.close()

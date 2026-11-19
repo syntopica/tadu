@@ -9,7 +9,7 @@
 <script type="module" src="/app.js"></script>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
 <aside class="sidebar" id="sidebar" aria-label="Navigation">
 <div class="brand">tadu</div>
 <nav class="nav" id="nav-views" aria-label="Views"></nav>
@@ -42,23 +42,21 @@
 </form>
 </section>
 <div class="sidebar-foot">
-<p class="read-only" title="tadu board never changes a file: edit TODO.md in your editor."><span data-icon="info"></span> Read only</p>
+<p class="read-only"><span data-icon="info"></span> <span id="access-label">Read only</span></p>
 <button type="button" class="nav-item theme-toggle" id="theme-toggle"><span data-icon="sun"></span><span id="theme-label">Theme: Auto</span></button>
 </div>
 </aside>
 
-<div class="main" id="main">
-<header class="phone-top">
+<main class="main" id="main">
+<div class="phone-top">
 <span class="brand">tadu</span>
-<span class="pill">Read only</span>
+<span class="pill" id="access-pill">Read only</span>
 <button type="button" class="icon-button" id="phone-search" aria-label="Search"><span data-icon="search"></span></button>
-</header>
+</div>
 
 <header class="topbar">
 <div class="scope-bar" role="group" aria-label="Scope">
-<button type="button" class="scope-trigger" data-picker="company" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="building"></span><span class="scope-title">Company:</span><span class="picker-value"></span><span data-icon="chevronDown"></span></button>
-<button type="button" class="scope-trigger" data-picker="project" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="folder"></span><span class="scope-title">Project:</span><span class="picker-value"></span><span data-icon="chevronDown"></span></button>
-<button type="button" class="scope-trigger" data-picker="repository" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="repo"></span><span class="scope-title">Repository:</span><span class="picker-value"></span><span data-icon="chevronDown"></span></button>
+<button type="button" class="scope-trigger" data-picker="scope" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="grid"></span><span class="scope-title">Scope:</span><span class="picker-value"></span><span data-icon="chevronDown"></span></button>
 <button type="button" class="icon-button" id="favourite" aria-pressed="false" aria-label="Star this scope" title="Star this scope" hidden><span data-icon="star"></span></button>
 </div>
 <div class="topbar-status">
@@ -74,50 +72,33 @@
 <h1 id="page-title">Board</h1>
 <p class="subtitle" id="page-subtitle"></p>
 </div>
+<div class="head-end">
+<button type="button" class="button primary new-item" id="new-item" aria-label="New item" hidden><span data-icon="plus"></span><span class="new-item-label">New item</span></button>
 <div class="head-status">
 <span class="updated" id="updated-phone"></span>
 <button type="button" class="icon-button" id="reload-phone" aria-label="Reload from the files"><span data-icon="refresh"></span></button>
 </div>
 </div>
+</div>
 
 <div class="toolbar" id="toolbar">
-<label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Search tasks, projects or repositories..." aria-label="Search tasks, projects or repositories" autocomplete="off" spellcheck="false"><kbd id="search-key">Ctrl K</kbd></label>
-<span class="divider"></span>
+<label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Search items…" aria-label="Search items by their text, project, repository, people or labels; type assignee:ana or is:overdue to add a filter" autocomplete="off" spellcheck="false"><kbd id="search-key">Ctrl K</kbd></label>
+<button type="button" class="tool-button filter-add" id="filter-add" aria-haspopup="dialog" aria-expanded="false" aria-controls="filter-menu" aria-keyshortcuts="F"><span data-icon="plus"></span><span class="tool-label">Filter</span><span class="count" id="filters-count" hidden></span><kbd>F</kbd></button>
+<span class="toolbar-gap"></span>
 <div class="popover-anchor">
-<button type="button" class="tool-button" id="filters-button" aria-expanded="false" aria-controls="filters-popover"><span data-icon="filter"></span>Filters<span class="count" id="filters-count" hidden></span><span data-icon="chevronDown"></span></button>
-<div class="popover" id="filters-popover" role="dialog" aria-labelledby="filters-title" hidden>
-<div class="popover-head"><h2 id="filters-title"><span data-icon="filter"></span>Scope &amp; filters</h2><button type="button" class="link-button" id="clear-all">Clear all</button></div>
-<div id="popover-scope">
-<h3 class="popover-section">Scope <span>(where to look)</span></h3>
-<div class="popover-grid scope-grid">
-<div class="field"><span class="field-label">Company</span><button type="button" class="scope-trigger field-trigger" data-picker="company" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="building"></span><span class="picker-value"></span><span data-icon="chevronDown"></span></button></div>
-<div class="field"><span class="field-label">Project</span><button type="button" class="scope-trigger field-trigger" data-picker="project" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="folder"></span><span class="picker-value"></span><span data-icon="chevronDown"></span></button></div>
-<div class="field"><span class="field-label">Repository</span><button type="button" class="scope-trigger field-trigger" data-picker="repository" aria-haspopup="dialog" aria-expanded="false" aria-controls="picker"><span data-icon="repo"></span><span class="picker-value"></span><span data-icon="chevronDown"></span></button></div>
-</div>
-</div>
-<h3 class="popover-section">Filters <span>(narrow the results)</span></h3>
-<div class="popover-grid">
-<label>Assignee<input id="filter-assignee" type="search" list="filter-assignee-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-assignee-options"></datalist></label>
-<label>Priority<select id="filter-priority"></select></label>
-<label>Kind<select id="filter-kind"></select></label>
-<label>Label<input id="filter-label" type="search" list="filter-label-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-label-options"></datalist></label>
-<label>State<select id="filter-column"></select></label>
-<label>Due before<input id="filter-dueBefore" type="date"></label>
-<label>Role<select id="filter-role"></select></label>
-<label>Organization<input id="filter-organization" type="search" list="filter-organization-options" placeholder="Any" autocomplete="off" spellcheck="false"><datalist id="filter-organization-options"></datalist></label>
+<button type="button" class="tool-button" id="display-button" aria-label="Display options" aria-expanded="false" aria-controls="display-popover"><span data-icon="sliders"></span><span class="tool-label">Display</span><span class="display-summary" id="display-summary"></span><span data-icon="chevronDown"></span></button>
+<div class="popover display-popover" id="display-popover" role="dialog" aria-label="Display" hidden>
+<div class="display-grid">
+<label>Group<select id="group"></select></label>
+<label>Sort<select id="sort"></select></label>
+<label>Done from the last<select id="done-days"></select></label>
 </div>
 <div class="popover-checks">
-<label><input type="checkbox" id="filter-unassigned"> Unassigned</label>
-<label><input type="checkbox" id="filter-noPriority"> No priority</label>
-<label><input type="checkbox" id="filter-waitingOnMe"> Waiting on me</label>
-<label><input type="checkbox" id="filter-showCancelled"> Show cancelled</label>
 <label><input type="checkbox" id="show-empty"> Show empty columns</label>
+<label><input type="checkbox" id="filter-showCancelled"> Show cancelled items</label>
 </div>
 </div>
 </div>
-<label class="tool-button select-tool" id="group-tool">Group: <select id="group" aria-label="Group by"></select><span data-icon="chevronDown"></span></label>
-<label class="tool-button select-tool" id="sort-tool">Sort: <select id="sort" aria-label="Sort by"></select><span data-icon="chevronDown"></span></label>
-<span class="divider"></span>
 <div class="segmented" role="group" aria-label="Layout">
 <button type="button" id="layout-list" aria-pressed="false"><span data-icon="list"></span>List</button>
 <button type="button" id="layout-board" aria-pressed="true"><span data-icon="columns"></span>Board</button>
@@ -133,15 +114,25 @@
 <div class="chips" id="active-chips" hidden></div>
 <div class="summary" id="summary"></div>
 <div class="list-head" id="list-head" hidden></div>
-<main class="content" id="content" tabindex="-1"></main>
-</div>
+<div class="content" id="content" tabindex="-1"></div>
+<p class="visually-hidden" id="drag-hint">Drag it to another column to change its state, or open it for the same changes.</p>
+</main>
 
 <aside class="detail" id="detail" aria-label="Item detail" hidden></aside>
-<nav class="bottom-nav" id="bottom-nav" aria-label="Views"></nav>
-<div class="picker" id="picker" role="dialog" aria-label="Choose a scope" hidden>
-<label class="picker-search"><span data-icon="search"></span><input id="picker-input" type="search" role="combobox" aria-expanded="true" aria-controls="picker-list" aria-autocomplete="list" aria-label="Search" autocomplete="off" spellcheck="false"></label>
-<ul class="picker-list" id="picker-list" role="listbox" aria-label="Choices"></ul>
+<nav class="bottom-nav" id="bottom-nav" aria-label="Quick views"></nav>
+<div class="picker" id="picker" role="dialog" aria-label="Choose where to look" hidden>
+<label class="picker-search"><span data-icon="search"></span><input id="picker-input" type="search" role="combobox" aria-expanded="true" aria-controls="picker-list" aria-autocomplete="list" aria-label="Search companies, projects and repositories" placeholder="Search companies, projects, repositories…" autocomplete="off" spellcheck="false"></label>
+<ul class="picker-list" id="picker-list" role="tree" aria-multiselectable="true" aria-label="Companies, projects and repositories"></ul>
+<div class="picker-foot"><span class="picker-summary" id="picker-summary"></span><span class="picker-keys">Enter: only · Shift+Enter: add</span><button type="button" class="link-button" id="picker-clear">Clear</button></div>
 </div>
 </div>
+<div class="menu" id="filter-menu" role="dialog" aria-labelledby="filter-menu-title" hidden>
+<div class="menu-head" id="filter-menu-head"></div>
+<label class="picker-search"><span data-icon="search"></span><input id="filter-menu-input" type="search" role="combobox" aria-expanded="true" aria-controls="filter-menu-list" aria-autocomplete="list" aria-label="Search" autocomplete="off" spellcheck="false"></label>
+<ul class="menu-list" id="filter-menu-list" role="listbox" aria-label="Choices"></ul>
+<div class="menu-foot" id="filter-menu-foot"></div>
+</div>
+<div class="change" id="change" role="dialog" aria-modal="true" aria-labelledby="change-title" hidden></div>
+<div class="toast" id="notice" role="status" hidden></div>
 </body>
 </html>

@@ -19,6 +19,7 @@ import sqlite3
 from pathlib import Path
 
 import vocab as V
+from textdb import with_log_entry
 from tq import parse_md
 
 FORMATS = ("md_fields", "jsonl", "json", "sqlite")
@@ -108,14 +109,7 @@ def md_close(d: Path, iid: str, day: str, proof: str) -> None:
     del lines[a - 1 if a and not lines[a - 1].strip() else a: b]
     head = re.sub(r"^- \[.\] ", f"- [x] {day} — ", item[0])
     entry = [head, *item[1:], "", "  - Result: Done as described.", f"  - Evidence: {proof}"]
-    log = lp.read_text(encoding="utf-8").splitlines()
-    month = f"### {day[:7]}"
-    if month in log:
-        at = log.index(month) + 1
-        log[at:at] = ["", *entry]
-    else:
-        at = log.index(f"## {day[:4]}") + 1
-        log[at:at] = ["", month, "", *entry]
+    log = with_log_entry(lp.read_text(encoding="utf-8").splitlines(), day, entry)
     _write(lp, "\n".join(log) + "\n")  # log first, as tadu close does
     _write(p, "\n".join(lines) + "\n")
 

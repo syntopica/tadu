@@ -1,7 +1,5 @@
-import json
-
 import pytest
-from board_js import board_js
+from board_js import board_results, js_rule, js_where
 from board_scope_workspace import CARDS, WORKSPACE
 
 SCRIPT = """
@@ -20,38 +18,34 @@ const cards = placeCards(raw, index);
 const w = (company = "", project = "", repository = "") => ({ company, project, repository });
 const shape = (rows) =>
   rows.map((row) => [row.label, row.buckets.total, row.target, rowMeta(row), shape(row.children)]);
-const counted = (state, where) => portfolioCards(cards, state, where);
+const p = (...levels) => (levels.length === 0 ? [] : [w(...levels)]);
+const counted = (state, places) => portfolioCards(cards, state, places);
 const bare = workspaceIndex({ organizations: [], projects: [], repositories: [{ key: "gtm" }, { key: "x" }] }, raw);
 out({
-  tree: shape(companyTree(counted("", w()), index, w(), true)),
-  buckets: companyTree(counted("", w()), index, w(), true)[0].buckets,
-  scoped: shape(companyTree(counted("", w("pp", "gtm")), index, w("pp", "gtm"), true)),
-  repo: shape(companyTree(counted("", w("pp", "gtm", "gtm-web")), index, w("pp", "gtm", "gtm-web"), true)),
-  blockedOnly: shape(companyTree(counted("blocked", w()), index, w(), false)),
-  bare: shape(companyTree(counted("", w()), bare, w(), false)),
-  clients: shape(relationTree(counted("", w()), index, w(), "client", true)).map((g) => [g[0], g[1], g[3], g[4].map((p) => p[0])]),
-  clientFilter: relationTree(counted("", w()), index, w(), "client", true).map((g) => g.filter),
-  clientsScoped: shape(relationTree(counted("", w("br")), index, w("br"), "client", false)).map((g) => g[0]),
-  clientsProject: shape(relationTree(counted("", w("pp", "joy")), index, w("pp", "joy"), "client", false)).map((g) => g[0]),
-  search: shape(filterTree(companyTree(counted("", w()), index, w(), true), "web")).map((r) => [r[0], r[4].map((p) => [p[0], p[4].map((x) => x[0])])]),
-  searchWhole: filterTree(companyTree(counted("", w()), index, w(), true), "pixel")[0].children.length,
+  tree: shape(companyTree(counted("", p()), index, p(), true)),
+  buckets: companyTree(counted("", p()), index, p(), true)[0].buckets,
+  scoped: shape(companyTree(counted("", p("pp", "gtm")), index, p("pp", "gtm"), true)),
+  repo: shape(companyTree(counted("", p("pp", "gtm", "gtm-web")), index, p("pp", "gtm", "gtm-web"), true)),
+  blockedOnly: shape(companyTree(counted("blocked", p()), index, p(), false)),
+  bare: shape(companyTree(counted("", p()), bare, p(), false)),
+  clients: shape(relationTree(counted("", p()), index, p(), "client", true)).map((g) => [g[0], g[1], g[3], g[4].map((p) => p[0])]),
+  clientFilter: relationTree(counted("", p()), index, p(), "client", true).map((g) => g.filter),
+  clientsScoped: shape(relationTree(counted("", p("br")), index, p("br"), "client", false)).map((g) => g[0]),
+  clientsProject: shape(relationTree(counted("", p("pp", "joy")), index, p("pp", "joy"), "client", false)).map((g) => g[0]),
+  search: shape(filterTree(companyTree(counted("", p()), index, p(), true), "web")).map((r) => [r[0], r[4].map((p) => [p[0], p[4].map((x) => x[0])])]),
+  searchWhole: filterTree(companyTree(counted("", p()), index, p(), true), "pixel")[0].children.length,
   searchBlank: filterTree([1, 2], " ").length,
-  totals: treeTotals(counted("", w())),
-  counted: [counted("", w()).length, counted("backlog", w()).length, counted("", w("pp")).length],
+  totals: treeTotals(counted("", p())),
+  counted: [counted("", p()).length, counted("backlog", p()).length, counted("", p("pp")).length],
   targets: ["", "backlog", "blocked", "done"].map(portfolioTarget),
+  multi: shape(companyTree(counted("", [w("pp", "joy"), w("br")]), index, [w("pp", "joy"), w("br")], false)).map((r) => [r[0], r[4].map((c) => c[0])]),
 });
 """
 
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps([WORKSPACE, CARDS])))
-    assert isinstance(result, dict)
-    return result
-
-
-def w(company: str = "", project: str = "", repository: str = "") -> dict[str, str]:
-    return {"company": company, "project": project, "repository": repository}
+    return board_results(SCRIPT, [WORKSPACE, CARDS])
 
 
 def test_company_tree_counts_each_card_once(results: dict[str, object]) -> None:
@@ -59,43 +53,63 @@ def test_company_tree_counts_each_card_once(results: dict[str, object]) -> None:
         [
             "Pixel Potion",
             5,
-            w("pp"),
+            js_where("pp"),
             "2 projects · 3 repositories",
             [
                 [
                     "VerticaGTM",
                     4,
-                    w("pp", "gtm"),
+                    js_where("pp", "gtm"),
                     "2 repositories",
                     [
-                        ["gtm", 3, w("pp", "gtm", "gtm"), "", []],
-                        ["gtm-web", 1, w("pp", "gtm", "gtm-web"), "", []],
+                        ["gtm", 3, js_where("pp", "gtm", "gtm"), "", []],
+                        ["gtm-web", 1, js_where("pp", "gtm", "gtm-web"), "", []],
                     ],
                 ],
-                ["10xJoy", 1, w("pp", "joy"), "", [["joy", 1, w("pp", "joy", "joy"), "", []]]],
+                [
+                    "10xJoy",
+                    1,
+                    js_where("pp", "joy"),
+                    "",
+                    [["joy", 1, js_where("pp", "joy", "joy"), "", []]],
+                ],
             ],
         ],
         [
             "BusiRocket",
             1,
-            w("br"),
+            js_where("br"),
             "1 project · 1 repository",
-            [["Teleporte", 1, w("br", "tele"), "", [["tele", 1, w("br", "tele", "tele"), "", []]]]],
+            [
+                [
+                    "Teleporte",
+                    1,
+                    js_where("br", "tele"),
+                    "",
+                    [["tele", 1, js_where("br", "tele", "tele"), "", []]],
+                ]
+            ],
         ],
         [
             "No company",
             2,
-            w("-"),
+            js_where("-"),
             "1 project · 2 repositories",
             [
                 [
                     "Lone",
                     1,
-                    w("-", "lone"),
+                    js_where("-", "lone"),
                     "",
-                    [["lone-repo", 1, w("-", "lone", "lone-repo"), "", []]],
+                    [["lone-repo", 1, js_where("-", "lone", "lone-repo"), "", []]],
                 ],
-                ["No project", 1, w("-", "-"), "", [["misc", 1, w("-", "-", "misc"), "", []]]],
+                [
+                    "No project",
+                    1,
+                    js_where("-", "-"),
+                    "",
+                    [["misc", 1, js_where("-", "-", "misc"), "", []]],
+                ],
             ],
         ],
     ]
@@ -115,7 +129,7 @@ def test_scoped_and_filtered_trees(results: dict[str, object]) -> None:
     assert [p[0] for p in scoped[0][4]] == ["VerticaGTM"]
     repo = results["repo"]
     assert isinstance(repo, list)
-    assert repo[0][4][0][4] == [["gtm-web", 1, w("pp", "gtm", "gtm-web"), "", []]]
+    assert repo[0][4][0][4] == [["gtm-web", 1, js_where("pp", "gtm", "gtm-web"), "", []]]
     blocked = results["blockedOnly"]
     assert isinstance(blocked, list)
     assert [(r[0], r[1], [p[0] for p in r[4]]) for r in blocked] == [
@@ -123,7 +137,7 @@ def test_scoped_and_filtered_trees(results: dict[str, object]) -> None:
         ("Pixel Potion", 1, ["VerticaGTM"]),
     ]
     assert results["bare"] == [
-        ["gtm", 3, w("", "", "gtm"), "", []],
+        ["gtm", 3, js_where("", "", "gtm"), "", []],
     ]
 
 
@@ -132,7 +146,11 @@ def test_relations_are_not_ownership(results: dict[str, object]) -> None:
         ["Automate Texas", 4, "Client of 1 project", ["VerticaGTM"]],
         ["No client", 4, "4 projects", ["10xJoy", "Lone", "Teleporte", "No project"]],
     ]
-    assert results["clientFilter"] == [{"organization": "at", "role": "client"}, None]
+    assert results["multi"] == [["BusiRocket", ["Teleporte"]], ["Pixel Potion", ["10xJoy"]]]
+    assert results["clientFilter"] == [
+        {"rules": [js_rule("organization", "any", "client:at")]},
+        None,
+    ]
     assert results["clientsScoped"] == ["No client"]
     assert results["clientsProject"] == ["No client"]
 

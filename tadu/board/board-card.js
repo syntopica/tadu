@@ -4,11 +4,21 @@ import { icon } from "./icon.js";
 import { inlineTitle } from "./inline-title.js";
 import { metaRow } from "./meta-row.js";
 
-// One kanban card; a button that opens the detail panel. `shown` says which
-// badges add anything the board does not already show (see shownBadges).
+// One kanban card, which opens the detail panel: an element in the role of a
+// button, focusable and pressed with Enter or Space, rather than a <button>,
+// because Firefox never starts dragging a <button> (see dragCard). `shown`
+// says which badges add anything the board does not already show (see
+// shownBadges).
 export function boardCard(card, selected, shown) {
-  const node = el("button", "card");
-  node.type = "button";
+  const node = el("div", "card");
+  node.setAttribute("role", "button");
+  node.tabIndex = 0;
+  node.addEventListener("keydown", (event) => {
+    if (event.target === node && (event.key === "Enter" || event.key === " ")) {
+      event.preventDefault();
+      node.click();
+    }
+  });
   node.dataset.key = card.key;
   node.classList.toggle("selected", selected);
   const title = el("span", "card-title");

@@ -21,6 +21,7 @@ import time
 from pathlib import Path
 
 import textdb
+from gen import busiest_topic
 import tokens
 from ops import OPS as BASE_OPS
 
@@ -79,8 +80,7 @@ def sizes(scale: str) -> list[dict]:
 def reads(scale: str, n: int) -> list[dict]:
     base = HERE / "data" / scale
     truth = json.loads((base / "truth.json").read_text())
-    topic = max({i["topic"] for i in truth["open"] if i["topic"]},
-                key=lambda t: sum(1 for i in truth["open"] if i["topic"] == t))
+    topic = busiest_topic(truth)
     query = "Resolve the race condition in autocomplete"
     rows = []
     baseline = [("python startup", [PY, "-c", "pass"], base),

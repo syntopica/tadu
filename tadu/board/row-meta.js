@@ -1,3 +1,4 @@
+import { capitalize } from "./capitalize.js";
 import { plural } from "./plural.js";
 
 // The muted facts beside a portfolio row's name: "8 projects · 14
@@ -8,7 +9,7 @@ export function rowMeta(node) {
     return `${plural(node.projects, "project")} · ${plural(node.repositories, "repository")}`;
   }
   if (node.kind === "organization") {
-    const role = `${node.role[0].toUpperCase()}${node.role.slice(1)}`;
+    const role = capitalize(node.role);
     return node.filter === null
       ? plural(node.projects, "project")
       : `${role} of ${plural(node.projects, "project")}`;

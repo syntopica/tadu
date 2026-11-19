@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-a5170921-f474-4afa-925e-7c94ec752747",
+  "title": "Filter an item's history by field, day and author",
+  "state": "done",
+  "category": "cli",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-b2ab17c6-15c6-4a12-9a7e-34c018c578e0"
+  ],
+  "notes": [
+    "CLI, MCP and board: most readers want when the state or the assignee changed."
+  ],
+  "closed": "2026-11-18",
+  "result": "show --history takes --field, --since, --until and --author (each implies --history); the MCP show tool takes field, since, until and author; the board's History section filters locally by field chips, days and author",
+  "evidence": [
+    "pytest: 1236 tests at 100% coverage, among them tests/test_filter_history.py, test_show_history_filters.py and test_board_history_js.py (the board's filterHistory equals filter_history for ten filters); a jsdom run against a live tadu board: chips, days, author, Clear and a filter kept over Reload"
+  ]
+}

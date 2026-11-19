@@ -23,10 +23,12 @@ import json
 import random
 import sqlite3
 import uuid
+from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 
 import vocab as V
+from tq import ITEM_TABLE
 
 TODAY = date(2026, 11, 16)  # a Monday; "this week" = 2026-11-16 .. 2026-11-22
 WEEK_END = TODAY + timedelta(days=6)
@@ -362,13 +364,7 @@ def write_textdb(data: dict, out: Path) -> None:
     (out / "hybrid" / "TODO_LOG.md").write_text(log)
 
 
-SCHEMA = """
-CREATE TABLE item (
-  id TEXT PRIMARY KEY, open INTEGER NOT NULL, state TEXT NOT NULL, title TEXT NOT NULL,
-  category TEXT, labels TEXT NOT NULL DEFAULT '', priority TEXT, due TEXT, queue TEXT,
-  closed TEXT, body TEXT NOT NULL DEFAULT '', result TEXT, evidence TEXT, resolution TEXT,
-  files TEXT, seq INTEGER NOT NULL
-);
+SCHEMA = ITEM_TABLE + """
 CREATE INDEX item_open ON item(open, state);
 CREATE INDEX item_due ON item(due) WHERE due IS NOT NULL;
 CREATE INDEX item_priority ON item(priority);
@@ -392,6 +388,13 @@ def build_sqlite(path: Path, recs_open: list[dict], recs_log: list[dict]) -> Non
     con.commit()
     con.execute("VACUUM")
     con.close()
+
+
+def busiest_topic(truth: dict) -> str:
+    """The topic most open items of the truth carry, the first by name on a tie: the one the
+    topic questions ask about."""
+    counts = Counter(i["topic"] for i in truth["open"] if i["topic"])
+    return max(sorted(counts), key=lambda t: counts[t])
 
 
 def main() -> None:

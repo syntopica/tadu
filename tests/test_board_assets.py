@@ -68,7 +68,17 @@ def test_no_external_resources() -> None:
     assert "url(" not in style
     assert "@import" not in style
     scripts = every_script()
-    assert re.findall(r"fetch\(([^,)]*)", scripts) == ['"/api/cards"']
+    assert sorted(re.findall(r"fetch\(([^,)]*)", scripts)) == [
+        "`/api/cards${query}`",
+        "`/api/op/${encodeURIComponent(name",
+    ]
+    cards = text("fetch-cards.js")
+    assert "new URLSearchParams({ done_days: doneDays })" in cards
+    assert '"X-Tadu-Token": token' in cards
+    call = text("post-operation.js")
+    assert 'method: "POST"' in call
+    assert '"X-Tadu-Token": token, "Content-Type": "application/json"' in call
+    assert "body: JSON.stringify(args)" in call
     assert "XMLHttpRequest" not in scripts
     assert "WebSocket" not in scripts
     assert "sendBeacon" not in scripts

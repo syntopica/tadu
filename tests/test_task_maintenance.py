@@ -2,16 +2,12 @@ import json
 from pathlib import Path
 
 import pytest
-from sample_task import sample_task
+from sample_task import sample_id, sample_task
 from task_backlog import task_backlog
 
 from tadu.cli import main
 
 CONFIG = {"tadu": 2, "categories": {"core": "Core"}}
-
-
-def ident(number: int) -> str:
-    return str(sample_task(number)["id"])
 
 
 def files(root: Path, folder: str) -> list[str]:
@@ -27,7 +23,7 @@ def test_archive_without_a_policy_moves_nothing(
     root = task_backlog(tmp_path, [sample_task(1, "done", closed="2020-01-01")])
     assert main(["archive", str(root), "--write"]) == 0
     assert "no archive policy in todo/tadu.json" in capsys.readouterr().out
-    assert files(root, "closed") == [f"{ident(1)}.json"]
+    assert files(root, "closed") == [f"{sample_id(1)}.json"]
 
 
 def test_archive_by_age_and_by_count_with_month_folders_only_when_busy(
@@ -44,11 +40,11 @@ def test_archive_by_age_and_by_count_with_month_folders_only_when_busy(
     assert "33 move(s) (dry run: add --write)" in capsys.readouterr().out
     assert len(files(root, "closed")) == 35
     assert main(["archive", str(root), "--write"]) == 0
-    assert files(root, "closed") == [f"{ident(301)}.json", f"{ident(302)}.json"]
+    assert files(root, "closed") == [f"{sample_id(301)}.json", f"{sample_id(302)}.json"]
     archived = files(root, "archive")
-    assert f"2023/{ident(1)}.json" in archived
-    assert f"2025/01/{ident(100)}.json" in archived
-    assert f"2999/{ident(300)}.json" in archived
+    assert f"2023/{sample_id(1)}.json" in archived
+    assert f"2025/01/{sample_id(100)}.json" in archived
+    assert f"2999/{sample_id(300)}.json" in archived
     assert main(["archive", str(root)]) == 0
     assert "0 move(s)" in capsys.readouterr().out
 
@@ -57,12 +53,12 @@ def test_archive_regroups_a_year_that_became_busy(tmp_path: Path) -> None:
     policy = {**CONFIG, "archive": {"after_days": 1, "month_folders_min": 2}}
     root = task_backlog(tmp_path, [sample_task(1, "done", closed="2024-03-01")], policy)
     assert main(["archive", str(root), "--write"]) == 0
-    assert files(root, "archive") == [f"2024/{ident(1)}.json"]
+    assert files(root, "archive") == [f"2024/{sample_id(1)}.json"]
     for number in (2, 3):
-        path = root / "todo" / "closed" / f"{ident(number)}.json"
+        path = root / "todo" / "closed" / f"{sample_id(number)}.json"
         path.write_text(json.dumps(sample_task(number, "done", closed="2024-03-02")))
     assert main(["archive", str(root), "--write"]) == 0
-    assert files(root, "archive") == [f"2024/03/{ident(n)}.json" for n in (1, 2, 3)]
+    assert files(root, "archive") == [f"2024/03/{sample_id(n)}.json" for n in (1, 2, 3)]
 
 
 def test_archive_refusals(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -75,11 +71,11 @@ def test_archive_refusals(tmp_path: Path, capsys: pytest.CaptureFixture[str]) ->
 
 def test_fmt(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     root = task_backlog(tmp_path, [sample_task(1), sample_task(2)])
-    messy = root / "todo" / "open" / f"{ident(1)}.json"
+    messy = root / "todo" / "open" / f"{sample_id(1)}.json"
     messy.write_text(json.dumps(dict(reversed(sample_task(1).items()))))
     assert main(["fmt", str(root)]) == 0
     assert capsys.readouterr().out.splitlines() == [
-        f"todo/open/{ident(1)}.json",
+        f"todo/open/{sample_id(1)}.json",
         "tadu fmt: would rewrite 1 file(s) (dry run: add --write)",
     ]
     assert main(["fmt", str(root), "--write"]) == 0
@@ -119,12 +115,12 @@ def test_init_format_2_refusals(tmp_path: Path, capsys: pytest.CaptureFixture[st
 def test_archive_by_count_only_and_tidy_folders(tmp_path: Path) -> None:
     tasks = [sample_task(n, "done", closed=f"2026-10-0{n}") for n in range(1, 4)]
     root = task_backlog(tmp_path, tasks, {**CONFIG, "archive": {"keep_closed": 2}})
-    misplaced = root / "todo" / "archive" / "2022" / f"{ident(9)}.json"
+    misplaced = root / "todo" / "archive" / "2022" / f"{sample_id(9)}.json"
     misplaced.parent.mkdir(parents=True)
     misplaced.write_text(json.dumps(sample_task(9, "done", closed="2023-05-05")))
     assert main(["archive", str(root), "--write"]) == 0
-    assert files(root, "closed") == [f"{ident(2)}.json", f"{ident(3)}.json"]
-    assert files(root, "archive") == [f"2023/{ident(9)}.json", f"2026/{ident(1)}.json"]
+    assert files(root, "closed") == [f"{sample_id(2)}.json", f"{sample_id(3)}.json"]
+    assert files(root, "archive") == [f"2023/{sample_id(9)}.json", f"2026/{sample_id(1)}.json"]
     assert not (root / "todo" / "archive" / "2022").exists()
 
 
@@ -132,10 +128,10 @@ def test_fmt_and_set_refuse_a_file_changed_since_it_was_read(
     tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = task_backlog(tmp_path, [sample_task(1)])
-    messy = root / "todo" / "open" / f"{ident(1)}.json"
+    messy = root / "todo" / "open" / f"{sample_id(1)}.json"
     messy.write_text(json.dumps(dict(reversed(sample_task(1).items()))))
     monkeypatch.setattr("tadu.run_fmt.backlog_unchanged", lambda *_: False)
     monkeypatch.setattr("tadu.save_task.backlog_unchanged", lambda *_: False)
     assert main(["fmt", str(root), "--write"]) == 2
-    assert main(["set", ident(1), "priority=high", "--root", str(root), "--write"]) == 2
+    assert main(["set", sample_id(1), "priority=high", "--root", str(root), "--write"]) == 2
     assert "changed since tadu read it" in capsys.readouterr().err

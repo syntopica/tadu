@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from typing import TYPE_CHECKING
 
+from tadu.args_scope import args_scope
+from tadu.card_json import card_json
 from tadu.format_card_line import format_card_line
 from tadu.history_days import history_days
 from tadu.load_cards import load_cards
@@ -25,7 +28,7 @@ def run_similar(args: argparse.Namespace, today: date) -> int:
     """
     try:
         cards, problems, _ = load_cards(
-            tuple(args.paths), args.workspace, -1 if args.open else history_days(today), today
+            args_scope(args), -1 if args.open else history_days(today), today
         )
     except WorkspaceError as error:
         print(f"tadu similar: {error}", file=sys.stderr)
@@ -33,6 +36,10 @@ def run_similar(args: argparse.Namespace, today: date) -> int:
     pool = tuple(card for card in cards if card.item.state in " ~!") if args.open else cards
     keys = short_keys(tuple(card.item.key for card in cards))
     for overlap, card in similar_cards(pool, args.text, args.limit):
-        print(f"{overlap:.2f} {format_card_line(card, keys.get(card.item.key))}")
+        print(
+            json.dumps(card_json(card) | {"overlap": round(overlap, 2)}, ensure_ascii=False)
+            if args.json
+            else f"{overlap:.2f} {format_card_line(card, keys.get(card.item.key))}"
+        )
     print_problems("similar", problems)
     return 0

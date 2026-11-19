@@ -19,6 +19,7 @@ backlog = "."
 
 [[repository]]
 key = "api"
+access = "read"
 backlog = "docs"
 
 [[project]]
@@ -59,7 +60,7 @@ def test_loads_valid_workspace(tmp_path: Path) -> None:
     assert workspace.root == tmp_path
     assert workspace.repositories == (
         RepositoryEntry("shop", "git@github.com:example/shop.git", "."),
-        RepositoryEntry("api", None, "docs"),
+        RepositoryEntry("api", None, "docs", "read"),
     )
     assert workspace.projects == (
         ProjectEntry(
@@ -120,6 +121,10 @@ def test_problems_are_joined(tmp_path: Path) -> None:
             "repository a: backlog must be a relative path inside the repository",
         ),
         ("[[repository]]\nkey = 'a'\nbacklog = 3\n", "repository: backlog"),
+        (
+            "[[repository]]\nkey = 'a'\naccess = 'none'\n",
+            "repository a: access must be one of read, write, admin",
+        ),
         ("repository = 'x'\n", "repository"),
         ("repository = ['x']\n", "repository"),
         ("[[project]]\nkey = 'p'\n", "project: repositories"),

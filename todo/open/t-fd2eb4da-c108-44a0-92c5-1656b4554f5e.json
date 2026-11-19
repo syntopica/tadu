@@ -8,6 +8,7 @@
   "priority": "low",
   "created": "2026-11-18",
   "notes": [
-    "Design: board spec, section Shared mode. Branch plus pull request that patches the task file, opened with the user's GitHub App user token so GitHub enforces rights; never push to a default branch; reuse the file-hash check."
+    "Design: board spec, section Shared mode. Branch plus pull request that patches the task file, opened with the user's GitHub App user token so GitHub enforces rights; never push to a default branch; reuse the file-hash check.",
+    "The local board already changes items (tadu board --allow write, POST /api/op/<name> running the command); shared mode should route the same calls into a branch and pull request instead of writing the checkout."
   ]
 }

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 
+from tadu.empty_values import EMPTY_VALUES
 from tadu.task_field_kinds import TASK_LINE_KEYS
 from tadu.task_key_order import TASK_KEY_ORDER
 from tadu.trim_blank_lines import trim_blank_lines
@@ -18,7 +19,7 @@ def canonical_task_text(task: dict[str, object]) -> str:
     cleaned: dict[str, object] = {}
     for key, raw in task.items():
         value = trim_blank_lines(raw) if key in TASK_LINE_KEYS and isinstance(raw, list) else raw
-        if value not in (None, "", [], {}):
+        if value not in EMPTY_VALUES:
             # keys: JSON object keys of one task, unique by construction
             cleaned[key] = value
     known = [key for key in TASK_KEY_ORDER if key in cleaned]

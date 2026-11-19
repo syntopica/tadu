@@ -28,7 +28,7 @@ def test_names_membership_and_roles_in_file_order() -> None:
                 "roles": [{"role": "company", "org": "pp"}, {"role": "client", "org": "at"}],
             }
         ],
-        "repositories": [{"key": "web"}, {"key": "api"}],
+        "repositories": [{"key": "web", "access": "admin"}, {"key": "api", "access": "admin"}],
     }
 
 
@@ -37,5 +37,5 @@ def test_repositories_only() -> None:
     assert workspace_structure(workspace) == {
         "organizations": [],
         "projects": [],
-        "repositories": [{"key": "web"}],
+        "repositories": [{"key": "web", "access": "admin"}],
     }

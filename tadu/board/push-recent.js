@@ -1,11 +1,10 @@
-import { sameWhere } from "./same-where.js";
+import { samePlaces } from "./same-places.js";
 
-// The recent scopes with `where` first, without repeats, at most five; the
-// whole workspace is not recorded.
-export function pushRecent(recent, where) {
-  if (where.company === "" && where.project === "" && where.repository === "") {
+// The recent scopes (each a list of places) with `places` first, without
+// repeats, at most five; the whole workspace is not recorded.
+export function pushRecent(recent, places) {
+  if (places.length === 0) {
     return recent;
   }
-  const { company, project, repository } = where;
-  return [{ company, project, repository }, ...recent.filter((old) => !sameWhere(old, where))].slice(0, 5);
+  return [places, ...recent.filter((old) => !samePlaces(old, places))].slice(0, 5);
 }

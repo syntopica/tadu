@@ -1,7 +1,5 @@
-import json
-
 import pytest
-from board_js import board_js, js_card
+from board_js import board_results, js_card, js_rule
 
 CARDS = [
     js_card(kind="decision", waiting_on_me=True),
@@ -23,20 +21,21 @@ const { attentionShortcuts } = await load("attention-shortcuts.js");
 const { shortcutActive } = await load("shortcut-active.js");
 const { navItem } = await load("nav-item.js");
 const cards = ARGS;
-const every = { company: "", project: "", repository: "" };
-const rows = (where, me) =>
-  attentionShortcuts(cards, where, me).map((s) => [s.key, s.title, s.count, s.filters]);
-const none = { kind: "", waitingOnMe: false };
+const every = [];
+const rows = (places, me) =>
+  attentionShortcuts(cards, places, me).map((s) => [s.key, s.title, s.count, s.filters]);
+const none = { rules: [], waitingOnMe: false };
+const decision = [{ field: "kind", op: "any", values: ["decision"] }];
 const [mine, decisions] = attentionShortcuts(cards, every, "ana");
 out({
   withMe: rows(every, "ana"),
   withoutMe: rows(every, null).map(([key]) => key),
-  inRepository: rows({ ...every, repository: "api" }, "ana").map(([key, , count]) => [key, count]),
+  inRepository: rows([{ company: "", project: "", repository: "api" }], "ana").map(([key, , count]) => [key, count]),
   active: [
     shortcutActive(mine, "all", { ...none, waitingOnMe: true }),
-    shortcutActive(mine, "all", { kind: "decision", waitingOnMe: true }),
-    shortcutActive(decisions, "all", { ...none, kind: "decision" }),
-    shortcutActive(decisions, "board", { ...none, kind: "decision" }),
+    shortcutActive(mine, "all", { rules: decision, waitingOnMe: true }),
+    shortcutActive(decisions, "all", { ...none, rules: decision }),
+    shortcutActive(decisions, "board", { ...none, rules: decision }),
   ],
   counts: [navItem("A", "user", false, () => {}, 1200), navItem("B", "user", false, () => {})].map(
     (node) => node.children.map((child) => child.textContent ?? null),
@@ -47,17 +46,15 @@ out({
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps(CARDS)))
-    assert isinstance(result, dict)
-    return result
+    return board_results(SCRIPT, CARDS)
 
 
 def test_open_items_that_need_a_person_in_scope(results: dict[str, object]) -> None:
     assert results["withMe"] == [
         ["mine", "Waiting on me", 2, {"waitingOnMe": True}],
-        ["decision", "Decisions", 2, {"kind": "decision"}],
-        ["waiting", "Waiting on others", 1, {"kind": "waiting"}],
-        ["later", "Later", 1, {"kind": "later"}],
+        ["decision", "Decisions", 2, {"rules": [js_rule("kind", "any", "decision")]}],
+        ["waiting", "Waiting on others", 1, {"rules": [js_rule("kind", "any", "waiting")]}],
+        ["later", "Later", 1, {"rules": [js_rule("kind", "any", "later")]}],
     ]
     assert results["withoutMe"] == ["decision", "waiting", "later"]
     assert results["inRepository"] == [["mine", 0], ["decision", 0], ["waiting", 1], ["later", 0]]

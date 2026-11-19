@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -12,3 +13,10 @@ def private_item_cache(
     monkeypatch.setenv("TADU_CACHE_DIR", str(directory))
     monkeypatch.delenv("TADU_NO_CACHE", raising=False)
     return directory
+
+
+@pytest.fixture(autouse=True)
+def isolated_git(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Git run by tadu in a test never reads the user's or the system's configuration."""
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")

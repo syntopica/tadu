@@ -1,14 +1,16 @@
 import { compareRows } from "./compare-rows.js";
 import { emptyBuckets } from "./empty-buckets.js";
 import { NO_PLACE } from "./no-place.js";
+import { placeTouches } from "./place-touches.js";
 import { sumBuckets } from "./sum-buckets.js";
 
-// A portfolio project row with one child row per repository in scope (all
-// of them, or only `where.repository`), each with its counts and the scope a
-// click opens. `company` is the company row it sits under ("" for none).
-export function projectNode(project, company, byRepository, where) {
+// A portfolio project row with one child row per repository in the chosen
+// places (`scope`: the places and the workspace index), each with its
+// counts and the scope a click opens. `company` is the company row it sits
+// under ("" for none).
+export function projectNode(project, company, byRepository, scope) {
   const children = project.repositories
-    .filter((key) => where.repository === "" || key === where.repository)
+    .filter((key) => placeTouches(scope.places, { company, project: project.key, repository: key }, scope.index))
     .map((key) => ({
       kind: "repository",
       key: `r:${key}`,

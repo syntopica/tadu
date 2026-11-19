@@ -1,8 +1,8 @@
 import { el } from "./el.js";
 import { groupCards } from "./group-cards.js";
 import { isPhone } from "./is-phone.js";
-import { LIST_HEIGHTS } from "./list-heights.js";
 import { listEmptyText } from "./list-empty-text.js";
+import { LIST_HEIGHTS } from "./list-heights.js";
 import { listRows } from "./list-rows.js";
 import { meMissing } from "./me-missing.js";
 import { renderListWindow } from "./render-list-window.js";

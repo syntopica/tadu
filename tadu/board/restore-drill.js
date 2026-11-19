@@ -8,6 +8,6 @@ export function restoreDrill(store) {
   store.filters = store.beforeDrill.filters;
   store.text = store.beforeDrill.text;
   store.scope = store.beforeDrill.scope;
-  store.where = store.beforeDrill.where;
+  store.places = store.beforeDrill.places;
   store.beforeDrill = null;
 }

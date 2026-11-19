@@ -3,8 +3,10 @@
 // narrowed to one value by a filter, whose chip names it. The board's
 // columns are states, so it passes "state" as its grouping.
 export function shownBadges(group, filters) {
+  const one = (field) =>
+    filters.rules.some((rule) => rule.field === field && rule.op === "any" && rule.values.length === 1);
   return {
-    kind: group !== "kind" && filters.kind === "",
-    priority: group !== "priority" && filters.priority === "",
+    kind: group !== "kind" && !one("kind"),
+    priority: group !== "priority" && !one("priority"),
   };
 }

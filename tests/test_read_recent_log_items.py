@@ -39,3 +39,29 @@ def test_unreadable_log_raises(tmp_path: Path) -> None:
     (tmp_path / "TODO_LOG.md").write_bytes(b"\xff\xfe")
     with pytest.raises(UnreadableFileError):
         read_recent_log_items(tmp_path, ".", "shop", date(2026, 10, 15))
+
+
+def test_archived_years_follow_the_log_rules(tmp_path: Path) -> None:
+    archive = tmp_path / "apps/web/docs/todo-log"
+    archive.mkdir(parents=True)
+    (tmp_path / "apps/web/TODO_LOG.md").write_text(
+        "<!-- tadu:log v1 since 2025-03-01 -->\n- [x] 2026-01-05 — Now.\n  - Evidence: e\n"
+    )
+    (archive / "2025.md").write_text(
+        "- [x] 2025-02-01 — Legacy.\n  - Evidence: e\n- [x] 2025-06-01 — Checked.\n  - Evidence: e\n"
+    )
+    (archive / "2024.md").write_text("- [x] 2024-06-01 — Too old.\n  - Evidence: e\n")
+    (archive / "notes.md").write_text("- [x] 2025-06-02 — Not a year.\n  - Evidence: e\n")
+    (archive / "2023.md").mkdir()
+    items = read_recent_log_items(tmp_path, "apps/web", "shop", date(2025, 1, 1))
+    assert [(i.title, i.path) for i in items] == [
+        ("Checked.", "apps/web/docs/todo-log/2025.md"),
+        ("Now.", "apps/web/TODO_LOG.md"),
+    ]
+
+
+def test_archive_without_a_log(tmp_path: Path) -> None:
+    (tmp_path / "docs/todo-log").mkdir(parents=True)
+    (tmp_path / "docs/todo-log/2025.md").write_text("- [x] 2025-06-01 — Kept.\n  - Evidence: e\n")
+    (item,) = read_recent_log_items(tmp_path, ".", "shop", date(2025, 1, 1))
+    assert item.path == "docs/todo-log/2025.md"

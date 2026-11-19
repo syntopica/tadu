@@ -20,7 +20,7 @@ export async function loadBoard() {
   store.loading = true;
   requestRender();
   try {
-    const payload = await fetchCards(token);
+    const payload = await fetchCards(token, store.doneDays);
     if (request !== store.requests) {
       return;
     }

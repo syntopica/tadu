@@ -1,26 +1,7 @@
-import json
-
 import pytest
-from board_js import board_js, js_card
+from board_js import ACCESS_REFUSED, JS_FILTERS, board_results, js_card, js_rule
 
-ACCESS_REFUSED = (
-    "Access refused: open the URL that `tadu board` printed"
-    " (the token is missing or from an earlier run)."
-)
-DEFAULTS = {
-    "organization": "",
-    "role": "",
-    "assignee": "",
-    "priority": "",
-    "kind": "",
-    "label": "",
-    "dueBefore": "",
-    "unassigned": False,
-    "noPriority": False,
-    "waitingOnMe": False,
-    "showCancelled": False,
-    "column": "",
-}
+DEFAULTS = JS_FILTERS
 CARDS = [
     js_card("backlog", key="a", title="Alpha", priority="high"),
     js_card("backlog", key="b", title="Beta", priority="urgent", repository="api"),
@@ -44,22 +25,23 @@ const store = (changes) => ({
   text: "",
   filters: { ...DEFAULT_FILTERS },
   scope: "all",
-  where: { company: "", project: "", repository: "" },
+  places: [],
   sort: "priority",
   portfolio: { groupBy: "company", state: "" },
   ...changes,
 });
 const sets = (changes) => {
   const result = currentSets(store(changes));
-  return [result.board.length, result.view.length, result.shown.map((c) => c.key), result.total];
+  return [result.board.length, result.view.length, result.shown.map((c) => c.key), result.total, result.base.length];
 };
 const columns = ["backlog", "in_progress", "blocked", "done"];
 out({
   board: sets({}),
-  column: sets({ filters: { ...DEFAULT_FILTERS, column: "backlog" } }),
+  column: sets({ filters: { ...DEFAULT_FILTERS, rules: [{ field: "state", op: "any", values: ["backlog"] }] } }),
+  ruled: sets({ view: "all", filters: { ...DEFAULT_FILTERS, rules: [{ field: "priority", op: "any", values: ["urgent"] }] } }),
   searched: sets({ view: "all", text: "beta" }),
   portfolio: sets({ view: "portfolio", portfolio: { groupBy: "company", state: "done" } }),
-  scoped: sets({ view: "all", where: { company: "", project: "", repository: "api" } }),
+  scoped: sets({ view: "all", places: [{ company: "", project: "", repository: "api" }] }),
   cleaned: [
     cleanSavedView(null),
     cleanSavedView({ name: "  " }),
@@ -74,11 +56,34 @@ out({
       filters: { repository: "api", project: "crm", label: "ux", unassigned: "yes", extra: 1 },
     }),
     cleanSavedView({ name: "Scoped", where: { company: "pp", project: 3 }, filters: { project: "x" } }),
+    cleanSavedView({
+      name: "Rules",
+      places: [{ company: "pp" }, { repository: "api" }, null],
+      filters: {
+        rules: [
+          { field: "label", op: "not", values: ["ux", "ux", 3] },
+          { field: "label", op: "any", values: ["again"] },
+          { field: "kind", op: "empty", values: [] },
+          { field: "ghost", op: "any", values: ["x"] },
+          { field: "assignee", op: "empty", values: ["x"] },
+          { field: "priority", op: "any", values: [] },
+          null,
+        ],
+        waitingOnMe: true,
+        showCancelled: "yes",
+      },
+    }),
+    cleanSavedView({ name: "Legacy", filters: { organization: "at", role: "client", overdue: true, dueBefore: "2026-12-01", noPriority: true, column: "done", kind: "task" } }),
   ],
   existing: [
-    existingFilters({ ...DEFAULT_FILTERS, label: "gone", priority: "P9", kind: "someday", dueBefore: "soon", column: "x" }, cards, columns),
-    existingFilters({ ...DEFAULT_FILTERS, dueBefore: "2026-12-01" }, cards, columns),
-    existingFilters({ ...DEFAULT_FILTERS, assignee: "ana", priority: "high", kind: "waiting", column: "done" }, cards, columns),
+    existingFilters({ ...DEFAULT_FILTERS, rules: [
+      { field: "label", op: "any", values: ["gone"] },
+      { field: "priority", op: "any", values: ["P9", "high"] },
+      { field: "kind", op: "not", values: ["someday"] },
+      { field: "due", op: "any", values: ["soon", "overdue", "before:2026-12-01", "before:x"] },
+      { field: "state", op: "any", values: ["x", "done"] },
+      { field: "assignee", op: "empty", values: [] },
+    ] }, cards, columns),
   ],
   errors: [
     loadErrorText(Object.assign(new Error("no"), { status: 403 }), false),
@@ -91,17 +96,16 @@ out({
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps(CARDS)))
-    assert isinstance(result, dict)
-    return result
+    return board_results(SCRIPT, CARDS)
 
 
 def test_current_sets(results: dict[str, object]) -> None:
-    assert results["board"] == [4, 4, ["b", "a", "c", "d"], 4]
-    assert results["column"] == [4, 4, ["b", "a"], 2]
-    assert results["searched"] == [1, 1, ["b"], 3]
-    assert results["portfolio"] == [4, 4, ["d"], 4]
-    assert results["scoped"] == [1, 1, ["b"], 1]
+    assert results["board"] == [4, 4, ["b", "a", "c", "d"], 4, 4]
+    assert results["column"] == [4, 4, ["b", "a"], 2, 4]
+    assert results["ruled"] == [1, 1, ["b"], 3, 4]
+    assert results["searched"] == [1, 1, ["b"], 3, 1]
+    assert results["portfolio"] == [4, 4, ["d"], 4, 4]
+    assert results["scoped"] == [1, 1, ["b"], 1, 1]
 
 
 def test_clean_saved_view(results: dict[str, object]) -> None:
@@ -112,20 +116,42 @@ def test_clean_saved_view(results: dict[str, object]) -> None:
         "name": "Mine ".ljust(40, "x"),
         "view": "board",
         "text": "",
-        "filters": {**DEFAULTS, "label": "ux"},
-        "where": {"company": "", "project": "crm", "repository": "api"},
+        "filters": {**DEFAULTS, "rules": [js_rule("label", "any", "ux")]},
+        "places": [{"company": "", "project": "crm", "repository": "api"}],
         "scope": "mine",
         "group": "assignee",
         "sort": "due",
     }
-    assert cleaned[4]["where"] == {"company": "pp", "project": "", "repository": ""}
+    assert cleaned[4]["places"] == [{"company": "pp", "project": "", "repository": ""}]
+    assert cleaned[5]["places"] == [
+        {"company": "pp", "project": "", "repository": ""},
+        {"company": "", "project": "", "repository": "api"},
+    ]
+    assert cleaned[5]["filters"] == {
+        "rules": [js_rule("label", "not", "ux"), js_rule("assignee", "empty")],
+        "waitingOnMe": True,
+        "showCancelled": False,
+    }
+    assert cleaned[6]["filters"]["rules"] == [
+        js_rule("kind", "any", "task"),
+        js_rule("priority", "empty"),
+        js_rule("due", "any", "overdue", "before:2026-12-01"),
+        js_rule("organization", "any", "client:at"),
+        js_rule("state", "any", "done"),
+    ]
 
 
 def test_existing_filters_and_errors(results: dict[str, object]) -> None:
     assert results["existing"] == [
-        DEFAULTS,
-        {**DEFAULTS, "dueBefore": "2026-12-01"},
-        {**DEFAULTS, "assignee": "ana", "priority": "high", "kind": "waiting", "column": "done"},
+        {
+            **DEFAULTS,
+            "rules": [
+                js_rule("priority", "any", "high"),
+                js_rule("due", "any", "overdue", "before:2026-12-01"),
+                js_rule("state", "any", "done"),
+                js_rule("assignee", "empty"),
+            ],
+        },
     ]
     assert results["errors"] == [
         ACCESS_REFUSED,

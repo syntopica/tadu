@@ -1,8 +1,9 @@
-from datetime import UTC, datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
 from attention_repo import attention_repo
+from local_today import local_today
 
 from tadu.cli import main
 
@@ -22,7 +23,7 @@ def test_priority_and_overdue_by_section(
 
 
 def test_days_widens_the_window(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    today = datetime.now(UTC).astimezone().date()
+    today = local_today()
     soon = (today + timedelta(days=3)).isoformat()
     repo = attention_repo(tmp_path, f"- [ ] Renew the domain.\n\n  Due: {soon}\n")
     assert main(["urgent", str(repo)]) == 0

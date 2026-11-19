@@ -20,6 +20,8 @@ import tempfile
 import time
 from pathlib import Path
 
+from gen import busiest_topic
+
 HERE = Path(__file__).parent
 TADU = str(Path(sys.executable).parent / "tadu")
 ENV = {"PATH": "/usr/bin:/bin", "LC_ALL": "C.UTF-8", "HOME": "/tmp"}
@@ -48,8 +50,7 @@ def main() -> None:
     for scale in a.scale:
         base = HERE / "data" / scale
         truth = json.loads((base / "truth.json").read_text())
-        topic = max({i["topic"] for i in truth["open"] if i["topic"]},
-                    key=lambda t: sum(1 for i in truth["open"] if i["topic"] == t))
+        topic = busiest_topic(truth)
         v1, v2 = base / "md_fields", base / "tadu_v2"
         query = "Resolve the race condition in autocomplete"
         reads = {

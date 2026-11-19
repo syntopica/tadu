@@ -1,22 +1,15 @@
 from pathlib import Path
 
 import pytest
+from sample_workspace import sample_workspace
 
 from tadu.load_local_config import load_local_config
-from tadu.person_entry import PersonEntry
-from tadu.repository_entry import RepositoryEntry
 from tadu.workspace import Workspace
 from tadu.workspace_error import WorkspaceError
 
 
 def workspace(directory: Path) -> Workspace:
-    return Workspace(
-        directory,
-        (RepositoryEntry("shop", None),),
-        (),
-        (),
-        (PersonEntry("ana", "Ana", None),),
-    )
+    return sample_workspace(directory, "ana")
 
 
 def write(directory: Path, text: str) -> None:
