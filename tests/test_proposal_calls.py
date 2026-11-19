@@ -1,6 +1,8 @@
 from pathlib import Path
 
 import pytest
+from board_states import board_state
+from task_backlog import task_backlog
 from team_workspace import team_workspace
 
 from tadu.github_send import github_send
@@ -51,3 +53,20 @@ def test_write_call_ignores_what_is_not_a_write() -> None:
     assert write_call("/api/op/add", b"[]", state) is None
     assert write_call("/api/other", b"{}", state) is None
     assert write_call("/api/op/add", b'{"title": "t"}', state) == ("add", {"title": "t"})
+
+
+def test_a_proposal_leaves_no_item_cache_keyed_by_its_temporary_folder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    cache = tmp_path / "cache"
+    monkeypatch.setenv("TADU_CACHE_DIR", str(cache))
+    monkeypatch.setattr("tadu.cached_payloads.RACY_NANOSECONDS", -1)
+    workspace = team_workspace(tmp_path)
+    (workspace / "shop" / "TODO.md").unlink()
+    task = {"tadu": 2, "id": "t-1", "title": "old", "state": "pending", "created": "2020-01-01"}
+    task_backlog(workspace / "shop", [task])
+    target = resolve_proposal_target(workspace, "shop")
+    state = board_state(workspace, "write")
+    result, _ = run_on_copy(state, "list", {}, target)
+    assert result[0] == 0, result
+    assert not cache.exists() or list(cache.iterdir()) == []
