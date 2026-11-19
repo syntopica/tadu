@@ -21,21 +21,31 @@ import time
 from pathlib import Path
 
 import textdb
+from gen import busiest_topic
 import tokens
 from ops import OPS as BASE_OPS
 
 OPS = {**BASE_OPS, **textdb.OPS}
-TEXT_BACKENDS = {"json_dir": "jsondir", "md_dir": "mddir", "rec": "rec", "csv": "csv", "sqldump": "sqldump",
-                 "hybrid": "hybrid"}
+TEXT_BACKENDS = {
+    "json_dir": "jsondir",
+    "md_dir": "mddir",
+    "rec": "rec",
+    "csv": "csv",
+    "sqldump": "sqldump",
+    "hybrid": "hybrid",
+}
 
 HERE = Path(__file__).parent
 TADU = str(Path(sys.executable).parent / "tadu")
 PY = sys.executable
 TQ = [PY, str(HERE / "tq.py")]
 FILES = {
-    "md_prose": ("TODO.md", "TODO_LOG.md"), "md_fields": ("TODO.md", "TODO_LOG.md"),
-    "jsonl": ("TODO.jsonl", "TODO_LOG.jsonl"), "json": ("TODO.json", "TODO_LOG.json"),
-    "yaml": ("TODO.yaml", "TODO_LOG.yaml"), "sqlite": ("todo.db", None),
+    "md_prose": ("TODO.md", "TODO_LOG.md"),
+    "md_fields": ("TODO.md", "TODO_LOG.md"),
+    "jsonl": ("TODO.jsonl", "TODO_LOG.jsonl"),
+    "json": ("TODO.json", "TODO_LOG.json"),
+    "yaml": ("TODO.yaml", "TODO_LOG.yaml"),
+    "sqlite": ("todo.db", None),
 }
 ENV = {"TQ_TODAY": "2026-11-16", "PATH": "/usr/bin:/bin", "LC_ALL": "C.UTF-8"}
 
@@ -61,54 +71,118 @@ def sizes(scale: str) -> list[dict]:
             p = d / name
             b = p.read_bytes()
             text = b.decode("utf-8")
-            rows.append({"scale": scale, "format": fmt, "file": kind, "bytes": len(b),
-                         "lines": text.count("\n"), "tokens": tokens.count(text)})
+            rows.append(
+                {
+                    "scale": scale,
+                    "format": fmt,
+                    "file": kind,
+                    "bytes": len(b),
+                    "lines": text.count("\n"),
+                    "tokens": tokens.count(text),
+                }
+            )
         if fmt == "sqlite":
-            rows.append({"scale": scale, "format": fmt, "file": "db (open+log)", "bytes": (d / "todo.db").stat().st_size,
-                         "lines": None, "tokens": None})
+            rows.append(
+                {
+                    "scale": scale,
+                    "format": fmt,
+                    "file": "db (open+log)",
+                    "bytes": (d / "todo.db").stat().st_size,
+                    "lines": None,
+                    "tokens": None,
+                }
+            )
     for fmt in textdb.TEXTDB_FORMATS:
         d = HERE / "data" / scale / fmt
         files = [p for p in d.rglob("*") if p.is_file() and not p.name.startswith((".", "_"))]
         text = "".join(p.read_text(encoding="utf-8") for p in files)
         disk = sum(-(-p.stat().st_size // 4096) * 4096 for p in files)
-        rows.append({"scale": scale, "format": fmt, "file": "all (open+log)", "bytes": len(text.encode()),
-                     "lines": text.count("\n"), "tokens": tokens.count(text), "files": len(files), "disk": disk})
+        rows.append(
+            {
+                "scale": scale,
+                "format": fmt,
+                "file": "all (open+log)",
+                "bytes": len(text.encode()),
+                "lines": text.count("\n"),
+                "tokens": tokens.count(text),
+                "files": len(files),
+                "disk": disk,
+            }
+        )
     return rows
 
 
 def reads(scale: str, n: int) -> list[dict]:
     base = HERE / "data" / scale
     truth = json.loads((base / "truth.json").read_text())
-    topic = max({i["topic"] for i in truth["open"] if i["topic"]},
-                key=lambda t: sum(1 for i in truth["open"] if i["topic"] == t))
+    topic = busiest_topic(truth)
     query = "Resolve the race condition in autocomplete"
     rows = []
-    baseline = [("python startup", [PY, "-c", "pass"], base),
-                ("tadu --version", [TADU, "--version"], base)]
+    baseline = [("python startup", [PY, "-c", "pass"], base), ("tadu --version", [TADU, "--version"], base)]
     for name, cmd, cwd in baseline:
         rows.append({"scale": scale, "what": name, "backend": "-", "ms": timed(cmd, cwd, n)})
     # existing tool
     md = base / "md_fields"
-    rows.append({"scale": scale, "what": "open query", "backend": "tadu list (md)",
-                 "ms": timed([TADU, "list", ".", "--priority", "high"], md, n)})
-    rows.append({"scale": scale, "what": "log query", "backend": "tadu list (md)",
-                 "ms": timed([TADU, "list", ".", "--done-days", "100000", "--label", topic], md, n)})
-    rows.append({"scale": scale, "what": "grep log", "backend": "grep (md)",
-                 "ms": timed(["grep", "-c", "-i", topic.replace("-", " "), "TODO_LOG.md"], md, n)})
+    rows.append(
+        {
+            "scale": scale,
+            "what": "open query",
+            "backend": "tadu list (md)",
+            "ms": timed([TADU, "list", ".", "--priority", "high"], md, n),
+        }
+    )
+    rows.append(
+        {
+            "scale": scale,
+            "what": "log query",
+            "backend": "tadu list (md)",
+            "ms": timed([TADU, "list", ".", "--done-days", "100000", "--label", topic], md, n),
+        }
+    )
+    rows.append(
+        {
+            "scale": scale,
+            "what": "grep log",
+            "backend": "grep (md)",
+            "ms": timed(["grep", "-c", "-i", topic.replace("-", " "), "TODO_LOG.md"], md, n),
+        }
+    )
     # prototype on each backend
     cache = md / ".tq-cache.db"
-    for label, d, backend in (("md", md, "md"), ("mdcache (warm)", md, "mdcache"),
-                              ("jsonl", base / "jsonl", "jsonl"), ("json", base / "json", "json"),
-                              ("sqlite", base / "sqlite", "sqlite")):
+    for label, d, backend in (
+        ("md", md, "md"),
+        ("mdcache (warm)", md, "mdcache"),
+        ("jsonl", base / "jsonl", "jsonl"),
+        ("json", base / "json", "json"),
+        ("sqlite", base / "sqlite", "sqlite"),
+    ):
         q = TQ + ["--backend", backend]
         if backend == "mdcache":
             subprocess.run(q + ["find", "-q"], cwd=d, capture_output=True, env=ENV)  # warm it
-        rows.append({"scale": scale, "what": "open query", "backend": f"tq {label}",
-                     "ms": timed(q + ["find", "-q", "--min-priority", "high"], d, n)})
-        rows.append({"scale": scale, "what": "log query", "backend": f"tq {label}",
-                     "ms": timed(q + ["find", "-q", "--log", "--label", topic], d, n)})
-        rows.append({"scale": scale, "what": "similar (open+log)", "backend": f"tq {label}",
-                     "ms": timed(q + ["similar", "--all", query], d, n)})
+        rows.append(
+            {
+                "scale": scale,
+                "what": "open query",
+                "backend": f"tq {label}",
+                "ms": timed(q + ["find", "-q", "--min-priority", "high"], d, n),
+            }
+        )
+        rows.append(
+            {
+                "scale": scale,
+                "what": "log query",
+                "backend": f"tq {label}",
+                "ms": timed(q + ["find", "-q", "--log", "--label", topic], d, n),
+            }
+        )
+        rows.append(
+            {
+                "scale": scale,
+                "what": "similar (open+log)",
+                "backend": f"tq {label}",
+                "ms": timed(q + ["similar", "--all", query], d, n),
+            }
+        )
     for fmt, backend in TEXT_BACKENDS.items():
         d = base / fmt
         for cached in (False, True):
@@ -116,20 +190,55 @@ def reads(scale: str, n: int) -> list[dict]:
             label = f"tq {fmt}" + (" + cache (warm)" if cached else "")
             if cached:
                 subprocess.run(q + ["find", "-q"], cwd=d, capture_output=True, env=ENV)
-            rows.append({"scale": scale, "what": "open query", "backend": label,
-                         "ms": timed(q + ["find", "-q", "--min-priority", "high"], d, n)})
-            rows.append({"scale": scale, "what": "log query", "backend": label,
-                         "ms": timed(q + ["find", "-q", "--log", "--label", topic], d, n)})
-            rows.append({"scale": scale, "what": "similar (open+log)", "backend": label,
-                         "ms": timed(q + ["similar", "--all", query], d, n)})
-        rows.append({"scale": scale, "what": "cache rebuild", "backend": f"tq {fmt} + cache (cold)",
-                     "ms": timed(TQ + ["--backend", backend, "--cache", "find", "-q"], d, max(3, n // 3),
-                                 before=lambda d=d: (d / ".tq-cache.db").unlink(missing_ok=True))})
+            rows.append(
+                {
+                    "scale": scale,
+                    "what": "open query",
+                    "backend": label,
+                    "ms": timed(q + ["find", "-q", "--min-priority", "high"], d, n),
+                }
+            )
+            rows.append(
+                {
+                    "scale": scale,
+                    "what": "log query",
+                    "backend": label,
+                    "ms": timed(q + ["find", "-q", "--log", "--label", topic], d, n),
+                }
+            )
+            rows.append(
+                {
+                    "scale": scale,
+                    "what": "similar (open+log)",
+                    "backend": label,
+                    "ms": timed(q + ["similar", "--all", query], d, n),
+                }
+            )
+        rows.append(
+            {
+                "scale": scale,
+                "what": "cache rebuild",
+                "backend": f"tq {fmt} + cache (cold)",
+                "ms": timed(
+                    TQ + ["--backend", backend, "--cache", "find", "-q"],
+                    d,
+                    max(3, n // 3),
+                    before=lambda d=d: (d / ".tq-cache.db").unlink(missing_ok=True),
+                ),
+            }
+        )
         (d / ".tq-cache.db").unlink(missing_ok=True)
     rows += duckdb_reads(scale, base, topic, n)
-    rows.append({"scale": scale, "what": "cache rebuild", "backend": "tq mdcache (cold)",
-                 "ms": timed(TQ + ["--backend", "mdcache", "find", "-q"], md, n,
-                             before=lambda: cache.unlink(missing_ok=True))})
+    rows.append(
+        {
+            "scale": scale,
+            "what": "cache rebuild",
+            "backend": "tq mdcache (cold)",
+            "ms": timed(
+                TQ + ["--backend", "mdcache", "find", "-q"], md, n, before=lambda: cache.unlink(missing_ok=True)
+            ),
+        }
+    )
     cache.unlink(missing_ok=True)
     return rows
 
@@ -148,14 +257,22 @@ def duckdb_reads(scale: str, base: Path, topic: str, n: int) -> list[dict]:
     except ImportError:
         return []
     queries = {
-        ("open query", "duckdb over json_dir"): (base / "json_dir",
-            "SELECT id, title FROM read_json('todo/*.json', union_by_name=true) WHERE priority IN ('urgent','high')"),
-        ("log query", "duckdb over json_dir"): (base / "json_dir",
-            f"SELECT id, title FROM read_json('done/*/*.json', union_by_name=true) WHERE list_contains(labels, '{topic}')"),
-        ("open query", "duckdb over csv tables"): (base / "csv",
-            "SELECT id, title FROM read_csv('tasks.csv', all_varchar=true) WHERE state IN ('pending','in_progress','blocked') AND priority IN ('urgent','high')"),
-        ("log query", "duckdb over csv tables"): (base / "csv",
-            f"SELECT t.id, t.title FROM read_csv('tasks.csv', all_varchar=true) t JOIN read_csv('task_labels.csv', all_varchar=true) l ON l.task_id = t.id WHERE t.state IN ('done','cancelled') AND l.label = '{topic}'"),
+        ("open query", "duckdb over json_dir"): (
+            base / "json_dir",
+            "SELECT id, title FROM read_json('todo/*.json', union_by_name=true) WHERE priority IN ('urgent','high')",
+        ),
+        ("log query", "duckdb over json_dir"): (
+            base / "json_dir",
+            f"SELECT id, title FROM read_json('done/*/*.json', union_by_name=true) WHERE list_contains(labels, '{topic}')",
+        ),
+        ("open query", "duckdb over csv tables"): (
+            base / "csv",
+            "SELECT id, title FROM read_csv('tasks.csv', all_varchar=true) WHERE state IN ('pending','in_progress','blocked') AND priority IN ('urgent','high')",
+        ),
+        ("log query", "duckdb over csv tables"): (
+            base / "csv",
+            f"SELECT t.id, t.title FROM read_csv('tasks.csv', all_varchar=true) t JOIN read_csv('task_labels.csv', all_varchar=true) l ON l.task_id = t.id WHERE t.state IN ('done','cancelled') AND l.label = '{topic}'",
+        ),
     }
     rows = []
     for (what, label), (d, sql) in queries.items():
@@ -163,10 +280,17 @@ def duckdb_reads(scale: str, base: Path, topic: str, n: int) -> list[dict]:
     return rows
 
 
-REPO_FORMATS = {"md_fields": ["TODO.md", "TODO_LOG.md"], "jsonl": ["TODO.jsonl", "TODO_LOG.jsonl"],
-                "json_dir": ["todo", "done"], "md_dir": ["todo", "done"], "rec": ["tasks.rec"],
-                "csv": ["tasks.csv", "task_labels.csv"], "sqldump": ["todo.sql"], "sqlite": ["todo.db"],
-                "hybrid": ["todo", "TODO_LOG.md"]}
+REPO_FORMATS = {
+    "md_fields": ["TODO.md", "TODO_LOG.md"],
+    "jsonl": ["TODO.jsonl", "TODO_LOG.jsonl"],
+    "json_dir": ["todo", "done"],
+    "md_dir": ["todo", "done"],
+    "rec": ["tasks.rec"],
+    "csv": ["tasks.csv", "task_labels.csv"],
+    "sqldump": ["todo.sql"],
+    "sqlite": ["todo.db"],
+    "hybrid": ["todo", "TODO_LOG.md"],
+}
 
 
 def repo_costs(scale: str, n: int) -> list[dict]:
@@ -175,8 +299,14 @@ def repo_costs(scale: str, n: int) -> list[dict]:
     truth = json.loads((base / "truth.json").read_text())
     iid = truth["open"][7]["id"]
     rows = []
-    env = {**ENV, "GIT_AUTHOR_NAME": "b", "GIT_AUTHOR_EMAIL": "b@x", "GIT_COMMITTER_NAME": "b",
-           "GIT_COMMITTER_EMAIL": "b@x", "HOME": "/tmp"}
+    env = {
+        **ENV,
+        "GIT_AUTHOR_NAME": "b",
+        "GIT_AUTHOR_EMAIL": "b@x",
+        "GIT_COMMITTER_NAME": "b",
+        "GIT_COMMITTER_EMAIL": "b@x",
+        "HOME": "/tmp",
+    }
     for fmt, names in REPO_FORMATS.items():
         d = Path(tempfile.mkdtemp(prefix=f"repo-{fmt}-"))
         for name in names:
@@ -204,8 +334,17 @@ def repo_costs(scale: str, n: int) -> list[dict]:
         t = time.perf_counter()
         subprocess.run(["git", "clone", "-q", "--no-local", str(d), str(dst / "c")], capture_output=True, env=env)
         clone = (time.perf_counter() - t) * 1000
-        rows.append({"scale": scale, "format": fmt, "import_commit_ms": first, "status_ms": status,
-                     "commit_one_change_ms": statistics.median(ts), "git_dir_bytes": git_size, "clone_ms": clone})
+        rows.append(
+            {
+                "scale": scale,
+                "format": fmt,
+                "import_commit_ms": first,
+                "status_ms": status,
+                "commit_one_change_ms": statistics.median(ts),
+                "git_dir_bytes": git_size,
+                "clone_ms": clone,
+            }
+        )
         shutil.rmtree(d)
         shutil.rmtree(dst)
     return rows
@@ -222,9 +361,18 @@ def writes(scale: str, n: int) -> list[dict]:
         for op in ("add", "set_priority", "close"):
             ts = []
             for k in range(n):
-                target = ({"id": f"t-{k:08x}-0000-4000-8000-000000000000", "title": f"New item {k}.",
-                           "category": "ui", "labels": ["feature"], "priority": "high", "body": "x"}
-                          if op == "add" else ids[k + (0 if op == "set_priority" else 50)])
+                target = (
+                    {
+                        "id": f"t-{k:08x}-0000-4000-8000-000000000000",
+                        "title": f"New item {k}.",
+                        "category": "ui",
+                        "labels": ["feature"],
+                        "priority": "high",
+                        "body": "x",
+                    }
+                    if op == "add"
+                    else ids[k + (0 if op == "set_priority" else 50)]
+                )
                 t = time.perf_counter()
                 if op == "add":
                     ops[op](d, target)
@@ -238,12 +386,13 @@ def writes(scale: str, n: int) -> list[dict]:
     # the real tool: tadu close --write (includes the doctor run it does after writing)
     d = Path(tempfile.mkdtemp())
     shutil.copytree(base / "md_prose", d, dirs_exist_ok=True)
-    titles = [i["title"] for i in truth["open"]][100:100 + n]
+    titles = [i["title"] for i in truth["open"]][100 : 100 + n]
     ts = []
     for title in titles:
         t = time.perf_counter()
-        subprocess.run([TADU, "close", ".", "--match", title, "--evidence", "proof", "--write"],
-                       cwd=d, capture_output=True)
+        subprocess.run(
+            [TADU, "close", ".", "--match", title, "--evidence", "proof", "--write"], cwd=d, capture_output=True
+        )
         ts.append((time.perf_counter() - t) * 1000)
     rows.append({"scale": scale, "format": "md (tadu close --write)", "op": "close", "ms": statistics.median(ts)})
     shutil.rmtree(d)

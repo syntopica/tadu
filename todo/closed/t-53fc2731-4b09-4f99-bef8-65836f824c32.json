@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-53fc2731-4b09-4f99-bef8-65836f824c32",
+  "title": "tadu mark on a task backlog fails with TODO.md: missing",
+  "state": "done",
+  "category": "bugs",
+  "type": "bug",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-d0e1392f-d2e4-4369-85f3-b2aa1e338393"
+  ],
+  "notes": [
+    "mark ran only the format 1 code; it now turns the mark into task changes, and claim and close take keys on both formats."
+  ],
+  "closed": "2026-11-18",
+  "result": "mark turns into task changes on a task backlog; mark, claim and close take an item's key (--id) on both formats",
+  "evidence": [
+    "pytest: 1363 tests at 100% coverage, ruff, mypy --strict and codeality clean; tests/test_mark_in_both_formats.py, test_markdown_claim.py, test_mark_task_changes.py"
+  ]
+}

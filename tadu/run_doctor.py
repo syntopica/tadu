@@ -6,10 +6,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tadu.check_workspace_items import check_workspace_items
-from tadu.doctor_checks_for import doctor_checks_for
-from tadu.finding import Finding
 from tadu.format_finding import format_finding
-from tadu.unreadable_file_error import UnreadableFileError
+from tadu.root_findings import root_findings
 
 if TYPE_CHECKING:
     from datetime import date
@@ -24,18 +22,10 @@ def run_doctor(
 ) -> int:
     """Print every finding for every root; exit 1 when any is an error."""
     failed = False
-    for raw in paths:
-        root = Path(raw)
-        for check in doctor_checks_for(root):
-            try:
-                findings = check(root)
-            except UnreadableFileError as error:
-                findings = (Finding("E001", "error", str(error.path), 0, str(error)),)
-            for finding in findings:
-                print(format_finding(finding, as_json=as_json))
-                failed = failed or finding.severity == "error"
+    findings = [finding for raw in paths for finding in root_findings(Path(raw))]
     if workspace is not None and today is not None:
-        for finding in check_workspace_items(Path(workspace), today):
-            print(format_finding(finding, as_json=as_json))
-            failed = failed or finding.severity == "error"
+        findings += check_workspace_items(Path(workspace), today)
+    for finding in findings:
+        print(format_finding(finding, as_json=as_json))
+        failed = failed or finding.severity == "error"
     return 1 if failed else 0

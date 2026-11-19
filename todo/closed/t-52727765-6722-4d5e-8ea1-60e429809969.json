@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-52727765-6722-4d5e-8ea1-60e429809969",
+  "title": "Fix the board's pending visual issues and review History and Changes",
+  "state": "done",
+  "category": "board",
+  "type": "bug",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "notes": [
+    "Before and after screenshots in Chromium: a task's raw JSON in the detail, the Changes view's lone Clear row, the board scrolling sideways below 1300 px; then History and Changes at desktop, tablet and phone sizes."
+  ],
+  "closed": "2026-11-18",
+  "result": "A task's words drawn under their titles with its file folded; History filters folded behind Filter with field chips only for real changes; Changes controls on titled rows, scrolling sideways on a phone; tadu changes counts lines added and removed per field; board columns and toolbar fit from 1280 px",
+  "evidence": [
+    "pytest: 1413 tests at 100% coverage plus 3 browser tests; screenshots before and after in Chromium at 390, 1024, 1280, 1366 and 1440 px"
+  ]
+}

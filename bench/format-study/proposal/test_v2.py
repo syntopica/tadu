@@ -1,6 +1,6 @@
 """Scenario tests for the v2 draft: relations, close, archive, ids, versions, migration.
 
-    python test_v2.py        (plain asserts; needs jsonschema)
+python test_v2.py        (plain asserts; needs jsonschema)
 """
 
 import json
@@ -22,8 +22,16 @@ def tid(n: int) -> str:
 
 
 def task(n: int, state: str = "pending", **kw) -> dict:
-    t = {"tadu": 2, "id": tid(n), "title": f"Task {n}", "state": state, "category": "core", "type": "feature",
-         "priority": "normal", **kw}
+    t = {
+        "tadu": 2,
+        "id": tid(n),
+        "title": f"Task {n}",
+        "state": state,
+        "category": "core",
+        "type": "feature",
+        "priority": "normal",
+        **kw,
+    }
     if state == "done":
         t.update(closed=kw.get("closed", "2026-11-01"), result="Done.", evidence=["pytest passes"])
     if state == "cancelled":
@@ -75,7 +83,7 @@ def test_close_is_append_only():
     v2("close", str(d), tid(1), "--evidence", "ok", "--write")
     after = (d / "todo" / "closed" / f"{tid(1)}.json").read_text().splitlines()
     removed = [ln for ln in before if ln not in after]
-    assert removed == ['  "state": "pending",', '  ]'] or removed == ['  "state": "pending",'], removed
+    assert removed == ['  "state": "pending",', "  ]"] or removed == ['  "state": "pending",'], removed
 
 
 def test_two_blockers_need_both():
@@ -101,10 +109,17 @@ def test_cancelled_blocker_asks_for_review():
 
 
 def test_relation_checks():
-    d = backlog([task(1, "blocked", blocked_by=[tid(2)]), task(2, "blocked", blocked_by=[tid(1)]),  # cycle
-                 task(3, blocked_by=[tid(4)]), task(4),                                              # pending but waiting
-                 task(5, "blocked", blocked_by=[tid(6)]), task(6, "done"),                           # could be unblocked
-                 task(7, blocked_by=[tid(99)])])                                                     # dangling
+    d = backlog(
+        [
+            task(1, "blocked", blocked_by=[tid(2)]),
+            task(2, "blocked", blocked_by=[tid(1)]),  # cycle
+            task(3, blocked_by=[tid(4)]),
+            task(4),  # pending but waiting
+            task(5, "blocked", blocked_by=[tid(6)]),
+            task(6, "done"),  # could be unblocked
+            task(7, blocked_by=[tid(99)]),
+        ]
+    )  # dangling
     c = codes(d)
     for code in ("J013", "J015", "J014", "J012"):
         assert code in c, (code, check(d))
@@ -123,20 +138,20 @@ def test_no_archive_policy_means_open_and_closed_only():
 
 def test_archive_by_age_month_folders_only_when_busy():
     cfg = {**CFG, "archive": {"after_days": 30}}  # default month_folders_min 10
-    quiet = [task(n, "done", closed=f"2023-{n:02d}-15") for n in range(1, 13)]               # 12 tasks, 12 months
+    quiet = [task(n, "done", closed=f"2023-{n:02d}-15") for n in range(1, 13)]  # 12 tasks, 12 months
     busy = [task(100 + n, "done", closed=f"2025-0{1 + n % 2}-{1 + n % 28:02d}") for n in range(20)]  # 20 in 2 months
-    mixed = [task(200 + n, "done", closed=f"2024-0{1 + n % 3}-10") for n in range(15)]      # 15 in 3 months: avg 5
+    mixed = [task(200 + n, "done", closed=f"2024-0{1 + n % 3}-10") for n in range(15)]  # 15 in 3 months: avg 5
     recent = [task(300, "done", closed="2026-11-10")]
     d = backlog(quiet + busy + mixed + recent, cfg)
     v2("archive", str(d), "--today", "2026-11-16", "--write")
     arc = d / "todo" / "archive"
     assert sorted(p.name for p in arc.iterdir()) == ["2023", "2024", "2025"]
-    assert not [p for p in (arc / "2023").iterdir() if p.is_dir()]            # 1 per month: one folder
-    assert not [p for p in (arc / "2024").iterdir() if p.is_dir()]            # 5 per month: one folder
-    assert sorted(p.name for p in (arc / "2025").iterdir()) == ["01", "02"]   # 10 per month: split
-    assert (d / "todo" / "closed" / f"{tid(300)}.json").is_file()              # recent stays
+    assert not [p for p in (arc / "2023").iterdir() if p.is_dir()]  # 1 per month: one folder
+    assert not [p for p in (arc / "2024").iterdir() if p.is_dir()]  # 5 per month: one folder
+    assert sorted(p.name for p in (arc / "2025").iterdir()) == ["01", "02"]  # 10 per month: split
+    assert (d / "todo" / "closed" / f"{tid(300)}.json").is_file()  # recent stays
     assert codes(d) == [], check(d)
-    assert "0 move(s)" in v2("archive", str(d), "--today", "2026-11-16")      # idempotent
+    assert "0 move(s)" in v2("archive", str(d), "--today", "2026-11-16")  # idempotent
 
 
 def test_archive_keep_closed_limit():
@@ -188,12 +203,15 @@ def test_unknown_values_are_listed_for_triage():
 
 def test_migration_fills_defaults():
     src = Path(tempfile.mkdtemp())
-    (src / "TODO.md").write_text("# TODO\n\n- [ ] Do the thing.\n\n- [ ] **Core:** Urgent thing.\n\n"
-                                 "  Priority: urgent\n\n  Labels: bug\n")
+    (src / "TODO.md").write_text(
+        "# TODO\n\n- [ ] Do the thing.\n\n- [ ] **Core:** Urgent thing.\n\n  Priority: urgent\n\n  Labels: bug\n"
+    )
     out = Path(tempfile.mkdtemp())
     subprocess.run([sys.executable, str(HERE / "migrate_v1.py"), str(src), str(out)], check=True, capture_output=True)
-    got = sorted((t["priority"], t["category"], t["type"]) for t in
-                 (json.loads(p.read_text()) for p in (out / "todo" / "open").glob("*.json")))
+    got = sorted(
+        (t["priority"], t["category"], t["type"])
+        for t in (json.loads(p.read_text()) for p in (out / "todo" / "open").glob("*.json"))
+    )
     assert got == [("untriaged", "general", "untriaged"), ("urgent", "core", "bug")], got
     assert [c for c in codes(out) if c != "J010"] == [], check(out)
 
@@ -216,6 +234,7 @@ def test_notes_round_trip_any_markdown():
     d = backlog([task(1, notes=MARKDOWN.split("\n"))])
     t = read(d, 1)
     from v2 import lines_text
+
     assert lines_text(t, "notes") == MARKDOWN
     assert codes(d) == [], check(d)
 
@@ -235,11 +254,20 @@ def test_blank_lines_at_the_edges_are_trimmed_by_the_writer():
 
 def test_edits_to_different_lines_of_the_notes_merge():
     import os
+
     d = backlog([task(1, notes=["First paragraph.", "", "Second paragraph.", "", "Third paragraph."])])
-    env = {**os.environ, "GIT_AUTHOR_NAME": "b", "GIT_AUTHOR_EMAIL": "b@x", "GIT_COMMITTER_NAME": "b", "GIT_COMMITTER_EMAIL": "b@x"}
+    env = {
+        **os.environ,
+        "GIT_AUTHOR_NAME": "b",
+        "GIT_AUTHOR_EMAIL": "b@x",
+        "GIT_COMMITTER_NAME": "b",
+        "GIT_COMMITTER_EMAIL": "b@x",
+    }
     g = lambda *a: subprocess.run(["git", *a], cwd=d, capture_output=True, text=True, env=env)  # noqa: E731
     p = d / "todo" / "open" / f"{tid(1)}.json"
-    g("init", "-q", "-b", "base"); g("add", "-A"); g("commit", "-qm", "base")  # noqa: E702
+    g("init", "-q", "-b", "base")
+    g("add", "-A")
+    g("commit", "-qm", "base")  # noqa: E702
     for branch, idx, text in (("a", 0, "First paragraph, reworded."), ("b", 4, "Third paragraph, reworded.")):
         g("checkout", "-q", "-B", branch, "base")
         t = json.loads(p.read_text())
@@ -247,18 +275,36 @@ def test_edits_to_different_lines_of_the_notes_merge():
         p.write_text(canonical(t))
         g("commit", "-qam", branch)
     assert g("merge", "-q", "--no-edit", "a").returncode == 0
-    assert json.loads(p.read_text())["notes"] == ["First paragraph, reworded.", "", "Second paragraph.", "",
-                                                  "Third paragraph, reworded."]
+    assert json.loads(p.read_text())["notes"] == [
+        "First paragraph, reworded.",
+        "",
+        "Second paragraph.",
+        "",
+        "Third paragraph, reworded.",
+    ]
 
 
 def test_secrets_are_flagged_without_showing_them():
     # built at run time, so no token-shaped literal sits in this file
     aws = "AKIA" + "Q7XJ" * 4
     gh = "ghp_" + "x7Yq2" * 8
-    d = backlog([task(1, notes=["Use this key:", "", "-----BEGIN " + "RSA PRIVATE KEY-----", "MIIE...", "-----END RSA PRIVATE KEY-----"]),
-                 task(2, notes=[f"token {gh}"]),
-                 task(4, notes=[f"deployed with {aws}"]),
-                 task(3, notes=["Rotate the API keys; the password reset flow uses a token refresh."])])
+    d = backlog(
+        [
+            task(
+                1,
+                notes=[
+                    "Use this key:",
+                    "",
+                    "-----BEGIN " + "RSA PRIVATE KEY-----",
+                    "MIIE...",
+                    "-----END RSA PRIVATE KEY-----",
+                ],
+            ),
+            task(2, notes=[f"token {gh}"]),
+            task(4, notes=[f"deployed with {aws}"]),
+            task(3, notes=["Rotate the API keys; the password reset flow uses a token refresh."]),
+        ]
+    )
     found = [(p, m) for p, _, c, m in check(d) if c == "J017"]
     assert len(found) == 3, found
     assert all(aws not in m and gh not in m for _, m in found)
@@ -278,13 +324,25 @@ def test_migration_keeps_markdown_lines():
         "  Done when: exports of 10k rows succeed\n  and CI is green.\n\n"
         "- [!] **Core:** Ship it.\n\n"
         "  Waiting for the release manager. Smallest unblock: ask Ana for a slot.\n\n"
-        "  Context stays in the notes.\n")
+        "  Context stays in the notes.\n"
+    )
     out = Path(tempfile.mkdtemp())
     subprocess.run([sys.executable, str(HERE / "migrate_v1.py"), str(src), str(out)], check=True, capture_output=True)
     tasks = {t["title"]: t for t in (json.loads(p.read_text()) for p in (out / "todo" / "open").glob("*.json"))}
     fix = tasks["Fix the export"]
-    assert fix["notes"] == ["It fails for large accounts,", "hard-wrapped in v1.", "", "- first step", "- second step", "",
-                            "```sh", "pnpm test -- export", "", "pnpm e2e export", "```"], fix["notes"]
+    assert fix["notes"] == [
+        "It fails for large accounts,",
+        "hard-wrapped in v1.",
+        "",
+        "- first step",
+        "- second step",
+        "",
+        "```sh",
+        "pnpm test -- export",
+        "",
+        "pnpm e2e export",
+        "```",
+    ], fix["notes"]
     assert fix["done_when"] == ["exports of 10k rows succeed", "and CI is green."], fix["done_when"]
     ship = tasks["Ship it"]
     assert ship["blocker"] == "Waiting for the release manager." and ship["unblock"] == "Ask Ana for a slot.", ship
@@ -352,7 +410,13 @@ def test_created_by_accepts_people_and_agents():
 
 
 def test_claim():
-    d = backlog([task(1), task(2, "blocked", blocker="Vendor."), task(3, "in_progress", assignees=["bob"], started="2026-11-10")])
+    d = backlog(
+        [
+            task(1),
+            task(2, "blocked", blocker="Vendor."),
+            task(3, "in_progress", assignees=["bob"], started="2026-11-10"),
+        ]
+    )
     v2("claim", str(d), tid(1), "--as", "agent:claude", "--today", "2026-11-16", "--write")
     t = read(d, 1)
     assert (t["state"], t["assignees"], t["started"]) == ("in_progress", ["agent:claude"], "2026-11-16"), t
@@ -366,10 +430,19 @@ def test_claim():
 
 def test_two_agents_claiming_on_two_branches_conflict_in_git():
     import os
+
     d = backlog([task(1)])
-    env = {**os.environ, "GIT_AUTHOR_NAME": "b", "GIT_AUTHOR_EMAIL": "b@x", "GIT_COMMITTER_NAME": "b", "GIT_COMMITTER_EMAIL": "b@x"}
+    env = {
+        **os.environ,
+        "GIT_AUTHOR_NAME": "b",
+        "GIT_AUTHOR_EMAIL": "b@x",
+        "GIT_COMMITTER_NAME": "b",
+        "GIT_COMMITTER_EMAIL": "b@x",
+    }
     g = lambda *a: subprocess.run(["git", *a], cwd=d, capture_output=True, text=True, env=env)  # noqa: E731
-    g("init", "-q", "-b", "base"); g("add", "-A"); g("commit", "-qm", "base")  # noqa: E702
+    g("init", "-q", "-b", "base")
+    g("add", "-A")
+    g("commit", "-qm", "base")  # noqa: E702
     for who in ("agent:claude", "agent:codex"):
         g("checkout", "-q", "-B", who.replace(":", "-"), "base")
         v2("claim", str(d), tid(1), "--as", who, "--write")
@@ -379,9 +452,29 @@ def test_two_agents_claiming_on_two_branches_conflict_in_git():
 
 def test_add_shows_similar_tasks_and_writes_a_valid_file():
     d = backlog([{**task(1), "title": "Fix the race condition in autocomplete"}])
-    out = v2("add", str(d), "--title", "Resolve the race condition in autocomplete", "--category", "core",
-             "--type", "bug", "--priority", "high", "--created-by", "agent:claude", "--discovered-from", tid(1),
-             "--note", "Seen twice.", "--link", "https://example.com/issue/1", "--today", "2026-11-16", "--write")
+    out = v2(
+        "add",
+        str(d),
+        "--title",
+        "Resolve the race condition in autocomplete",
+        "--category",
+        "core",
+        "--type",
+        "bug",
+        "--priority",
+        "high",
+        "--created-by",
+        "agent:claude",
+        "--discovered-from",
+        tid(1),
+        "--note",
+        "Seen twice.",
+        "--link",
+        "https://example.com/issue/1",
+        "--today",
+        "2026-11-16",
+        "--write",
+    )
     assert "similar" in out and tid(1)[:10] in out, out
     new = [json.loads(p.read_text()) for p in (d / "todo" / "open").glob("*.json") if tid(1) not in p.name][0]
     assert (new["created"], new["created_by"], new["discovered_from"]) == ("2026-11-16", "agent:claude", tid(1))

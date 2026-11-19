@@ -4,10 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tadu.doctor_checks_for import doctor_checks_for
-from tadu.finding import Finding
 from tadu.format_finding import format_finding
-from tadu.unreadable_file_error import UnreadableFileError
+from tadu.root_findings import root_findings
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -15,20 +13,14 @@ if TYPE_CHECKING:
 
 def hook_report(root: Path, limit: int) -> str | None:
     """The doctor errors for `root` as text for the agent, or None when there are none."""
-    errors: list[Finding] = []
-    for check in doctor_checks_for(root):
-        try:
-            findings = check(root)
-        except UnreadableFileError as error:
-            findings = (Finding("E001", "error", str(error.path), 0, str(error)),)
-        errors.extend(finding for finding in findings if finding.severity == "error")
+    errors = [finding for finding in root_findings(root) if finding.severity == "error"]
     if not errors:
         return None
     lines = [format_finding(finding, as_json=False) for finding in errors[:limit]]
     more = [f"... and {len(errors) - limit} more"] if len(errors) > limit else []
     head = (
         f"tadu doctor {root} reports {len(errors)} error(s) after this change. If the paired "
-        "paired backlog edit is still to come, recheck after it; otherwise fix them "
+        "backlog edit is still to come, recheck after it; otherwise fix them "
         "before committing (`tadu close` moves an item and writes its log entry):"
     )
     return "\n".join([head, *lines, *more])

@@ -46,7 +46,7 @@ def apply_task_change(task: dict[str, object], change: str, todo: Path) -> dict[
             msg = f"{key} is not a list: use {key}=value"
             raise TaskCommandError(msg)
         single = resolve_task_ids(todo, [value])[0] if key in TASK_ID_KEYS and value else value
-        return {**task, key: int(single) if key == "estimate" and single.isdigit() else single}
+        return {**task, key: int(single) if key == "estimate" and single.isdecimal() else single}
     parts = [value] if key in TASK_LINE_KEYS else [p.strip() for p in value.split(",") if p.strip()]
     items = resolve_task_ids(todo, parts) if key in TASK_ID_LIST_KEYS else parts
     current = list(task_strings(task, key))

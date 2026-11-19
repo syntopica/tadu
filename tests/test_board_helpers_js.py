@@ -1,28 +1,22 @@
-import json
-
 import pytest
-from board_js import board_js, js_card
+from board_js import board_results, js_card, js_rule, js_where
 
 COLUMNS = ["backlog", "ready", "in_progress", "blocked", "done", "cancelled"]
 COUNTS = {"backlog": 2, "ready": 0, "in_progress": 0, "blocked": 1, "done": 0, "cancelled": 3}
-FILTERS = {
-    "organization": "acme",
-    "role": "client",
-    "assignee": "",
-    "priority": "high",
-    "kind": "decision",
-    "label": "",
-    "dueBefore": "2026-12-01",
-    "unassigned": True,
-    "noPriority": False,
-    "waitingOnMe": False,
-    "showCancelled": True,
-    "column": "in_progress",
-}
+RULES = [
+    js_rule("organization", "any", "client:acme", "agency:ghost"),
+    js_rule("priority", "any", "high"),
+    js_rule("kind", "not", "decision"),
+    js_rule("milestone", "any", "m1", "m2", "m3", "m4"),
+    js_rule("due", "any", "before:2026-12-01", "overdue"),
+    js_rule("assignee", "empty"),
+    js_rule("state", "any", "in_progress", "ready"),
+    js_rule("assignee", "any", "ana", "bo"),
+]
 CARDS = [
-    js_card(project="b", labels=["ux", "api"]),
+    js_card(project="b", labels=["ux", "api"], assignees=["bo"]),
     js_card(project="a", labels=["ux"]),
-    js_card(project="b"),
+    js_card(project="b", assignees=["ana", "bo"]),
     js_card(project=None),
 ]
 SCRIPT = """
@@ -32,7 +26,9 @@ const { nextKey } = await load("next-key.js");
 const { nextTheme } = await load("next-theme.js");
 const { plural } = await load("plural.js");
 const { distinctValues } = await load("distinct-values.js");
-const { activeChips } = await load("active-chips.js");
+const { ruleParts } = await load("rule-parts.js");
+const { valueLabel } = await load("value-label.js");
+const { ITEM_FIELDS } = await load("item-fields.js");
 const { listEmptyText } = await load("list-empty-text.js");
 const { summaryOrder } = await load("summary-order.js");
 const { parseHash } = await load("parse-hash.js");
@@ -40,8 +36,14 @@ const { hashText } = await load("hash-text.js");
 const { pushRecent } = await load("push-recent.js");
 const { toggleFavourite } = await load("toggle-favourite.js");
 const w = (company = "", project = "", repository = "") => ({ company, project, repository });
-const recent = [1, 2, 3, 4, 5].reduce((list, n) => pushRecent(list, w(`c${n}`)), []);
-const [columns, counts, filters, cards] = ARGS;
+const recent = [1, 2, 3, 4, 5].reduce((list, n) => pushRecent(list, [w(`c${n}`)]), []);
+const [columns, counts, rules, cards] = ARGS;
+const names = new Map([["acme", "Acme Inc"]]);
+const chip = (rule) => {
+  const title = ITEM_FIELDS.find((field) => field.key === rule.field).title;
+  const parts = ruleParts(rule, title, (value) => valueLabel(rule.field, value, names, "ana"));
+  return [parts.title, parts.op, parts.values].join(" | ");
+};
 out({
   columns: [
     boardColumns(columns, counts, false, false),
@@ -60,17 +62,27 @@ out({
   order: [summaryOrder(columns, false), summaryOrder(["backlog", "blocked", "done"], true)],
   themes: ["auto", "light", "dark", "bogus"].map(nextTheme),
   plural: [plural(1, "warning"), plural(1200, "warning"), plural(0, "item"), plural(3, "repository")],
-  distinct: [distinctValues(cards, "label"), distinctValues(cards, "project")],
-  chips: activeChips(filters, new Map([["acme", "Acme Inc"]])).map((chip) => chip.label),
-  rawOrg: activeChips({ ...filters, organization: "ghost" }, new Map())[0].label,
-  hash: [hashText(w("pp", "gtm"), "board"), hashText(w(), "all"), hashText(w("a&b"), "done")],
-  parsed: [parseHash("#company=pp&view=blocked"), parseHash(""), parseHash(hashText(w("a&b"), "x"))],
-  recent: [
-    recent.map((r) => r.company),
-    pushRecent(recent, w("c3")).map((r) => r.company),
-    pushRecent([], w()).length,
+  distinct: [distinctValues(cards, "label"), distinctValues(cards, "assignee")],
+  chips: rules.map(chip),
+  labels: [valueLabel("kind", "unclassified", names, null), valueLabel("state", "x", names, null), valueLabel("label", "ux", names, null)],
+  hash: [
+    hashText([w("pp", "gtm")], "board"),
+    hashText([], "all"),
+    hashText([w("a&b"), w("", "", "r:1")], "done"),
   ],
-  starred: [toggleFavourite([], w("pp")), toggleFavourite([w("pp"), w("br")], w("pp"))],
+  parsed: [
+    parseHash("#company=pp&project=gtm&view=blocked"),
+    parseHash(""),
+    parseHash(hashText([w("a&b"), w("", "", "r:1")], "x")),
+    parseHash("#place=ghost:x&place=project:p"),
+    parseHash("#place=ghost:x"),
+  ],
+  recent: [
+    recent.map((r) => r[0].company),
+    pushRecent(recent, [w("c3")]).map((r) => r[0].company),
+    pushRecent([], []).length,
+  ],
+  starred: [toggleFavourite([], [w("pp")]), toggleFavourite([[w("pp")], [w("br")]], [w("pp")])],
   empty: [listEmptyText("mine", false), listEmptyText("all", false), listEmptyText("done", true)],
 });
 """
@@ -78,9 +90,7 @@ out({
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps([COLUMNS, COUNTS, FILTERS, CARDS])))
-    assert isinstance(result, dict)
-    return result
+    return board_results(SCRIPT, [COLUMNS, COUNTS, RULES, CARDS])
 
 
 def test_columns_and_navigation(results: dict[str, object]) -> None:
@@ -101,18 +111,18 @@ def test_columns_and_navigation(results: dict[str, object]) -> None:
 
 def test_labels_and_values(results: dict[str, object]) -> None:
     assert results["plural"] == ["1 warning", "1,200 warnings", "0 items", "3 repositories"]
-    assert results["distinct"] == [["api", "ux"], ["a", "b"]]
+    assert results["distinct"] == [["api", "ux"], ["ana", "bo"]]
     assert results["chips"] == [
-        "Organization: Acme Inc",
-        "Role: client",
-        "Priority: High",
-        "Kind: Decision",
-        "Due before: 2026-12-01",
-        "Unassigned",
-        "Cancelled shown",
-        "State: In progress",
+        "Organization | is any of | Client: Acme Inc, Agency: ghost",
+        "Priority | is | High",
+        "Kind | is not | Decision",
+        "Milestone | is any of | m1, m2 +2",
+        "Due date | is any of | Before 2026-12-01, Overdue",
+        "Assignee | is empty | ",
+        "State | is any of | In progress, Ready",
+        "Assignee | is any of | ana (me), bo",
     ]
-    assert results["rawOrg"] == "Organization: ghost"
+    assert results["labels"] == ["Unclassified", "x", "ux"]
     assert results["empty"] == [
         "Nothing open is assigned to you.",
         "Nothing to show.",
@@ -120,20 +130,18 @@ def test_labels_and_values(results: dict[str, object]) -> None:
     ]
 
 
-def w(company: str = "", project: str = "", repository: str = "") -> dict[str, str]:
-    return {"company": company, "project": project, "repository": repository}
-
-
 def test_scope_hash_recent_and_starred(results: dict[str, object]) -> None:
     assert results["hash"] == [
-        "#company=pp&project=gtm&view=board",
+        "#place=project%3Agtm&view=board",
         "#view=all",
-        "#company=a%26b&view=done",
+        "#place=company%3Aa%26b&place=repository%3Ar%3A1&view=done",
     ]
     assert results["parsed"] == [
-        {"given": True, "where": w("pp"), "view": "blocked"},
-        {"given": False, "where": w(), "view": None},
-        {"given": True, "where": w("a&b"), "view": "x"},
+        {"given": True, "places": [js_where("pp", "gtm")], "view": "blocked"},
+        {"given": False, "places": [], "view": None},
+        {"given": True, "places": [js_where("a&b"), js_where("", "", "r:1")], "view": "x"},
+        {"given": True, "places": [js_where("", "p")], "view": None},
+        {"given": True, "places": [], "view": None},
     ]
     assert results["recent"] == [["c5", "c4", "c3", "c2", "c1"], ["c3", "c5", "c4", "c2", "c1"], 0]
-    assert results["starred"] == [[w("pp")], [w("br")]]
+    assert results["starred"] == [[[js_where("pp")]], [[js_where("br")]]]

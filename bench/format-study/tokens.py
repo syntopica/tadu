@@ -27,6 +27,7 @@ def _load():
         if c and os.path.isfile(c):
             try:
                 from tokenizers import Tokenizer
+
                 _TOK = Tokenizer.from_file(c)
                 return _TOK
             except Exception:  # noqa: BLE001

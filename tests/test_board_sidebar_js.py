@@ -29,7 +29,7 @@ globalThis.document = {
 const { renderSidebar } = await load("render-sidebar.js");
 const store = (payload) => ({
   navOpen: false, view: "board", index: null, favourites: [], recent: [], saved: [], cards: [],
-  where: { company: "", project: "", repository: "" }, sideOpen: new Set(),
+  places: [], sideOpen: new Set(),
   theme: "auto", payload,
 });
 const rows = () => ids["nav-workspace-views"].children.map((row) => ({

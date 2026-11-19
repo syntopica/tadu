@@ -1,7 +1,5 @@
-import json
-
 import pytest
-from board_js import board_js
+from board_js import board_results
 
 VALUES = ["shop", "shop-admin", "Blog", "agents", "atrium"]
 TYPED = ["", "  ", "shop", " shop ", "blog", "BLOG", "admin", "a", "nothing", "shop-"]
@@ -9,12 +7,12 @@ SCRIPT = """
 const { resolveChoice } = await load("resolve-choice.js");
 const { restoreDrill } = await load("restore-drill.js");
 const [values, typed] = ARGS;
-const before = { filters: { role: "" }, text: "fix", scope: "mine", where: { company: "pp" } };
+const before = { filters: { role: "" }, text: "fix", scope: "mine", places: [{ company: "pp" }] };
 const drilled = {
-  filters: { role: "client" }, text: "", scope: "all", where: { company: "x" }, beforeDrill: before,
+  filters: { role: "client" }, text: "", scope: "all", places: [{ company: "x" }], beforeDrill: before,
 };
 restoreDrill(drilled);
-const untouched = { filters: { role: "x" }, text: "t", scope: "all", where: {}, beforeDrill: null };
+const untouched = { filters: { role: "x" }, text: "t", scope: "all", places: [], beforeDrill: null };
 restoreDrill(untouched);
 const twice = { ...drilled, filters: { role: "other" } };
 restoreDrill(twice);
@@ -29,9 +27,7 @@ out({
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps([VALUES, TYPED])))
-    assert isinstance(result, dict)
-    return result
+    return board_results(SCRIPT, [VALUES, TYPED])
 
 
 def test_typed_text_names_one_value_or_none(results: dict[str, object]) -> None:
@@ -56,14 +52,14 @@ def test_returning_to_portfolio_restores_what_the_drill_down_replaced(
         "filters": {"role": ""},
         "text": "fix",
         "scope": "mine",
-        "where": {"company": "pp"},
+        "places": [{"company": "pp"}],
         "beforeDrill": None,
     }
     assert results["untouched"] == {
         "filters": {"role": "x"},
         "text": "t",
         "scope": "all",
-        "where": {},
+        "places": [],
         "beforeDrill": None,
     }
     assert results["twice"] == {"role": "other"}

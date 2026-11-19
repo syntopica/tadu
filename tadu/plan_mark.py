@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from tadu.mark_request import MarkRequest
 
 
-def plan_mark(root: Path, match: str, request: MarkRequest) -> tuple[str, str, int] | None:
+def plan_mark(root: Path, match: str | int, request: MarkRequest) -> tuple[str, str, int] | None:
     """(text read, new text, 1-based item line), or None after reporting a refusal."""
     path = root / "TODO.md"
     before = read_todo_text(path)

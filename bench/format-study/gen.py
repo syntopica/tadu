@@ -23,10 +23,12 @@ import json
 import random
 import sqlite3
 import uuid
+from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 
 import vocab as V
+from tq import ITEM_TABLE
 
 TODAY = date(2026, 11, 16)  # a Monday; "this week" = 2026-11-16 .. 2026-11-22
 WEEK_END = TODAY + timedelta(days=6)
@@ -38,10 +40,23 @@ SCALES = {
     "L": (2500, 25000, 1500),
 }
 
-QUALIFIERS = ["for admins", "on Safari", "for EU tenants", "in the mobile app", "after login",
-              "for invited users", "on the free plan", "in the export path", "behind the proxy",
-              "for large accounts", "during onboarding", "in the legacy view", "for API clients",
-              "on first load", "in read-only mode"]
+QUALIFIERS = [
+    "for admins",
+    "on Safari",
+    "for EU tenants",
+    "in the mobile app",
+    "after login",
+    "for invited users",
+    "on the free plan",
+    "in the export path",
+    "behind the proxy",
+    "for large accounts",
+    "during onboarding",
+    "in the legacy view",
+    "for API clients",
+    "on first load",
+    "in read-only mode",
+]
 
 STATE_WORD = {" ": "pending", "~": "in_progress", "!": "blocked", "x": "done", "-": "cancelled"}
 
@@ -66,10 +81,16 @@ class Generator:
         for attempt in range(200):
             comp = rng.choice(comps)
             tpl = rng.choice(V.TEMPLATES[typ])
-            text = tpl.format(c=comp, s=rng.choice(V.SYMPTOMS), n=rng.choice(V.SYMPTOM_NOUNS),
-                              f=rng.choice(V.FEATURES), d=rng.choice(V.DEPENDENCIES),
-                              t=rng.choice(V.TEST_CASES), a=rng.choice(V.DOC_ASPECTS),
-                              o=rng.choice(V.PERF_OPS))
+            text = tpl.format(
+                c=comp,
+                s=rng.choice(V.SYMPTOMS),
+                n=rng.choice(V.SYMPTOM_NOUNS),
+                f=rng.choice(V.FEATURES),
+                d=rng.choice(V.DEPENDENCIES),
+                t=rng.choice(V.TEST_CASES),
+                a=rng.choice(V.DOC_ASPECTS),
+                o=rng.choice(V.PERF_OPS),
+            )
             text = text[0].upper() + text[1:]
             phrase = None
             if topic:
@@ -94,11 +115,18 @@ class Generator:
         display, synonyms, _, src = V.CATEGORIES[cat]
         prose_category = display if rng.random() < 0.72 else rng.choice(synonyms)
         pr = rng.random()
-        priority = ("urgent" if pr < 0.03 else "high" if pr < 0.15 else "normal" if pr < 0.50
-                    else "low" if pr < 0.65 else None)
+        priority = (
+            "urgent" if pr < 0.03 else "high" if pr < 0.15 else "normal" if pr < 0.50 else "low" if pr < 0.65 else None
+        )
         it: dict = {
-            "id": self.uid(), "title": title, "category": cat, "type": typ, "topic": topic,
-            "topic_phrase": phrase, "component": comp, "priority": priority,
+            "id": self.uid(),
+            "title": title,
+            "category": cat,
+            "type": typ,
+            "topic": topic,
+            "topic_phrase": phrase,
+            "component": comp,
+            "priority": priority,
             "prose_category": prose_category,
             "files": [f"{src}/{comp.replace(' ', '_').lower()}.ts"],
         }
@@ -106,8 +134,7 @@ class Generator:
             s = rng.random()
             it["state"] = " " if s < 0.70 else "~" if s < 0.88 else "!"
             it["queue"] = "ready" if it["state"] == " " and rng.random() < 0.2 else "backlog"
-            it["due"] = (TODAY + timedelta(days=rng.randint(-21, 60))).isoformat() \
-                if rng.random() < 0.25 else None
+            it["due"] = (TODAY + timedelta(days=rng.randint(-21, 60))).isoformat() if rng.random() < 0.25 else None
             body = [rng.choice(V.CONTEXT_SENTENCES)]
             if it["state"] == "!":
                 body.insert(0, rng.choice(V.BLOCKERS) + " Smallest unblock: ask the owner today.")
@@ -132,10 +159,10 @@ class Generator:
                 it["result"] = rng.choice(V.RESULTS).format(c=comp)
                 it["result"] = it["result"][0].upper() + it["result"][1:]
                 it["evidence"] = rng.choice(V.EVIDENCE).format(
-                    slug=slug, pr=rng.randint(100, 9999), sha=f"{rng.getrandbits(28):07x}")
+                    slug=slug, pr=rng.randint(100, 9999), sha=f"{rng.getrandbits(28):07x}"
+                )
             else:
-                it["resolution"] = rng.choice(V.RESOLUTIONS).format(
-                    topic=V.TOPICS[rng.choice(topics)][0])
+                it["resolution"] = rng.choice(V.RESOLUTIONS).format(topic=V.TOPICS[rng.choice(topics)][0])
         return it
 
     def due_prose(self, d: date) -> str:
@@ -161,8 +188,14 @@ def generate(scale: str, seed: int) -> dict:
         log_items.append(g.item(closed, topics))
     log_items.sort(key=lambda i: i["closed"], reverse=True)  # newest first, like many logs
     dups = dup_candidates(g, open_items, log_items)
-    return {"today": TODAY.isoformat(), "week_end": WEEK_END.isoformat(), "scale": scale,
-            "open": open_items, "log": log_items, "dups": dups}
+    return {
+        "today": TODAY.isoformat(),
+        "week_end": WEEK_END.isoformat(),
+        "scale": scale,
+        "open": open_items,
+        "log": log_items,
+        "dups": dups,
+    }
 
 
 def paraphrase(rng: random.Random, it: dict) -> str:
@@ -188,11 +221,9 @@ def dup_candidates(g: Generator, open_items: list[dict], log_items: list[dict]) 
     rng = random.Random(99)
     out = []
     for it in rng.sample(open_items, min(40, len(open_items))):
-        out.append({"text": paraphrase(rng, it), "category": it["category"], "dup_of": it["id"],
-                    "where": "open"})
+        out.append({"text": paraphrase(rng, it), "category": it["category"], "dup_of": it["id"], "where": "open"})
     for it in rng.sample(log_items, min(20, len(log_items))):
-        out.append({"text": paraphrase(rng, it), "category": it["category"], "dup_of": it["id"],
-                    "where": "log"})
+        out.append({"text": paraphrase(rng, it), "category": it["category"], "dup_of": it["id"], "where": "log"})
     # Hard negatives: same category, component and topic, but genuinely different work.
     for it in rng.sample(open_items, min(40, len(open_items))):
         typ = rng.choice([t for t in V.TEMPLATES if t != it["type"]])
@@ -287,8 +318,11 @@ def md_log(items: list[dict], fields: bool) -> tuple[str, dict]:
             labels = [it["type"], *([it["topic"]] if it["topic"] else [])]
             lines += ["", f"  Labels: {', '.join(labels)}", ""]
         if it["state"] == "x":
-            lines += [f"  - Result: {it['result']}", f"  - Evidence: {it['evidence']}",
-                      f"  - Files: `{it['files'][0]}`"]
+            lines += [
+                f"  - Result: {it['result']}",
+                f"  - Evidence: {it['evidence']}",
+                f"  - Files: `{it['files'][0]}`",
+            ]
         else:
             lines += [f"  - Resolution: {it['resolution']}"]
         spans[it["id"]] = [first, len(lines)]
@@ -298,8 +332,11 @@ def md_log(items: list[dict], fields: bool) -> tuple[str, dict]:
 def record(it: dict, closed: bool) -> dict:
     """The structured record used by JSONL, JSON, YAML and SQLite."""
     rec = {
-        "id": it["id"], "state": STATE_WORD[it["state"]], "title": it["title"] + ".",
-        "category": it["category"], "labels": [it["type"], *([it["topic"]] if it["topic"] else [])],
+        "id": it["id"],
+        "state": STATE_WORD[it["state"]],
+        "title": it["title"] + ".",
+        "category": it["category"],
+        "labels": [it["type"], *([it["topic"]] if it["topic"] else [])],
         "priority": it["priority"],
     }
     if closed:
@@ -331,15 +368,21 @@ def write_all(data: dict, out: Path) -> None:
     d.mkdir(exist_ok=True)
     for name, recs in (("TODO.jsonl", recs_open), ("TODO_LOG.jsonl", recs_log)):
         (d / name).write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in recs))
-    (d / "_lines.json").write_text(json.dumps({
-        "TODO.jsonl": {r["id"]: [n + 1, n + 1] for n, r in enumerate(recs_open)},
-        "TODO_LOG.jsonl": {r["id"]: [n + 1, n + 1] for n, r in enumerate(recs_log)}}))
+    (d / "_lines.json").write_text(
+        json.dumps(
+            {
+                "TODO.jsonl": {r["id"]: [n + 1, n + 1] for n, r in enumerate(recs_open)},
+                "TODO_LOG.jsonl": {r["id"]: [n + 1, n + 1] for n, r in enumerate(recs_log)},
+            }
+        )
+    )
     d = out / "json"
     d.mkdir(exist_ok=True)
     (d / "TODO.json").write_text(json.dumps(recs_open, indent=2, ensure_ascii=False) + "\n")
     (d / "TODO_LOG.json").write_text(json.dumps(recs_log, indent=2, ensure_ascii=False) + "\n")
     try:
         import yaml  # only for the size table
+
         d = out / "yaml"
         d.mkdir(exist_ok=True)
         (d / "TODO.yaml").write_text(yaml.safe_dump(recs_open, sort_keys=False, allow_unicode=True, width=100))
@@ -357,18 +400,15 @@ def write_all(data: dict, out: Path) -> None:
 def write_textdb(data: dict, out: Path) -> None:
     """The follow-up formats (one file per task, text databases): see textdb.py."""
     import textdb
+
     textdb.render([record(i, False) for i in data["open"]] + [record(i, True) for i in data["log"]], out)
     log, _ = md_log(data["log"], True)
     (out / "hybrid" / "TODO_LOG.md").write_text(log)
 
 
-SCHEMA = """
-CREATE TABLE item (
-  id TEXT PRIMARY KEY, open INTEGER NOT NULL, state TEXT NOT NULL, title TEXT NOT NULL,
-  category TEXT, labels TEXT NOT NULL DEFAULT '', priority TEXT, due TEXT, queue TEXT,
-  closed TEXT, body TEXT NOT NULL DEFAULT '', result TEXT, evidence TEXT, resolution TEXT,
-  files TEXT, seq INTEGER NOT NULL
-);
+SCHEMA = (
+    ITEM_TABLE
+    + """
 CREATE INDEX item_open ON item(open, state);
 CREATE INDEX item_due ON item(due) WHERE due IS NOT NULL;
 CREATE INDEX item_priority ON item(priority);
@@ -376,6 +416,7 @@ CREATE INDEX item_category ON item(category);
 CREATE VIRTUAL TABLE item_fts USING fts5(title, body, labels, content='item',
   content_rowid='rowid', tokenize='porter unicode61');
 """
+)
 
 
 def build_sqlite(path: Path, recs_open: list[dict], recs_log: list[dict]) -> None:
@@ -383,10 +424,26 @@ def build_sqlite(path: Path, recs_open: list[dict], recs_log: list[dict]) -> Non
     con.executescript(SCHEMA)
     rows = []
     for seq, (r, is_open) in enumerate([(r, 1) for r in recs_open] + [(r, 0) for r in recs_log]):
-        rows.append((r["id"], is_open, r["state"], r["title"], r["category"],
-                     ",".join(r["labels"]), r["priority"], r.get("due"), r.get("queue"),
-                     r.get("closed"), r.get("body", ""), r.get("result"), r.get("evidence"),
-                     r.get("resolution"), ",".join(r.get("files", [])), seq))
+        rows.append(
+            (
+                r["id"],
+                is_open,
+                r["state"],
+                r["title"],
+                r["category"],
+                ",".join(r["labels"]),
+                r["priority"],
+                r.get("due"),
+                r.get("queue"),
+                r.get("closed"),
+                r.get("body", ""),
+                r.get("result"),
+                r.get("evidence"),
+                r.get("resolution"),
+                ",".join(r.get("files", [])),
+                seq,
+            )
+        )
     con.executemany("INSERT INTO item VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", rows)
     con.execute("INSERT INTO item_fts(item_fts) VALUES ('rebuild')")
     con.commit()
@@ -394,15 +451,23 @@ def build_sqlite(path: Path, recs_open: list[dict], recs_log: list[dict]) -> Non
     con.close()
 
 
+def busiest_topic(truth: dict) -> str:
+    """The topic most open items of the truth carry, the first by name on a tie: the one the
+    topic questions ask about."""
+    counts = Counter(i["topic"] for i in truth["open"] if i["topic"])
+    return max(sorted(counts), key=lambda t: counts[t])
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--scale", default="all")
     ap.add_argument("--out", default=str(Path(__file__).parent / "data"))
     ap.add_argument("--seed", type=int, default=7)
-    ap.add_argument("--textdb-only", action="store_true",
-                    help="render only the follow-up formats from an existing truth.json")
+    ap.add_argument(
+        "--textdb-only", action="store_true", help="render only the follow-up formats from an existing truth.json"
+    )
     a = ap.parse_args()
-    for s in (SCALES if a.scale == "all" else [a.scale]):
+    for s in SCALES if a.scale == "all" else [a.scale]:
         if a.textdb_only:
             write_textdb(json.loads((Path(a.out) / s / "truth.json").read_text()), Path(a.out) / s)
             print(f"{s}: follow-up formats written")

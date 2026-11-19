@@ -1,9 +1,12 @@
-import { DEFAULT_FILTERS } from "./default-filters.js";
+import { cleanFilters } from "./clean-filters.js";
+import { VIEW_TITLES } from "./view-titles.js";
 
 // A saved view as stored, reduced to the known keys with values of the
-// expected type; anything else falls back to its default. Its scope
-// (`where`) is checked against the workspace when restored; a view saved
-// before scopes existed brings its project and repository filters as one.
+// expected type (its filters as cleanFilters reads them); anything else
+// falls back to its default. Its places are checked against the workspace
+// when restored; a view saved with one place (`where`) brings it as a list
+// of one, and one saved before scopes existed its project and repository
+// filters as one place.
 // Null when it has no usable name.
 export function cleanSavedView(raw) {
   if (raw === null || typeof raw !== "object" || typeof raw.name !== "string") {
@@ -15,22 +18,19 @@ export function cleanSavedView(raw) {
   }
   const pick = (value, allowed, fallback) => (allowed.includes(value) ? value : fallback);
   const text = (value) => (typeof value === "string" ? value : "");
-  const filters = {};
-  for (const [key, fallback] of Object.entries(DEFAULT_FILTERS)) {
-    const value = raw.filters?.[key];
-    filters[key] = typeof value === typeof fallback ? value : fallback;
-  }
-  const where = raw.where ?? { project: raw.filters?.project, repository: raw.filters?.repository };
+  const legacy = raw.where ?? { project: raw.filters?.project, repository: raw.filters?.repository };
+  const given = Array.isArray(raw.places) ? raw.places : [legacy];
+  const places = given.filter((place) => place !== null && typeof place === "object").map((place) => ({
+    company: text(place?.company),
+    project: text(place?.project),
+    repository: text(place?.repository),
+  }));
   return {
     name,
-    view: pick(raw.view, ["mine", "all", "blocked", "portfolio", "done", "board"], "board"),
+    view: pick(raw.view, VIEW_TITLES.map(([view]) => view), "board"),
     text: text(raw.text),
-    filters,
-    where: {
-      company: text(where?.company),
-      project: text(where?.project),
-      repository: text(where?.repository),
-    },
+    filters: cleanFilters(raw.filters ?? null),
+    places,
     scope: pick(raw.scope, ["all", "mine", "unassigned"], "all"),
     group: pick(
       raw.group,

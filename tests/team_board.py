@@ -13,6 +13,7 @@ from fake_github import FakeGithub, pkce_challenge
 from tadu.allowed_hosts import allowed_hosts
 from tadu.board_memory import board_memory
 from tadu.board_state import BoardState
+from tadu.cli import main
 from tadu.make_board_handler import make_board_handler
 from tadu.sign_in_settings import IDLE_TIMEOUT_SECONDS
 
@@ -20,18 +21,19 @@ NONCES = itertools.count()
 
 
 @contextmanager
-def serve_team_board(
+def serve_team_board(  # noqa: PLR0913 - one knob each for the sign-in, sessions and what the page may do
     workspace: Path,
     github: FakeGithub,
     public_url: str | None = None,
     *,
     idle_timeout: int = IDLE_TIMEOUT_SECONDS,
+    allow: str = "read",
     **options: object,
 ) -> Iterator[BoardServer]:
     """A board signing in with the fake GitHub, its GitHub ids and sessions kept in the
     workspace as `tadu board` keeps them; behind `public_url`, requests name its host.
     `options` replace fields of the sign-in, such as `limiter` and `proxy_hops`; sessions
-    end after `idle_timeout` seconds unused.
+    end after `idle_timeout` seconds unused; the page may do what `allow` permits.
     """
     server = ThreadingHTTPServer(("127.0.0.1", 0), BaseHTTPRequestHandler)
     port = server.server_address[1]
@@ -39,7 +41,7 @@ def serve_team_board(
     pins, sessions = board_memory(str(workspace), idle_timeout)
     sign_in = replace(github.sign_in(), public_url=url, pins=pins, sessions=sessions, **options)  # type: ignore[arg-type]
     hosts = allowed_hosts("127.0.0.1", port) | {urlsplit(url).netloc}
-    state = BoardState(workspace, 14, "tok", hosts, sign_in)
+    state = BoardState(workspace, 14, "tok", hosts, allow, main, sign_in)
     server.RequestHandlerClass = make_board_handler(state)
     thread = threading.Thread(target=server.serve_forever, args=(0.01,), daemon=True)
     thread.start()

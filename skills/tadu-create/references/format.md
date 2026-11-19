@@ -94,6 +94,8 @@ not a transcript. Treat the log as append-only history: correct material
 mistakes with an explicit amendment rather than rewriting past evidence. Archive
 only complete old years under `docs/todo-log/YYYY.md` if the file becomes
 unwieldy, and never split more granularly than one file per year.
+Move entries verbatim, so the tools still trace an archived entry's history back
+through the log.
 
 ## When a backlog moves to the repository that owns it
 
@@ -401,6 +403,9 @@ github = "ana-studio"
   another id. `backlog` is optional,
   default `.`: the directory holding `TODO.md`, relative to the checkout and
   without `..`, so a monorepo can register a nested backlog as its own entry.
+  `access` is optional, default `admin`: the most a tool may do to the
+  repository through the workspace, `read`, `write` (change items) or `admin`
+  (also rewrite the whole backlog); any other value is an error.
 - `[[project]]`: `key` is required; `name` defaults to the key; `repositories`
   lists repository keys, all of which must exist, and a repository belongs to at
   most one project. `roles` is an inline table from a role name (any string) to
@@ -519,9 +524,10 @@ A card's column follows its state:
 | `[x]` entry of `TODO_LOG.md` | `done` |
 | `[-]` entry of `TODO_LOG.md` | `cancelled` |
 
-Closed entries are read from `TODO_LOG.md` only when dated within the last 14
-days by default and not before the log marker. Cancelled cards are hidden unless
-asked for.
+Closed entries are read from `TODO_LOG.md` and the years archived under
+`docs/todo-log/YYYY.md` beside it, only when dated within the last 14 days by
+default and not before the log marker, which applies to the archived years too.
+Cancelled cards are hidden unless asked for.
 
 ## `tadu list --json`
 

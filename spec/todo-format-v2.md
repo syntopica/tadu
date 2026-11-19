@@ -121,7 +121,8 @@ of `closed`, `result`, `resolution`, `superseded_by`, `duplicate_of`.
 
 **Form.** The same task always gives the same bytes: canonical key order, unknown keys after the
 known ones, `x-` keys last, two-space indent, one array element per line, UTF-8, final newline.
-There is no `updated` field: every parallel edit would conflict on it, and git already records it.
+There is no `updated` field: every parallel edit would conflict on it, and git already records it;
+`tadu show ID --history` reads it there.
 
 ## `todo/tadu.json`
 
@@ -146,8 +147,8 @@ There is no `updated` field: every parallel edit would conflict on it, and git a
   gets month folders only when its months would average at least that many tasks, counting months
   that have tasks, so a quiet year stays one folder. Archiving uses the `closed` date in the file,
   never file times.
-- Any other key is an error, except `x-` keys. `tadu migrate` keeps the headers of `TODO.md` and
-  `TODO_LOG.md` verbatim as `x-format-1-header` (file name to lines); `tadu migrate --recover`
+- Any other key is an error, except `x-` keys. `tadu migrate` keeps the headers of `TODO.md`,
+  `TODO_LOG.md` and the log's archived years verbatim as `x-format-1-header` (file name to lines); `tadu migrate --recover`
   marks the commit it is recovering from as `x-format-1-recovering` until it finishes (doctor's
   C005), then records it in `x-format-1-recovered`, so that it is never redone.
 
@@ -185,7 +186,7 @@ so none can produce a file doctor would reject.
 | command | what it does |
 |---|---|
 | `tadu init --format 2` | creates `todo/tadu.json` and the agent rule block |
-| `tadu migrate` | converts `TODO.md` and `TODO_LOG.md` into task files, then removes them (git keeps their history); run beside a task backlog with them still there, it completes the migration and removes them; `--recover` brings back, from that history, what an older tadu's migrate lost |
+| `tadu migrate` | converts `TODO.md`, `TODO_LOG.md` and the log's archived years (`docs/todo-log/YYYY.md`) into task files, then removes them (git keeps their history); run beside a task backlog with them still there, it completes the migration and removes them; `--recover` brings back, from that history, what an older tadu's migrate lost |
 | `tadu add --title T --category C --type Y --priority P` | shows similar open and closed tasks first, then writes `open/<id>.json` with `created` and `created_by` (`--created-by` or `$TADU_ACTOR`); `--kind K` and `--check-on D` set `kind` and `check_on`, `--not-before D` sets `defer_until`, and an option the task cannot hold is refused |
 | `tadu set ID key=value ...` | changes fields; `key+=v` and `key-=v` for lists, `key=` to remove; moving to `in_progress` sets `started` once |
 | `tadu claim ID --as WHO` | sets the assignee, `in_progress` and `started` at once; refused for a blocked, deferred or closed task, or one someone else has in progress (`--force` takes it over) |
@@ -193,6 +194,7 @@ so none can produce a file doctor would reject.
 | `tadu archive` | applies the archive policy, moving files unchanged |
 | `tadu fmt` | rewrites files that are not in canonical form |
 | `tadu list`, `show`, `ready`, `similar`, `feed`, `board` | read both formats |
+| `tadu show ID --history` | each change git recorded to the task, in every folder it was in, and before a migration to the Markdown item it came from |
 
 `tadu set` never changes `tadu`, `id`, `started` or `closed`, and does not close a task: that is
 `tadu close`, so a closed task always has its proof. Two agents claiming the same task on two

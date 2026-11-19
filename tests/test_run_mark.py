@@ -103,7 +103,7 @@ def test_fields_are_replaced_or_added(tmp_path: Path, capsys: pytest.CaptureFixt
     [
         ([], "give --state or a field to set"),
         (["--due", "soon"], "Due is not a YYYY-MM-DD date"),
-        (["--estimate", "x"], "Estimate"),
+        (["--due", " "], "arguments must not be blank"),
         (["--labels", "a\nb"], "arguments must be single lines"),
     ],
 )

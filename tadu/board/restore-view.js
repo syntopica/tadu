@@ -1,5 +1,5 @@
+import { cleanPlaces } from "./clean-places.js";
 import { cleanSavedView } from "./clean-saved-view.js";
-import { cleanWhere } from "./clean-where.js";
 import { existingFilters } from "./existing-filters.js";
 import { requestRender } from "./request-render.js";
 import { store } from "./store.js";
@@ -14,7 +14,7 @@ export function restoreView(saved) {
   store.view = view.view;
   store.text = view.text;
   store.filters = existingFilters(view.filters, store.cards, store.payload?.columns ?? []);
-  store.where = cleanWhere(view.where, store.index);
+  store.places = cleanPlaces(view.places, store.index);
   store.scope = view.scope;
   store.group = view.group;
   store.sort = view.sort;

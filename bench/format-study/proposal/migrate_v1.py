@@ -81,12 +81,12 @@ def convert(block: list[str], section: str | None, src: str, n: int, categories:
     state, day, text = STATE[m.group(1)], m.group(2), m.group(3)
     cm = CAT.match(text)
     cat_text = cm.group(1) if cm else (section if section and not re.fullmatch(r"\d{4}", section) else None)
-    title = (text[cm.end():] if cm else text).strip()
+    title = (text[cm.end() :] if cm else text).strip()
     lead = ""
     if len(title) > 120:  # v1 titles often carry the description: keep the first sentence as the title
         m2 = re.search(r"(?<=[.!?])\s+(?=[A-Z`*(])", title[:200])
         if m2:
-            title, lead = title[:m2.start()], title[m2.end():]
+            title, lead = title[: m2.start()], title[m2.end() :]
     task: dict = {"tadu": 2, "title": title.rstrip(".")}
     # paragraphs of the continuation, kept as Markdown lines (dedented by the item's two spaces)
     paras: list[list[str]] = [[]]
@@ -131,7 +131,7 @@ def convert(block: list[str], section: str | None, src: str, n: int, categories:
         if md[0].startswith("Depends on:") and re.search(r"t-[0-9a-f]{8}-", " ".join(md)):
             task.setdefault("blocked_by", []).extend(re.findall(r"t-[0-9a-f]{8}-[0-9a-f-]{27}", " ".join(md)))
         elif md[0].startswith("Done when:"):
-            first = md[0][len("Done when:"):].strip()
+            first = md[0][len("Done when:") :].strip()
             add(done_when, ([first] if first else []) + md[1:])
         else:
             add(notes, md)
@@ -163,7 +163,7 @@ def convert(block: list[str], section: str | None, src: str, n: int, categories:
     if state == "blocked" and notes:  # the first paragraph names the blocker (one line in v2)
         cut = notes.index("") if "" in notes else len(notes)
         first = " ".join(x.strip() for x in notes[:cut])
-        notes = notes[cut + 1:]
+        notes = notes[cut + 1 :]
         blocker, _, unblock = first.partition("Smallest unblock:")
         task["blocker"] = blocker.strip() or first
         if unblock.strip():
@@ -191,13 +191,19 @@ def main() -> None:
     ap.add_argument("src")
     ap.add_argument("out")
     ap.add_argument("--today", default=date.today().isoformat())
-    ap.add_argument("--archive-after-days", type=int,
-                    help="enable archiving: closed tasks older than this go to archive/ (default: no archive)")
+    ap.add_argument(
+        "--archive-after-days",
+        type=int,
+        help="enable archiving: closed tasks older than this go to archive/ (default: no archive)",
+    )
     a = ap.parse_args()
     src, root = Path(a.src), Path(a.out) / "todo"
     shutil.rmtree(root, ignore_errors=True)
-    cutoff = ((date.fromisoformat(a.today) - timedelta(days=a.archive_after_days)).isoformat()
-              if a.archive_after_days else "0000")
+    cutoff = (
+        (date.fromisoformat(a.today) - timedelta(days=a.archive_after_days)).isoformat()
+        if a.archive_after_days
+        else "0000"
+    )
     categories: dict[str, str] = {}
     counts = {"open": 0, "closed": 0, "archive": 0}
     for name in ("TODO.md", "TODO_LOG.md"):
@@ -212,8 +218,10 @@ def main() -> None:
     if a.archive_after_days:
         cfg["archive"] = {"after_days": a.archive_after_days}
     (root / "tadu.json").write_text(json.dumps(cfg, indent=2, ensure_ascii=False) + "\n")
-    print(f"{root}: {counts['open']} open, {counts['closed']} closed, {counts['archive']} archived, "
-          f"{len(categories)} categories")
+    print(
+        f"{root}: {counts['open']} open, {counts['closed']} closed, {counts['archive']} archived, "
+        f"{len(categories)} categories"
+    )
 
 
 if __name__ == "__main__":

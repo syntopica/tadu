@@ -50,9 +50,11 @@ def retrieval(out: list[str]) -> None:
     data = json.loads((R / "retrieval.json").read_text())
     rows = data["rows"]
     out.append(f"## Retrieval (tokenizer: {data['tokenizer']})\n")
-    out.append("Mean over the 9 tasks. *Recall* = share of the right items that reached the agent with their "
-               "evidence. *Silent miss* = share the strategy could never surface (the agent is not told). "
-               "*Noise* = wrong items shown, summed over tasks. *Tokens* = mean context spent per task.\n")
+    out.append(
+        "Mean over the 9 tasks. *Recall* = share of the right items that reached the agent with their "
+        "evidence. *Silent miss* = share the strategy could never surface (the agent is not told). "
+        "*Noise* = wrong items shown, summed over tasks. *Tokens* = mean context spent per task.\n"
+    )
     strategies = list(dict.fromkeys(r["strategy"] for r in rows))
     for scale in ("S", "M", "L"):
         rs = [r for r in rows if r["scale"] == scale]
@@ -72,7 +74,8 @@ def retrieval(out: list[str]) -> None:
                 f"{statistics.mean(r.get('silent_miss', 0) for r in x):.2f} | "
                 f"{sum(1 for r in x if r['recall'] == 1.0)}/9 | {sum(r['noise'] for r in x):,} | "
                 f"{fmt_int(statistics.mean(r['tokens'] for r in x))} | {sum(r['calls'] for r in x)} | "
-                f"{fmt_int(statistics.mean(ms)) if ms else '-'} |")
+                f"{fmt_int(statistics.mean(ms)) if ms else '-'} |"
+            )
         out.append("\nTruth sizes: " + ", ".join(f"{k} {v}" for k, v in sorted(t.items())) + "\n")
     # per task detail at the largest scale
     big = max((r["scale"] for r in rows), key="SML".index)
@@ -83,8 +86,11 @@ def retrieval(out: list[str]) -> None:
     for s in strategies:
         x = {r["task"]: r for r in rows if r["scale"] == big and r["strategy"] == s}
         if x:
-            out.append(f"| {LABELS.get(s, s)} | " + " | ".join(
-                f"{x[k]['recall']:.2f} ({x[k].get('silent_miss', 0):.2f})" for k, _ in tasks) + " |")
+            out.append(
+                f"| {LABELS.get(s, s)} | "
+                + " | ".join(f"{x[k]['recall']:.2f} ({x[k].get('silent_miss', 0):.2f})" for k, _ in tasks)
+                + " |"
+            )
     out.append("")
 
 
@@ -94,14 +100,24 @@ def dedupe(out: list[str]) -> None:
         return
     rows = json.loads(p.read_text())
     out.append("## Duplicate check before adding an item\n")
-    out.append("60 paraphrased duplicates (40 of open items, 20 of closed log entries) and 40 hard negatives "
-               "per scale. *Found* = the existing item appears anywhere in the output; *first* / *top 5* = "
-               "at rank 1 / within 5 (grep output is in file order); *shown* = median items the agent must read.\n")
+    out.append(
+        "60 paraphrased duplicates (40 of open items, 20 of closed log entries) and 40 hard negatives "
+        "per scale. *Found* = the existing item appears anywhere in the output; *first* / *top 5* = "
+        "at rank 1 / within 5 (grep output is in file order); *shown* = median items the agent must read.\n"
+    )
     out.append("| scale | method | found | first | top 5 | shown | tokens | ms | truncated |")
     out.append("|---|---|---:|---:|---:|---:|---:|---:|---:|")
     for scale in ("S", "M", "L"):
-        for m in ("grep-or", "grep-and", "tadu-list", "tq-md", "tq-sqlite", "tq-mdcache",
-                  "tadu-similar-v1", "tadu-similar"):
+        for m in (
+            "grep-or",
+            "grep-and",
+            "tadu-list",
+            "tq-md",
+            "tq-sqlite",
+            "tq-mdcache",
+            "tadu-similar-v1",
+            "tadu-similar",
+        ):
             rs = [r for r in rows if r["scale"] == scale and r["method"] == m]
             if not rs:
                 continue
@@ -111,10 +127,13 @@ def dedupe(out: list[str]) -> None:
                 f"{sum(1 for r in d if r['rank'] == 1) / len(d):.2f} | "
                 f"{sum(1 for r in d if r['rank'] and r['rank'] <= 5) / len(d):.2f} | "
                 f"{statistics.median(r['shown'] for r in rs):,.0f} | {statistics.median(r['tokens'] for r in rs):,.0f} | "
-                f"{statistics.median(r['ms'] for r in rs):,.0f} | {sum(r['truncated'] for r in rs)} |")
+                f"{statistics.median(r['ms'] for r in rs):,.0f} | {sum(r['truncated'] for r in rs)} |"
+            )
     # threshold view for the similarity tool
-    out.append("\nSimilarity score of the top hit (`tq similar` Markdown backend, and the built `tadu similar` on "
-               "format 2): how well a threshold separates a real duplicate from new work on the same component.\n")
+    out.append(
+        "\nSimilarity score of the top hit (`tq similar` Markdown backend, and the built `tadu similar` on "
+        "format 2): how well a threshold separates a real duplicate from new work on the same component.\n"
+    )
     out.append("| scale | method | threshold | duplicates flagged (top hit is the dup) | new work wrongly flagged |")
     out.append("|---|---|---:|---:|---:|")
     for scale, method in ((s, m) for s in ("S", "M", "L") for m in ("tq-md", "tadu-similar")):
@@ -141,11 +160,13 @@ def git(out: list[str]) -> None:
     out.append("|---|---|---|---|---|")
     by = defaultdict(dict)
     for r in data["diff"]:
-        by[r["format"]][r["op"]] = ("binary" if r["binary"] else f"+{r['added']} −{r['removed']}, {r['diff_tokens']} tok")
+        by[r["format"]][r["op"]] = "binary" if r["binary"] else f"+{r['added']} −{r['removed']}, {r['diff_tokens']} tok"
     for f, ops in by.items():
         out.append(f"| {f} | {ops['add']} | {ops['set_priority']} | {ops['edit_body']} | {ops['close']} |")
-    out.append("\nTwo branches from one base, one random operation each, merged. *wrong* = git merged cleanly "
-               "but the result lost or duplicated something.\n")
+    out.append(
+        "\nTwo branches from one base, one random operation each, merged. *wrong* = git merged cleanly "
+        "but the result lost or duplicated something.\n"
+    )
     out.append("| variant | scenario | clean | conflict | wrong | what conflicted / went wrong |")
     out.append("|---|---|---:|---:|---:|---|")
     for r in data["merge"]:
@@ -163,8 +184,10 @@ def robust(out: list[str]) -> None:
     out.append("| format | slip | items damaged (mean, max) | items in the backlog | reported by reader or doctor |")
     out.append("|---|---|---:|---:|---:|")
     for r in rows:
-        out.append(f"| {r['format']} | {r['slip']} | {r['mean_affected']:.1f}, {r['max_affected']} | {r['items']} | "
-                   f"{r['reported']:.0%} |")
+        out.append(
+            f"| {r['format']} | {r['slip']} | {r['mean_affected']:.1f}, {r['max_affected']} | {r['items']} | "
+            f"{r['reported']:.0%} |"
+        )
     out.append("")
 
 
@@ -183,14 +206,20 @@ def perf(out: list[str]) -> None:
         o, lg = v.get("open", {}), v.get("log", {})
         if "all (open+log)" in v:
             a = v["all (open+log)"]
-            out.append(f"| {scale} | {f} ({a['files']:,} files, {a['disk'] / 1e6:.1f} MB on disk) | "
-                       f"{fmt_int(a['bytes'])} (all) | {fmt_int(a['tokens'])} (all) | - | - |")
+            out.append(
+                f"| {scale} | {f} ({a['files']:,} files, {a['disk'] / 1e6:.1f} MB on disk) | "
+                f"{fmt_int(a['bytes'])} (all) | {fmt_int(a['tokens'])} (all) | - | - |"
+            )
             continue
         if f == "sqlite":
-            out.append(f"| {scale} | sqlite (one file, open+log) | {fmt_int(v['db (open+log)']['bytes'])} | - | - | - |")
+            out.append(
+                f"| {scale} | sqlite (one file, open+log) | {fmt_int(v['db (open+log)']['bytes'])} | - | - | - |"
+            )
         else:
-            out.append(f"| {scale} | {f} | {fmt_int(o.get('bytes'))} | {fmt_int(o.get('tokens'))} | "
-                       f"{fmt_int(lg.get('bytes'))} | {fmt_int(lg.get('tokens'))} |")
+            out.append(
+                f"| {scale} | {f} | {fmt_int(o.get('bytes'))} | {fmt_int(o.get('tokens'))} | "
+                f"{fmt_int(lg.get('bytes'))} | {fmt_int(lg.get('tokens'))} |"
+            )
     out.append("\n## Speed: one query, new process each time (median ms)\n")
     scales = list(dict.fromkeys(r["scale"] for r in data["reads"]))
     keys = list(dict.fromkeys((r["what"], r["backend"]) for r in data["reads"]))
@@ -201,11 +230,15 @@ def perf(out: list[str]) -> None:
         out.append(f"| {what} | {be} | " + " | ".join(f"{vals.get(s, 0):,.0f}" for s in scales) + " |")
     if data.get("repo"):
         out.append("\n## What the layout costs git (median ms; sizes after `git gc`)\n")
-        out.append("| scale | format | first commit of everything | `git status` | commit one change | .git size | clone |")
+        out.append(
+            "| scale | format | first commit of everything | `git status` | commit one change | .git size | clone |"
+        )
         out.append("|---|---|---:|---:|---:|---:|---:|")
         for r in data["repo"]:
-            out.append(f"| {r['scale']} | {r['format']} | {r['import_commit_ms']:,.0f} | {r['status_ms']:,.0f} | "
-                       f"{r['commit_one_change_ms']:,.0f} | {r['git_dir_bytes'] / 1e6:.1f} MB | {r['clone_ms']:,.0f} |")
+            out.append(
+                f"| {r['scale']} | {r['format']} | {r['import_commit_ms']:,.0f} | {r['status_ms']:,.0f} | "
+                f"{r['commit_one_change_ms']:,.0f} | {r['git_dir_bytes'] / 1e6:.1f} MB | {r['clone_ms']:,.0f} |"
+            )
     out.append("\n## Speed: one write (median ms)\n")
     keys = list(dict.fromkeys((r["format"], r["op"]) for r in data["writes"]))
     out.append("| format | operation | " + " | ".join(scales) + " |")
@@ -239,24 +272,36 @@ def retention(out: list[str]) -> None:
     pol = [r for r in rows if "policy" in r]
     life = [r for r in rows if "layout" in r]
     if pol:
-        out.append("## Finished tasks in a one-JSON-file-per-task backlog: keep, delete or compact (bench_retention.py)\n")
-        out.append("A cleanup commit on top of a repository that held every closed task as a file. *Duplicate check* = "
-                   "paraphrases of closed tasks whose original is still in `tq similar --log` top 5. History query times "
-                   "are single runs without a cache (noisy).\n")
-        out.append("| scale | policy | files | closed tasks queryable | duplicate check on closed work | .git | history query |")
+        out.append(
+            "## Finished tasks in a one-JSON-file-per-task backlog: keep, delete or compact (bench_retention.py)\n"
+        )
+        out.append(
+            "A cleanup commit on top of a repository that held every closed task as a file. *Duplicate check* = "
+            "paraphrases of closed tasks whose original is still in `tq similar --log` top 5. History query times "
+            "are single runs without a cache (noisy).\n"
+        )
+        out.append(
+            "| scale | policy | files | closed tasks queryable | duplicate check on closed work | .git | history query |"
+        )
         out.append("|---|---|---:|---:|---:|---:|---:|")
         for r in pol:
-            out.append(f"| {r['scale']} | {r['policy']} | {r['files']:,} | {r['closed_tasks_queryable']:,} of {r['closed_total']:,} | "
-                       f"{r['dup_of_closed_found']} of {r['dup_of_closed_total']} | {r['git_mb']:.1f} MB | {r['history_query_ms']:,.0f} ms |")
+            out.append(
+                f"| {r['scale']} | {r['policy']} | {r['files']:,} | {r['closed_tasks_queryable']:,} of {r['closed_total']:,} | "
+                f"{r['dup_of_closed_found']} of {r['dup_of_closed_total']} | {r['git_mb']:.1f} MB | {r['history_query_ms']:,.0f} ms |"
+            )
         out.append("")
     if life:
         out.append("## Repository size over a task's lifetime (bench_retention.py --lifetime)\n")
-        out.append("Commit 1: every task exists as an open item. Commit 2: each layout closes them its own way. "
-                   "Sizes after `git gc --aggressive`.\n")
+        out.append(
+            "Commit 1: every task exists as an open item. Commit 2: each layout closes them its own way. "
+            "Sizes after `git gc --aggressive`.\n"
+        )
         out.append("| scale | layout | files now | .git | bytes per task ever created |")
         out.append("|---|---|---:|---:|---:|")
         for r in life:
-            out.append(f"| {r['scale']} | {r['layout']} | {r['files_now']:,} | {r['git_mb']:.1f} MB | {r['bytes_per_task']:,.0f} |")
+            out.append(
+                f"| {r['scale']} | {r['layout']} | {r['files_now']:,} | {r['git_mb']:.1f} MB | {r['bytes_per_task']:,.0f} |"
+            )
         out.append("")
 
 
@@ -264,8 +309,11 @@ def ids(out: list[str]) -> None:
     out.append("## Cost of an identifier in agent output\n")
     out.append("| key style | example | tokens |")
     out.append("|---|---|---:|")
-    for name, ex in (("tadu ID (t-UUID4)", "t-55161023-f3a9-43a3-94df-589ca752fa13"),
-                     ("short unique prefix", "t-55161023"), ("file:line (derived)", "TODO.md:1234")):
+    for name, ex in (
+        ("tadu ID (t-UUID4)", "t-55161023-f3a9-43a3-94df-589ca752fa13"),
+        ("short unique prefix", "t-55161023"),
+        ("file:line (derived)", "TODO.md:1234"),
+    ):
         out.append(f"| {name} | `{ex}` | {tokens.count(ex)} |")
     out.append("")
 

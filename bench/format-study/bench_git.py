@@ -31,27 +31,61 @@ from ops import OPS as BASE_OPS
 from tq import load, parse_md
 
 OPS = {**BASE_OPS, **textdb.OPS}
-BACKEND = {"md_fields": "md", "jsonl": "jsonl", "json": "json", "json_dir": "jsondir", "md_dir": "mddir",
-           "rec": "rec", "csv": "csv", "sqldump": "sqldump", "hybrid": "hybrid"}
+BACKEND = {
+    "md_fields": "md",
+    "jsonl": "jsonl",
+    "json": "json",
+    "json_dir": "jsondir",
+    "md_dir": "mddir",
+    "rec": "rec",
+    "csv": "csv",
+    "sqldump": "sqldump",
+    "hybrid": "hybrid",
+}
 
 HERE = Path(__file__).parent
-FILES = {"md_fields": ["TODO.md", "TODO_LOG.md"], "jsonl": ["TODO.jsonl", "TODO_LOG.jsonl"],
-         "json": ["TODO.json", "TODO_LOG.json"], "sqlite": ["todo.db"],
-         "json_dir": ["todo", "done"], "md_dir": ["todo", "done"], "rec": ["tasks.rec"],
-         "csv": ["tasks.csv", "task_labels.csv"], "sqldump": ["todo.sql"], "hybrid": ["todo", "TODO_LOG.md"]}
+FILES = {
+    "md_fields": ["TODO.md", "TODO_LOG.md"],
+    "jsonl": ["TODO.jsonl", "TODO_LOG.jsonl"],
+    "json": ["TODO.json", "TODO_LOG.json"],
+    "sqlite": ["todo.db"],
+    "json_dir": ["todo", "done"],
+    "md_dir": ["todo", "done"],
+    "rec": ["tasks.rec"],
+    "csv": ["tasks.csv", "task_labels.csv"],
+    "sqldump": ["todo.sql"],
+    "hybrid": ["todo", "TODO_LOG.md"],
+}
 
 
 def git(d: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", *args], cwd=d, capture_output=True, text=True, check=check,
-                          env={**os.environ, "GIT_AUTHOR_NAME": "b", "GIT_AUTHOR_EMAIL": "b@x",
-                               "GIT_COMMITTER_NAME": "b", "GIT_COMMITTER_EMAIL": "b@x"})
+    return subprocess.run(
+        ["git", *args],
+        cwd=d,
+        capture_output=True,
+        text=True,
+        check=check,
+        env={
+            **os.environ,
+            "GIT_AUTHOR_NAME": "b",
+            "GIT_AUTHOR_EMAIL": "b@x",
+            "GIT_COMMITTER_NAME": "b",
+            "GIT_COMMITTER_EMAIL": "b@x",
+        },
+    )
 
 
 def new_rec(rng: random.Random, n: int) -> dict:
     cat = rng.choice(list(V.CATEGORIES))
-    return {"id": "t-" + str(uuid.UUID(int=rng.getrandbits(128), version=4)),  # random, as real IDs are
-            "title": f"New task {n} for {V.CATEGORIES[cat][2][0]}.", "category": cat,
-            "labels": ["feature"], "priority": "normal", "due": None, "body": "Added on a branch."}
+    return {
+        "id": "t-" + str(uuid.UUID(int=rng.getrandbits(128), version=4)),  # random, as real IDs are
+        "title": f"New task {n} for {V.CATEGORIES[cat][2][0]}.",
+        "category": cat,
+        "labels": ["feature"],
+        "priority": "normal",
+        "due": None,
+        "body": "Added on a branch.",
+    }
 
 
 def apply(fmt: str, d: Path, op: str, target: str | dict, n: int) -> dict:
@@ -75,6 +109,7 @@ def state(fmt: str, d: Path) -> tuple[dict, dict, list[str]] | None:
     try:
         if fmt == "sqlite":
             import sqlite3
+
             con = sqlite3.connect(d / "todo.db")
             rows = con.execute("SELECT id, open, priority, body FROM item").fetchall()
             con.close()
@@ -146,8 +181,17 @@ def diff_sizes(fmt: str, src: Path, ids: list[str]) -> list[dict]:
             else:
                 add, rem = add + int(a), rem + int(r)
         text = git(d, "diff", "--cached", "-M").stdout
-        out.append({"format": fmt, "op": op, "added": add, "removed": rem, "binary": binary,
-                    "diff_tokens": tokens.count(text), "diff_text": text if len(text) < 4000 else text[:4000]})
+        out.append(
+            {
+                "format": fmt,
+                "op": op,
+                "added": add,
+                "removed": rem,
+                "binary": binary,
+                "diff_tokens": tokens.count(text),
+                "diff_text": text if len(text) < 4000 else text[:4000],
+            }
+        )
         git(d, "commit", "-qm", op)
     shutil.rmtree(d)
     return out
@@ -185,8 +229,13 @@ def merge_trials(fmt: str, union: bool | str, src: Path, ids: list[str], trials:
             git(d, "merge", "--abort", check=False)
         elif same_item == "close":
             st = state(fmt, d)
-            ok = st is not None and not st[2] and x not in st[0] and x in st[1] and (
-                fmt == "sqlite" or st[1][x].get("priority") == "urgent")
+            ok = (
+                st is not None
+                and not st[2]
+                and x not in st[0]
+                and x in st[1]
+                and (fmt == "sqlite" or st[1][x].get("priority") == "urgent")
+            )
             result["clean" if ok else "wrong"] += 1
             if not ok:
                 result["wrong:" + pair] += 1
@@ -206,8 +255,11 @@ def main() -> None:
     ap.add_argument("--trials", type=int, default=60)
     ap.add_argument("--out", default=str(HERE / "results" / "git.json"))
     ap.add_argument("--formats", nargs="*", help="only these; rows of other formats are kept from --out")
-    ap.add_argument("--append-close", action="store_true",
-                    help="closing a task adds lines and deletes none (textdb formats); variants get a suffix")
+    ap.add_argument(
+        "--append-close",
+        action="store_true",
+        help="closing a task adds lines and deletes none (textdb formats); variants get a suffix",
+    )
     a = ap.parse_args()
     if a.append_close:
         textdb.CLOSE_STYLE["value"] = "append"
@@ -216,29 +268,53 @@ def main() -> None:
     ids = [i["id"] for i in truth["open"]]
     report = {"diff": [], "merge": []}
     formats = a.formats or list(FILES)
-    for fmt in ([] if a.append_close else formats):
+    for fmt in [] if a.append_close else formats:
         report["diff"] += diff_sizes(fmt, src, ids)
     for r in report["diff"]:
-        print(f"diff {r['format']:10} {r['op']:13} +{r['added']:<4} -{r['removed']:<4} "
-              f"binary={r['binary']} tokens={r['diff_tokens']}")
-    variants = [("md_fields", False), ("md_fields", "log"), ("md_fields", True), ("jsonl", False),
-                ("jsonl", "log"), ("jsonl", True), ("json", False), ("sqlite", False),
-                ("json_dir", False), ("md_dir", False), ("rec", False), ("csv", False), ("sqldump", False),
-                ("hybrid", False), ("hybrid", "log")]
+        print(
+            f"diff {r['format']:10} {r['op']:13} +{r['added']:<4} -{r['removed']:<4} "
+            f"binary={r['binary']} tokens={r['diff_tokens']}"
+        )
+    variants = [
+        ("md_fields", False),
+        ("md_fields", "log"),
+        ("md_fields", True),
+        ("jsonl", False),
+        ("jsonl", "log"),
+        ("jsonl", True),
+        ("json", False),
+        ("sqlite", False),
+        ("json_dir", False),
+        ("md_dir", False),
+        ("rec", False),
+        ("csv", False),
+        ("sqldump", False),
+        ("hybrid", False),
+        ("hybrid", "log"),
+    ]
     for fmt, union in [v for v in variants if v[0] in formats]:
         for same in (False, True, "close"):
             c = merge_trials(fmt, union, src, ids, a.trials if not same else a.trials // 3, same)
             name = fmt + {False: "", True: "+union(all)", "log": "+union(log only)"}[union]
             if a.append_close:
                 name += " (append-only close)"
-            scenario = {False: "different items", True: "same item, different fields",
-                        "close": "same item: closed on one branch, edited on the other"}[same]
-            row = {"variant": name, "scenario": scenario,
-                   **{k: c.get(k, 0) for k in ("clean", "conflict", "wrong")},
-                   "by_pair": {k: v for k, v in c.items() if ":" in k}}
+            scenario = {
+                False: "different items",
+                True: "same item, different fields",
+                "close": "same item: closed on one branch, edited on the other",
+            }[same]
+            row = {
+                "variant": name,
+                "scenario": scenario,
+                **{k: c.get(k, 0) for k in ("clean", "conflict", "wrong")},
+                "by_pair": {k: v for k, v in c.items() if ":" in k},
+            }
             report["merge"].append(row)
-            print(f"merge {name:16} {row['scenario']:28} clean={row['clean']:3} "
-                  f"conflict={row['conflict']:3} wrong={row['wrong']:3} {row['by_pair']}", flush=True)
+            print(
+                f"merge {name:16} {row['scenario']:28} clean={row['clean']:3} "
+                f"conflict={row['conflict']:3} wrong={row['wrong']:3} {row['by_pair']}",
+                flush=True,
+            )
     if a.formats and Path(a.out).is_file():
         old = json.loads(Path(a.out).read_text())
         fresh = {r["format"] for r in report["diff"]}

@@ -2,10 +2,11 @@ import { el } from "./el.js";
 import { locationLabel } from "./location-label.js";
 import { metaPart } from "./meta-part.js";
 import { placeLabel } from "./place-label.js";
+import { rowLocation } from "./row-location.js";
 
 // Where a card lives: "Company › Project" on a line of its own, then the
-// repository when the column has room and "TODO.md:61-69" in full; the
-// tooltip carries all of it.
+// repository when the column has room and "TODO.md:61-69" in full (a
+// task's id); the tooltip carries all of it, a task's path too.
 export function metaRow(card) {
   const row = el("span", "meta");
   const location = locationLabel(card);
@@ -15,6 +16,6 @@ export function metaRow(card) {
     row.append(metaPart("building", owner, "meta-place"));
   }
   row.append(metaPart("repo", card.repository, owner === "" ? "meta-only-repo" : "meta-repo"));
-  row.append(metaPart("file", location, "meta-file"));
+  row.append(metaPart("file", rowLocation(card), "meta-file"));
   return row;
 }

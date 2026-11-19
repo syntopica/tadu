@@ -8,6 +8,7 @@ from team_workspace import team_workspace
 from tadu.board_payload import board_payload
 from tadu.board_session import BoardSession
 from tadu.board_state import BoardState
+from tadu.cli import main
 from tadu.local_config import LocalConfig
 from tadu.payload_view import PayloadView
 from tadu.signed_in_view import signed_in_view
@@ -18,13 +19,13 @@ TODAY = date(2026, 11, 4)
 
 def payload(github: FakeGithub, workspace: Path, login: str) -> dict[str, object]:
     sign_in = github.sign_in()
-    state = BoardState(workspace, 14, "t", frozenset(), sign_in)
+    state = BoardState(workspace, 14, "t", frozenset(), "read", main, sign_in)
     session = BoardSession(f"s-{login}", login, 10**12, f"tok-{login}")
 
     def narrow(workspace: Workspace, local: LocalConfig) -> PayloadView:
         return signed_in_view(sign_in, session, workspace, local)
 
-    return board_payload(state, TODAY, narrow)
+    return board_payload(state, 14, TODAY, narrow)
 
 
 def test_only_the_readable_repositories_reach_the_page(tmp_path: Path) -> None:
@@ -42,7 +43,7 @@ def test_only_the_readable_repositories_reach_the_page(tmp_path: Path) -> None:
                 "roles": [{"role": "client", "org": "acme"}],
             }
         ],
-        "repositories": [{"key": "shop"}],
+        "repositories": [{"key": "shop", "access": "admin"}],
     }
     assert seen["views"] == [{"name": "mine", "criteria": "assignee=ana"}]
     assert seen["problems"] == []
@@ -116,8 +117,8 @@ def test_scan_problems_of_hidden_repositories_stay_hidden(tmp_path: Path) -> Non
 def test_without_a_session_the_payload_is_whole(tmp_path: Path) -> None:
     workspace = team_workspace(tmp_path)
     with fake_github({}) as github:
-        state = BoardState(workspace, 14, "t", frozenset(), github.sign_in())
-        seen = board_payload(state, TODAY)
+        state = BoardState(workspace, 14, "t", frozenset(), "read", main, github.sign_in())
+        seen = board_payload(state, 14, TODAY)
         assert github.requests == []
     assert len(seen["cards"]) == 4  # type: ignore[arg-type]
     assert (seen["user"], seen["me"]) == (None, "bo")
@@ -125,4 +126,4 @@ def test_without_a_session_the_payload_is_whole(tmp_path: Path) -> None:
     local.write_text(
         local.read_text().replace('me = "bo"\n', 'me = "bo"\neditor_url = "x://{path}"\n')
     )
-    assert board_payload(state, TODAY)["cards"][0]["editor_url"].startswith("x://")  # type: ignore[index]
+    assert board_payload(state, 14, TODAY)["cards"][0]["editor_url"].startswith("x://")  # type: ignore[index]

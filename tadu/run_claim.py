@@ -23,7 +23,7 @@ def run_claim(args: argparse.Namespace, today: date) -> int:
     conflict instead of merging a double claim.
     """
     try:
-        todo = task_backlog_dir(args.root)
+        todo = task_backlog_dir(args.path)
         old = locate_task(todo, args.id)
         task = claimed_task(todo, old, args, today)
         where = save_task(todo, task, old, write=args.write)

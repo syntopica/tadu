@@ -1,5 +1,7 @@
-// Whether All work shows exactly what a sidebar shortcut opens.
+// Whether All work shows exactly what a sidebar shortcut opens: the same
+// rules and Waiting on me.
 export function shortcutActive(shortcut, view, filters) {
-  const wanted = { kind: "", waitingOnMe: false, ...shortcut.filters };
-  return view === "all" && filters.kind === wanted.kind && filters.waitingOnMe === wanted.waitingOnMe;
+  const rules = shortcut.filters.rules ?? [];
+  const waiting = shortcut.filters.waitingOnMe === true;
+  return view === "all" && JSON.stringify(filters.rules) === JSON.stringify(rules) && filters.waitingOnMe === waiting;
 }

@@ -5,20 +5,19 @@ from __future__ import annotations
 from tadu.read_v1_continuation import FIELD
 from tadu.v1_item_blocks import v1_item_blocks
 from tadu.v1_task import v1_task
-from tadu.v1_texts import V1_FILES
 
 
 def recovered_ids(texts: dict[str, str]) -> dict[str, str]:
     """Lost id -> the item's `ID:`, for every item of the Markdown backlog that has one.
 
-    `texts` are TODO.md and TODO_LOG.md as they were when migrated. An older tadu read an `ID:`
+    `texts` are the Markdown files (see v1_texts) as they were when migrated. An older tadu read an `ID:`
     only when it was a paragraph of its own, and gave an item whose `ID:` it missed the id
     derived from its place and title, exactly the id the item gets without its `ID:` line;
     so a task file with that id is provably the item, which is all this replays.
     """
     lost: dict[str, str] = {}
-    for name in V1_FILES:
-        lines = texts.get(name, "").splitlines()
+    for name, text in texts.items():
+        lines = text.splitlines()
         for number, (block, section) in enumerate(v1_item_blocks(lines)):
             source = f"{name}:{number}"
             real = str(v1_task(block, section, source)[0]["id"])

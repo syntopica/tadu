@@ -20,6 +20,8 @@ import tempfile
 import time
 from pathlib import Path
 
+from gen import busiest_topic
+
 HERE = Path(__file__).parent
 TADU = str(Path(sys.executable).parent / "tadu")
 ENV = {"PATH": "/usr/bin:/bin", "LC_ALL": "C.UTF-8", "HOME": "/tmp"}
@@ -48,29 +50,38 @@ def main() -> None:
     for scale in a.scale:
         base = HERE / "data" / scale
         truth = json.loads((base / "truth.json").read_text())
-        topic = max({i["topic"] for i in truth["open"] if i["topic"]},
-                    key=lambda t: sum(1 for i in truth["open"] if i["topic"] == t))
+        topic = busiest_topic(truth)
         v1, v2 = base / "md_fields", base / "tadu_v2"
         query = "Resolve the race condition in autocomplete"
         reads = {
             "startup (tadu --version)": (["--version"], ["--version"]),
             "list, default (open + done 14 days)": (["list", "--limit", "0"], ["list", "--limit", "0"]),
-            "list high+urgent": (["list", "--priority", "high", "--limit", "0"],
-                                 ["list", "--min-priority", "high", "--limit", "0"]),
-            "list high+urgent, --open": (["list", "--open", "--priority", "high", "--limit", "0"],
-                                         ["list", "--open", "--min-priority", "high", "--limit", "0"]),
-            "list due before a date": (["list", "--due-before", "2026-11-23", "--limit", "0"],
-                                       ["list", "--due-before", "2026-11-23", "--limit", "0"]),
+            "list high+urgent": (
+                ["list", "--priority", "high", "--limit", "0"],
+                ["list", "--min-priority", "high", "--limit", "0"],
+            ),
+            "list high+urgent, --open": (
+                ["list", "--open", "--priority", "high", "--limit", "0"],
+                ["list", "--open", "--min-priority", "high", "--limit", "0"],
+            ),
+            "list due before a date": (
+                ["list", "--due-before", "2026-11-23", "--limit", "0"],
+                ["list", "--due-before", "2026-11-23", "--limit", "0"],
+            ),
             "history of a label (all time)": (
                 ["list", "--done-days", "100000", "--include-cancelled", "--label", topic, "--limit", "0"],
-                ["list", "--history", "--include-cancelled", "--label", topic, "--limit", "0"]),
+                ["list", "--history", "--include-cancelled", "--label", topic, "--limit", "0"],
+            ),
             "ready": (["ready", "--limit", "0"], ["ready", "--limit", "0"]),
             "similar (open + closed)": (["similar", query], ["similar", query]),
             "doctor": (["doctor", "."], ["doctor", "."]),
         }
         for what, (args1, args2) in reads.items():
-            for fmt, d, args, env in (("format 1", v1, args1, NO_CACHE), ("format 2", v2, args2, NO_CACHE),
-                                      ("format 2 + cache", v2, args2, CACHE)):
+            for fmt, d, args, env in (
+                ("format 1", v1, args1, NO_CACHE),
+                ("format 2", v2, args2, NO_CACHE),
+                ("format 2 + cache", v2, args2, CACHE),
+            ):
                 if env is CACHE:
                     timed(args, d, 1, env=env)  # warm: the first run after a change rebuilds the entries
                 ms, code = timed(args, d, a.repeat, env=env)
@@ -84,9 +95,16 @@ def main() -> None:
         opened = truth["open"]
         writes = {
             "close one task (--write)": (
-                lambda k, opened=opened: ["close", "--match", opened[k]["title"][:60], "--evidence", "bench",
-                                          "--write"],
-                lambda k, opened=opened: ["close", "--id", opened[k]["id"], "--evidence", "bench", "--write"]),
+                lambda k, opened=opened: [
+                    "close",
+                    "--match",
+                    opened[k]["title"][:60],
+                    "--evidence",
+                    "bench",
+                    "--write",
+                ],
+                lambda k, opened=opened: ["close", "--id", opened[k]["id"], "--evidence", "bench", "--write"],
+            ),
         }
         timed(["list", "--history", "--limit", "1"], c2, 1, env=CACHE)  # fill the cache of the copy
         for what, (vary1, vary2) in writes.items():
@@ -95,10 +113,24 @@ def main() -> None:
                 rows.append({"scale": scale, "what": what, "format": fmt, "ms": ms, "exit": code})
                 print(f"{scale} {what:38} {fmt} {ms:8.0f} ms exit={code}", flush=True)
         v2_only = {
-            "add one task (--write)": lambda k: ["add", "--title", f"Bench task {k}", "--category", "ui",
-                                                 "--type", "bug", "--priority", "high", "--write"],
-            "set a field (--write)": lambda k, opened=opened: ["set", opened[50 + k]["id"], "priority=urgent",
-                                                               "--write"],
+            "add one task (--write)": lambda k: [
+                "add",
+                "--title",
+                f"Bench task {k}",
+                "--category",
+                "ui",
+                "--type",
+                "bug",
+                "--priority",
+                "high",
+                "--write",
+            ],
+            "set a field (--write)": lambda k, opened=opened: [
+                "set",
+                opened[50 + k]["id"],
+                "priority=urgent",
+                "--write",
+            ],
             "show one task": lambda k, opened=opened: ["show", opened[60 + k]["id"][:10]],
         }
         for what, vary in v2_only.items():

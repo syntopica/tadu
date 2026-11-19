@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-2559ecfd-1008-4036-9973-b7cb3a5301a0",
+  "title": "Board: show an item's history in its detail",
+  "state": "done",
+  "category": "board",
+  "type": "feature",
+  "priority": "low",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-b2ab17c6-15c6-4a12-9a7e-34c018c578e0"
+  ],
+  "notes": [
+    "Smallest next step: a board route that returns show --history --json for one key, drawn as a collapsed History section of the detail."
+  ],
+  "closed": "2026-11-18",
+  "result": "The item detail has a folded History section with the entries of tadu show --history, fetched from the token-protected /api/history only when opened",
+  "evidence": [
+    "pytest: 1218 tests at 100% coverage, among them tests/test_board_history.py, test_board_history_server.py and test_board_history_js.py (the board's rows equal show --history's lines); a jsdom run against a live tadu board: one fetch on first open, none on reopen, refetch after Reload, an error for a checkout outside git"
+  ]
+}

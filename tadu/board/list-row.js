@@ -3,10 +3,10 @@ import { el } from "./el.js";
 import { icon } from "./icon.js";
 import { inlineTitle } from "./inline-title.js";
 import { kindBadge } from "./kind-badge.js";
-import { locationLabel } from "./location-label.js";
 import { metaPart } from "./meta-part.js";
 import { placeLabel } from "./place-label.js";
 import { priorityBadge } from "./priority-badge.js";
+import { rowLocation } from "./row-location.js";
 import { statePill } from "./state-pill.js";
 
 // One list item: a button that opens the detail panel. Desktop shows it as
@@ -25,7 +25,7 @@ export function listRow(card, selected, me, shown) {
   const kind = shown.kind ? kindBadge(card.kind) : null;
   title.append(...(kind ? [kind] : []), inlineTitle(card.title));
   const facts = el("span", "row-facts");
-  facts.append(metaPart("code", locationLabel(card), "row-location"));
+  facts.append(metaPart("code", rowLocation(card), "row-location"));
   if (card.due !== null) {
     facts.append(metaPart("calendar", card.due, "row-due"));
   }

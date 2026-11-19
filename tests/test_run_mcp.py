@@ -53,3 +53,17 @@ def test_a_real_stdio_process_speaks_json_rpc_only(tmp_path: Path) -> None:
     assert [reply["id"] for reply in replies] == [1, 2]
     assert "nothing an agent can do alone" in replies[1]["result"]["content"][0]["text"]
     assert done.stderr == b""
+
+
+def test_the_tools_follow_allow(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    listing = {"jsonrpc": "2.0", "id": 3, "method": "tools/list"}
+    names = []
+    for extra in ([], ["--allow", "write"], ["--allow", "admin"]):
+        stdin = io.TextIOWrapper(io.BytesIO(messages(listing)), encoding="utf-8")
+        monkeypatch.setattr("sys.stdin", stdin)
+        assert main(["mcp", str(tmp_path), *extra]) == 0
+        reply = json.loads(capsys.readouterr().out)
+        names.append(len(reply["result"]["tools"]))
+    assert names == [10, 15, 20]

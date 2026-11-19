@@ -1,4 +1,5 @@
 import functools
+import os
 from collections.abc import Callable, Iterator
 from contextlib import AbstractContextManager
 from http.server import ThreadingHTTPServer
@@ -130,3 +131,10 @@ def plain_http_github(monkeypatch: pytest.MonkeyPatch) -> None:
 settings.register_profile("default", max_examples=100, derandomize=True, deadline=None)
 settings.register_profile("thorough", max_examples=2000, deadline=None)
 settings.load_profile("default")
+
+
+@pytest.fixture(autouse=True)
+def isolated_git(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Git run by tadu in a test never reads the user's or the system's configuration."""
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")

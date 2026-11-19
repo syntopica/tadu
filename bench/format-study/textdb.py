@@ -22,9 +22,32 @@ from pathlib import Path
 DIR_FORMATS = ("json_dir", "md_dir")
 TEXTDB_FORMATS = ("json_dir", "md_dir", "rec", "csv", "sqldump", "hybrid")
 # hybrid: open tasks as todo/<id>.md (like md_dir), closed work in tadu's TODO_LOG.md format
-CSV_COLS = ["id", "state", "title", "category", "priority", "due", "queue", "closed", "result",
-            "evidence", "resolution", "body"]
+CSV_COLS = [
+    "id",
+    "state",
+    "title",
+    "category",
+    "priority",
+    "due",
+    "queue",
+    "closed",
+    "result",
+    "evidence",
+    "resolution",
+    "body",
+]
 OPEN = ("pending", "in_progress", "blocked")
+
+
+def with_log_entry(log: list[str], day: str, entry: list[str]) -> list[str]:
+    """The log's lines with the entry first in its month, under the year; the month is added when
+    missing, as tadu close writes it."""
+    month = f"### {day[:7]}"
+    if month in log:
+        at = log.index(month) + 1
+        return [*log[:at], "", *entry, *log[at:]]
+    at = log.index(f"## {day[:4]}") + 1
+    return [*log[:at], "", month, "", *entry, *log[at:]]
 
 
 def _write(p: Path, text: str) -> None:
@@ -52,6 +75,7 @@ def full(rec: dict) -> dict:
 
 # ------------------------------------------------------------------ per-file: paths
 
+
 def task_path(d: Path, rec: dict, ext: str) -> Path:
     if rec["state"] in OPEN:
         return d / "todo" / f"{rec['id']}.{ext}"
@@ -70,8 +94,21 @@ def find_task(d: Path, iid: str, ext: str) -> Path:
 
 # ------------------------------------------------------------------ json_dir
 
-JSON_KEYS = ["id", "state", "title", "category", "labels", "priority", "due", "queue", "closed",
-             "result", "evidence", "resolution", "body"]
+JSON_KEYS = [
+    "id",
+    "state",
+    "title",
+    "category",
+    "labels",
+    "priority",
+    "due",
+    "queue",
+    "closed",
+    "result",
+    "evidence",
+    "resolution",
+    "body",
+]
 
 
 def json_text(rec: dict) -> str:
@@ -130,7 +167,7 @@ def md_parse(text: str) -> dict:
             rec[key] = value.strip()
     section, buf = "body", []
     parts: dict[str, list[str]] = {}
-    for line in lines[end + 1:]:
+    for line in lines[end + 1 :]:
         if line.startswith("## ") and line[3:].lower() in ("result", "evidence", "resolution"):
             parts[section] = buf
             section, buf = line[3:].lower(), []
@@ -159,9 +196,19 @@ REC_HEAD = """# Backlog as a GNU recutils database. Query with recsel, validate 
 %type: DependsOn rec Task
 %sort: Id
 """
-REC_FIELDS = [("Id", "id"), ("State", "state"), ("Title", "title"), ("Category", "category"),
-              ("Priority", "priority"), ("Due", "due"), ("Queue", "queue"), ("Closed", "closed"),
-              ("Result", "result"), ("Evidence", "evidence"), ("Resolution", "resolution")]
+REC_FIELDS = [
+    ("Id", "id"),
+    ("State", "state"),
+    ("Title", "title"),
+    ("Category", "category"),
+    ("Priority", "priority"),
+    ("Due", "due"),
+    ("Queue", "queue"),
+    ("Closed", "closed"),
+    ("Result", "result"),
+    ("Evidence", "evidence"),
+    ("Resolution", "resolution"),
+]
 
 
 def rec_record(rec: dict) -> str:
@@ -225,6 +272,7 @@ def rec_parse(text: str) -> tuple[list[dict], list[str]]:
 
 
 # ------------------------------------------------------------------ csv tables
+
 
 def esc(s: str | None) -> str:
     return "" if s is None else s.replace("\\", "\\\\").replace("\n", "\\n")
@@ -304,13 +352,13 @@ def sql_label_rows(rec: dict) -> list[str]:
 
 def sql_text(recs: list[dict]) -> str:
     recs = sorted(recs, key=lambda r: r["id"])
-    return (SQL_HEAD + "".join(sql_insert(r) for r in recs)
-            + "".join(sorted(x for r in recs for x in sql_label_rows(r))))
+    return SQL_HEAD + "".join(sql_insert(r) for r in recs) + "".join(sorted(x for r in recs for x in sql_label_rows(r)))
 
 
 def sql_parse(text: str) -> tuple[list[dict], list[str]]:
     """Run statement by statement, so one bad line costs one row, not the rest of the file."""
     import sqlite3
+
     con = sqlite3.connect(":memory:")
     problems = []
     for n, line in enumerate(text.split("\n"), 1):
@@ -338,9 +386,11 @@ def sql_parse(text: str) -> tuple[list[dict], list[str]]:
 
 # ------------------------------------------------------------------ render all
 
+
 def render(recs: list[dict], out: Path) -> None:
     """Write the five formats under out/<format>/."""
     import shutil
+
     for fmt in TEXTDB_FORMATS:
         shutil.rmtree(out / fmt, ignore_errors=True)
         (out / fmt).mkdir(parents=True)
@@ -359,6 +409,7 @@ def render(recs: list[dict], out: Path) -> None:
 
 
 # ------------------------------------------------------------------ load (used by tq)
+
 
 def load_all(d: Path, fmt: str, want_open: bool = True, want_log: bool = True) -> tuple[list[dict], list[str]]:
     """Every record of a format. The per-file formats read only todo/ or done/ when that is all that is asked."""
@@ -390,23 +441,37 @@ def load_all(d: Path, fmt: str, want_open: bool = True, want_log: bool = True) -
     elif fmt == "rec":
         recs, problems = rec_parse((d / "tasks.rec").read_text(encoding="utf-8"))
     elif fmt == "csv":
-        recs, problems = csv_parse((d / "tasks.csv").read_text(encoding="utf-8"),
-                                   (d / "task_labels.csv").read_text(encoding="utf-8"))
+        recs, problems = csv_parse(
+            (d / "tasks.csv").read_text(encoding="utf-8"), (d / "task_labels.csv").read_text(encoding="utf-8")
+        )
     elif fmt == "sqldump":
         recs, problems = sql_parse((d / "todo.sql").read_text(encoding="utf-8"))
     elif fmt == "hybrid":
         recs, problems = load_all(d, "md_dir", want_open, False)
         if want_log:
             from tq import parse_md  # noqa: PLC0415
+
             for it in parse_md(d / "TODO_LOG.md", False):
-                recs.append({"id": it["key"], "state": it["state"], "title": it["title"],
-                             "category": it["category"], "labels": it["labels"], "priority": it["priority"],
-                             "closed": it["closed"], "result": it.get("result"), "evidence": it.get("evidence"),
-                             "resolution": it.get("resolution"), "body": it["body"]})
+                recs.append(
+                    {
+                        "id": it["key"],
+                        "state": it["state"],
+                        "title": it["title"],
+                        "category": it["category"],
+                        "labels": it["labels"],
+                        "priority": it["priority"],
+                        "closed": it["closed"],
+                        "result": it.get("result"),
+                        "evidence": it.get("evidence"),
+                        "resolution": it.get("resolution"),
+                        "body": it["body"],
+                    }
+                )
     return recs, problems
 
 
 # ------------------------------------------------------------------ write operations
+
 
 def _closed(rec: dict, day: str, proof: str) -> dict:
     r = full(rec)
@@ -438,7 +503,9 @@ def _dir_ops(fmt: str):
     return {
         "add": add,
         "set_priority": lambda d, iid, p: update(d, iid, lambda r: {**r, "priority": p}),
-        "edit_body": lambda d, iid, t: update(d, iid, lambda r: {**r, "body": (r.get("body") or "").rsplit("\n\n", 1)[0] + "\n\n" + t}),
+        "edit_body": lambda d, iid, t: update(
+            d, iid, lambda r: {**r, "body": (r.get("body") or "").rsplit("\n\n", 1)[0] + "\n\n" + t}
+        ),
         "close": close,
     }
 
@@ -466,14 +533,25 @@ def _table_ops(fmt: str):
     return {
         "add": lambda d, rec: save(d, [*rows(d), full(rec)]),
         "set_priority": lambda d, iid, p: update(d, iid, lambda r: {**r, "priority": p}),
-        "edit_body": lambda d, iid, t: update(d, iid, lambda r: {**r, "body": (r.get("body") or "").rsplit("\n\n", 1)[0] + "\n\n" + t}),
+        "edit_body": lambda d, iid, t: update(
+            d, iid, lambda r: {**r, "body": (r.get("body") or "").rsplit("\n\n", 1)[0] + "\n\n" + t}
+        ),
         "close": lambda d, iid, day, proof: update(d, iid, lambda r: _closed(r, day, proof)),
     }
 
 
-CATEGORY_NAMES = {"ui": "UI", "api": "API", "auth": "Auth", "billing": "Billing", "search": "Search",
-                  "notifications": "Notifications", "database": "Database", "infra": "Infrastructure",
-                  "ci": "CI", "docs": "Docs"}
+CATEGORY_NAMES = {
+    "ui": "UI",
+    "api": "API",
+    "auth": "Auth",
+    "billing": "Billing",
+    "search": "Search",
+    "notifications": "Notifications",
+    "database": "Database",
+    "infra": "Infrastructure",
+    "ci": "CI",
+    "docs": "Docs",
+}
 
 
 def _hybrid_ops():
@@ -491,14 +569,7 @@ def _hybrid_ops():
             entry += ["", f"  Labels: {', '.join(r['labels'])}"]
         entry += ["", "  - Result: Done as described.", f"  - Evidence: {proof}"]
         log_path = d / "TODO_LOG.md"
-        log = log_path.read_text(encoding="utf-8").splitlines()
-        month = f"### {day[:7]}"
-        if month in log:
-            at = log.index(month) + 1
-            log[at:at] = ["", *entry]
-        else:
-            at = log.index(f"## {day[:4]}") + 1
-            log[at:at] = ["", month, "", *entry]
+        log = with_log_entry(log_path.read_text(encoding="utf-8").splitlines(), day, entry)
         _write(log_path, "\n".join(log) + "\n")
         p.unlink()
 
@@ -506,5 +577,6 @@ def _hybrid_ops():
     return ops
 
 
-OPS = {f: (_dir_ops(f) if f in DIR_FORMATS else _hybrid_ops() if f == "hybrid" else _table_ops(f))
-       for f in TEXTDB_FORMATS}
+OPS = {
+    f: (_dir_ops(f) if f in DIR_FORMATS else _hybrid_ops() if f == "hybrid" else _table_ops(f)) for f in TEXTDB_FORMATS
+}

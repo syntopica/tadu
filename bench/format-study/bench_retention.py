@@ -28,8 +28,16 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 TQ = [sys.executable, str(HERE / "tq.py")]
-ENV = {"TQ_TODAY": "2026-11-16", "PATH": "/usr/bin:/bin", "LC_ALL": "C.UTF-8", "HOME": "/tmp",
-       "GIT_AUTHOR_NAME": "b", "GIT_AUTHOR_EMAIL": "b@x", "GIT_COMMITTER_NAME": "b", "GIT_COMMITTER_EMAIL": "b@x"}
+ENV = {
+    "TQ_TODAY": "2026-11-16",
+    "PATH": "/usr/bin:/bin",
+    "LC_ALL": "C.UTF-8",
+    "HOME": "/tmp",
+    "GIT_AUTHOR_NAME": "b",
+    "GIT_AUTHOR_EMAIL": "b@x",
+    "GIT_COMMITTER_NAME": "b",
+    "GIT_COMMITTER_EMAIL": "b@x",
+}
 CUTOFF = (date(2026, 11, 16) - timedelta(days=30)).isoformat()
 KEEP = ("id", "state", "title", "category", "labels", "priority", "closed", "result", "evidence", "resolution")
 
@@ -52,7 +60,9 @@ def compact(d: Path, files: list[Path]) -> None:
     by_year: dict[str, list[str]] = {}
     for p in sorted(files):
         r = json.loads(p.read_text())
-        by_year.setdefault(r["closed"][:4], []).append(json.dumps({k: r[k] for k in KEEP if k in r}, ensure_ascii=False))
+        by_year.setdefault(r["closed"][:4], []).append(
+            json.dumps({k: r[k] for k in KEEP if k in r}, ensure_ascii=False)
+        )
         p.unlink()
     (d / "done" / "archive").mkdir(exist_ok=True)
     for y, lines in by_year.items():
@@ -72,18 +82,37 @@ def measure(d: Path, scale: str, policy: str, cands: list[dict], log_ids: set[st
     clone = (time.perf_counter() - t) * 1000
     shutil.rmtree(dst)
     t = time.perf_counter()
-    out = subprocess.run(TQ + ["--backend", "jsondir", "find", "-q", "--log", "--limit", "0", "--format", "ids"],
-                         cwd=d, capture_output=True, text=True, env=ENV).stdout
+    out = subprocess.run(
+        TQ + ["--backend", "jsondir", "find", "-q", "--log", "--limit", "0", "--format", "ids"],
+        cwd=d,
+        capture_output=True,
+        text=True,
+        env=ENV,
+    ).stdout
     log_ms = (time.perf_counter() - t) * 1000
     visible_log = len(out.splitlines())
     found = 0
     for c in cands:  # duplicates of closed work: is the original still in the top 5?
-        res = subprocess.run(TQ + ["--full-keys", "--backend", "jsondir", "similar", "--log", c["text"]],
-                             cwd=d, capture_output=True, text=True, env=ENV).stdout
+        res = subprocess.run(
+            TQ + ["--full-keys", "--backend", "jsondir", "similar", "--log", c["text"]],
+            cwd=d,
+            capture_output=True,
+            text=True,
+            env=ENV,
+        ).stdout
         found += c["dup_of"] in res
-    return {"scale": scale, "policy": policy, "files": files, "git_mb": size / 1e6, "clone_ms": clone,
-            "history_query_ms": log_ms, "closed_tasks_queryable": visible_log, "closed_total": len(log_ids),
-            "dup_of_closed_found": found, "dup_of_closed_total": len(cands)}
+    return {
+        "scale": scale,
+        "policy": policy,
+        "files": files,
+        "git_mb": size / 1e6,
+        "clone_ms": clone,
+        "history_query_ms": log_ms,
+        "closed_tasks_queryable": visible_log,
+        "closed_total": len(log_ids),
+        "dup_of_closed_found": found,
+        "dup_of_closed_total": len(cands),
+    }
 
 
 def main() -> None:
@@ -142,8 +171,6 @@ def main() -> None:
     out.write_text(json.dumps(rows + old, indent=1))
 
 
-
-
 def lifetime(scale: str) -> list[dict]:
     """Fair repository size: every task was an open file once (commit 1), then each layout closes it (commit 2).
 
@@ -152,22 +179,47 @@ def lifetime(scale: str) -> list[dict]:
     """
     import gen
     import textdb
+
     base = HERE / "data" / scale
     truth = json.loads((base / "truth.json").read_text())
     opens = [gen.record(i, False) for i in truth["open"]]
     closed = [gen.record(i, True) for i in truth["log"]]
-    as_open = [{**{k: r[k] for k in ("id", "title", "category", "labels", "priority")}, "state": "pending",
-                "queue": "backlog", "body": ""} for r in closed]
+    as_open = [
+        {
+            **{k: r[k] for k in ("id", "title", "category", "labels", "priority")},
+            "state": "pending",
+            "queue": "backlog",
+            "body": "",
+        }
+        for r in closed
+    ]
     rows = []
-    for layout in ("json: keep closed files", "json: delete after 30d", "json: compact after 30d",
-                   "json: archive at close", "hybrid (md files + TODO_LOG.md)", "single TODO.md + TODO_LOG.md"):
+    for layout in (
+        "json: keep closed files",
+        "json: delete after 30d",
+        "json: compact after 30d",
+        "json: archive at close",
+        "hybrid (md files + TODO_LOG.md)",
+        "single TODO.md + TODO_LOG.md",
+    ):
         d = Path(tempfile.mkdtemp(prefix="life-"))
         git(d, "init", "-q")
         git(d, "config", "gc.auto", "0")
         md = layout.startswith(("hybrid", "single"))
         if layout.startswith("single"):
-            items = truth["open"] + [{**i, "state": " ", "section": i["category"], "body": [], "due": None,
-                                      "queue": "backlog", "priority_prose": "", "due_prose": ""} for i in truth["log"]]
+            items = truth["open"] + [
+                {
+                    **i,
+                    "state": " ",
+                    "section": i["category"],
+                    "body": [],
+                    "due": None,
+                    "queue": "backlog",
+                    "priority_prose": "",
+                    "due_prose": "",
+                }
+                for i in truth["log"]
+            ]
             (d / "TODO.md").write_text(gen.md_open(items, True)[0])
         else:
             for r in opens + as_open:
@@ -200,7 +252,8 @@ def lifetime(scale: str) -> list[dict]:
                 by_year: dict[str, list[str]] = {}
                 for r in sorted(old, key=lambda r: r["closed"]):
                     by_year.setdefault(r["closed"][:4], []).append(
-                        json.dumps({k: r[k] for k in KEEP if k in r}, ensure_ascii=False))
+                        json.dumps({k: r[k] for k in KEEP if k in r}, ensure_ascii=False)
+                    )
                 for y, lines in by_year.items():
                     (d / "done" / "archive" / f"{y}.jsonl").write_text("\n".join(lines) + "\n")
             if layout.endswith("compact after 30d"):  # the 30-day window first held full files
@@ -210,8 +263,15 @@ def lifetime(scale: str) -> list[dict]:
         git(d, "gc", "-q", "--aggressive")
         size = sum(p.stat().st_size for p in (d / ".git").rglob("*") if p.is_file())
         files = sum(1 for p in d.rglob("*") if p.is_file() and ".git" not in p.parts)
-        rows.append({"scale": scale, "layout": layout, "files_now": files, "git_mb": size / 1e6,
-                     "bytes_per_task": size / (len(opens) + len(closed))})
+        rows.append(
+            {
+                "scale": scale,
+                "layout": layout,
+                "files_now": files,
+                "git_mb": size / 1e6,
+                "bytes_per_task": size / (len(opens) + len(closed)),
+            }
+        )
         print(rows[-1], flush=True)
         shutil.rmtree(d)
     return rows

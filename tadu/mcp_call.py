@@ -4,35 +4,27 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tadu.mcp_arguments_error import mcp_arguments_error
-from tadu.mcp_argv import mcp_argv
-from tadu.mcp_tools import MCP_TOOLS
-from tadu.run_captured import run_captured
-from tadu.workspace_error import WorkspaceError
+from tadu.operations import OPERATIONS
+from tadu.run_operation import run_operation
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    from tadu.mcp_scope import McpScope
+    from tadu.operation_host import OperationHost
 
 
-def mcp_call(
-    name: str, arguments: object, scope: McpScope, main: Callable[[list[str]], int]
-) -> dict[str, object]:
-    """The `tools/call` result: the command's output as text, an error when it fails.
+def mcp_call(name: str, arguments: object, host: OperationHost) -> dict[str, object]:
+    """The `tools/call` result: the command's output then its errors as text.
 
-    The caller has checked that the tool exists. The command reads no config file: a
-    tool does what its schema says, whatever defaults a person set for their own use.
+    It is an error when the command refused (exit 2), or when a reading command other than
+    doctor exits 1 (`show` found no item). A change that exits 1 was written and then had
+    `tadu doctor` find errors in the backlog, and doctor's 1 is its report: calling again
+    would repeat a change already made, so neither is an error. The command reads no config
+    file (see operation_argv): a tool does what its schema says, whatever defaults a person
+    set for their own use.
     """
-    problem = mcp_arguments_error(MCP_TOOLS[name]["inputSchema"], arguments)  # type: ignore[arg-type]
-    if problem is None:
-        try:
-            code, text = run_captured(main, ["--no-config", *mcp_argv(name, arguments, scope)])  # type: ignore[arg-type]
-        except WorkspaceError as error:
-            code, text = 2, str(error)
-    else:
-        code, text = 2, problem
+    code, out, err = run_operation(name, arguments, host)
+    operation = OPERATIONS.get(name)
+    reported = code == 1 and operation is not None and (operation.writes or name == "doctor")
     return {
-        "content": [{"type": "text", "text": text.strip() or "Nothing found."}],
-        "isError": code != 0,
+        "content": [{"type": "text", "text": (out + err).strip() or "Nothing found."}],
+        "isError": code != 0 and not reported,
     }

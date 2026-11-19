@@ -6,6 +6,7 @@ import json
 import sys
 from typing import TYPE_CHECKING
 
+from tadu.args_scope import args_scope
 from tadu.card_json import card_json
 from tadu.load_cards import load_cards
 from tadu.print_problems import print_problems
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 def run_feed(args: argparse.Namespace, today: date) -> int:
     """Print the recent closed items as JSON lines; problems go to stderr only."""
     try:
-        cards, problems, _ = load_cards(tuple(args.paths), args.workspace, args.done_days, today)
+        cards, problems, _ = load_cards(args_scope(args), args.done_days, today)
     except WorkspaceError as error:
         print(f"tadu feed: {error}", file=sys.stderr)
         return 2

@@ -31,14 +31,16 @@ export function detailFields(card) {
     return holder;
   });
   const labels = card.labels.map((label) => el("span", "tag", label));
+  // A task (format 2) has no Kind, Check on or Not before: its own fields follow the grid.
+  const item = !card.path.endsWith(".json");
   right.append(
     ...detailField("Assignees", "user", people.length > 0 ? people : none),
     ...detailField("Priority", "", PRIORITY_TITLES[card.priority] ?? none),
-    ...detailField("Kind", "", KIND_TITLES[card.kind] ?? none),
+    ...(item ? detailField("Kind", "", KIND_TITLES[card.kind] ?? none) : []),
     ...detailField("Labels", "tag", labels.length > 0 ? labels : none),
     ...detailField("Due", "calendar", card.due ?? none),
-    ...detailField("Check on", "clock", card.check_on ?? none),
-    ...detailField("Not before", "calendar", card.not_before ?? none),
+    ...(item ? detailField("Check on", "clock", card.check_on ?? none) : []),
+    ...(item ? detailField("Not before", "calendar", card.not_before ?? none) : []),
   );
   const grid = el("div", "fields-grid");
   grid.append(left, right);

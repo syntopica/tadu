@@ -4,20 +4,14 @@ import pytest
 from sample_task import sample_task
 
 from tadu.canonical_task_text import canonical_task_text
-from tadu.check_task_actor import check_task_actor
 from tadu.check_task_date import check_task_date
-from tadu.check_task_estimate import check_task_estimate
-from tadu.check_task_id import check_task_id
-from tadu.check_task_lines import check_task_lines
-from tadu.check_task_slug import check_task_slug
-from tadu.check_task_text import check_task_text
-from tadu.check_task_title import check_task_title
 from tadu.choice_check import choice_check
 from tadu.is_one_line import is_one_line
 from tadu.is_real_date import is_real_date
 from tadu.list_check import list_check
 from tadu.task_problems import task_problems
 from tadu.task_rule_problems import task_rule_problems
+from tadu.task_value_checks import TASK_VALUE_CHECKS
 from tadu.trim_blank_lines import trim_blank_lines
 
 
@@ -51,29 +45,32 @@ def test_dates_and_lines() -> None:
 
 
 @pytest.mark.parametrize(
-    ("check", "good", "bad"),
+    ("key", "good", "bad"),
     [
-        (check_task_text, "One line.", ["", "  ", "a\nb", 3]),
-        (check_task_title, "Fix it", ["", "x" * 201, None]),
+        ("blocker", "One line.", ["", "  ", "a\nb", 3]),
+        ("title", "Fix it", ["", "x" * 201, None]),
         (
-            check_task_id,
+            "id",
             "t-00000001-0000-4000-8000-000000000001",
             ["t-1", "t-00000001-0000-1000-8000-000000000001"],
         ),
-        (check_task_slug, "ci-portability", ["CI", "-x", 1]),
-        (check_task_actor, "agent:claude", ["Ana Smith", "agent:", 7]),
-        (check_task_estimate, 90, [0, -1, True, 1_000_000_000, "90"]),
-        (check_task_lines, ["a", "", "```sh", "b"], [[], "a", ["a\nb"], [1]]),
+        ("category", "ci-portability", ["CI", "-x", 1]),
+        ("created_by", "agent:claude", ["Ana Smith", "agent:", 7]),
+        ("estimate", 90, [0, -1, True, 1_000_000_000, "90"]),
+        ("notes", ["a", "", "```sh", "b"], [[], "a", ["a\nb"], [1]]),
     ],
 )
-def test_value_checks(check: object, good: object, bad: list[object]) -> None:
-    assert callable(check)
+def test_value_checks(key: str, good: object, bad: list[object]) -> None:
+    check = TASK_VALUE_CHECKS[key]
     assert check(good) is None
     assert all(isinstance(check(value), str) for value in bad)
 
 
 def test_title_limit_message() -> None:
-    assert check_task_title("x" * 201) == "must be at most 200 characters; move the rest into notes"
+    assert (
+        TASK_VALUE_CHECKS["title"]("x" * 201)
+        == "must be at most 200 characters; move the rest into notes"
+    )
 
 
 def test_valid_sample_tasks() -> None:

@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-d0e1392f-d2e4-4369-85f3-b2aa1e338393",
+  "title": "Declare each operation once for the command line, MCP and the board",
+  "state": "done",
+  "category": "cli",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "notes": [
+    "One registry (tadu/operations.py) of operations and their arguments generates the argparse subcommands, the MCP tool schemas and the board's calls; MCP and the board run the command itself."
+  ],
+  "closed": "2026-11-18",
+  "result": "tadu/operations.py declares every operation once; build_parser, operation_tools and operation_argv generate the command line, the MCP schemas and the calls the board and MCP run through run_operation",
+  "evidence": [
+    "pytest: 1363 tests at 100% coverage, ruff, mypy --strict and codeality clean; tests/test_operations.py, test_add_operation_parser.py, test_operation_tool*.py, test_operation_argv.py and test_run_operation.py; a before/after snapshot of every argparse action showed only the intended differences"
+  ]
+}

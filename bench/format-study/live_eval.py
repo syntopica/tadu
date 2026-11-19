@@ -135,12 +135,21 @@ def score(a: argparse.Namespace) -> None:
                 got.add(max(hits, key=lambda i: len(by_id[i]["title"])))
         tr = t["truth"]
         hit = len(got & tr)
-        rows.append({"task": t["id"], "name": t["name"], "truth": len(tr), "answered": len(got),
-                     "recall": hit / len(tr) if tr else 1.0,
-                     "precision": hit / len(got) if got else (1.0 if not tr else 0.0)})
+        rows.append(
+            {
+                "task": t["id"],
+                "name": t["name"],
+                "truth": len(tr),
+                "answered": len(got),
+                "recall": hit / len(tr) if tr else 1.0,
+                "precision": hit / len(got) if got else (1.0 if not tr else 0.0),
+            }
+        )
     for r in rows:
-        print(f"{r['task']} {r['name']:32} truth={r['truth']:4} answered={r['answered']:4} "
-              f"recall={r['recall']:.2f} precision={r['precision']:.2f}")
+        print(
+            f"{r['task']} {r['name']:32} truth={r['truth']:4} answered={r['answered']:4} "
+            f"recall={r['recall']:.2f} precision={r['precision']:.2f}"
+        )
     rec = sum(r["recall"] for r in rows) / len(rows)
     pre = sum(r["precision"] for r in rows) / len(rows)
     print(f"mean recall {rec:.2f}, mean precision {pre:.2f}")

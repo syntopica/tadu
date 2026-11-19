@@ -10,7 +10,7 @@ from tadu.finish_leftovers import finish_leftovers
 from tadu.is_task_backlog import is_task_backlog
 from tadu.run_migrate import run_migrate
 from tadu.run_recover import run_recover
-from tadu.v1_texts import V1_FILES
+from tadu.v1_file_names import V1_FILES
 
 if TYPE_CHECKING:
     import argparse

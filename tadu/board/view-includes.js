@@ -1,13 +1,14 @@
 import { OPEN_COLUMNS } from "./open-columns.js";
 
-// Whether a view shows a card before filters apply. A state chosen from a
-// board column ("View all N in list") widens All work to that state.
-export function viewIncludes(card, view, me, column) {
+// Whether a view shows a card before filters apply. A State rule that asks
+// for states (from a summary chip, "View all N in list" or the Filter
+// menu) widens All work to every state, which the rule then narrows.
+export function viewIncludes(card, view, me, state) {
   switch (view) {
     case "mine":
       return me !== null && card.assignees.includes(me) && OPEN_COLUMNS.includes(card.column);
     case "all":
-      return column !== "" || OPEN_COLUMNS.includes(card.column);
+      return state?.op === "any" || OPEN_COLUMNS.includes(card.column);
     case "blocked":
       return card.column === "blocked";
     case "done":

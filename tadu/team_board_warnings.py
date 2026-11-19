@@ -24,7 +24,7 @@ def team_board_warnings(
     A proxy in front without --proxy-hops; --proxy-hops with the board reachable
     without the proxy, where anyone chooses the address its sign-in limit counts;
     saved sessions that could not be read or that the idle timeout ended; a public URL
-    without https; and every repository without a GitHub remote, which nobody can see.
+    without https; --allow above read, which any reader may use; and every repository without a GitHub remote, which nobody can see.
     """
     warnings = []
     direct = args.host not in LOOPBACK_HOSTS
@@ -45,6 +45,11 @@ def team_board_warnings(
         warnings.append(
             f"{github.sessions.shortened} saved session(s) had longer to last than "
             "--idle-timeout and ended; they sign in again"
+        )
+    if args.allow != "read":
+        warnings.append(
+            f"--allow {args.allow}: anyone who signs in may change the repositories they can "
+            "read on GitHub, as this machine's user, and read access is all it checks"
         )
     if not github.secure and direct:
         warnings.append("the session cookie travels unencrypted; serve the board over https")

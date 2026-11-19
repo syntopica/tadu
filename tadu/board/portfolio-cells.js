@@ -5,8 +5,13 @@ import { icon } from "./icon.js";
 // The number cells of one portfolio row; a blocked count above zero opens
 // the Blocked view for that row when `onBlocked` is given.
 export function portfolioCells(buckets, label, onBlocked) {
-  const cell = (value, className = "") => el("span", `num ${className}`.trim(), formatCount(value));
+  const cell = (value, className = "") => {
+    const node = el("span", `num ${className}`.trim(), formatCount(value));
+    node.setAttribute("role", "cell");
+    return node;
+  };
   const blocked = el("span", "num blocked-cell");
+  blocked.setAttribute("role", "cell");
   if (buckets.blocked > 0 && onBlocked) {
     const link = el("button", "blocked-link");
     link.type = "button";

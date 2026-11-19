@@ -20,3 +20,9 @@ def test_several_matches_are_listed(capsys: pytest.CaptureFixture[str]) -> None:
 def test_no_match_lists_every_open_item(capsys: pytest.CaptureFixture[str]) -> None:
     assert select_item(LINES, "zzz", "TODO.md") is None
     assert "  3: - [!] other" in capsys.readouterr().err
+
+
+def test_a_line_from_a_key(capsys: pytest.CaptureFixture[str]) -> None:
+    assert select_item(LINES, 2, "TODO.md") == 2
+    assert select_item(["- [ ] a", "  text"], 1, "TODO.md") is None
+    assert "0 open items match line 2" in capsys.readouterr().err

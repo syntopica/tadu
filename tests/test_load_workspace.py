@@ -7,6 +7,7 @@ from tadu.organization_entry import OrganizationEntry
 from tadu.person_entry import PersonEntry
 from tadu.project_entry import ProjectEntry
 from tadu.repository_entry import RepositoryEntry
+from tadu.visible_repositories import VISIBLE_REPOSITORIES
 from tadu.workspace_error import WorkspaceError
 
 VALID = """
@@ -20,6 +21,7 @@ github_id = 4242
 
 [[repository]]
 key = "api"
+access = "read"
 backlog = "docs"
 
 [[project]]
@@ -59,8 +61,8 @@ def test_loads_valid_workspace(tmp_path: Path) -> None:
     workspace = load_workspace(tmp_path)
     assert workspace.root == tmp_path
     assert workspace.repositories == (
-        RepositoryEntry("shop", "git@github.com:example/shop.git", ".", 4242),
-        RepositoryEntry("api", None, "docs"),
+        RepositoryEntry("shop", "git@github.com:example/shop.git", ".", github_id=4242),
+        RepositoryEntry("api", None, "docs", "read"),
     )
     assert workspace.projects == (
         ProjectEntry(
@@ -121,6 +123,10 @@ def test_problems_are_joined(tmp_path: Path) -> None:
             "repository a: backlog must be a relative path inside the repository",
         ),
         ("[[repository]]\nkey = 'a'\nbacklog = 3\n", "repository: backlog"),
+        (
+            "[[repository]]\nkey = 'a'\naccess = 'none'\n",
+            "repository a: access must be one of read, write, admin",
+        ),
         ("repository = 'x'\n", "repository"),
         ("repository = ['x']\n", "repository"),
         ("[[project]]\nkey = 'p'\n", "project: repositories"),
@@ -160,3 +166,25 @@ def test_views_are_loaded_and_checked(tmp_path: Path) -> None:
     assert (view.name, view.card_filter.assignee) == ("mine", "ana")
     message = load_error(tmp_path, VALID + '[[view]]\nname = "v"\n[[view]]\nname = "v"\n')
     assert message == "duplicate view name: v"
+
+
+def test_cut_to_the_visible_repositories(tmp_path: Path) -> None:
+    write(tmp_path, VALID)
+    token = VISIBLE_REPOSITORIES.set(frozenset({"api"}))
+    try:
+        workspace = load_workspace(tmp_path)
+    finally:
+        VISIBLE_REPOSITORIES.reset(token)
+    assert [entry.key for entry in workspace.repositories] == ["api"]
+    assert [project.repositories for project in workspace.projects] == [("api",)]
+    assert [entry.key for entry in load_workspace(tmp_path).repositories] == ["shop", "api"]
+
+
+def test_the_cut_checks_the_whole_file_first(tmp_path: Path) -> None:
+    write(tmp_path, VALID.replace('"shop", "api"', '"shop", "ghost"'))
+    token = VISIBLE_REPOSITORIES.set(frozenset({"api"}))
+    try:
+        with pytest.raises(WorkspaceError, match="ghost"):
+            load_workspace(tmp_path)
+    finally:
+        VISIBLE_REPOSITORIES.reset(token)

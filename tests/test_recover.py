@@ -124,6 +124,6 @@ def test_a_markdown_backlog_that_is_not_utf8_is_named_so(
     commit(tmp_path, "migrated by hand")
     capsys.readouterr()
     assert main(["migrate", str(tmp_path), "--recover"]) == 2
-    assert "TODO.md or TODO_LOG.md is not UTF-8 text; convert it, then give --from" in (
+    assert "a backlog file is not UTF-8 text; convert it, then give --from" in (
         capsys.readouterr().err
     )

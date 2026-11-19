@@ -27,6 +27,11 @@ def board_warnings(args: argparse.Namespace, state: BoardState, port: int) -> li
         shown = " or ".join(unique_in_order(names))
         warnings.append(
             f"listening on {args.host}; only requests whose Host header is {shown} are served"
+            + (
+                ""
+                if args.allow == "read" or state.github
+                else f", and with the token they may {args.allow}"
+            )
         )
     if state.github is not None:
         warnings += team_board_warnings(args, state.github, state.workspace)

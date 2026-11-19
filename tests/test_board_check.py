@@ -95,6 +95,6 @@ def test_a_board_in_a_subfolder_answers_both_paths(tmp_path: Path, github: FakeG
         assert refused.headers["Set-Cookie"].startswith("__Secure-tadu_session=; Path=/tadu/;")
 
 
-def test_a_token_board_takes_no_post(tmp_path: Path) -> None:
+def test_a_token_board_takes_no_post_without_its_token(tmp_path: Path) -> None:
     with serve_board(board_workspace(tmp_path)) as board:
-        assert send(board, "POST", "/api/session").status == 405
+        assert send(board, "POST", "/api/session").status == 403

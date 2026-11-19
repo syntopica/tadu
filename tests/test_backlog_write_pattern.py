@@ -21,6 +21,7 @@ def test_close_with_write_and_leading_cd() -> None:
     assert TADU_WRITE_PATTERN.search("tadu close --match a\n --evidence e --write")
     assert not TADU_WRITE_PATTERN.search("tadu close --match a --evidence e")
     assert TADU_WRITE_PATTERN.search("tadu claim t-1 --as ana --write")
+    assert TADU_WRITE_PATTERN.search("tadu mark --id t-1 --state blocked --note n --write")
     assert not TADU_WRITE_PATTERN.search("tadu list --json")
     match = LEADING_CD_PATTERN.match("cd ~/repo && tadu close")
     assert match is not None

@@ -10,8 +10,9 @@ from team_workspace import team_workspace
 from tadu.cli import main
 from tadu.config_settings import CONFIG_OPTIONS
 from tadu.mcp_call import mcp_call
-from tadu.mcp_scope import McpScope
+from tadu.operation_host import OperationHost
 from tadu.parse_command_line import parse_command_line
+from tadu.scope import Scope
 
 
 @pytest.fixture
@@ -35,7 +36,7 @@ def test_output_follows_the_file_and_the_flags_override_it(
 
 def test_mcp_tools_ignore_config_files(repo: Path, user_file: Path) -> None:
     user_file.write_text("version = 1\n[defaults]\njson = true\nlimit = 1\n")
-    result = mcp_call("list", {}, McpScope((str(repo),), None), main)
+    result = mcp_call("list", {}, OperationHost(Scope((str(repo),)), "read", main))
     content = result["content"]
     assert isinstance(content, list)
     assert content[0]["text"].splitlines()[1].endswith("- Later.")

@@ -1,15 +1,17 @@
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
+from sample_workspace import sample_workspace
 
 from tadu.parse_paths import parse_paths
-from tadu.repository_entry import RepositoryEntry
+from tadu.visible_repositories import VISIBLE_REPOSITORIES
 from tadu.workspace import Workspace
 from tadu.workspace_error import WorkspaceError
 
 
 def workspace(directory: Path) -> Workspace:
-    return Workspace(directory, (RepositoryEntry("shop", None),), (), (), ())
+    return sample_workspace(directory)
 
 
 def test_absent_table_is_empty(tmp_path: Path) -> None:
@@ -41,3 +43,14 @@ def test_unknown_key_and_non_table_are_errors(tmp_path: Path) -> None:
         parse_paths("x", tmp_path, workspace(tmp_path))
     with pytest.raises(WorkspaceError, match="shop must be a string"):
         parse_paths({"shop": 1}, tmp_path, workspace(tmp_path))
+
+
+def test_a_cut_workspace_leaves_out_the_paths_of_what_it_lacks(tmp_path: Path) -> None:
+    keys = [entry.key for entry in workspace(tmp_path).repositories]
+    cut = replace(workspace(tmp_path), repositories=workspace(tmp_path).repositories[:1])
+    token = VISIBLE_REPOSITORIES.set(frozenset(keys[:1]))
+    try:
+        paths = parse_paths({key: f"../{key}" for key in keys}, tmp_path, cut)
+    finally:
+        VISIBLE_REPOSITORIES.reset(token)
+    assert list(paths) == keys[:1]

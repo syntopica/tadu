@@ -15,3 +15,8 @@ def sample_task(number: int, state: str = "pending", **overrides: object) -> dic
         task.update(closed="2026-11-01", resolution="Dropped.")
     task.update(overrides)
     return task
+
+
+def sample_id(number: int) -> str:
+    """The id sample_task gives task `number`."""
+    return str(sample_task(number)["id"])

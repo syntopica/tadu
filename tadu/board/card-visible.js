@@ -1,31 +1,21 @@
-import { FILTER_VALUES } from "./filter-values.js";
-import { matchesOrganization } from "./matches-organization.js";
-import { SINGLE_FILTERS } from "./single-filters.js";
+import { matchesRule } from "./matches-rule.js";
+import { stateRule } from "./state-rule.js";
 
-// `choice` holds each filter's selected value ("" for any), a due date the
-// item must fall before ("" for any), the toggles unassigned, noPriority,
-// waitingOnMe (the server's `tadu inbox` of me) and showCancelled, and me
-// (or null).
+// Whether a card passes a filter choice: `choice` holds the filters (their
+// rules but State, which the caller applies, waitingOnMe and
+// showCancelled), me (or null) and today. A cancelled item shows only when
+// cancelled items are shown or State asks for them; Waiting on me keeps
+// what the server's `tadu inbox` of me lists.
 export function cardVisible(card, choice) {
-  if (card.column === "cancelled" && !choice.showCancelled) {
+  const state = stateRule(choice);
+  const asked = state?.op === "any" && state.values.includes("cancelled");
+  if (card.column === "cancelled" && !choice.showCancelled && !asked) {
     return false;
   }
-  for (const name of SINGLE_FILTERS) {
-    if (choice[name] !== "" && !FILTER_VALUES[name](card).includes(choice[name])) {
+  for (const rule of choice.rules) {
+    if (rule.field !== "state" && !matchesRule(card, rule, choice.today)) {
       return false;
     }
-  }
-  if (!matchesOrganization(card, choice.organization, choice.role)) {
-    return false;
-  }
-  if (choice.dueBefore !== "" && (card.due === null || card.due >= choice.dueBefore)) {
-    return false;
-  }
-  if (choice.unassigned && card.assignees.length > 0) {
-    return false;
-  }
-  if (choice.noPriority && card.priority !== null) {
-    return false;
   }
   if (choice.waitingOnMe) {
     return choice.me !== null && card.waiting_on_me === true;

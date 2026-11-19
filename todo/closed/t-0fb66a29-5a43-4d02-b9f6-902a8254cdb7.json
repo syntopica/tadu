@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-0fb66a29-5a43-4d02-b9f6-902a8254cdb7",
+  "title": "Limit what a tool may do per server and per workspace repository",
+  "state": "done",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-d0e1392f-d2e4-4369-85f3-b2aa1e338393"
+  ],
+  "notes": [
+    "--allow read|write|admin on mcp and board; access = read|write|admin on a workspace repository, applied to every change made through the workspace."
+  ],
+  "closed": "2026-11-18",
+  "result": "--allow read|write|admin on mcp and board, and access = read|write|admin on a workspace repository, checked where the command settles the repository it changes, so the board, MCP and the command line all obey it",
+  "evidence": [
+    "pytest: 1363 tests at 100% coverage, ruff, mypy --strict and codeality clean; tests/test_target_path.py, test_access_allows.py, test_board_calls.py (a read repository refuses the board's add)"
+  ]
+}

@@ -24,7 +24,7 @@ def loose_text_task(name: str, first: int, lines: list[str], day: str | None) ->
     """A task holding the block whole in its notes, after a line saying what was assumed.
 
     Only what is sure becomes a key: the title is the block's heading (without its date),
-    else its first line. A block of TODO_LOG.md, such as an old prose entry, is closed as
+    else its first line. A block of a log file (TODO_LOG.md or an archived year), such as an old prose entry, is closed as
     done on the day the log gives (a month or a year gives its first day, no date the
     migration day) with the legacy evidence line, as the log records no state, result or
     evidence for it. A block of TODO.md is pending and untriaged, to be sorted.
@@ -58,7 +58,7 @@ def loose_text_task(name: str, first: int, lines: list[str], day: str | None) ->
             f" It has no day: the log put it in the {precision} {day}, so it is closed on {closed}."
         )
     note = (
-        f"Migrated from TODO_LOG.md line {first + 1}, written outside its dated entries; the "
+        f"Migrated from {name} line {first + 1}, written outside its dated entries; the "
         f"log records no state, result or evidence for it, so it is closed as done.{dated}"
     )
     return {

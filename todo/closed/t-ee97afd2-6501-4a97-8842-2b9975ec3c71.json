@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-ee97afd2-6501-4a97-8842-2b9975ec3c71",
+  "title": "Let the board change items when started with --allow write",
+  "state": "done",
+  "category": "board",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-d0e1392f-d2e4-4369-85f3-b2aa1e338393",
+    "t-fd2eb4da-c108-44a0-92c5-1656b4554f5e"
+  ],
+  "notes": [
+    "Detail actions (start, block, unblock, done, cancel, edit), drag and drop between columns, New item with similar items, each previewed; POST /api/op/<name> checked for token header, Origin, JSON and size."
+  ],
+  "closed": "2026-11-18",
+  "result": "tadu board --allow write: detail actions, drag and drop between columns, New item with similar items, each previewed; POST /api/op/<name> checked for the token header, Origin, Sec-Fetch-Site, JSON, length and size; Next, Urgent, Ready and Doctor views",
+  "evidence": [
+    "pytest: 1363 tests at 100% coverage, ruff, mypy --strict and codeality clean; tests/test_board_calls.py (each refusal over HTTP), test_board_change_*_js.py, test_board_drag_js.py; a jsdom run of the whole page against a live board blocked, dragged and added items in both formats"
+  ]
+}

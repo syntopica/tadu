@@ -28,18 +28,48 @@ CURRENT = 2
 OPEN_STATES = ("pending", "in_progress", "blocked")
 DEFAULT_TYPES = ["bug", "feature", "chore", "test", "docs", "refactor", "perf", "security"]
 PRIORITY_RANK = {"urgent": 0, "high": 1, "untriaged": 2, "normal": 3, "low": 4}
-MONTH_FOLDERS_MIN = 10        # split an archive year into months only at >= 10 tasks per month on average
-STALE_AFTER_DAYS = 14         # in progress longer than this (from started) is reported
+MONTH_FOLDERS_MIN = 10  # split an archive year into months only at >= 10 tasks per month on average
+STALE_AFTER_DAYS = 14  # in progress longer than this (from started) is reported
 UNKNOWN_CATEGORY = "general"  # always allowed: tadu's fallback category, used when nobody has decided
-UNKNOWN_TYPE = "untriaged"    # always allowed: type not decided yet
+UNKNOWN_TYPE = "untriaged"  # always allowed: type not decided yet
 
 # Canonical key order: identity, classification, planning, relations, description, then the
 # closing block last, so closing a task only appends lines (REPORT 8.1, 9.1).
-ORDER = ["tadu", "id", "title", "state", "category", "type", "priority", "labels", "milestone",
-         "created", "created_by", "started", "due", "defer_until", "queue", "assignees", "estimate",
-         "parent", "blocked_by", "related", "discovered_from", "blocker", "unblock", "notes",
-         "done_when", "links", "closed", "result", "evidence", "resolution", "superseded_by",
-         "duplicate_of", "files"]
+ORDER = [
+    "tadu",
+    "id",
+    "title",
+    "state",
+    "category",
+    "type",
+    "priority",
+    "labels",
+    "milestone",
+    "created",
+    "created_by",
+    "started",
+    "due",
+    "defer_until",
+    "queue",
+    "assignees",
+    "estimate",
+    "parent",
+    "blocked_by",
+    "related",
+    "discovered_from",
+    "blocker",
+    "unblock",
+    "notes",
+    "done_when",
+    "links",
+    "closed",
+    "result",
+    "evidence",
+    "resolution",
+    "superseded_by",
+    "duplicate_of",
+    "files",
+]
 LIST_KEYS = {"labels", "assignees", "blocked_by", "related", "notes", "done_when", "links", "evidence", "files"}
 ID_KEYS = ("parent", "discovered_from", "superseded_by", "duplicate_of")
 ID_LIST_KEYS = ("blocked_by", "related")
@@ -50,7 +80,10 @@ LINE_FIELDS = ("notes", "done_when", "evidence")  # Markdown stored as an array 
 # High-confidence secret formats. Task files are committed and read by agents, so a pasted key
 # spreads. Findings name the kind and the line, never the value (doctor output lands in logs).
 SECRETS = [
-    ("a private key block", re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED |PGP )?PRIVATE KEY( BLOCK)?-----")),
+    (
+        "a private key block",
+        re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED |PGP )?PRIVATE KEY( BLOCK)?-----"),
+    ),
     ("an AWS access key id", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b")),
     ("a GitHub token", re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,})")),
     ("a Slack token", re.compile(r"\bxox[abprs]-[A-Za-z0-9-]{10,}")),
@@ -58,9 +91,13 @@ SECRETS = [
     ("a Stripe secret key", re.compile(r"\b[rs]k_(?:live|test)_[A-Za-z0-9]{16,}")),
     ("a Google API key", re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b")),
     ("a JSON web token", re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}")),
-    ("a credential assignment", re.compile(
-        r"(?i)\b(?:password|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token)\b\s*[:=]\s*['\"]?"
-        r"(?=[A-Za-z0-9/+_=-]*\d)[A-Za-z0-9/+_=-]{16,}")),
+    (
+        "a credential assignment",
+        re.compile(
+            r"(?i)\b(?:password|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token)\b\s*[:=]\s*['\"]?"
+            r"(?=[A-Za-z0-9/+_=-]*\d)[A-Za-z0-9/+_=-]{16,}"
+        ),
+    ),
 ]
 
 
@@ -86,6 +123,7 @@ def today_of(a: argparse.Namespace | None = None) -> str:
 
 # ------------------------------------------------------------------ writing
 
+
 def trim_lines(value: list) -> list:
     """Drop blank lines at the start and the end; blank lines inside are content."""
     start, end = 0, len(value)
@@ -98,8 +136,10 @@ def trim_lines(value: list) -> list:
 
 def canonical(task: dict) -> str:
     """The one accepted text of a task: known keys in ORDER, unknown keys after them, x- keys last."""
-    task = {k: (trim_lines(v) if k in LINE_FIELDS and isinstance(v, list) and all(isinstance(x, str) for x in v) else v)
-            for k, v in task.items()}
+    task = {
+        k: (trim_lines(v) if k in LINE_FIELDS and isinstance(v, list) and all(isinstance(x, str) for x in v) else v)
+        for k, v in task.items()
+    }
     known = [k for k in ORDER if k in task]
     unknown = [k for k in task if k not in ORDER and not k.startswith("x-")]
     ext = sorted(k for k in task if k.startswith("x-"))
@@ -198,11 +238,13 @@ def references(task: dict) -> list[tuple[str, str]]:
 
 def schema_errors(task: dict) -> list[str]:
     import jsonschema
+
     v = jsonschema.Draft202012Validator(json.loads((HERE / "task.v2.schema.json").read_text()))
     return [f"{'/'.join(map(str, e.path)) or '(task)'}: {e.message}" for e in v.iter_errors(task)]
 
 
 # ------------------------------------------------------------------ checking
+
 
 def check(d: Path, today: str | None = None) -> list[tuple[str, str, str, str]]:
     """Findings (path, severity, code, message), like tadu doctor."""
@@ -241,7 +283,14 @@ def check(d: Path, today: str | None = None) -> list[tuple[str, str, str, str]]:
             out.append((r, "error", "J001", f"unreadable: {e}"))
             continue
         if not writable:
-            out.append((r, "warning", "J002", f"written by tadu format {task['tadu']}; this tool knows {CURRENT} and will not rewrite it"))
+            out.append(
+                (
+                    r,
+                    "warning",
+                    "J002",
+                    f"written by tadu format {task['tadu']}; this tool knows {CURRENT} and will not rewrite it",
+                )
+            )
             continue
         for n, kind in secret_findings(path.read_text(encoding="utf-8")):
             out.append((r, "warning", "J017", f"line {n} looks like {kind}; do not commit secrets (value not shown)"))
@@ -265,7 +314,9 @@ def check(d: Path, today: str | None = None) -> list[tuple[str, str, str, str]]:
             if sub == "archive":
                 y, m = task["closed"][:4], task["closed"][5:7]
                 if parts[1:-1] not in ((y,), (y, m)):
-                    out.append((r, "error", "J006", f"archived under {'/'.join(parts[1:-1])} but closed {task['closed']}"))
+                    out.append(
+                        (r, "error", "J006", f"archived under {'/'.join(parts[1:-1])} but closed {task['closed']}")
+                    )
                 else:
                     archive_layout.setdefault(y, set()).add("month" if len(parts) == 4 else "year")
         if task["id"] in tasks:
@@ -278,20 +329,37 @@ def check(d: Path, today: str | None = None) -> list[tuple[str, str, str, str]]:
         if task.get("milestone") and task["milestone"] not in milestones:
             out.append((r, "warning", "J019", f"milestone {task['milestone']!r} is not in tadu.json milestones"))
         if task["state"] in OPEN_STATES:
-            gaps = [f"{k} {task[k]}" for k, unknown in (("priority", "untriaged"), ("category", UNKNOWN_CATEGORY),
-                                                        ("type", UNKNOWN_TYPE)) if task[k] == unknown]
+            gaps = [
+                f"{k} {task[k]}"
+                for k, unknown in (("priority", "untriaged"), ("category", UNKNOWN_CATEGORY), ("type", UNKNOWN_TYPE))
+                if task[k] == unknown
+            ]
             if gaps:
                 out.append((r, "warning", "J010", f"needs triage: {', '.join(gaps)}"))
         if task["state"] == "in_progress" and task.get("started"):
             days = (date.fromisoformat(today) - date.fromisoformat(task["started"])).days
             if days > stale_days:
-                out.append((r, "warning", "J018", f"in progress for {days} days (started {task['started']}): finish, hand over or block it"))
+                out.append(
+                    (
+                        r,
+                        "warning",
+                        "J018",
+                        f"in progress for {days} days (started {task['started']}): finish, hand over or block it",
+                    )
+                )
         unknown = [k for k in task if k not in ORDER and not k.startswith("x-")]
         if unknown:
             out.append((r, "warning", "J011", f"unknown field(s) {', '.join(unknown)}; kept, but check for a typo"))
     for y, kinds in archive_layout.items():
         if len(kinds) > 1:
-            out.append((f"todo/archive/{y}", "error", "J006", "year mixes YYYY/ and YYYY/MM/ folders; run tadu archive --write"))
+            out.append(
+                (
+                    f"todo/archive/{y}",
+                    "error",
+                    "J006",
+                    "year mixes YYYY/ and YYYY/MM/ folders; run tadu archive --write",
+                )
+            )
     if (root / "archive").is_dir() and any((root / "archive").rglob("*.json")) and "archive" not in cfg:
         out.append(("todo/archive", "warning", "C003", "archive/ has tasks but tadu.json has no archive policy"))
 
@@ -305,18 +373,33 @@ def check(d: Path, today: str | None = None) -> list[tuple[str, str, str, str]]:
                 out.append((r, "error", "J012", f"{field} {ref} is not a task of this backlog"))
         dup = task.get("duplicate_of")
         if dup in tasks and tasks[dup][1].get("duplicate_of"):
-            out.append((r, "warning", "J021", f"duplicate_of {dup}, which is itself a duplicate of {tasks[dup][1]['duplicate_of']}: point to the task that was kept"))
+            out.append(
+                (
+                    r,
+                    "warning",
+                    "J021",
+                    f"duplicate_of {dup}, which is itself a duplicate of {tasks[dup][1]['duplicate_of']}: point to the task that was kept",
+                )
+            )
         for b in task.get("blocked_by", []):
             if b in tasks and task["state"] in OPEN_STATES and tasks[b][1]["state"] == "cancelled":
                 rep = tasks[b][1].get("superseded_by") or tasks[b][1].get("duplicate_of")
-                hint = f"; it was replaced by {rep}, so block on that instead" if rep else "; decide whether this task still applies"
+                hint = (
+                    f"; it was replaced by {rep}, so block on that instead"
+                    if rep
+                    else "; decide whether this task still applies"
+                )
                 out.append((r, "warning", "J016", f"blocked_by {b} was cancelled{hint}"))
         if task["state"] in OPEN_STATES and task.get("blocked_by"):
             waiting = waiting_on(tasks, task)
             if task["state"] == "blocked" and not waiting and not task.get("blocker"):
-                out.append((r, "warning", "J014", "every blocked_by task is closed: decide whether it moves to pending"))
+                out.append(
+                    (r, "warning", "J014", "every blocked_by task is closed: decide whether it moves to pending")
+                )
             if task["state"] != "blocked" and waiting:
-                out.append((r, "warning", "J015", f"{task['state']} but waits on open {', '.join(waiting)}; mark it blocked"))
+                out.append(
+                    (r, "warning", "J015", f"{task['state']} but waits on open {', '.join(waiting)}; mark it blocked")
+                )
     # cycles in blocked_by
     color: dict[str, int] = {}
 
@@ -326,7 +409,7 @@ def check(d: Path, today: str | None = None) -> list[tuple[str, str, str, str]]:
             if b not in tasks or b == iid:
                 continue
             if color.get(b) == 1:
-                cyc = stack[stack.index(b):] + [b] if b in stack else [iid, b]
+                cyc = stack[stack.index(b) :] + [b] if b in stack else [iid, b]
                 out.append((rel(tasks[iid][0]), "error", "J013", "blocked_by cycle: " + " -> ".join(cyc)))
             elif b not in color:
                 visit(b, [*stack, b])
@@ -339,6 +422,7 @@ def check(d: Path, today: str | None = None) -> list[tuple[str, str, str, str]]:
 
 
 # ------------------------------------------------------------------ reading commands
+
 
 def line(tasks: dict, iid: str, t: dict) -> str:
     return f"{short(tasks, iid)} [{t['state']}] {t['priority']} {t.get('due', '-')} {t['category']} {t['title']}"
@@ -366,8 +450,14 @@ def cmd_show(d: Path, a: argparse.Namespace) -> int:
     path, task = tasks[iid]
     print(f"# {path.relative_to(root.parent)}")
     print(canonical(task), end="")
-    incoming = {"blocks": [], "related (linked from)": [], "duplicates": [], "discovered": [], "children": [],
-                "replaces": []}
+    incoming = {
+        "blocks": [],
+        "related (linked from)": [],
+        "duplicates": [],
+        "discovered": [],
+        "children": [],
+        "replaces": [],
+    }
     for oid, (_, o) in tasks.items():
         if iid in o.get("blocked_by", []):
             incoming["blocks"].append(oid)
@@ -388,6 +478,7 @@ def cmd_show(d: Path, a: argparse.Namespace) -> int:
 
 
 # ------------------------------------------------------------------ writing commands
+
 
 def save(root: Path, old_path: Path | None, task: dict, write_it: bool, what: str) -> int:
     """Validate, then write (or only report): the one place every command writes through."""
@@ -426,14 +517,27 @@ def cmd_add(d: Path, a: argparse.Namespace) -> int:
                 scored.append((sim, oid))
     for sim, oid in sorted(scored, reverse=True)[:3]:
         print(f"similar {sim:.2f}: {line(tasks, oid, tasks[oid][1])}")
-    task = {"tadu": 2, "id": "t-" + str(uuid.uuid4()), "title": a.title, "state": "pending",
-            "category": a.category, "type": a.type, "priority": a.priority, "labels": a.label or [],
-            "milestone": a.milestone, "created": today_of(a),
-            "created_by": a.created_by or os.environ.get("TADU_ACTOR"), "due": a.due,
-            "defer_until": a.defer_until, "blocked_by": [resolve(tasks, x) for x in a.blocked_by or []],
-            "related": [resolve(tasks, x) for x in a.related or []],
-            "discovered_from": resolve(tasks, a.discovered_from) if a.discovered_from else None,
-            "notes": a.note or [], "done_when": a.done_when or [], "links": a.link or []}
+    task = {
+        "tadu": 2,
+        "id": "t-" + str(uuid.uuid4()),
+        "title": a.title,
+        "state": "pending",
+        "category": a.category,
+        "type": a.type,
+        "priority": a.priority,
+        "labels": a.label or [],
+        "milestone": a.milestone,
+        "created": today_of(a),
+        "created_by": a.created_by or os.environ.get("TADU_ACTOR"),
+        "due": a.due,
+        "defer_until": a.defer_until,
+        "blocked_by": [resolve(tasks, x) for x in a.blocked_by or []],
+        "related": [resolve(tasks, x) for x in a.related or []],
+        "discovered_from": resolve(tasks, a.discovered_from) if a.discovered_from else None,
+        "notes": a.note or [],
+        "done_when": a.done_when or [],
+        "links": a.link or [],
+    }
     if task["blocked_by"]:
         task["state"] = "blocked"
     return save(root, None, task, a.write, f"add {task['id']}: {a.title}")
@@ -466,7 +570,13 @@ def cmd_set(d: Path, a: argparse.Namespace) -> int:
             if key in ID_LIST_KEYS:
                 items = [resolve(tasks, x) for x in items]
             cur = list(new.get(key, []))
-            new[key] = items if op == "=" else cur + [x for x in items if x not in cur] if op == "+=" else [x for x in cur if x not in items]
+            new[key] = (
+                items
+                if op == "="
+                else cur + [x for x in items if x not in cur]
+                if op == "+="
+                else [x for x in cur if x not in items]
+            )
         elif op == "=":
             new[key] = int(value) if key == "estimate" and value else value
         else:
@@ -495,7 +605,11 @@ def cmd_claim(d: Path, a: argparse.Namespace) -> int:
     others = [p for p in task.get("assignees", []) if p != a.who]
     if task["state"] == "in_progress" and others and not a.force:
         raise SystemExit(f"{name} is already in progress by {', '.join(others)} (use --force to take it over)")
-    new = {**task, "state": "in_progress", "assignees": [a.who] if a.force else list(dict.fromkeys([*task.get("assignees", []), a.who]))}
+    new = {
+        **task,
+        "state": "in_progress",
+        "assignees": [a.who] if a.force else list(dict.fromkeys([*task.get("assignees", []), a.who])),
+    }
     new.setdefault("started", today_of(a))
     return save(root, path, new, a.write, f"claim {name} as {a.who}")
 
@@ -514,7 +628,9 @@ def cmd_close(d: Path, a: argparse.Namespace) -> int:
     day = a.date or today_of(a)
     if a.duplicate_of:
         keep = resolve(tasks, a.duplicate_of)
-        closed.update(state="cancelled", closed=day, resolution=a.resolution or f"Duplicate of {keep}.", duplicate_of=keep)
+        closed.update(
+            state="cancelled", closed=day, resolution=a.resolution or f"Duplicate of {keep}.", duplicate_of=keep
+        )
     elif a.resolution:
         closed.update(state="cancelled", closed=day, resolution=a.resolution)
     else:
@@ -528,8 +644,10 @@ def cmd_close(d: Path, a: argparse.Namespace) -> int:
         still = waiting_on(tasks_after, other)
         name = f"{short(tasks, oid)} {other['title']!r}"
         if closed["state"] == "cancelled":
-            plan.append(f"  {name} was waiting on this task, which is cancelled, not done: review it"
-                        + (f" (block on {short(tasks, closed['duplicate_of'])} instead?)" if closed.get("duplicate_of") else ""))
+            plan.append(
+                f"  {name} was waiting on this task, which is cancelled, not done: review it"
+                + (f" (block on {short(tasks, closed['duplicate_of'])} instead?)" if closed.get("duplicate_of") else "")
+            )
         elif still:
             plan.append(f"  {name} still waits on {', '.join(short(tasks, s) for s in still)}")
         elif other.get("blocker"):
@@ -599,7 +717,9 @@ def cmd_archive(d: Path, a: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(prog="v2.py", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        prog="v2.py", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     sub = ap.add_subparsers(dest="cmd", required=True)
     for name in ("check", "ready", "archive"):
         p = sub.add_parser(name)
@@ -623,7 +743,7 @@ def main() -> int:
     ad.add_argument("--blocked-by", action="append")
     ad.add_argument("--related", action="append")
     ad.add_argument("--discovered-from")
-    ad.add_argument("--note", action="append", help="one Markdown line; repeat for more (\"\" is a blank line)")
+    ad.add_argument("--note", action="append", help='one Markdown line; repeat for more ("" is a blank line)')
     ad.add_argument("--done-when", action="append")
     ad.add_argument("--link", action="append")
     ad.add_argument("--created-by", help="person id or agent:<name> (default: $TADU_ACTOR)")
@@ -660,8 +780,15 @@ def main() -> int:
         for path, sev, code, msg in findings:
             print(f"{path}: {sev} {code} {msg}")
         return 1 if any(sev == "error" for _, sev, _, _ in findings) else 0
-    return {"ready": cmd_ready, "show": cmd_show, "add": cmd_add, "set": cmd_set, "claim": cmd_claim,
-            "close": cmd_close, "archive": cmd_archive}[a.cmd](d, a)
+    return {
+        "ready": cmd_ready,
+        "show": cmd_show,
+        "add": cmd_add,
+        "set": cmd_set,
+        "claim": cmd_claim,
+        "close": cmd_close,
+        "archive": cmd_archive,
+    }[a.cmd](d, a)
 
 
 if __name__ == "__main__":

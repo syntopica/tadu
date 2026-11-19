@@ -5,6 +5,7 @@ def test_positional_root_of_close_and_the_v2_commands() -> None:
     assert command_root_word(["tadu", "close", "/r s", "--write"]) == "/r s"
     assert command_root_word(["tadu", "add", "shop", "--title", "x", "--write"]) == "shop"
     assert command_root_word(["tadu", "migrate", "../shop", "--write"]) == "../shop"
+    assert command_root_word(["tadu", "mark", "shop", "--id", "t-1", "--write"]) == "shop"
 
 
 def test_root_option_of_set_and_claim() -> None:

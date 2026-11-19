@@ -1,4 +1,4 @@
-"""The backlog directories an MCP server reads, by the label its items carry."""
+"""The backlog directories a scope reads, by the label its items carry."""
 
 from __future__ import annotations
 
@@ -10,10 +10,10 @@ from tadu.load_workspace import load_workspace
 from tadu.root_labels import root_labels
 
 if TYPE_CHECKING:
-    from tadu.mcp_scope import McpScope
+    from tadu.scope import Scope
 
 
-def scope_roots(scope: McpScope) -> dict[str, Path]:
+def scope_roots(scope: Scope) -> dict[str, Path]:
     """Label to resolved backlog directory: workspace keys, else the labels of `root_labels`.
 
     A workspace repository without a checkout path on this machine is left out.

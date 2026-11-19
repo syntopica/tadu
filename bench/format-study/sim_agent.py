@@ -28,6 +28,7 @@ import time
 from pathlib import Path
 
 import tokens
+from gen import busiest_topic
 
 HERE = Path(__file__).parent
 READ_MAX_LINES = 2000
@@ -56,42 +57,79 @@ TUNED = {
 
 # ---------------------------------------------------------------- tasks
 
+
 def tasks(truth: dict) -> list[dict]:
     o, log = truth["open"], truth["log"]
-    topic_counts: dict[str, int] = {}
-    for i in o:
-        if i["topic"]:
-            topic_counts[i["topic"]] = topic_counts.get(i["topic"], 0) + 1
-    topic = max(sorted(topic_counts), key=lambda t: topic_counts[t])
+    topic = busiest_topic(truth)
     import vocab
+
     canon, variants = vocab.TOPICS[topic]
     topic_re = f"{re.escape(canon)}|{re.escape(variants[0])}"
     topic_re_all = "|".join(re.escape(v) for v in [canon, *variants])
     hi = ("urgent", "high")
     ids = lambda xs: {i["id"] for i in xs}  # noqa: E731
     return [
-        {"id": "T1", "name": "urgent+high priority", "prompt": "What urgent or high-priority work is pending?",
-         "truth": ids(i for i in o if i["priority"] in hi)},
-        {"id": "T2", "name": "due this week (incl. overdue)", "prompt": f"What is due this week, up to {WEEK_END}, including anything overdue?",
-         "truth": ids(i for i in o if i["due"] and i["due"] <= WEEK_END)},
-        {"id": "T3", "name": "UI category", "prompt": "Let's work on the UI: list the open UI tasks.",
-         "truth": ids(i for i in o if i["category"] == "ui")},
-        {"id": "T4", "name": "open bugs", "prompt": "List the open bugs.",
-         "truth": ids(i for i in o if i["type"] == "bug")},
-        {"id": "T5", "name": "high-priority UI bugs", "prompt": "Which urgent or high-priority UI bugs are open?",
-         "truth": ids(i for i in o if i["type"] == "bug" and i["category"] == "ui" and i["priority"] in hi)},
-        {"id": "T6", "name": "blocked", "prompt": "What is blocked?",
-         "truth": ids(i for i in o if i["state"] == "!")},
-        {"id": "T7", "name": f"related: {topic}", "prompt": f"Show all open work related to the {canon}.",
-         "truth": ids(i for i in o if i["topic"] == topic), "topic": topic, "topic_re": topic_re, "topic_re_all": topic_re_all},
-        {"id": "T8", "name": f"history: {topic}", "prompt": f"Has {canon} work been done before? List the closed entries.",
-         "truth": ids(i for i in log if i["topic"] == topic), "topic": topic, "topic_re": topic_re, "topic_re_all": topic_re_all, "log": True},
-        {"id": "T9", "name": "overdue", "prompt": f"What is overdue (due before {TODAY})?",
-         "truth": ids(i for i in o if i["due"] and i["due"] < TODAY)},
+        {
+            "id": "T1",
+            "name": "urgent+high priority",
+            "prompt": "What urgent or high-priority work is pending?",
+            "truth": ids(i for i in o if i["priority"] in hi),
+        },
+        {
+            "id": "T2",
+            "name": "due this week (incl. overdue)",
+            "prompt": f"What is due this week, up to {WEEK_END}, including anything overdue?",
+            "truth": ids(i for i in o if i["due"] and i["due"] <= WEEK_END),
+        },
+        {
+            "id": "T3",
+            "name": "UI category",
+            "prompt": "Let's work on the UI: list the open UI tasks.",
+            "truth": ids(i for i in o if i["category"] == "ui"),
+        },
+        {
+            "id": "T4",
+            "name": "open bugs",
+            "prompt": "List the open bugs.",
+            "truth": ids(i for i in o if i["type"] == "bug"),
+        },
+        {
+            "id": "T5",
+            "name": "high-priority UI bugs",
+            "prompt": "Which urgent or high-priority UI bugs are open?",
+            "truth": ids(i for i in o if i["type"] == "bug" and i["category"] == "ui" and i["priority"] in hi),
+        },
+        {"id": "T6", "name": "blocked", "prompt": "What is blocked?", "truth": ids(i for i in o if i["state"] == "!")},
+        {
+            "id": "T7",
+            "name": f"related: {topic}",
+            "prompt": f"Show all open work related to the {canon}.",
+            "truth": ids(i for i in o if i["topic"] == topic),
+            "topic": topic,
+            "topic_re": topic_re,
+            "topic_re_all": topic_re_all,
+        },
+        {
+            "id": "T8",
+            "name": f"history: {topic}",
+            "prompt": f"Has {canon} work been done before? List the closed entries.",
+            "truth": ids(i for i in log if i["topic"] == topic),
+            "topic": topic,
+            "topic_re": topic_re,
+            "topic_re_all": topic_re_all,
+            "log": True,
+        },
+        {
+            "id": "T9",
+            "name": "overdue",
+            "prompt": f"What is overdue (due before {TODAY})?",
+            "truth": ids(i for i in o if i["due"] and i["due"] < TODAY),
+        },
     ]
 
 
 # ---------------------------------------------------------------- visibility helpers
+
 
 class LineMap:
     """Scorer-only map from file line numbers to item ids."""
@@ -116,15 +154,21 @@ def run(cmd: str, cwd: Path, repeat: int) -> tuple[str, float]:
     times, out = [], ""
     for _ in range(repeat):
         t = time.perf_counter()
-        out = subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True,
-                             env={"TQ_TODAY": TODAY, "PATH": "/usr/bin:/bin", "LC_ALL": "C.UTF-8"}).stdout
+        out = subprocess.run(
+            cmd,
+            shell=True,
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            env={"TQ_TODAY": TODAY, "PATH": "/usr/bin:/bin", "LC_ALL": "C.UTF-8"},
+        ).stdout
         times.append((time.perf_counter() - t) * 1000)
     return out, statistics.median(times)
 
 
 def read_tool(path: Path, offset: int, limit: int) -> str:
     lines = path.read_text(encoding="utf-8").splitlines()
-    chunk = lines[offset - 1: offset - 1 + limit]
+    chunk = lines[offset - 1 : offset - 1 + limit]
     return "\n".join(f"{n:>6}\t{line[:2000]}" for n, line in enumerate(chunk, offset))
 
 
@@ -206,12 +250,20 @@ def keys_visible(out: str, lmaps: dict[str, LineMap]) -> set[str]:
 
 # ---------------------------------------------------------------- strategies
 
+
 def strat_read(fmt: str, fname: str, logname: str):
     def f(task, d: Path, lmaps, repeat):
         name = logname if task.get("log") else fname
         text, last, calls, trunc = read_first_chunk(d / name)
-        return {"tokens": tokens.count(text), "calls": calls, "ms": None, "truncated": trunc,
-                "found": items_in_range(lmaps[name], last), "reachable": set(lmaps[name].spans)}
+        return {
+            "tokens": tokens.count(text),
+            "calls": calls,
+            "ms": None,
+            "truncated": trunc,
+            "found": items_in_range(lmaps[name], last),
+            "reachable": set(lmaps[name].spans),
+        }
+
     return f
 
 
@@ -219,20 +271,31 @@ def strat_readall(fmt: str, fname: str, logname: str):
     def f(task, d: Path, lmaps, repeat):
         name = logname if task.get("log") else fname
         total, calls, budget_line = read_all(d / name)
-        return {"tokens": total, "calls": calls, "ms": None, "truncated": total > CONTEXT_BUDGET,
-                "found": items_in_range(lmaps[name], budget_line), "reachable": set(lmaps[name].spans)}
+        return {
+            "tokens": total,
+            "calls": calls,
+            "ms": None,
+            "truncated": total > CONTEXT_BUDGET,
+            "found": items_in_range(lmaps[name], budget_line),
+            "reachable": set(lmaps[name].spans),
+        }
+
     return f
 
 
 def shell_strategy(commands):
     """commands(task) -> list of (cmd, kind) with kind 'grep' or 'keys'."""
+
     def f(task, d: Path, lmaps, repeat):
         toks, ms, found, reach, trunc = 0, 0.0, set(), set(), False
         cmds = commands(task)
         if cmds is None:
             return None
-        parse = lambda out, kind, target: (grep_visible(out, lmaps[target]) if kind == "grep"  # noqa: E731
-                                           else keys_visible(out, lmaps))
+        parse = lambda out, kind, target: (
+            grep_visible(out, lmaps[target])
+            if kind == "grep"  # noqa: E731
+            else keys_visible(out, lmaps)
+        )
         for cmd, kind, target in cmds:
             raw, t = run(cmd, d, repeat)
             out, tr = cap_chars(raw)
@@ -247,8 +310,16 @@ def shell_strategy(commands):
                 full = re.sub(r" --limit \d+", "", cmd).replace(f"{TADU} list", f"{TADU} list --limit 0")
                 raw, _ = run(full, d, 1)
             reach |= parse(raw, kind, target)
-        return {"tokens": toks, "calls": len(cmds), "ms": ms, "truncated": trunc, "found": found,
-                "reachable": reach, "commands": [c for c, _, _ in cmds]}
+        return {
+            "tokens": toks,
+            "calls": len(cmds),
+            "ms": ms,
+            "truncated": trunc,
+            "found": found,
+            "reachable": reach,
+            "commands": [c for c, _, _ in cmds],
+        }
+
     return f
 
 
@@ -261,13 +332,17 @@ def prose_grep(t, R=BLIND):
     return {
         "T1": [(f"{G} -B6 {q(R['prio'])} TODO.md", "grep", "TODO.md")],
         "T2": [(f"{G} -B6 {q(R['due'])} TODO.md", "grep", "TODO.md")],
-        "T3": [("awk '/^## UI$/{p=1;print NR\":\"$0;next} /^## /{p=0} p{print NR\":\"$0}' TODO.md", "grep", "TODO.md"),
-               (f"grep -n -E {q(R['ui'])} TODO.md", "grep", "TODO.md")],
+        "T3": [
+            ('awk \'/^## UI$/{p=1;print NR":"$0;next} /^## /{p=0} p{print NR":"$0}\' TODO.md', "grep", "TODO.md"),
+            (f"grep -n -E {q(R['ui'])} TODO.md", "grep", "TODO.md"),
+        ],
         "T4": [(f"{G} {q(R['bug'])} TODO.md", "grep", "TODO.md")],
         "T5": [(f"{G} -B6 {q(R['prio'])} TODO.md", "grep", "TODO.md")],
         "T6": [("grep -n -E '^- \\[!\\]' TODO.md", "grep", "TODO.md")],
         "T7": [(f"{G} {q(t.get('topic_re_all' if R is TUNED else 'topic_re', ''))} TODO.md", "grep", "TODO.md")],
-        "T8": [(f"{G} {q(t.get('topic_re_all' if R is TUNED else 'topic_re', ''))} TODO_LOG.md", "grep", "TODO_LOG.md")],
+        "T8": [
+            (f"{G} {q(t.get('topic_re_all' if R is TUNED else 'topic_re', ''))} TODO_LOG.md", "grep", "TODO_LOG.md")
+        ],
         "T9": [(f"{G} -B6 {q(R['due'])} TODO.md", "grep", "TODO.md")],
     }[t["id"]]
 
@@ -276,15 +351,21 @@ def prose_tadu(t, R=BLIND):
     L = f"{TADU} list . --limit 0"  # tadu as released: no result limit (see fields_tadu)
     g = lambda rx: f"{L} | grep -i -E {q(rx)}"  # noqa: E731
     return {
-        "T1": [(g(R['prio']), "keys", None)],
-        "T2": [(g(R['due']), "keys", None)],
-        "T3": [(g(R['ui']), "keys", None)],
-        "T4": [(g(R['bug']), "keys", None)],
-        "T5": [(g(R['prio']), "keys", None)],
+        "T1": [(g(R["prio"]), "keys", None)],
+        "T2": [(g(R["due"]), "keys", None)],
+        "T3": [(g(R["ui"]), "keys", None)],
+        "T4": [(g(R["bug"]), "keys", None)],
+        "T5": [(g(R["prio"]), "keys", None)],
         "T6": [(f"{L} --column blocked", "keys", None)],
-        "T7": [(g(t.get('topic_re_all' if R is TUNED else 'topic_re', '')), "keys", None)],
-        "T8": [(f"{L} --done-days 100000 --include-cancelled | grep -i -E {q(t.get('topic_re_all' if R is TUNED else 'topic_re', ''))}", "keys", None)],
-        "T9": [(g(R['due']), "keys", None)],
+        "T7": [(g(t.get("topic_re_all" if R is TUNED else "topic_re", "")), "keys", None)],
+        "T8": [
+            (
+                f"{L} --done-days 100000 --include-cancelled | grep -i -E {q(t.get('topic_re_all' if R is TUNED else 'topic_re', ''))}",
+                "keys",
+                None,
+            )
+        ],
+        "T9": [(g(R["due"]), "keys", None)],
     }[t["id"]]
 
 
@@ -311,8 +392,10 @@ def fields_tadu(t):
         "T2": [(f"{L} --due-before 2026-11-23", "keys", None)],
         "T3": [(f"{L} | grep -F '**UI:**'", "keys", None)],
         "T4": [(f"{L} --label bug", "keys", None)],
-        "T5": [(f"{L} --label bug --priority urgent | grep -F '**UI:**'", "keys", None),
-               (f"{L} --label bug --priority high | grep -F '**UI:**'", "keys", None)],
+        "T5": [
+            (f"{L} --label bug --priority urgent | grep -F '**UI:**'", "keys", None),
+            (f"{L} --label bug --priority high | grep -F '**UI:**'", "keys", None),
+        ],
         "T6": [(f"{L} --column blocked", "keys", None)],
         "T7": [(f"{L} --label {t.get('topic')}", "keys", None)],
         "T8": [(f"{L} --done-days 100000 --include-cancelled --label {t.get('topic')} | grep TODO_LOG", "keys", None)],
@@ -344,23 +427,27 @@ def tadu2(t, open_only=False, limit=None):
     """
     L = f"{TADU} list" + (f" --limit {limit}" if limit else "")
     P = f"{L} --open" if open_only else L
-    return [(f"{c} 2>&1", "keys", None) for c in {
-        "T1": [f"{P} --min-priority high --sort priority"],
-        "T2": [f"{P} --due-before 2026-11-23 --sort due"],
-        "T3": [f"{P} --category ui --sort priority"],
-        "T4": [f"{P} --type bug --sort priority"],
-        "T5": [f"{P} --category ui --type bug --min-priority high"],
-        "T6": [f"{P} --column blocked"],
-        "T7": [f"{P} --label {t.get('topic')}"],
-        "T8": [f"{L} --history --include-cancelled --label {t.get('topic')} --sort closed"],
-        "T9": [f"{P} --due-before {TODAY} --sort due"],
-    }[t["id"]]]
+    return [
+        (f"{c} 2>&1", "keys", None)
+        for c in {
+            "T1": [f"{P} --min-priority high --sort priority"],
+            "T2": [f"{P} --due-before 2026-11-23 --sort due"],
+            "T3": [f"{P} --category ui --sort priority"],
+            "T4": [f"{P} --type bug --sort priority"],
+            "T5": [f"{P} --category ui --type bug --min-priority high"],
+            "T6": [f"{P} --column blocked"],
+            "T7": [f"{P} --label {t.get('topic')}"],
+            "T8": [f"{L} --history --include-cancelled --label {t.get('topic')} --sort closed"],
+            "T9": [f"{P} --due-before {TODAY} --sort due"],
+        }[t["id"]]
+    ]
 
 
 def paged(commands):
     """The agent follows the '# ... more: add --offset N' footer until the list is complete."""
+
     def f(task, d: Path, lmaps, repeat):
-        (cmd, kind, target), = commands(task)
+        ((cmd, kind, target),) = commands(task)
         toks, ms, found, calls, offset = 0, 0.0, set(), 0, 0
         while True:
             c = f"{cmd} --offset {offset}" if offset else cmd
@@ -374,18 +461,17 @@ def paged(commands):
             if not m:
                 break
             offset = int(m.group(1))
-        return {"tokens": toks, "calls": calls, "ms": ms, "truncated": False, "found": found,
-                "reachable": found}
+        return {"tokens": toks, "calls": calls, "ms": ms, "truncated": False, "found": found, "reachable": found}
+
     return f
 
 
 JQ = f"{sys.executable} {HERE / 'jq_lite.py'}"
 
 
-def jsonl_jq(t):
-    """The agent writes its own jq-style filter; output is the raw matching records."""
-    f = "TODO_LOG.jsonl" if t.get("log") else "TODO.jsonl"
-    expr = {
+def jq_filter(t):
+    """The jq-style filter an agent writes for a question about JSON records."""
+    return {
         "T1": 'priority in ("urgent","high")',
         "T2": f'due and due <= "{WEEK_END}"',
         "T3": 'category == "ui"',
@@ -396,39 +482,42 @@ def jsonl_jq(t):
         "T8": f'"{t.get("topic")}" in labels',
         "T9": f'due and due < "{TODAY}"',
     }[t["id"]]
-    return [(f"{JQ} {q(expr)} {f}", "keys", None)]
+
+
+def jsonl_jq(t):
+    """The agent writes its own jq-style filter; output is the raw matching records."""
+    f = "TODO_LOG.jsonl" if t.get("log") else "TODO.jsonl"
+    return [(f"{JQ} {q(jq_filter(t))} {f}", "keys", None)]
 
 
 def mddir_grep(t):
     """One Markdown file per task, no custom tool: grep the front matter, print titles."""
     T = "xargs -r grep -H '^title:'"
     lab = lambda x, where="todo": f"grep -rlE '^labels: \\[(.*, )?{x}(,|\\])' {where}"  # noqa: E731
-    due = lambda cmp: (f"grep -rH '^due:' todo | awk -F'due: ' '$2 {cmp}' | cut -d: -f1 | {T}")  # noqa: E731
-    return [(c, "keys", None) for c in {
-        "T1": [f"grep -rlE '^priority: (urgent|high)$' todo | {T}"],
-        "T2": [due(f'<= "{WEEK_END}"')],
-        "T3": [f"grep -rl '^category: ui$' todo | {T}"],
-        "T4": [f"{lab('bug')} | {T}"],
-        "T5": [f"grep -rl '^category: ui$' todo | xargs -r grep -lE '^priority: (urgent|high)$' "
-               f"| xargs -r grep -lE '^labels: \\[(.*, )?bug(,|\\])' | {T}"],
-        "T6": [f"grep -rl '^state: blocked$' todo | {T}"],
-        "T7": [f"{lab(t.get('topic'))} | {T}"],
-        "T8": [f"{lab(t.get('topic'), 'done')} | {T}"],
-        "T9": [due(f'< "{TODAY}"')],
-    }[t["id"]]]
+    due = lambda cmp: f"grep -rH '^due:' todo | awk -F'due: ' '$2 {cmp}' | cut -d: -f1 | {T}"  # noqa: E731
+    return [
+        (c, "keys", None)
+        for c in {
+            "T1": [f"grep -rlE '^priority: (urgent|high)$' todo | {T}"],
+            "T2": [due(f'<= "{WEEK_END}"')],
+            "T3": [f"grep -rl '^category: ui$' todo | {T}"],
+            "T4": [f"{lab('bug')} | {T}"],
+            "T5": [
+                f"grep -rl '^category: ui$' todo | xargs -r grep -lE '^priority: (urgent|high)$' "
+                f"| xargs -r grep -lE '^labels: \\[(.*, )?bug(,|\\])' | {T}"
+            ],
+            "T6": [f"grep -rl '^state: blocked$' todo | {T}"],
+            "T7": [f"{lab(t.get('topic'))} | {T}"],
+            "T8": [f"{lab(t.get('topic'), 'done')} | {T}"],
+            "T9": [due(f'< "{TODAY}"')],
+        }[t["id"]]
+    ]
 
 
 def jsondir_jq(t):
     """One JSON file per task, no custom tool: `jq 'select(...) | {id, title}' todo/*.json`."""
-    expr = {
-        "T1": 'priority in ("urgent","high")', "T2": f'due and due <= "{WEEK_END}"',
-        "T3": 'category == "ui"', "T4": '"bug" in labels',
-        "T5": 'category == "ui" and "bug" in labels and priority in ("urgent","high")',
-        "T6": 'state == "blocked"', "T7": f'"{t.get("topic")}" in labels',
-        "T8": f'"{t.get("topic")}" in labels', "T9": f'due and due < "{TODAY}"',
-    }[t["id"]]
     files = "done/*/*.json" if t["id"] == "T8" else "todo/*.json"
-    return [(f"{JQ} --each {q(expr)} {files}", "keys", None)]
+    return [(f"{JQ} --each {q(jq_filter(t))} {files}", "keys", None)]
 
 
 def strategies():
@@ -496,24 +585,35 @@ def main() -> None:
                 found, tr = r.pop("found"), t["truth"]
                 reach = r.pop("reachable")
                 hit = len(found & tr)
-                row = {"scale": scale, "strategy": name, "task": t["id"], "task_name": t["name"],
-                       "truth": len(tr), "surfaced": len(found), "hit": hit,
-                       "recall": hit / len(tr) if tr else 1.0,
-                       "noise": len(found - tr),
-                       "silent_miss": len(tr - reach) / len(tr) if tr else 0.0,
-                       "signalled_miss": len((tr & reach) - found) / len(tr) if tr else 0.0,
-                       "precision": hit / len(found) if found else (1.0 if not tr else 0.0), **r}
+                row = {
+                    "scale": scale,
+                    "strategy": name,
+                    "task": t["id"],
+                    "task_name": t["name"],
+                    "truth": len(tr),
+                    "surfaced": len(found),
+                    "hit": hit,
+                    "recall": hit / len(tr) if tr else 1.0,
+                    "noise": len(found - tr),
+                    "silent_miss": len(tr - reach) / len(tr) if tr else 0.0,
+                    "signalled_miss": len((tr & reach) - found) / len(tr) if tr else 0.0,
+                    "precision": hit / len(found) if found else (1.0 if not tr else 0.0),
+                    **r,
+                }
                 rows.append(row)
-                print(f"{scale} {name:15} {t['id']} truth={len(tr):4} recall={row['recall']:.2f} "
-                      f"silent={row['silent_miss']:.2f} "
-                      f"noise={row['noise']:5} tok={row['tokens']:7} calls={row['calls']:3} "
-                      f"ms={row['ms'] if row['ms'] is None else round(row['ms'])} trunc={row['truncated']}",
-                      flush=True)
+                print(
+                    f"{scale} {name:15} {t['id']} truth={len(tr):4} recall={row['recall']:.2f} "
+                    f"silent={row['silent_miss']:.2f} "
+                    f"noise={row['noise']:5} tok={row['tokens']:7} calls={row['calls']:3} "
+                    f"ms={row['ms'] if row['ms'] is None else round(row['ms'])} trunc={row['truncated']}",
+                    flush=True,
+                )
     out = Path(a.out)
     out.parent.mkdir(exist_ok=True)
     if a.only and out.is_file():  # merge partial reruns
-        old = [r for r in json.loads(out.read_text())["rows"]
-               if not (r["strategy"] in a.only and r["scale"] in a.scale)]
+        old = [
+            r for r in json.loads(out.read_text())["rows"] if not (r["strategy"] in a.only and r["scale"] in a.scale)
+        ]
         rows = old + rows
     out.write_text(json.dumps({"tokenizer": tokens.method(), "rows": rows}, indent=1))
 

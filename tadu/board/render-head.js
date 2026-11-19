@@ -2,21 +2,24 @@ import { COLUMN_TITLES } from "./column-titles.js";
 import { el } from "./el.js";
 import { formatClock } from "./format-clock.js";
 import { formatCount } from "./format-count.js";
+import { ownView } from "./own-view.js";
+import { placesCounts } from "./places-counts.js";
+import { placesLabel } from "./places-label.js";
 import { plural } from "./plural.js";
+import { stateRule } from "./state-rule.js";
 import { VIEW_TITLES } from "./view-titles.js";
-import { whereCounts } from "./where-counts.js";
-import { whereParts } from "./where-parts.js";
 
-// Page title with the scope ("Board — Pixel Potion") and a subtitle of what
-// the scope holds ("12 projects · 2,405 items"), the update time or error,
+// Page title with the chosen places ("Board — Pixel Potion, Globex CRM")
+// and a subtitle of what they hold ("12 projects · 2,405 items"), the update time or error,
 // and the scan problems.
 export function renderHead(store, sets) {
   const payload = store.payload;
   const view = VIEW_TITLES.find(([key]) => key === store.view)?.[1] ?? "Board";
-  const column = store.filters.column;
-  const named = store.view === "all" && column !== "" ? `${view}: ${COLUMN_TITLES[column]}` : view;
-  const scope = store.index ? whereParts(store.where, store.index).at(-1)?.label : undefined;
-  const title = scope === undefined ? named : `${named} — ${scope}`;
+  const state = stateRule(store.filters);
+  const one = state?.op === "any" && state.values.length === 1 ? state.values[0] : "";
+  const named = store.view === "all" && one !== "" ? `${view}: ${COLUMN_TITLES[one] ?? one}` : view;
+  const scope = store.index ? placesLabel(store.places, store.index, "") : "";
+  const title = scope === "" ? named : `${named} — ${scope}`;
   document.getElementById("page-title").textContent = title;
   document.title = `${title} · tadu`;
   const cards = store.cards;
@@ -25,8 +28,11 @@ export function renderHead(store, sets) {
   const items = filtered
     ? `${formatCount(sets.shown.length)} shown of ${plural(total, "item")}`
     : plural(total, "item");
+  // A view that draws its own page (Changes, Next...) counts its own rows; the scope's count
+  // of items would not be what it shows.
+  const counts = ownView(store.view) ? [] : [items];
   document.getElementById("page-subtitle").textContent = payload
-    ? [...whereCounts(store.where, store.index), items].join(" · ")
+    ? [...placesCounts(store.places, store.index), ...counts].join(" · ")
     : "";
   const updated = store.loading
     ? "Reloading..."

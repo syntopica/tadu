@@ -6,8 +6,8 @@ import os
 import uuid
 from typing import TYPE_CHECKING
 
+from tadu.list_values import list_values
 from tadu.resolve_task_ids import resolve_task_ids
-from tadu.split_list_value import split_list_value
 from tadu.task_defaults import UNKNOWN_CATEGORY, UNKNOWN_PRIORITY, UNKNOWN_TYPE
 from tadu.task_format_version import TASK_FORMAT_VERSION
 from tadu.unique_in_order import unique_in_order
@@ -40,7 +40,7 @@ def new_task(args: argparse.Namespace, today: date, todo: Path) -> dict[str, obj
         "type": args.type or UNKNOWN_TYPE,
         "priority": args.priority or UNKNOWN_PRIORITY,
         "kind": args.kind,
-        "labels": unique_in_order([*(args.label or ()), *split_list_value(args.labels or "")]),
+        "labels": unique_in_order(list_values(args.labels)),
         "milestone": args.milestone,
         "created": today.isoformat(),
         "created_by": args.created_by or os.environ.get("TADU_ACTOR"),
@@ -48,9 +48,7 @@ def new_task(args: argparse.Namespace, today: date, todo: Path) -> dict[str, obj
         "defer_until": args.defer_until or args.not_before,
         "check_on": args.check_on,
         "queue": args.queue,
-        "assignees": unique_in_order(
-            [*(args.assignee or ()), *split_list_value(args.assignees or "")]
-        ),
+        "assignees": unique_in_order(list_values(args.assignees)),
         "estimate": args.estimate,
         **single,
         "blocked_by": blocked_by,

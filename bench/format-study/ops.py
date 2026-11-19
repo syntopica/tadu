@@ -19,6 +19,7 @@ import sqlite3
 from pathlib import Path
 
 import vocab as V
+from textdb import with_log_entry
 from tq import parse_md
 
 FORMATS = ("md_fields", "jsonl", "json", "sqlite")
@@ -39,6 +40,7 @@ def _full(rec: dict) -> dict:
 
 
 # ------------------------------------------------------------------ markdown
+
 
 def _md_item_lines(rec: dict) -> list[str]:
     lines = [f"- [ ] **{V.CATEGORIES[rec['category']][0]}:** {rec['title']}", "", f"  ID: {rec['id']}"]
@@ -82,7 +84,7 @@ def md_set_priority(d: Path, iid: str, prio: str) -> None:
             break
     else:
         idx = next(i for i in range(a, b) if lines[i].startswith("  ID: "))
-        lines[idx + 1: idx + 1] = ["", f"  Priority: {prio}"]
+        lines[idx + 1 : idx + 1] = ["", f"  Priority: {prio}"]
     _write(p, "\n".join(lines) + "\n")
 
 
@@ -105,22 +107,16 @@ def md_close(d: Path, iid: str, day: str, proof: str) -> None:
     lines = p.read_text(encoding="utf-8").splitlines()
     a, b = _md_find(lines, d, iid)
     item = lines[a:b]
-    del lines[a - 1 if a and not lines[a - 1].strip() else a: b]
+    del lines[a - 1 if a and not lines[a - 1].strip() else a : b]
     head = re.sub(r"^- \[.\] ", f"- [x] {day} — ", item[0])
     entry = [head, *item[1:], "", "  - Result: Done as described.", f"  - Evidence: {proof}"]
-    log = lp.read_text(encoding="utf-8").splitlines()
-    month = f"### {day[:7]}"
-    if month in log:
-        at = log.index(month) + 1
-        log[at:at] = ["", *entry]
-    else:
-        at = log.index(f"## {day[:4]}") + 1
-        log[at:at] = ["", month, "", *entry]
+    log = with_log_entry(lp.read_text(encoding="utf-8").splitlines(), day, entry)
     _write(lp, "\n".join(log) + "\n")  # log first, as tadu close does
     _write(p, "\n".join(lines) + "\n")
 
 
 # ------------------------------------------------------------------ jsonl
+
 
 def _jsonl_rewrite(p: Path, iid: str, fn) -> dict | None:
     out, hit = [], None
@@ -159,6 +155,7 @@ def jsonl_close(d: Path, iid: str, day: str, proof: str) -> None:
 
 
 # ------------------------------------------------------------------ json
+
 
 def _json_load(p: Path) -> list[dict]:
     return json.loads(p.read_text(encoding="utf-8"))
@@ -201,6 +198,7 @@ def json_close(d: Path, iid: str, day: str, proof: str) -> None:
 
 # ------------------------------------------------------------------ sqlite
 
+
 def _con(d: Path) -> sqlite3.Connection:
     return sqlite3.connect(d / "todo.db")
 
@@ -208,12 +206,27 @@ def _con(d: Path) -> sqlite3.Connection:
 def sqlite_add(d: Path, rec: dict) -> None:
     con = _con(d)
     seq = con.execute("SELECT coalesce(max(seq),0)+1 FROM item").fetchone()[0]
-    cur = con.execute("INSERT INTO item (id, open, state, title, category, labels, priority, due, queue, body, seq) "
-                      "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                      (rec["id"], 1, "pending", rec["title"], rec["category"], ",".join(rec["labels"]),
-                       rec.get("priority"), rec.get("due"), "backlog", rec.get("body", ""), seq))
-    con.execute("INSERT INTO item_fts(rowid, title, body, labels) VALUES (?,?,?,?)",
-                (cur.lastrowid, rec["title"], rec.get("body", ""), ",".join(rec["labels"])))
+    cur = con.execute(
+        "INSERT INTO item (id, open, state, title, category, labels, priority, due, queue, body, seq) "
+        "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        (
+            rec["id"],
+            1,
+            "pending",
+            rec["title"],
+            rec["category"],
+            ",".join(rec["labels"]),
+            rec.get("priority"),
+            rec.get("due"),
+            "backlog",
+            rec.get("body", ""),
+            seq,
+        ),
+    )
+    con.execute(
+        "INSERT INTO item_fts(rowid, title, body, labels) VALUES (?,?,?,?)",
+        (cur.lastrowid, rec["title"], rec.get("body", ""), ",".join(rec["labels"])),
+    )
     con.commit()
     con.close()
 
@@ -238,8 +251,10 @@ def sqlite_edit_body(d: Path, iid: str, text: str) -> None:
 
 def sqlite_close(d: Path, iid: str, day: str, proof: str) -> None:
     con = _con(d)
-    con.execute("UPDATE item SET open = 0, state = 'done', closed = ?, result = ?, evidence = ? WHERE id = ?",
-                (day, "Done as described.", proof, iid))
+    con.execute(
+        "UPDATE item SET open = 0, state = 'done', closed = ?, result = ?, evidence = ? WHERE id = ?",
+        (day, "Done as described.", proof, iid),
+    )
     con.commit()
     con.close()
 

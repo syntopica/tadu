@@ -38,17 +38,11 @@ def test_task_backlog_options_survive_a_later_migration(
     [
         (
             ["--type", "bug", "--milestone", "m1", "--link", "https://x.test"],
-            (
-                "--type, --milestone, --link: a TODO.md backlog has no place for this; "
-                "a task backlog has (tadu migrate)"
-            ),
+            "a TODO.md backlog takes no --type, --milestone, --link",
         ),
         (
             ["--parent", UID, "--discovered-from", UID, "--related", UID, "--created-by", "ana"],
-            (
-                "--parent, --discovered-from, --created-by, --related: a TODO.md backlog has no "
-                "place for this; a task backlog has (tadu migrate)"
-            ),
+            "a TODO.md backlog takes no --parent, --discovered-from, --created-by, --related",
         ),
         (
             ["--not-before", "2026-01-01", "--defer-until", "2026-02-01"],

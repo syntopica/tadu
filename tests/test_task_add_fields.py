@@ -34,7 +34,7 @@ def test_kind_check_on_and_the_format_1_spellings_are_kept(
 @pytest.mark.parametrize(
     ("options", "refusal"),
     [
-        (["--no-id"], "--no-id: every task of a task backlog has an id"),
+        (["--no-id"], "a task backlog takes no --no-id"),
         (
             ["--not-before", "2026-01-01", "--defer-until", "2026-02-01"],
             "--not-before and --defer-until are the same day here; give one",

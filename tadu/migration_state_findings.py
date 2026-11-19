@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from tadu.finding import Finding
 from tadu.pending_recovery import PENDING_KEY
 from tadu.todo_layout import TODO_CONFIG, TODO_DIR
-from tadu.v1_texts import V1_FILES
+from tadu.v1_file_names import V1_FILES
 
 if TYPE_CHECKING:
     from pathlib import Path

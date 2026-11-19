@@ -1,18 +1,18 @@
-import { matchesWhere } from "./matches-where.js";
+import { inPlaces } from "./in-places.js";
 import { OPEN_COLUMNS } from "./open-columns.js";
 
 // The sidebar's "Needs a person" entries: what waits on me (as `tadu inbox`
 // has it, only with a `me`), then the open decisions, waiting and later
 // items inside the scope, each with its count and the filters it applies.
-export function attentionShortcuts(cards, where, me) {
-  const open = cards.filter((card) => OPEN_COLUMNS.includes(card.column) && matchesWhere(card, where));
+export function attentionShortcuts(cards, places, me) {
+  const open = cards.filter((card) => OPEN_COLUMNS.includes(card.column) && inPlaces(card, places));
   const count = (test) => open.filter(test).length;
   const kind = (key, title, iconName) => ({
     key,
     title,
     iconName,
     count: count((card) => card.kind === key),
-    filters: { kind: key },
+    filters: { rules: [{ field: "kind", op: "any", values: [key] }] },
   });
   const mine = {
     key: "mine",

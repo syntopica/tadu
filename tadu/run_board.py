@@ -15,10 +15,14 @@ from tadu.workspace_port import workspace_port
 
 if TYPE_CHECKING:
     import argparse
+    from collections.abc import Callable
 
 
-def run_board(args: argparse.Namespace) -> int:
-    """Check the workspace loads (and the GitHub sign-in is ready), then serve until interrupted."""
+def run_board(args: argparse.Namespace, main: Callable[[list[str]], int]) -> int:
+    """Check the workspace loads (and the GitHub sign-in is ready), then serve until interrupted.
+
+    The page may do what --allow permits; its tool calls run `main`, the tadu command line.
+    """
     team, error = board_preflight(args)
     if error is not None:
         print(f"tadu board: {error}", file=sys.stderr)
@@ -31,7 +35,7 @@ def run_board(args: argparse.Namespace) -> int:
         return 2
     with server:
         port = server.server_address[1]
-        state = serving_board_state(args, port, team(port) if team is not None else None)
+        state = serving_board_state(args, port, main, team(port) if team is not None else None)
         for warning in board_warnings(args, state, port):
             print(f"tadu board: warning: {warning}", file=sys.stderr)
         server.RequestHandlerClass = make_board_handler(state)

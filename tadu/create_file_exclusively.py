@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-import os
-import tempfile
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from tadu.leftover_patterns import REPOSITORY_TEMPORARY
 from tadu.remove_stale_temporaries import remove_stale_temporaries
+from tadu.write_temp_sibling import write_temp_sibling
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def create_file_exclusively(target: Path, text: str, *, mode: int = 0o644) -> None:
@@ -17,15 +19,9 @@ def create_file_exclusively(target: Path, text: str, *, mode: int = 0o644) -> No
     owner only and given `mode` before it is linked into place. Temporary files that
     earlier writes were killed before linking are removed afterwards.
     """
-    # path-name: only names the temporary file beside the target.
-    descriptor, name = tempfile.mkstemp(dir=target.parent, prefix=f".{target.name}.", suffix=".tmp")
+    temporary = write_temp_sibling(target, text, mode)
     try:
-        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as handle:
-            handle.write(text)
-            handle.flush()
-            os.fsync(handle.fileno())
-        Path(name).chmod(mode)
-        Path(target).hardlink_to(name)
+        target.hardlink_to(temporary)
     finally:
-        Path(name).unlink(missing_ok=True)
+        temporary.unlink(missing_ok=True)
     remove_stale_temporaries(target.parent, REPOSITORY_TEMPORARY)

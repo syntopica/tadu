@@ -12,6 +12,8 @@ from tadu.parse_repository import parse_repository
 from tadu.parse_view import parse_view
 from tadu.read_toml import read_toml
 from tadu.table_rows import table_rows
+from tadu.visible_repositories import VISIBLE_REPOSITORIES
+from tadu.visible_workspace import visible_workspace
 from tadu.workspace import Workspace
 from tadu.workspace_error import WorkspaceError
 from tadu.workspace_file_names import WORKSPACE_FILE
@@ -23,7 +25,11 @@ if TYPE_CHECKING:
 
 
 def load_workspace(directory: Path) -> Workspace:
-    """Parse the workspace file; cross-reference problems come back in one error."""
+    """Parse the workspace file; cross-reference problems come back in one error.
+
+    Inside a tool call of a board that signs people in (VISIBLE_REPOSITORIES), only what the
+    person may see; the file is checked whole first.
+    """
     path = directory / WORKSPACE_FILE
     data = read_toml(path)
     check_top_level_keys(data, WORKSPACE_KEYS, path)
@@ -38,4 +44,5 @@ def load_workspace(directory: Path) -> Workspace:
     problems = workspace_problems(workspace)
     if problems:
         raise WorkspaceError("; ".join(problems))
-    return workspace
+    visible = VISIBLE_REPOSITORIES.get()
+    return workspace if visible is None else visible_workspace(workspace, visible)

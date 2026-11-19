@@ -4,15 +4,15 @@ import { el } from "./el.js";
 import { icon } from "./icon.js";
 import { navItem } from "./nav-item.js";
 import { openShortcut } from "./open-shortcut.js";
+import { placesLabel } from "./places-label.js";
 import { requestRender } from "./request-render.js";
 import { restoreView } from "./restore-view.js";
-import { sameWhere } from "./same-where.js";
+import { samePlaces } from "./same-places.js";
+import { setPlaces } from "./set-places.js";
 import { setView } from "./set-view.js";
-import { setWhere } from "./set-where.js";
 import { shortcutActive } from "./shortcut-active.js";
 import { storeSavedViews } from "./store-saved-views.js";
 import { VIEW_TITLES } from "./view-titles.js";
-import { whereParts } from "./where-parts.js";
 import { workspaceViewItem } from "./workspace-view-item.js";
 
 // Views, the shortcuts to what needs a person, starred scopes, the companies with their projects, the recent
@@ -27,7 +27,7 @@ export function renderSidebar(store) {
       ),
     );
   const shortcuts = store.payload
-    ? attentionShortcuts(store.cards, store.where, store.payload.me ?? null)
+    ? attentionShortcuts(store.cards, store.places, store.payload.me ?? null)
     : [];
   document.getElementById("attention-section").hidden = shortcuts.length === 0;
   document.getElementById("nav-attention").replaceChildren(
@@ -43,14 +43,9 @@ export function renderSidebar(store) {
   );
   const index = store.index;
   const scopes = (list, iconName) =>
-    list.map((where) =>
-      navItem(
-        whereParts(where, index)
-          .map((part) => part.label)
-          .join(" › "),
-        iconName,
-        sameWhere(where, store.where),
-        () => setWhere(where),
+    list.map((places) =>
+      navItem(placesLabel(places, index, ""), iconName, samePlaces(places, store.places), () =>
+        setPlaces(places),
       ),
     );
   const favourites = index ? store.favourites : [];

@@ -14,6 +14,7 @@ from fake_github import FakeGithub
 from tadu.allowed_hosts import allowed_hosts
 from tadu.board_memory import board_memory
 from tadu.board_state import BoardState
+from tadu.cli import main
 from tadu.make_board_handler import make_board_handler
 from tadu.sign_in_settings import IDLE_TIMEOUT_SECONDS
 
@@ -51,7 +52,7 @@ class LiveBoard:
             sign_in = replace(self.github.sign_in(public), pins=pins, sessions=sessions)
         self.token = secrets.token_urlsafe(16)
         hosts = allowed_hosts("127.0.0.1", self.port)
-        state = BoardState(self.workspace, 14, self.token, hosts, sign_in)
+        state = BoardState(self.workspace, 14, self.token, hosts, "read", main, sign_in)
         self.server = ThreadingHTTPServer(("127.0.0.1", self.port), BaseHTTPRequestHandler)
         self.server.RequestHandlerClass = make_board_handler(state)
         self.thread = threading.Thread(target=self.server.serve_forever, args=(0.01,), daemon=True)

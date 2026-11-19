@@ -13,20 +13,21 @@ from tadu.format_1_header import format_1_header
 from tadu.fresh_todo_config_text import fresh_todo_config_text
 from tadu.leftover_patterns import MIGRATION_STAGING
 from tadu.legacy_report import legacy_report
+from tadu.migration_files import migration_files
 from tadu.migration_refusal import migration_refusal
 from tadu.migration_tasks import migration_tasks
 from tadu.task_location import task_location
 from tadu.task_problems import task_problems
 from tadu.task_states import OPEN_TASK_STATES
 from tadu.todo_layout import TODO_CONFIG, TODO_DIR
-from tadu.v1_texts import V1_FILES, v1_texts
+from tadu.v1_texts import v1_texts
 
 if TYPE_CHECKING:
     import argparse
 
 
 def run_migrate(args: argparse.Namespace) -> int:
-    """Print the plan; with --write, write todo/ and remove TODO.md and TODO_LOG.md (git keeps them).
+    """Print the plan; with --write, write todo/ and remove the converted files (git keeps them).
 
     The files are written into a staging folder, flushed to disk once and renamed to todo/, so
     thousands of tasks convert in seconds and an interrupted run leaves no half-written todo/.
@@ -50,8 +51,9 @@ def run_migrate(args: argparse.Namespace) -> int:
         problems = task_problems({k: v for k, v in task.items() if v not in (None, "", [])})
         if problems:
             print(f"  {task['id']} {task['title']!r}: {'; '.join(problems)}")
+    converted = ", ".join(name for _, name in migration_files(root))
     if not args.write:
-        print("tadu migrate: then remove TODO.md and TODO_LOG.md (dry run: add --write)")
+        print(f"tadu migrate: then remove {converted} (dry run: add --write)")
         return 0
     staging = root / MIGRATION_STAGING
     # writes: builds todo/ in a staging folder and renames it into place; nothing is half written
@@ -71,10 +73,8 @@ def run_migrate(args: argparse.Namespace) -> int:
     os.sync()  # one flush for all files, then todo/ appears whole or not at all
     # writes: builds todo/ in a staging folder and renames it into place; nothing is half written
     staging.replace(root / TODO_DIR)
-    for name in V1_FILES:
-        # writes: builds todo/ in a staging folder and renames it into place; nothing is half written
-        (root / name).unlink(missing_ok=True)
-    print(
-        "tadu migrate: removed TODO.md and TODO_LOG.md; run tadu sync --write to update the agent rules"
-    )
+    for file, _ in migration_files(root):
+        # writes: the converted files go once todo/ is in place; git keeps their history
+        file.unlink()
+    print(f"tadu migrate: removed {converted}; run tadu sync --write to update the agent rules")
     return 0

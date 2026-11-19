@@ -32,14 +32,32 @@ TADU = str(Path(sys.executable).parent / "tadu")
 
 def snapshot_md(p: Path) -> tuple[dict, bool]:
     items = parse_md(p, True)
-    return {i["id"] or f"?{i['line']}": (i["title"].rstrip("."), i["state"], i["priority"], i["due"],
-                                         tuple(i["labels"]), i["body"]) for i in items}, False
+    return {
+        i["id"] or f"?{i['line']}": (
+            i["title"].rstrip("."),
+            i["state"],
+            i["priority"],
+            i["due"],
+            tuple(i["labels"]),
+            i["body"],
+        )
+        for i in items
+    }, False
 
 
 def snapshot_records(recs: list[dict]) -> dict:
-    return {r["id"]: (r["title"].rstrip("."), r["state"], r.get("priority"), r.get("due"), tuple(r["labels"]),
-                      r.get("body"))
-            for r in recs if isinstance(r, dict) and "id" in r}
+    return {
+        r["id"]: (
+            r["title"].rstrip("."),
+            r["state"],
+            r.get("priority"),
+            r.get("due"),
+            tuple(r["labels"]),
+            r.get("body"),
+        )
+        for r in recs
+        if isinstance(r, dict) and "id" in r
+    }
 
 
 def snapshot(fmt: str, d: Path) -> tuple[dict, bool]:
@@ -50,8 +68,12 @@ def snapshot(fmt: str, d: Path) -> tuple[dict, bool]:
         codes = {json.loads(x).get("code") for x in out.splitlines() if x.strip()}
         return snap, bool(codes - {"R001", "L001"})
     if fmt == "jsonl":
-        proc = subprocess.run([sys.executable, str(HERE / "tq.py"), "--backend", "jsonl", "find", "-q", "--format", "ids"],
-                              cwd=d, capture_output=True, text=True)
+        proc = subprocess.run(
+            [sys.executable, str(HERE / "tq.py"), "--backend", "jsonl", "find", "-q", "--format", "ids"],
+            cwd=d,
+            capture_output=True,
+            text=True,
+        )
         recs = load(d, "jsonl", True, False)
         return snapshot_records([{**r, "id": r["key"], "title": r["title"]} for r in recs]), "skipped" in proc.stderr
     if fmt == "json":
@@ -72,6 +94,7 @@ def snapshot(fmt: str, d: Path) -> tuple[dict, bool]:
 
 
 # ---------------------------------------------------------------- slips
+
 
 def md_slips(text: str, rng: random.Random) -> dict[str, str]:
     lines = text.split("\n")
@@ -111,7 +134,7 @@ def jsonl_slips(text: str, rng: random.Random) -> dict[str, str]:
     out["trailing comma"] = "\n".join(L)
     L = list(lines)
     pos = L[k].find('"body": "') + 20
-    L[k: k + 1] = [L[k][:pos], L[k][pos:]]
+    L[k : k + 1] = [L[k][:pos], L[k][pos:]]
     out["raw newline in a string"] = "\n".join(L)
     L = list(lines)
     L[k] = L[k][:-1]
@@ -134,7 +157,7 @@ def json_slips(text: str, rng: random.Random) -> dict[str, str]:
     out["trailing comma"] = "\n".join(L)
     L = list(lines)
     body = next(i for i in range(k, len(lines)) if lines[i].strip().startswith('"body": "'))
-    L[body: body + 1] = [L[body][:30], L[body][30:]]
+    L[body : body + 1] = [L[body][:30], L[body][30:]]
     out["raw newline in a string"] = "\n".join(L)
     L = list(lines)
     del L[ends[0]]
@@ -148,7 +171,7 @@ def yaml_slips(text: str, rng: random.Random) -> dict[str, str]:
     k = rng.choice(titles)
     out = {}
     L = list(lines)
-    L[k] = "  title: Fix: the toolbar " + L[k][len("  title: "):].strip("'\"")
+    L[k] = "  title: Fix: the toolbar " + L[k][len("  title: ") :].strip("'\"")
     out["unquoted colon"] = "\n".join(L)
     L = list(lines)
     L[k] = " " + L[k]
@@ -173,7 +196,7 @@ def jsondir_slips(text: str, rng: random.Random) -> dict[str, str]:
     L[-3] = L[-3] + ","
     out["trailing comma"] = "\n".join(L)
     L = list(lines)
-    L[t: t + 1] = [L[t][:25], L[t][25:]]
+    L[t : t + 1] = [L[t][:25], L[t][25:]]
     out["raw newline in a string"] = "\n".join(L)
     out["missing closing brace"] = text.rstrip().rstrip("}")
     return out
@@ -258,7 +281,7 @@ def sqldump_slips(text: str, rng: random.Random) -> dict[str, str]:
     L[k] = L[k].rstrip(";")
     out["missing semicolon"] = "\n".join(L)
     L = list(lines)
-    L[k: k + 1] = [L[k][:60], L[k][60:]]
+    L[k : k + 1] = [L[k][:60], L[k][60:]]
     out["statement split over two lines"] = "\n".join(L)
     L = list(lines)
     L[k] = L[k].replace(",NULL", "", 1) if ",NULL" in L[k] else L[k].replace("',", "'", 1)
@@ -266,10 +289,17 @@ def sqldump_slips(text: str, rng: random.Random) -> dict[str, str]:
     return out
 
 
-SLIPS = {"md_fields": ("TODO.md", md_slips), "jsonl": ("TODO.jsonl", jsonl_slips),
-         "json": ("TODO.json", json_slips), "yaml": ("TODO.yaml", yaml_slips),
-         "json_dir": ("todo/*.json", jsondir_slips), "md_dir": ("todo/*.md", mddir_slips),
-         "rec": ("tasks.rec", rec_slips), "csv": ("tasks.csv", csv_slips), "sqldump": ("todo.sql", sqldump_slips)}
+SLIPS = {
+    "md_fields": ("TODO.md", md_slips),
+    "jsonl": ("TODO.jsonl", jsonl_slips),
+    "json": ("TODO.json", json_slips),
+    "yaml": ("TODO.yaml", yaml_slips),
+    "json_dir": ("todo/*.json", jsondir_slips),
+    "md_dir": ("todo/*.md", mddir_slips),
+    "rec": ("tasks.rec", rec_slips),
+    "csv": ("tasks.csv", csv_slips),
+    "sqldump": ("todo.sql", sqldump_slips),
+}
 
 
 def main() -> None:
@@ -305,13 +335,22 @@ def main() -> None:
         shutil.rmtree(d)
         for name, vals in stats.items():
             affected = [v for v, _ in vals]
-            row = {"format": fmt, "slip": name, "trials": len(vals), "items": len(base),
-                   "mean_affected": sum(affected) / len(affected), "max_affected": max(affected),
-                   "reported": sum(1 for _, r in vals if r) / len(vals),
-                   "silent_damage": sum(1 for v, r in vals if v and not r) / len(vals)}
+            row = {
+                "format": fmt,
+                "slip": name,
+                "trials": len(vals),
+                "items": len(base),
+                "mean_affected": sum(affected) / len(affected),
+                "max_affected": max(affected),
+                "reported": sum(1 for _, r in vals if r) / len(vals),
+                "silent_damage": sum(1 for v, r in vals if v and not r) / len(vals),
+            }
             rows.append(row)
-            print(f"{fmt:10} {name:32} affected mean={row['mean_affected']:6.1f} max={row['max_affected']:4} "
-                  f"of {len(base)}  reported={row['reported']:.0%} silent={row['silent_damage']:.0%}", flush=True)
+            print(
+                f"{fmt:10} {name:32} affected mean={row['mean_affected']:6.1f} max={row['max_affected']:4} "
+                f"of {len(base)}  reported={row['reported']:.0%} silent={row['silent_damage']:.0%}",
+                flush=True,
+            )
     if a.formats and Path(a.out).is_file():
         rows = [r for r in json.loads(Path(a.out).read_text()) if r["format"] not in a.formats] + rows
     Path(a.out).write_text(json.dumps(rows, indent=1))

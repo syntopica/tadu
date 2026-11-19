@@ -1,4 +1,4 @@
-"""Answer an authorized board request by its path."""
+"""Answer an authorized GET of the board by its path."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 from tadu.board_asset import board_asset
 from tadu.board_asset_name import board_asset_name
+from tadu.board_cards import board_cards
 from tadu.board_data_path import BOARD_CHECK_PATH, BOARD_DATA_PATH
-from tadu.cards_response import cards_response
 from tadu.json_error import json_error
 
 if TYPE_CHECKING:
@@ -17,10 +17,14 @@ if TYPE_CHECKING:
     from tadu.board_state import BoardState
 
 
-def board_route(path: str, state: BoardState, today: date) -> tuple[int, bytes, str]:
-    """Status, body and content type for a path without its query string."""
+def board_route(target: str, state: BoardState, today: date) -> tuple[int, bytes, str]:
+    """Status, body and content type for a request target: a path and its query string.
+
+    The cards answer from the workspace; any other path is a page asset or 404.
+    """
+    path, _, query = target.partition("?")
     if path == BOARD_DATA_PATH:
-        return cards_response(state, today)
+        return board_cards(state, query, today)
     if path == BOARD_CHECK_PATH:
         return HTTPStatus.OK, b'{"ok": true}', "application/json; charset=utf-8"
     asset = board_asset(board_asset_name(path))

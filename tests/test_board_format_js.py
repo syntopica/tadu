@@ -1,7 +1,5 @@
-import json
-
 import pytest
-from board_js import board_js, js_card
+from board_js import board_results, js_card
 
 TITLES = [
     "**Board:** fix `card.py` now",
@@ -56,9 +54,7 @@ CARDS = [
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps([TITLES, URLS, CARDS])))
-    assert isinstance(result, dict)
-    return result
+    return board_results(SCRIPT, [TITLES, URLS, CARDS])
 
 
 def test_inline_markdown_tokens(results: dict[str, object]) -> None:

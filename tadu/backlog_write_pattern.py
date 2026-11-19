@@ -16,6 +16,6 @@ BACKLOG_PATH_PATTERN = re.compile(
     r"((?:[^;&|<>\"'=(]*/)?)(?:TODO(?:_LOG)?\.md|TODO_HISTORY_INDEX\.jsonl|todo/[^\s;&|<>\"']*\.json)"
 )
 TADU_WRITE_PATTERN = re.compile(
-    r"\btadu\s+(?:close|add|set|claim|archive|fmt|migrate)\b(?=.*--write)", re.DOTALL
+    r"\btadu\s+(?:close|add|mark|set|claim|archive|fmt|migrate)\b(?=.*--write)", re.DOTALL
 )
 LEADING_CD_PATTERN = re.compile(r"\s*cd\s+([^\s;&|]+)\s*(?:&&|;)")

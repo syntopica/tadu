@@ -1,8 +1,9 @@
 import { applyTheme } from "./apply-theme.js";
 import { bindControls } from "./bind-controls.js";
+import { bindFilterMenu } from "./bind-filter-menu.js";
 import { bindKeys } from "./bind-keys.js";
 import { bindPicker } from "./bind-picker.js";
-import { cleanWhere } from "./clean-where.js";
+import { cleanPlaces } from "./clean-places.js";
 import { fillIcons } from "./fill-icons.js";
 import { leaveSignedOut } from "./leave-signed-out.js";
 import { loadBoard } from "./load-board.js";
@@ -33,12 +34,13 @@ export function start() {
   document.getElementById("search-key").textContent = mac ? "⌘ K" : "Ctrl K";
   fillIcons(document);
   bindControls(store);
+  bindFilterMenu(store);
   bindKeys(store);
   bindPicker(store);
   window.addEventListener("hashchange", () => {
     const hash = parseHash(window.location.hash);
     if (store.index && hash.given) {
-      store.where = cleanWhere(hash.where, store.index);
+      store.places = cleanPlaces(hash.places, store.index);
       store.view = views.includes(hash.view) ? hash.view : store.view;
       requestRender();
     }

@@ -2,32 +2,18 @@
 
 from __future__ import annotations
 
+import argparse
 import sys
 import uuid
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from tadu.add_request import AddRequest
 from tadu.add_request_error import add_request_error
+from tadu.mark_field_values import mark_field_values
 from tadu.markdown_add_notes import markdown_add_notes
 from tadu.markdown_add_refusal import markdown_add_refusal
 from tadu.markdown_add_values import markdown_add_values
 from tadu.run_add import run_add
-
-if TYPE_CHECKING:
-    import argparse
-
-FIELD_FLAGS = (
-    ("Kind", "kind"),
-    ("Priority", "priority"),
-    ("Assignees", "assignees"),
-    ("Due", "due"),
-    ("Check on", "check_on"),
-    ("Not before", "not_before"),
-    ("Labels", "labels"),
-    ("Queue", "queue"),
-    ("Estimate", "estimate"),
-)
 
 
 def add_command(args: argparse.Namespace) -> int:
@@ -38,8 +24,7 @@ def add_command(args: argparse.Namespace) -> int:
     """
     uid = None if args.no_id else f"t-{uuid.uuid4()}"
     fields = [("ID", uid)] if uid else []
-    values = {**vars(args), **markdown_add_values(args)}
-    fields += [(name, str(values[flag])) for name, flag in FIELD_FLAGS if values[flag]]
+    fields += mark_field_values(argparse.Namespace(**{**vars(args), **markdown_add_values(args)}))
     notes = (*(args.note or ()), *markdown_add_notes(args))
     request = AddRequest(args.title, args.category, tuple(fields), notes)
     root = Path(args.path)

@@ -159,7 +159,7 @@ def test_other_methods_and_hosts_are_refused(board: BoardServer) -> None:
     for method, path in (("POST", "/api/cards"), ("PUT", "/auth/logout"), ("DELETE", "/")):
         response = call(board, method, path, ana)
         assert response.status == 405
-        assert response.headers["Allow"] == "GET"
+        assert response.headers["Allow"] == "GET, POST"
     for method, path in (("GET", "/api/cards"), ("GET", "/auth/login"), ("POST", "/auth/logout")):
         misdirected = board.request(method, path, {"Host": "evil.example:80", "Cookie": ana})
         assert misdirected.status == 421

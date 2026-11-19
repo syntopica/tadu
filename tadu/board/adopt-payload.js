@@ -1,7 +1,7 @@
-import { cleanWhere } from "./clean-where.js";
-import { cleanWhereList } from "./clean-where-list.js";
+import { cleanPlacesList } from "./clean-places-list.js";
+import { cleanPlaces } from "./clean-places.js";
+import { initialPlaces } from "./initial-places.js";
 import { initialView } from "./initial-view.js";
-import { initialWhere } from "./initial-where.js";
 import { loadSavedViews } from "./load-saved-views.js";
 import { placeCards } from "./place-cards.js";
 import { readStored } from "./read-stored.js";
@@ -28,15 +28,15 @@ export function adoptPayload(store, payload) {
   const id = payload.workspace_id;
   if (id !== store.payload?.workspace_id) {
     store.saved = loadSavedViews(id);
-    store.favourites = cleanWhereList(readStored(storageKey("favourites", id)), index);
-    store.recent = cleanWhereList(readStored(storageKey("recent", id)), index);
-    store.where = initialWhere(store.hash, readStored(storageKey("scope", id)), index);
+    store.favourites = cleanPlacesList(readStored(storageKey("favourites", id)), index);
+    store.recent = cleanPlacesList(readStored(storageKey("recent", id)), index);
+    store.places = initialPlaces(store.hash, readStored(storageKey("scope", id)), index);
     const views = VIEW_TITLES.map(([view]) => view);
     store.view = initialView(store.hash.view, readStored(storageKey("view", id)), views, store.view);
     store.storedWhere = "";
     store.storedView = "";
   } else {
-    store.where = cleanWhere(store.where, index);
+    store.places = cleanPlaces(store.places, index);
   }
   store.index = index;
   store.payload = payload;

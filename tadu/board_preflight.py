@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 from tadu.github_only_problem import github_only_problem
 from tadu.load_cards import load_cards
+from tadu.scope import Scope
 from tadu.workspace_error import WorkspaceError
 
 if TYPE_CHECKING:
@@ -31,7 +32,9 @@ def board_preflight(
     if problem is not None:
         return None, problem
     try:
-        load_cards((), args.workspace, args.done_days, datetime.now(UTC).astimezone().date())
+        load_cards(
+            Scope(workspace=args.workspace), args.done_days, datetime.now(UTC).astimezone().date()
+        )
         team = None
         if github:
             from tadu.prepare_team_board import prepare_team_board  # noqa: PLC0415 - loaded only when signing in with GitHub

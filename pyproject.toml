@@ -35,13 +35,14 @@ tadu = ["rule_block_v5.md", "board/*.html", "board/*.js", "board/*.css"]
 
 [tool.pytest.ini_options]
 # -n auto: the tests run in parallel on every core (pytest-xdist); -n 0 runs them in one process.
-addopts = "-ra --strict-markers --strict-config -n auto -m 'not crash'"
+addopts = "-ra --strict-markers --strict-config -n auto -m 'not crash and not node'"
 xfail_strict = true
 filterwarnings = ["error"]
 testpaths = ["tests"]
-# `-m "not browser"` and `-m crash` select the slow groups.
+# `-m "not browser"`, `-m node` and `-m crash` select the slow groups.
 markers = [
   "browser: drives the board in a real Chromium through Playwright",
+  "node: audits the board page with Node.js tools (jsdom, axe-core, Chromium); slow, so run apart: pytest -m node",
   "crash: stops each writing command at each filesystem change; slow, run with `pytest -m crash`",
 ]
 

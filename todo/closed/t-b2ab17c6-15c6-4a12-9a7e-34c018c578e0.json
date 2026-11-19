@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-b2ab17c6-15c6-4a12-9a7e-34c018c578e0",
+  "title": "Show an item's history from git: tadu show --history",
+  "state": "done",
+  "category": "cli",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-b56523ee-336d-47ab-b4d9-13ec09fdec31"
+  ],
+  "notes": [
+    "Both formats. Format 1 follows an item by its text through TODO.md, TODO_LOG.md and docs/todo-log/YYYY.md (git log -S per change); format 2 follows a task file through open/, closed/ and archive/YYYY[/MM]/ (one git log over its possible paths) and continues before tadu migrate with its Markdown item.",
+    "Supersedes the cancelled t-b56523ee: git log --follow loses a task file whose close turns the move into a delete plus an add."
+  ],
+  "closed": "2026-11-18",
+  "result": "tadu show --history for both formats, with archived years, migrate's archived years and the MCP show tool's history flag",
+  "evidence": [
+    "pytest: 1208 tests at 100% coverage, among them tests/test_show_history.py, test_task_history.py, test_migration_history.py and test_markdown_history.py; timings in this change's review: 0.35-0.82 s for --history on the test repositories"
+  ]
+}

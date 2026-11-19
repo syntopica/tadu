@@ -39,7 +39,9 @@ def team_route(
     if route in {BOARD_CHECK_PATH, BOARD_DATA_PATH}:
         checking = route == BOARD_CHECK_PATH
         return (
-            session_check(sign_in, cookie) if checking else signed_in_cards(state, sign_in, cookie)
+            session_check(sign_in, cookie)
+            if checking
+            else signed_in_cards(state, sign_in, cookie, query)
         )
     if route == "/" and sign_in.sessions.find(cookie, time.time()) is None:
         route = LOGIN_PAGE

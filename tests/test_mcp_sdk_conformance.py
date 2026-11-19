@@ -58,17 +58,13 @@ def test_the_sdk_client_speaks_with_tadu(tmp_path: Path) -> None:
     assert seen["server"] == "tadu"
     assert seen["protocol"] == "2025-11-25"
     assert seen["instructions"] is True
-    assert seen["tools"] == ["next", "inbox", "urgent", "list", "show", "add", "mark", "close"]
-    assert seen["read_only"] == {
-        "next": True,
-        "inbox": True,
-        "urgent": True,
-        "list": True,
-        "show": True,
-        "add": False,
-        "mark": False,
-        "close": False,
-    }
+    tools = seen["tools"]
+    assert isinstance(tools, list)
+    assert {"next", "inbox", "urgent", "list", "show"} <= set(tools)
+    assert not {"add", "mark", "close"} & set(tools)  # changes need --allow write
+    read_only = seen["read_only"]
+    assert isinstance(read_only, dict)
+    assert set(read_only.values()) == {True}
     listed = seen["listed"]
     assert isinstance(listed, tuple)
     assert listed[0] is False

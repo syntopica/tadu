@@ -1,14 +1,16 @@
-import { commitChoice } from "./commit-choice.js";
-import { DEFAULT_FILTERS } from "./default-filters.js";
-import { EMPTY_WHERE } from "./empty-where.js";
-import { debounce } from "./debounce.js";
 import { applyTheme } from "./apply-theme.js";
+import { applyTypedFilters } from "./apply-typed-filters.js";
+import { closeFilterMenu } from "./close-filter-menu.js";
+import { closePopovers } from "./close-popovers.js";
+import { debounce } from "./debounce.js";
+import { itemFilterSource } from "./item-filter-source.js";
 import { loadBoard } from "./load-board.js";
+import { newItemSpec } from "./new-item-spec.js";
 import { nextTheme } from "./next-theme.js";
+import { openChange } from "./open-change.js";
+import { openFilterMenu } from "./open-filter-menu.js";
 import { requestRender } from "./request-render.js";
-import { SEARCHABLE_FILTERS } from "./searchable-filters.js";
 import { setView } from "./set-view.js";
-import { setWhere } from "./set-where.js";
 import { signOut } from "./sign-out.js";
 import { snapshotView } from "./snapshot-view.js";
 import { storageKey } from "./storage-key.js";
@@ -24,9 +26,19 @@ export function bindControls(store) {
     store.text = value;
     requestRender();
   }, 120);
-  byId("search").addEventListener("input", (event) =>
-    search(event.target.value),
-  );
+  const searchBox = byId("search");
+  searchBox.addEventListener("input", () => {
+    if (applyTypedFilters(store, searchBox, false)) {
+      requestRender();
+    }
+    search(searchBox.value);
+  });
+  searchBox.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && applyTypedFilters(store, searchBox, true)) {
+      search(searchBox.value);
+      requestRender();
+    }
+  });
   const portfolioSearch = debounce((value) => {
     store.portfolio.text = value;
     requestRender();
@@ -37,38 +49,39 @@ export function bindControls(store) {
   byId("phone-search").addEventListener("click", () =>
     byId(store.view === "portfolio" ? "portfolio-search" : "search").focus(),
   );
-  for (const name of ["role", "priority", "kind", "column", "dueBefore"]) {
-    byId(`filter-${name}`).addEventListener("change", (event) => {
-      store.filters = { ...store.filters, [name]: event.target.value };
-      requestRender();
-    });
-  }
-  for (const name of SEARCHABLE_FILTERS) {
-    const input = byId(`filter-${name}`);
-    input.addEventListener("input", () => commitChoice(name, input, false));
-    input.addEventListener("change", () => commitChoice(name, input, true));
-  }
-  for (const name of [
-    "unassigned",
-    "noPriority",
-    "waitingOnMe",
-    "showCancelled",
-  ]) {
-    byId(`filter-${name}`).addEventListener("change", (event) => {
-      store.filters = { ...store.filters, [name]: event.target.checked };
-      requestRender();
-    });
-  }
+  byId("filter-showCancelled").addEventListener("change", (event) => {
+    store.filters = { ...store.filters, showCancelled: event.target.checked };
+    requestRender();
+  });
+  const filterAdd = byId("filter-add");
+  filterAdd.dataset.filterAnchor = "";
+  filterAdd.addEventListener("click", () => {
+    if (store.menu?.anchor === filterAdd) {
+      closeFilterMenu(true);
+    } else if (store.payload) {
+      openFilterMenu(itemFilterSource(store), filterAdd);
+    }
+  });
+  byId("done-days").addEventListener("change", (event) => {
+    store.doneDays = Number(event.target.value);
+    loadBoard();
+  });
+  byId("new-item").addEventListener("click", () => {
+    const spec = newItemSpec(store.payload, store.places, store.index);
+    if (spec !== null) {
+      openChange(store, spec, byId("new-item"));
+    }
+  });
   byId("show-empty").addEventListener("change", (event) => {
     store.showEmpty = event.target.checked;
     requestRender();
   });
-  byId("filters-button").addEventListener("click", () =>
-    togglePopover(byId("filters-popover").hidden),
+  byId("display-button").addEventListener("click", () =>
+    togglePopover(byId("display-popover").hidden),
   );
   document.addEventListener("click", (event) => {
-    if (!event.target.closest?.(".popover-anchor, #picker")) {
-      togglePopover(false);
+    if (event.target.isConnected !== false) {
+      closePopovers(event.target.closest?.(".popover-anchor") ?? null);
     }
   });
   byId("group").addEventListener("change", (event) => {
@@ -94,13 +107,8 @@ export function bindControls(store) {
     store.portfolio.expanded = new Set();
     requestRender();
   });
-  byId("clear-all").addEventListener("click", () => {
-    store.filters = { ...DEFAULT_FILTERS };
-    store.showEmpty = false;
-    setWhere(EMPTY_WHERE);
-  });
   byId("favourite").addEventListener("click", () => {
-    store.favourites = toggleFavourite(store.favourites, store.where);
+    store.favourites = toggleFavourite(store.favourites, store.places);
     writeStored(storageKey("favourites", store.payload.workspace_id), store.favourites);
     requestRender();
   });

@@ -32,9 +32,16 @@ OPEN_STATES = ("pending", "in_progress", "blocked")
 MARK_TO_STATE = {" ": "pending", "~": "in_progress", "!": "blocked", "x": "done", "-": "cancelled"}
 STATE_TO_MARK = {v: k for k, v in MARK_TO_STATE.items()}
 CATEGORY_KEYS = {  # canonical display -> key; the md backend maps prefixes through this
-    "ui": "ui", "api": "api", "auth": "auth", "billing": "billing", "search": "search",
-    "notifications": "notifications", "database": "database", "infrastructure": "infra",
-    "ci": "ci", "docs": "docs",
+    "ui": "ui",
+    "api": "api",
+    "auth": "auth",
+    "billing": "billing",
+    "search": "search",
+    "notifications": "notifications",
+    "database": "database",
+    "infrastructure": "infra",
+    "ci": "ci",
+    "docs": "docs",
 }
 TODAY = date.fromisoformat(os.environ.get("TQ_TODAY", date.today().isoformat()))
 
@@ -64,12 +71,26 @@ def parse_md(path: Path, is_open: bool) -> list[dict]:
                 text = m.group(3)
                 cm = CAT_RE.match(text)
                 cat = cm.group(1) if cm else None
-                title = text[cm.end():] if cm else text
-                cur = {"key": None, "id": None, "line": n, "end": n, "file": path.name,
-                       "open": is_open, "state": MARK_TO_STATE[m.group(1)],
-                       "closed": m.group(2), "category": CATEGORY_KEYS.get((cat or "").lower(), (cat or "").lower() or None),
-                       "category_text": cat, "title": title, "labels": [], "priority": None,
-                       "due": None, "queue": "backlog", "body": [], "sub": {}}
+                title = text[cm.end() :] if cm else text
+                cur = {
+                    "key": None,
+                    "id": None,
+                    "line": n,
+                    "end": n,
+                    "file": path.name,
+                    "open": is_open,
+                    "state": MARK_TO_STATE[m.group(1)],
+                    "closed": m.group(2),
+                    "category": CATEGORY_KEYS.get((cat or "").lower(), (cat or "").lower() or None),
+                    "category_text": cat,
+                    "title": title,
+                    "labels": [],
+                    "priority": None,
+                    "due": None,
+                    "queue": "backlog",
+                    "body": [],
+                    "sub": {},
+                }
                 items.append(cur)
                 prev_blank = False
                 continue
@@ -109,8 +130,14 @@ def parse_md(path: Path, is_open: bool) -> list[dict]:
 # ------------------------------------------------------------------ backends
 
 
-TEXTDB = {"jsondir": "json_dir", "mddir": "md_dir", "rec": "rec", "csv": "csv", "sqldump": "sqldump",
-          "hybrid": "hybrid"}
+TEXTDB = {
+    "jsondir": "json_dir",
+    "mddir": "md_dir",
+    "rec": "rec",
+    "csv": "csv",
+    "sqldump": "sqldump",
+    "hybrid": "hybrid",
+}
 CACHE = {"base": "md"}  # which text backend the SQLite cache mirrors
 
 
@@ -132,13 +159,26 @@ def detect(d: Path) -> str:
 
 
 def norm_record(r: dict, is_open: bool, file: str, line: int) -> dict:
-    return {"key": r["id"], "id": r["id"], "line": line, "file": file, "open": is_open,
-            "state": r["state"], "closed": r.get("closed"), "category": r.get("category"),
-            "category_text": r.get("category"), "title": r["title"].rstrip("."),
-            "labels": r.get("labels", []), "priority": r.get("priority"), "due": r.get("due"),
-            "queue": r.get("queue") or "backlog", "body": r.get("body", ""),
-            "result": r.get("result"), "evidence": r.get("evidence"),
-            "resolution": r.get("resolution")}
+    return {
+        "key": r["id"],
+        "id": r["id"],
+        "line": line,
+        "file": file,
+        "open": is_open,
+        "state": r["state"],
+        "closed": r.get("closed"),
+        "category": r.get("category"),
+        "category_text": r.get("category"),
+        "title": r["title"].rstrip("."),
+        "labels": r.get("labels", []),
+        "priority": r.get("priority"),
+        "due": r.get("due"),
+        "queue": r.get("queue") or "backlog",
+        "body": r.get("body", ""),
+        "result": r.get("result"),
+        "evidence": r.get("evidence"),
+        "resolution": r.get("resolution"),
+    }
 
 
 def load(d: Path, backend: str, want_open: bool, want_log: bool) -> list[dict]:
@@ -165,6 +205,7 @@ def load(d: Path, backend: str, want_open: bool, want_log: bool) -> list[dict]:
                 out += [norm_record(r, is_open, name, 0) for r in recs]
     elif backend in TEXTDB:
         import textdb  # noqa: PLC0415  (only the follow-up formats need it)
+
         recs, problems = textdb.load_all(d, TEXTDB[backend], want_open, want_log)
         for msg in problems:
             print(f"tq: skipped {msg}", file=sys.stderr)
@@ -196,19 +237,23 @@ def source_stamp(d: Path, backend: str) -> str:
 
 
 # mdcache: parse Markdown once, keep a SQLite copy keyed by file size + mtime (gitignored).
-CACHE_SCHEMA = """
+ITEM_TABLE = """
 CREATE TABLE item (
   id TEXT PRIMARY KEY, open INTEGER NOT NULL, state TEXT NOT NULL, title TEXT NOT NULL,
   category TEXT, labels TEXT NOT NULL DEFAULT '', priority TEXT, due TEXT, queue TEXT,
   closed TEXT, body TEXT NOT NULL DEFAULT '', result TEXT, evidence TEXT, resolution TEXT,
   files TEXT, seq INTEGER NOT NULL
-);
+);"""
+CACHE_SCHEMA = (
+    ITEM_TABLE
+    + """
 CREATE VIRTUAL TABLE item_fts USING fts5(title, body, labels, content='item',
   content_rowid='rowid', tokenize='porter unicode61');
 CREATE TABLE meta (k TEXT PRIMARY KEY, v TEXT);
 CREATE TABLE tok (word TEXT NOT NULL, seq INTEGER NOT NULL, tf INTEGER NOT NULL);
 CREATE TABLE doclen (seq INTEGER PRIMARY KEY, n INTEGER NOT NULL);
 """
+)
 
 
 def mdcache(d: Path) -> Path:
@@ -230,11 +275,30 @@ def mdcache(d: Path) -> Path:
     tmp.unlink(missing_ok=True)
     con = sqlite3.connect(tmp)
     con.executescript(CACHE_SCHEMA)
-    con.executemany("INSERT OR REPLACE INTO item VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [
-        (it["key"], int(it["open"]), it["state"], it["title"].rstrip("."), it["category"],
-         ",".join(it["labels"]), it["priority"], it["due"], it["queue"], it["closed"],
-         it["body"], it.get("result"), it.get("evidence"), it.get("resolution"), "", n)
-        for n, it in enumerate(items)])
+    con.executemany(
+        "INSERT OR REPLACE INTO item VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+            (
+                it["key"],
+                int(it["open"]),
+                it["state"],
+                it["title"].rstrip("."),
+                it["category"],
+                ",".join(it["labels"]),
+                it["priority"],
+                it["due"],
+                it["queue"],
+                it["closed"],
+                it["body"],
+                it.get("result"),
+                it.get("evidence"),
+                it.get("resolution"),
+                "",
+                n,
+            )
+            for n, it in enumerate(items)
+        ],
+    )
     con.execute("INSERT INTO item_fts(item_fts) VALUES ('rebuild')")
     # inverted index over the similarity document, so `similar` scores only items sharing a word
     postings, lens = [], []
@@ -289,8 +353,9 @@ def matches(it: dict, a: argparse.Namespace, text_re: re.Pattern | None) -> bool
     if a.closed_since and (not it["closed"] or it["closed"] < a.closed_since):
         return False
     if text_re is not None:
-        hay = " ".join(str(it.get(k) or "") for k in ("title", "category_text", "body", "result",
-                                                       "evidence", "resolution"))
+        hay = " ".join(
+            str(it.get(k) or "") for k in ("title", "category_text", "body", "result", "evidence", "resolution")
+        )
         if not text_re.search(hay + " " + " ".join(it["labels"])):
             return False
     return True
@@ -378,18 +443,37 @@ def sql_find(db: Path, a: argparse.Namespace) -> list[dict]:
     con.row_factory = sqlite3.Row
     if a.text:
         con.create_function("regexp", 2, lambda p, s: bool(re.search(p, s or "", re.I)), deterministic=True)
-        where.append("(title || ' ' || coalesce(category,'') || ' ' || body || ' ' || coalesce(result,'') "
-                     "|| ' ' || coalesce(resolution,'') || ' ' || labels) REGEXP ?")
+        where.append(
+            "(title || ' ' || coalesce(category,'') || ' ' || body || ' ' || coalesce(result,'') "
+            "|| ' ' || coalesce(resolution,'') || ' ' || labels) REGEXP ?"
+        )
         args.append(a.text)
     sql = "SELECT * FROM item" + (" WHERE " + " AND ".join(where) if where else "")
     rows = con.execute(sql, args).fetchall()
     con.close()
-    return [{"key": r["id"], "id": r["id"], "line": r["seq"], "file": "todo.db", "open": bool(r["open"]),
-             "state": r["state"], "closed": r["closed"], "category": r["category"],
-             "category_text": r["category"], "title": r["title"], "priority": r["priority"],
-             "labels": [x for x in r["labels"].split(",") if x], "due": r["due"], "queue": r["queue"],
-             "body": r["body"], "result": r["result"], "evidence": r["evidence"],
-             "resolution": r["resolution"]} for r in rows]
+    return [
+        {
+            "key": r["id"],
+            "id": r["id"],
+            "line": r["seq"],
+            "file": "todo.db",
+            "open": bool(r["open"]),
+            "state": r["state"],
+            "closed": r["closed"],
+            "category": r["category"],
+            "category_text": r["category"],
+            "title": r["title"],
+            "priority": r["priority"],
+            "labels": [x for x in r["labels"].split(",") if x],
+            "due": r["due"],
+            "queue": r["queue"],
+            "body": r["body"],
+            "result": r["result"],
+            "evidence": r["evidence"],
+            "resolution": r["resolution"],
+        }
+        for r in rows
+    ]
 
 
 def cmd_find(d: Path, backend: str, a: argparse.Namespace) -> int:
@@ -402,7 +486,7 @@ def cmd_find(d: Path, backend: str, a: argparse.Namespace) -> int:
         items = [it for it in load(d, backend, want_open, want_log) if matches(it, a, text_re)]
     items.sort(key=lambda it: sort_key(it, a.sort))
     total = len(items)
-    shown = items[a.offset: a.offset + a.limit] if a.limit else items[a.offset:]
+    shown = items[a.offset : a.offset + a.limit] if a.limit else items[a.offset :]
     short_keys(shown)
     if a.format == "json":
         keep = ("key", "state", "priority", "due", "closed", "category", "labels", "title")
@@ -415,8 +499,10 @@ def cmd_find(d: Path, backend: str, a: argparse.Namespace) -> int:
             print(fmt_line(it, a.body))
     rest = total - a.offset - len(shown)
     if rest > 0:
-        print(f"# showing {a.offset + 1}-{a.offset + len(shown)} of {total}; {rest} more: "
-              f"add --offset {a.offset + len(shown)}, or narrow the filter")
+        print(
+            f"# showing {a.offset + 1}-{a.offset + len(shown)} of {total}; {rest} more: "
+            f"add --offset {a.offset + len(shown)}, or narrow the filter"
+        )
     if not a.quiet:
         print(f"# {total} match", file=sys.stderr)
     return 0
@@ -437,7 +523,7 @@ def cmd_show(d: Path, backend: str, a: argparse.Namespace) -> int:
         if it["key"] == a.key or (a.key.startswith("t-") and len(a.key) >= 10 and it["key"].startswith(a.key)):
             if backend == "md" or (backend == "mdcache" and CACHE["base"] == "md"):
                 lines = (d / it["file"]).read_text(encoding="utf-8").splitlines()
-                print("\n".join(lines[it["line"] - 1: it["end"]]))
+                print("\n".join(lines[it["line"] - 1 : it["end"]]))
             else:
                 print(json.dumps({k: v for k, v in it.items() if v not in (None, "", [])}, indent=1))
             return 0
@@ -447,8 +533,10 @@ def cmd_show(d: Path, backend: str, a: argparse.Namespace) -> int:
 
 # ------------------------------------------------------------------ similarity
 
-STOP = set("a an the to of in on for and or with from by is are be as at it its this that into "
-           "we should need todo our when after before".split())
+STOP = set(
+    "a an the to of in on for and or with from by is are be as at it its this that into "
+    "we should need todo our when after before".split()
+)
 
 
 def words(text: str) -> list[str]:
@@ -497,11 +585,15 @@ def cmd_similar(d: Path, backend: str, a: argparse.Namespace) -> int:
         con = sqlite3.connect(f"file:{mdcache(d)}?mode=ro", uri=True)
         q = sorted(set(words(query)))
         cond = "" if (want_open and want_log) else f" AND item.open = {1 if want_open else 0}"
-        n, avg = con.execute("SELECT count(*), avg(n) FROM doclen JOIN item ON item.seq = doclen.seq"
-                             + (f" WHERE item.open = {1 if want_open else 0}" if cond else "")).fetchone()
+        n, avg = con.execute(
+            "SELECT count(*), avg(n) FROM doclen JOIN item ON item.seq = doclen.seq"
+            + (f" WHERE item.open = {1 if want_open else 0}" if cond else "")
+        ).fetchone()
         rows = con.execute(
             f"SELECT tok.word, tok.seq, tok.tf, doclen.n FROM tok JOIN doclen ON doclen.seq = tok.seq "
-            f"JOIN item ON item.seq = tok.seq WHERE tok.word IN ({','.join('?' * len(q))}){cond}", q).fetchall()
+            f"JOIN item ON item.seq = tok.seq WHERE tok.word IN ({','.join('?' * len(q))}){cond}",
+            q,
+        ).fetchall()
         df = Counter(w for w, _, _, _ in rows)
         score: dict[int, float] = {}
         for w, seq, f, length in rows:
@@ -510,11 +602,28 @@ def cmd_similar(d: Path, backend: str, a: argparse.Namespace) -> int:
         best = sorted(score.items(), key=lambda x: -x[1])[: a.limit]
         ranked = []
         for seq, sc in best:
-            r = con.execute("SELECT id, open, state, title, category, labels, priority, due, closed "
-                            "FROM item WHERE seq = ?", (seq,)).fetchone()
-            ranked.append((sc, {"key": r[0], "open": bool(r[1]), "state": r[2], "title": r[3], "category": r[4],
-                                "category_text": r[4], "labels": [x for x in r[5].split(",") if x],
-                                "priority": r[6], "due": r[7], "closed": r[8], "line": 0, "file": ""}))
+            r = con.execute(
+                "SELECT id, open, state, title, category, labels, priority, due, closed FROM item WHERE seq = ?", (seq,)
+            ).fetchone()
+            ranked.append(
+                (
+                    sc,
+                    {
+                        "key": r[0],
+                        "open": bool(r[1]),
+                        "state": r[2],
+                        "title": r[3],
+                        "category": r[4],
+                        "category_text": r[4],
+                        "labels": [x for x in r[5].split(",") if x],
+                        "priority": r[6],
+                        "due": r[7],
+                        "closed": r[8],
+                        "line": 0,
+                        "file": "",
+                    },
+                )
+            )
         con.close()
     elif backend == "sqlite":
         db = d / "todo.db"
@@ -528,11 +637,28 @@ def cmd_similar(d: Path, backend: str, a: argparse.Namespace) -> int:
         rows = con.execute(
             "SELECT item.*, bm25(item_fts, 4.0, 1.0, 2.0) AS score FROM item_fts "
             f"JOIN item ON item.rowid = item_fts.rowid WHERE item_fts MATCH ?{cond} "
-            "ORDER BY score LIMIT ?", (match, a.limit)).fetchall()
-        ranked = [(-r["score"], {"key": r["id"], "state": r["state"], "open": bool(r["open"]),
-                                 "priority": r["priority"], "due": r["due"], "closed": r["closed"],
-                                 "category": r["category"], "labels": [x for x in r["labels"].split(",") if x],
-                                 "title": r["title"], "line": 0, "file": ""}) for r in rows]
+            "ORDER BY score LIMIT ?",
+            (match, a.limit),
+        ).fetchall()
+        ranked = [
+            (
+                -r["score"],
+                {
+                    "key": r["id"],
+                    "state": r["state"],
+                    "open": bool(r["open"]),
+                    "priority": r["priority"],
+                    "due": r["due"],
+                    "closed": r["closed"],
+                    "category": r["category"],
+                    "labels": [x for x in r["labels"].split(",") if x],
+                    "title": r["title"],
+                    "line": 0,
+                    "file": "",
+                },
+            )
+            for r in rows
+        ]
     else:
         items = load(d, backend, want_open, want_log)
         docs = [(it, sim_doc(it)) for it in items]
@@ -549,8 +675,10 @@ def cmd_similar(d: Path, backend: str, a: argparse.Namespace) -> int:
 def cmd_stats(d: Path, backend: str, a: argparse.Namespace) -> int:
     if backend == "sqlite":
         con = sqlite3.connect(d / "todo.db")
-        items = [dict(zip(("state", "priority", "category", "due"), r, strict=True)) for r in
-                 con.execute("SELECT state, priority, category, due FROM item WHERE open = 1")]
+        items = [
+            dict(zip(("state", "priority", "category", "due"), r, strict=True))
+            for r in con.execute("SELECT state, priority, category, due FROM item WHERE open = 1")
+        ]
     else:
         items = load(d, CACHE["base"] if backend == "mdcache" else backend, True, False)
     items = [i for i in items if i["state"] in OPEN_STATES]
@@ -559,22 +687,25 @@ def cmd_stats(d: Path, backend: str, a: argparse.Namespace) -> int:
         c = Counter(i[field] or "-" for i in items)
         print(f"{field}: " + ", ".join(f"{k} {v}" for k, v in c.most_common()))
     dues = [date.fromisoformat(i["due"]) for i in items if i["due"]]
-    b = Counter("overdue" if x < TODAY else "this-week" if x <= TODAY + timedelta(days=6)
-                else "later" for x in dues)
-    print("due: " + ", ".join(f"{k} {b[k]}" for k in ("overdue", "this-week", "later")) +
-          f", none {len(items) - len(dues)}")
+    b = Counter("overdue" if x < TODAY else "this-week" if x <= TODAY + timedelta(days=6) else "later" for x in dues)
+    print(
+        "due: "
+        + ", ".join(f"{k} {b[k]}" for k in ("overdue", "this-week", "later"))
+        + f", none {len(items) - len(dues)}"
+    )
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="tq", description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(prog="tq", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("-C", dest="dir", default=".")
     ap.add_argument("--full-keys", action="store_true", help="print whole t-<uuid> keys")
-    ap.add_argument("--backend", default="auto",
-                    choices=["auto", "md", "jsonl", "json", "sqlite", "mdcache", *TEXTDB])
-    ap.add_argument("--cache", action="store_true",
-                    help="answer from a git-ignored SQLite copy of the text files, rebuilt when they change")
+    ap.add_argument("--backend", default="auto", choices=["auto", "md", "jsonl", "json", "sqlite", "mdcache", *TEXTDB])
+    ap.add_argument(
+        "--cache",
+        action="store_true",
+        help="answer from a git-ignored SQLite copy of the text files, rebuilt when they change",
+    )
     sub = ap.add_subparsers(dest="cmd", required=True)
     f = sub.add_parser("find")
     f.add_argument("--state", help="pending,in_progress,blocked,done,cancelled (comma = or)")

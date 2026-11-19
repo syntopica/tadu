@@ -1,20 +1,20 @@
-import json
-
 import pytest
-from board_js import board_js
+from board_js import board_results, js_where
 from board_scope_workspace import CARDS, WORKSPACE
 
 SCRIPT = """
 const { workspaceIndex } = await load("workspace-index.js");
 const { placeCards } = await load("place-cards.js");
 const { cleanWhere } = await load("clean-where.js");
-const { cleanWhereList } = await load("clean-where-list.js");
-const { initialWhere } = await load("initial-where.js");
+const { cleanPlaces } = await load("clean-places.js");
+const { cleanPlacesList } = await load("clean-places-list.js");
+const { initialPlaces } = await load("initial-places.js");
+const { placesLabel } = await load("places-label.js");
+const { placesCounts } = await load("places-counts.js");
 const { initialView } = await load("initial-view.js");
 const { whereParts } = await load("where-parts.js");
 const { whereCounts } = await load("where-counts.js");
 const { parseHash } = await load("parse-hash.js");
-const { pickerOptions } = await load("picker-options.js");
 const { groupCards } = await load("group-cards.js");
 const { placeLabel } = await load("place-label.js");
 const [workspace, raw] = ARGS;
@@ -22,9 +22,6 @@ const index = workspaceIndex(workspace, raw);
 const bare = workspaceIndex({ organizations: [], projects: [], repositories: [{ key: "solo" }] }, []);
 const cards = placeCards(raw, index);
 const w = (company = "", project = "", repository = "") => ({ company, project, repository });
-const lists = { favourites: [w("br")], recent: [w("pp", "gtm")] };
-const pick = (kind, where, text) =>
-  pickerOptions(kind, index, where, text, lists).map((o) => [o.group, o.label, o.detail, o.target]);
 out({
   companies: index.companies.map((c) => [c.id, c.name, c.projects, c.open]),
   projects: [...index.projects.values()].map((p) => [p.key, p.companies, p.relations, p.repositories, p.open]),
@@ -43,30 +40,42 @@ out({
     cleanWhere(w("", "", "solo"), bare),
     cleanWhere(w("", "lone"), index),
   ],
-  list: cleanWhereList([w("pp"), w("pp"), w(), w("ghost"), w("", "tele")], index),
-  listJunk: cleanWhereList("x", index),
+  list: cleanPlacesList([[w("pp")], w("pp"), [w()], [w("ghost")], w("", "tele"), [w("br"), w("", "tele")]], index),
+  listJunk: cleanPlacesList("x", index),
+  chosen: [
+    cleanPlaces([w("pp"), w("", "gtm"), w("", "", "joy"), w("br"), w("ghost"), w("br", "tele")], index),
+    cleanPlaces([w("", "", "gtm"), w("", "gtm")], index),
+    cleanPlaces([w("pp"), w()], index),
+    cleanPlaces([w("ghost"), 3, null], index),
+    cleanPlaces(w("", "", "misc"), index),
+    cleanPlaces("x", index),
+  ],
   views: [
     initialView("portfolio", "done", ["portfolio", "done"], "board"),
     initialView(null, "done", ["portfolio", "done"], "board"),
     initialView("nope", "gone", ["portfolio", "done"], "board"),
   ],
   initial: [
-    initialWhere(parseHash("#project=joy"), w("br"), index),
-    initialWhere(parseHash(""), w("br"), index),
-    initialWhere(parseHash("#x=1"), null, index),
+    initialPlaces(parseHash("#project=joy"), [w("br")], index),
+    initialPlaces(parseHash(""), w("br"), index),
+    initialPlaces(parseHash("#x=1"), null, index),
+    initialPlaces(parseHash("#place=repository:tele&place=company:pp"), [], index),
   ],
   parts: whereParts(w("pp", "gtm", "gtm-web"), index),
   ghostParts: whereParts(w("x", "y"), index).map((p) => p.label),
   counts: [w(), w("pp"), w("pp", "gtm"), w("pp", "gtm", "gtm"), w("-"), w("x"), w("", "x")].map((where) => whereCounts(where, index)),
   bareCounts: whereCounts(w(), bare),
-  pickCompany: pick("company", w(), ""),
-  pickCompanyTyped: pick("company", w(), "pix"),
-  pickProject: pick("project", w("pp"), ""),
-  pickProjectAll: pick("project", w(), "tele"),
-  pickRepository: pick("repository", w("pp", "gtm"), ""),
-  pickRepositoryCompany: pick("repository", w("pp"), "").map((o) => o[1]),
-  switcher: pick("switcher", w(), "").map((o) => [o[0], o[1]]),
-  switcherTyped: pick("switcher", w(), "gtm").map((o) => [o[0], o[1]]),
+  placeLabels: [
+    placesLabel([], index, "All"),
+    placesLabel([w("pp")], index, "All"),
+    placesLabel([w("pp"), w("br", "tele"), w("-", "-", "misc"), w("-", "lone")], index, "All"),
+  ],
+  placeCounts: [
+    placesCounts([], index),
+    placesCounts([w("pp")], index),
+    placesCounts([w("pp", "gtm"), w("-", "-", "misc")], index),
+    placesCounts([w("", "", "solo"), w("", "", "solo")], bare),
+  ],
   groups: groupCards(cards, "company").map((g) => [g.label, g.cards.length]),
   projectGroups: groupCards(cards, "project").map((g) => g.label),
 });
@@ -75,13 +84,7 @@ out({
 
 @pytest.fixture(scope="module")
 def results() -> dict[str, object]:
-    result = board_js(SCRIPT.replace("ARGS", json.dumps([WORKSPACE, CARDS])))
-    assert isinstance(result, dict)
-    return result
-
-
-def w(company: str = "", project: str = "", repository: str = "") -> dict[str, str]:
-    return {"company": company, "project": project, "repository": repository}
+    return board_results(SCRIPT, [WORKSPACE, CARDS])
 
 
 def test_index_owns_projects_by_company_role(results: dict[str, object]) -> None:
@@ -128,19 +131,37 @@ def test_card_places_use_display_names(results: dict[str, object]) -> None:
 
 def test_clean_where_keeps_levels_consistent(results: dict[str, object]) -> None:
     assert results["clean"] == [
-        w("pp", "joy", "joy"),
-        w("pp", "gtm"),
-        w("-", "-", "misc"),
-        w(),
-        w(),
-        w(),
-        w("", "", "solo"),
-        w("-", "lone"),
+        js_where("pp", "joy", "joy"),
+        js_where("pp", "gtm"),
+        js_where("-", "-", "misc"),
+        js_where(),
+        js_where(),
+        js_where(),
+        js_where("", "", "solo"),
+        js_where("-", "lone"),
     ]
-    assert results["list"] == [w("pp"), w("br", "tele")]
-    assert results["listJunk"] == []
-    assert results["initial"] == [w("pp", "joy"), w("br"), w()]
     assert results["views"] == ["portfolio", "done", "board"]
+
+
+def test_clean_places_drops_unknown_repeated_and_covered_places(
+    results: dict[str, object],
+) -> None:
+    assert results["chosen"] == [
+        [js_where("pp"), js_where("br")],
+        [js_where("pp", "gtm")],
+        [],
+        [],
+        [js_where("-", "-", "misc")],
+        [],
+    ]
+    assert results["list"] == [[js_where("pp")], [js_where("br", "tele")], [js_where("br")]]
+    assert results["listJunk"] == []
+    assert results["initial"] == [
+        [js_where("pp", "joy")],
+        [js_where("br")],
+        [],
+        [js_where("br", "tele", "tele"), js_where("pp")],
+    ]
 
 
 def test_labels_and_counts(results: dict[str, object]) -> None:
@@ -162,36 +183,11 @@ def test_labels_and_counts(results: dict[str, object]) -> None:
     assert results["bareCounts"] == ["1 repository"]
 
 
-def test_pickers_narrow_and_set_parents(results: dict[str, object]) -> None:
-    assert results["pickCompany"] == [
-        ["", "All companies", "", w()],
-        ["Companies", "Pixel Potion", "2 projects", w("pp")],
-        ["Companies", "BusiRocket", "1 project", w("br")],
-        ["Companies", "No company", "1 project", w("-")],
-    ]
-    assert results["pickCompanyTyped"] == [["Companies", "Pixel Potion", "2 projects", w("pp")]]
-    assert results["pickProject"] == [
-        ["", "All projects", "", w("pp")],
-        ["Projects", "VerticaGTM", "", w("pp", "gtm")],
-        ["Projects", "10xJoy", "", w("pp", "joy")],
-    ]
-    assert results["pickProjectAll"] == [["Projects", "Teleporte", "BusiRocket", w("br", "tele")]]
-    assert results["pickRepository"] == [
-        ["", "All repositories", "", w("pp", "gtm")],
-        ["Repositories", "gtm", "VerticaGTM", w("pp", "gtm", "gtm")],
-        ["Repositories", "gtm-web", "VerticaGTM", w("pp", "gtm", "gtm-web")],
-    ]
-    assert results["pickRepositoryCompany"] == ["All repositories", "gtm", "gtm-web", "joy"]
-    assert results["switcher"] == [
-        ["", "All companies"],
-        ["Starred", "BusiRocket"],
-        ["Recent", "Pixel Potion \u203a VerticaGTM"],
-        ["Companies", "Pixel Potion"],
-        ["Companies", "BusiRocket"],
-        ["Companies", "No company"],
-    ]
-    assert results["switcherTyped"] == [
-        ["Projects", "VerticaGTM"],
-        ["Repositories", "gtm"],
-        ["Repositories", "gtm-web"],
+def test_places_name_and_count_what_they_hold(results: dict[str, object]) -> None:
+    assert results["placeLabels"] == ["All", "Pixel Potion", "Pixel Potion, Teleporte +2"]
+    assert results["placeCounts"] == [
+        ["2 companies", "4 projects", "6 repositories"],
+        ["2 projects"],
+        ["1 project", "3 repositories"],
+        ["1 repository"],
     ]

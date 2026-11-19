@@ -2,8 +2,8 @@ import { COLUMN_TITLES } from "./column-titles.js";
 import { KIND_TITLES } from "./kind-titles.js";
 import { LAST_ORDER } from "./last-order.js";
 import { newestFirst } from "./newest-first.js";
-import { PRIORITY_TITLES } from "./priority-titles.js";
 import { priorityRank } from "./priority-rank.js";
+import { PRIORITY_TITLES } from "./priority-titles.js";
 import { STATE_ORDER } from "./state-order.js";
 
 // The groups a card falls in, each {key, label, order}: one group, except

@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-0bd32b7d-2cd5-4f1f-91c6-5307f488c27b",
+  "title": "Serve every command as an MCP tool, read-only unless --allow says more",
+  "state": "done",
+  "category": "agent-ergonomics",
+  "type": "feature",
+  "priority": "normal",
+  "created": "2026-11-18",
+  "created_by": "agent:claude",
+  "related": [
+    "t-d0e1392f-d2e4-4369-85f3-b2aa1e338393"
+  ],
+  "notes": [
+    "All reading commands, the writing ones with --allow write and the whole-backlog ones with --allow admin; each with repository and, for a change, preview."
+  ],
+  "closed": "2026-11-18",
+  "result": "tadu mcp serves the reading tools by default and the writing (--allow write) or whole-backlog ones (--allow admin); every tool takes repository, a change preview",
+  "evidence": [
+    "pytest: 1363 tests at 100% coverage, ruff, mypy --strict and codeality clean; tests/test_run_mcp.py lists 10, 15 and 20 tools by level; tests/test_mcp_call.py marks and claims a task over MCP"
+  ]
+}

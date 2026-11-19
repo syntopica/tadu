@@ -1,3 +1,4 @@
+import { el } from "./el.js";
 import { groupRow } from "./group-row.js";
 import { listRow } from "./list-row.js";
 import { requestRender } from "./request-render.js";
@@ -32,10 +33,14 @@ export function renderListWindow(store, list) {
             requestRender();
           })
         : listRow(row.card, store.selected === row.card.key, me, shown);
-    node.classList.add("virtual");
-    node.style.setProperty("--row-top", `${offsets[index]}px`);
-    node.style.setProperty("--row-height", `${offsets[index + 1] - offsets[index]}px`);
-    nodes.push(node);
+    const item = el("div", "virtual");
+    item.setAttribute("role", "listitem");
+    item.setAttribute("aria-posinset", String(index + 1));
+    item.setAttribute("aria-setsize", String(rows.length));
+    item.style.setProperty("--row-top", `${offsets[index]}px`);
+    item.style.setProperty("--row-height", `${offsets[index + 1] - offsets[index]}px`);
+    item.append(node);
+    nodes.push(item);
   }
   const focused = document.activeElement?.dataset?.key;
   spacer.replaceChildren(...nodes);

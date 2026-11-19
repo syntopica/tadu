@@ -7,7 +7,7 @@ export function snapshotView(name) {
     view: store.view,
     text: store.text,
     filters: { ...store.filters },
-    where: { ...store.where },
+    places: store.places.map((place) => ({ ...place })),
     scope: store.scope,
     group: store.group,
     sort: store.sort,
