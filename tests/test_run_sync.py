@@ -5,6 +5,7 @@ import pytest
 
 from tadu.rule_block_text import rule_block_text
 from tadu.run_sync import run_sync
+from tadu.task_rule_block_text import task_rule_block_text
 
 
 def test_dry_run_does_not_write(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -207,3 +208,11 @@ def test_backtick_info_prose_does_not_hide_existing_rule_block(tmp_path: Path) -
     (tmp_path / "AGENTS.md").write_text(original)
     assert run_sync(str(tmp_path), None, write=True, adopt_legacy=False) == 0
     assert (tmp_path / "AGENTS.md").read_text() == original
+
+
+def test_task_backlog_gets_the_format_2_block(tmp_path: Path) -> None:
+    (tmp_path / "todo").mkdir()
+    (tmp_path / "todo" / "tadu.json").write_text("{}")
+    (tmp_path / "AGENTS.md").write_text("# A\n")
+    run_sync(str(tmp_path), None, write=True, adopt_legacy=False)
+    assert (tmp_path / "AGENTS.md").read_text() == "# A\n\n" + task_rule_block_text()

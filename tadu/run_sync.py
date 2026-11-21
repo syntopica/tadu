@@ -10,10 +10,12 @@ from tadu.block_separator import block_separator
 from tadu.convert_newlines import convert_newlines
 from tadu.dominant_newline import dominant_newline
 from tadu.instruction_file import instruction_file
+from tadu.is_task_backlog import is_task_backlog
 from tadu.read_sync_source import read_sync_source
 from tadu.replace_rule_block import replace_rule_block
 from tadu.rule_block_text import rule_block_text
 from tadu.same_ignoring_wrapping import same_ignoring_wrapping
+from tadu.task_rule_block_text import task_rule_block_text
 from tadu.write_if_unchanged import write_if_unchanged
 
 
@@ -29,7 +31,8 @@ def run_sync(path: str, file: str | None, *, write: bool, adopt_legacy: bool) ->
         return 2
     target, before = source
     newline = dominant_newline(before)
-    block = convert_newlines(rule_block_text(), newline)
+    text = task_rule_block_text() if is_task_backlog(root) else rule_block_text()
+    block = convert_newlines(text, newline)
     after = replace_rule_block(before, block, adopt_legacy=adopt_legacy)
     if after is None:
         after = before + block_separator(before, newline) + block

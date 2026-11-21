@@ -17,6 +17,13 @@ unlocked there), and `platformdirs` for each system's cache directory (the item
 cache moves to `~/Library/Caches/tadu` on macOS and `%LOCALAPPDATA%\tadu\Cache`
 on Windows; Linux keeps `~/.cache/tadu`). Commands import only what they run.
 
+### Changed
+
+- `tadu sync` writes a rule block that names only the task backlog (format 2) into a
+  repository that has `todo/tadu.json`, so its instruction file no longer teaches
+  `TODO.md` and `TODO_LOG.md`. Other repositories get the block for both formats
+  as before. Both carry the v5 marker, so no `R004` warning appears.
+
 ### Added
 
 - `proposals = "pr" | "merge" | "direct"` on a `[[repository]]` of a team board's workspace:

@@ -16,6 +16,7 @@
     "bench/format-study/proposal/**",
     "tests/fixtures/**",
     "AGENTS.md",
+    "tadu/rule_block_v5_tasks.md",
     "skills/*/references/**",
     "docs/superpowers/**",
     "bench/format-study/textdb.py"

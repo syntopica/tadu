@@ -123,6 +123,8 @@ tadu sync . --write   # apply it
 | `--adopt-legacy` | replace an older, unmarked section headed "Continuous TODO" |
 | `--write` | apply instead of printing the diff |
 
+- A repository with `todo/tadu.json` gets a block that names only the task backlog (format 2);
+  any other gets the block for both formats. Both carry the v5 marker.
 - The block sits between `<!-- tadu:rule v5 -->` and `<!-- /tadu:rule -->` marker lines; only the
   text between them changes. Markers count only as a whole line outside a fenced code block, so
   quoting them in prose or in an example is safe.

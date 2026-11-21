@@ -31,7 +31,7 @@ build-backend = "setuptools.build_meta"
 include = ["tadu*"]
 
 [tool.setuptools.package-data]
-tadu = ["rule_block_v5.md", "board/*.html", "board/*.js", "board/*.css"]
+tadu = ["rule_block_v5.md", "rule_block_v5_tasks.md", "board/*.html", "board/*.js", "board/*.css"]
 
 [tool.pytest.ini_options]
 # -n auto: the tests run in parallel on every core (pytest-xdist); -n 0 runs them in one process.
