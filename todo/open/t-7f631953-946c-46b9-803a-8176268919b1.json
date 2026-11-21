@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-7f631953-946c-46b9-803a-8176268919b1",
+  "title": "One-command install with locked, hashed dependencies",
+  "state": "pending",
+  "category": "release",
+  "type": "feature",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-22",
+  "related": [
+    "t-3a7018dc-21c7-4aad-a4ee-0d1b4e8db1ff"
+  ],
+  "notes": [
+    "Found 2026-11-22 installing tadu on a shared VPS for casegpt (casegpt commit 7dab3f1). PyPI has only 0.1.0, without format 2, so the install had to be uv tool install git+https://github.com/syntopica/tadu@<commit>. That pins tadu but resolves its 19 dependencies (cryptography, requests, requests-oauthlib, werkzeug, limits and others) fresh at install time, which a security review flagged as a supply-chain risk on a shared account. Most of them serve only the board's sign-in."
+  ],
+  "done_when": [
+    "A documented single command installs a released tadu with every dependency pinned by hash (a published requirements file with hashes or a uv lock), and the plain CLI install does not pull the board's sign-in libraries"
+  ]
+}
