@@ -38,5 +38,9 @@ def task_close_conflict(
                 "run the close again the same way"
             ),
         ),
+        (
+            wanted.get("superseded_by") != task_str(record, "superseded_by"),
+            "with another superseded_by; run the close again the same way",
+        ),
     )
     return next((message for conflicting, message in checks if conflicting), None)

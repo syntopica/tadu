@@ -15,6 +15,7 @@ def args(path: Path, **overrides: str | date | bool | None) -> argparse.Namespac
         "match": "fix",
         "id": None,
         "duplicate_of": None,
+        "superseded_by": None,
         "evidence": "e",
         "resolution": None,
         "result": None,

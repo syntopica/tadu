@@ -192,7 +192,7 @@ so none can produce a file doctor would reject.
 | `tadu add --title T --category C --type Y --priority P` | shows similar open and closed tasks first, then writes `open/<id>.json` with `created` and `created_by` (`--created-by` or `$TADU_ACTOR`); `--kind K` and `--check-on D` set `kind` and `check_on`, `--not-before D` sets `defer_until`, and an option the task cannot hold is refused |
 | `tadu set ID key=value ...` | changes fields; `key+=v` and `key-=v` for lists, `key=` to remove; moving to `in_progress` sets `started` once |
 | `tadu claim ID --as WHO` | sets the assignee, `in_progress` and `started` at once; refused for a blocked, deferred or closed task, or one someone else has in progress (`--force` takes it over) |
-| `tadu close --id ID --evidence E` | appends `closed`, `result` (default: the title) and `evidence`, moves the file to `closed/`, reports the tasks that waited on it; `--resolution R` or `--duplicate-of ID` cancel instead. Run again on a task a stopped close left in `open/` and `closed/`, it finishes that close: the closed file is kept and gains only new evidence |
+| `tadu close --id ID --evidence E` | appends `closed`, `result` (default: the title) and `evidence`, moves the file to `closed/`, reports the tasks that waited on it; `--resolution R`, `--duplicate-of ID` or `--superseded-by ID` cancel instead. Run again on a task a stopped close left in `open/` and `closed/`, it finishes that close: the closed file is kept and gains only new evidence |
 | `tadu archive` | applies the archive policy, moving files unchanged |
 | `tadu fmt` | rewrites files that are not in canonical form |
 | `tadu list`, `show`, `ready`, `similar`, `feed`, `board` | read both formats |

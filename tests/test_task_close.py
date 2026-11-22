@@ -118,3 +118,22 @@ def test_a_v1_backlog_rejects_the_v2_options(
     assert main(["close", str(tmp_path), "--id", "t-00000001", "--evidence", "e"]) == 2
     assert "0 open items have key t-00000001" in capsys.readouterr().err
     assert main(["close", str(tmp_path), "--match", "fix", "--duplicate-of", "t-1"]) == 2
+
+
+def test_close_as_superseded_names_the_replacement(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = backlog(tmp_path)
+    args = ["close", str(root), "--id", sample_id(1), "--superseded-by", "t-00000004", "--write"]
+    assert main(args) == 0
+    assert f"(block on {sample_id(4)} instead?)" in capsys.readouterr().out
+    replaced = read(root, "closed", 1)
+    assert (replaced["state"], replaced["superseded_by"], replaced["resolution"]) == (
+        "cancelled",
+        sample_id(4),
+        f"Superseded by {sample_id(4)}.",
+    )
+    assert main(["show", sample_id(4), str(root)]) == 0
+    last = capsys.readouterr().out.splitlines()[-1]
+    assert last.startswith("replaces: ")
+    assert last.endswith(f":{sample_id(1)[:10]} [cancelled] normal Ship the exporter")

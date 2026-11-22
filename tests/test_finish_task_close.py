@@ -100,6 +100,11 @@ def test_a_cancelled_record_is_finished_by_the_same_resolution(
                 "to finish it"
             ),
         ),
+        (
+            sample_task(1, "cancelled"),
+            ("--superseded-by", str(sample_task(2)["id"])),
+            "with another superseded_by; run the close again the same way to finish it",
+        ),
     ],
 )
 def test_another_state_result_resolution_or_duplicate_is_refused(

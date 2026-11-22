@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-64772d10-231b-4d1d-9957-f9ab7f1c25bd",
+  "title": "Add duplicates and supersedes links between tasks",
+  "state": "done",
+  "category": "format",
+  "type": "feature",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-19",
+  "started": "2026-11-22",
+  "assignees": [
+    "agent:claude"
+  ],
+  "notes": [
+    "Only blocked_by, parent and related exist. Two more link types let an agent say a task replaces or repeats another."
+  ],
+  "done_when": [
+    "spec, doctor, show and list understand both links, with tests"
+  ],
+  "closed": "2026-11-22",
+  "result": "Add duplicates and supersedes links between tasks",
+  "evidence": [
+    "spec already defined superseded_by and duplicate_of; doctor J012/J020/J021, show (replaces, duplicates) and list --json relations already handled both; added tadu close --superseded-by with tests/test_task_close.py::test_close_as_superseded_names_the_replacement and a finish-conflict case; codeality-py gate all stages passed"
+  ]
+}

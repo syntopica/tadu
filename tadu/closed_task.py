@@ -21,16 +21,18 @@ def closed_task(
     """The task with its closing keys appended; nothing it held is removed.
 
     --evidence closes it as done (result: --result, else the title), --resolution as cancelled,
-    --duplicate-of as cancelled with duplicate_of and a resolution naming the task kept.
+    --duplicate-of or --superseded-by as cancelled with that link and a resolution naming the
+    task kept.
     """
     if task_str(task, "state") not in OPEN_TASK_STATES:
         msg = f"{task['id']} is already {task['state']}"
         raise TaskCommandError(msg)
     closed = {**task, "closed": day.isoformat()}
-    if args.duplicate_of:
-        kept = resolve_task_ids(todo, [args.duplicate_of])[0]
-        reason = args.resolution or f"Duplicate of {kept}."
-        return {**closed, "state": "cancelled", "resolution": reason, "duplicate_of": kept}
+    for link, said in (("duplicate_of", "Duplicate of"), ("superseded_by", "Superseded by")):
+        if getattr(args, link):
+            kept = resolve_task_ids(todo, [getattr(args, link)])[0]
+            reason = args.resolution or f"{said} {kept}."
+            return {**closed, "state": "cancelled", "resolution": reason, link: kept}
     if args.resolution:
         return {**closed, "state": "cancelled", "resolution": args.resolution}
     result = args.result or task_str(task, "title")

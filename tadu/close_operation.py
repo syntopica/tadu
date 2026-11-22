@@ -27,6 +27,13 @@ CLOSE_OPERATION = Operation(
             exclusive="proof",
             format=2,
         ),
+        Param(
+            "superseded_by",
+            "text",
+            "cancel it as replaced by this task",
+            exclusive="proof",
+            format=2,
+        ),
         Param("result", "text", "Result: line of the entry"),
         Param("category", "text", "category (default: its ## section)", format=1),
         Param("title", "text", "entry text (default: the item's)", format=1),
@@ -35,5 +42,6 @@ CLOSE_OPERATION = Operation(
     access="write",
     describe="Close one finished open item: into TODO_LOG.md, or a task into todo/closed/. "
     "Give `evidence` (a test, command result, commit or PR) for verified work, `resolution` "
-    "for dropped work, or `duplicate_of` for a task another one repeats.",
+    "for dropped work, `duplicate_of` for a task another one repeats, or `superseded_by` for a "
+    "task another one replaces.",
 )

@@ -656,13 +656,14 @@ tadu close --match "Fix the header" --evidence "tests/test_header.py passes" --r
 | `--evidence TEXT` | close as done (`[x]`) with this `Evidence:` |
 | `--resolution TEXT` | close as cancelled (`[-]`) with this `Resolution:` |
 | `--duplicate-of ID` | format 2: cancel as a duplicate of that task |
+| `--superseded-by ID` | format 2: cancel as replaced by that task |
 | `--result TEXT` | the `Result:` line (format 2 default: the title) |
 | `--category`, `--title` | format 1: the entry's category and text |
 | `--date DAY` | the closing day (default today) |
 | `--write` | apply instead of printing the diff |
 
-One of `--id` or `--match`, and one of `--evidence`, `--resolution` or `--duplicate-of`, is
-required.
+One of `--id` or `--match`, and one of `--evidence`, `--resolution`, `--duplicate-of` or
+`--superseded-by`, is required.
 
 **Format 1.** The item is removed from `TODO.md` with its indented continuation lines and written
 into `TODO_LOG.md` as a dated entry; `close` prints the diff of both files, and after `--write`

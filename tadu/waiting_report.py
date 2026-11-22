@@ -29,7 +29,7 @@ def waiting_report(todo: Path, closed: dict[str, object]) -> tuple[str, ...]:
         name = f"{file.path.stem} {task_str(task, 'title')!r}"
         still = [target for target in task_strings(task, "blocked_by") if target in open_ids]
         if closed.get("state") == "cancelled":
-            kept = task_str(closed, "duplicate_of")
+            kept = task_str(closed, "duplicate_of") or task_str(closed, "superseded_by")
             hint = f" (block on {kept} instead?)" if kept else ""
             lines.append(
                 f"  {name} waited on this task, which is cancelled, not done: review it{hint}"
