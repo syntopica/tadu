@@ -2,10 +2,24 @@
 
 ## Unreleased
 
+## 0.2.0
+
 ### Compatibility
+
+Existing backlogs read as before: `list`, `show`, `feed` and `doctor` print the
+same text and findings for files without the new fields, and every JSON object
+keeps its keys and values, with `kind`, `check_on` and `not_before` added
+(`null` when absent).
 
 `tadu board` without `--auth github` behaves as before, messages included.
 Workspace files keep loading; `github_id` and `github` are new optional keys.
+
+- The rule block is v5. Repositories synced with an older one get an `R004`
+  warning until `tadu sync . --write` updates them.
+- Repositories given as paths whose directories share a name are named by their
+  full path in `list`, `next`, `inbox`, `urgent`, `show` and `feed`, and in the
+  derived `k-` keys of their items, so two checkouts named `api` stay apart. A
+  directory given twice is read once.
 
 ### Dependencies
 
@@ -21,21 +35,6 @@ a plain install brings two; `tadu board --auth github` without them says which o
 is missing and stops. Each release attaches `tadu-requirements.txt` and
 `tadu-github-requirements.txt` to its GitHub release, pinning tadu and every
 dependency by hash for `pip install --require-hashes` (see the README).
-
-### Changed
-
-- A command stops, exit 2, on a backlog whose `todo/tadu.json` declares a format newer
-  than it reads, and says to upgrade tadu, instead of misreading it or writing format 2 tasks
-  into it. The Claude Code hook names the problem but still exits 0. Only the backlog the
-  command reads counts: run inside such a checkout, a command that names another path still
-  works, and a workspace command or the board reports that repository by key, as one it could
-  not read, and serves the others.
-- `tadu ready` leaves out the children, at any depth, of a parent task deferred by a
-  future `defer_until` or by kind `later`; `--with-deferred-children` lists them anyway.
-- `tadu sync` writes a rule block that names only the task backlog (format 2) into a
-  repository that has `todo/tadu.json`, so its instruction file no longer teaches
-  `TODO.md` and `TODO_LOG.md`. Other repositories get the block for both formats
-  as before. Both carry the v5 marker, so no `R004` warning appears.
 
 ### Added
 
@@ -224,134 +223,6 @@ dependency by hash for `pip install --require-hashes` (see the README).
 - Development checks on Node.js (`package.json`, `npm ci`): jscpd looks for copied code in the
   whole repository and finds none; axe-core audits every state of the board page in jsdom
   (`pytest -m node`); and a test keeps every text colour at WCAG AA contrast in both themes.
-
-### Changed
-
-- Every command starts about twice as fast (~340 ms to ~150 ms): it imports only
-  its own code, and `--version` reads the installed version only when asked.
-- Big backlogs (measured with 27,500 tasks, `bench/format-study/bench_tadu.py`
-  at scale L): `close` prints the few lines it changes instead of most of the
-  log (60,644 lines before) and takes 3 s instead of 10; `list`'s default view
-  and the board's data, on a Markdown backlog, parse only the log entries of
-  the Done window (about 2.5x faster, same output); `add` and `mark` no longer
-  check the unchanged log twice (about 2x faster).
-- Remotes are read with `urllib.parse`: ssh and https remotes with a user or a
-  port, `git://` and `git+ssh://`, and GitLab subgroups now link to their forge.
-
-- `tadu mcp` serves only the reading tools unless started with
-  `--allow write` (0.2.0, not yet published, offered `add`, `mark` and `close`
-  always).
-- MCP tool arguments are named as the command options, and other common names
-  are accepted too: `notes` for `note`, `assignee` for `assignees`, `key` for
-  `id` (and `id` for `show`'s `key`), `as` or `person` for `claim`'s `who`, a
-  plural such as `fields` or `links` for its list. One text given for a list
-  is a list of it.
-- `add`, `mark` and `close` refuse an option only the other backlog format
-  takes (`--kind` on a task backlog, `--type` on `TODO.md`...) instead of
-  dropping it in silence.
-- `add` and `mark` take `--assignee` and `--label` as repeatable options that
-  also comma-separate, on both formats; `--assignees` and `--labels` are the
-  same options. `mark --estimate` must be a whole number.
-- `mark` and `close` need `--id` or `--match`.
-- `tadu doctor` without arguments checks `.`; `doctor --workspace` also checks
-  the files of every repository, and no longer takes paths beside it. `sync`
-  defaults to `.` like the others.
-- The board's `/api/history` and `/api/changes` are replaced by calls of
-  `show` and `changes`; `/api/cards` takes `?done_days=N`.
-- `tadu changes` (and the board's Changes view) says, for a changed item, how
-  many lines of each field the commit added and removed (`notes: 1 added,
-  1 removed`), so an edit of notes no longer shows as a change of nothing.
-- The board draws a task's words under their titles (blocker, notes, done
-  when, result, evidence, links, files...) instead of its raw JSON, which
-  stays folded under Task file.
-- The board's History section offers fields changed after the item was
-  created (not every field the creation set) and marks uncommitted changes;
-  a field reads `done when`, not `done_when`.
-- `tadu --help` lists the commands as reading, writing, setting up, then
-  serving.
-- The board's three scope pickers (company, project, repository) and the
-  Scope & filters popover are replaced by the Scope tree, the Filter menu and a
-  Display popover (grouping, order, the done window, empty columns and
-  cancelled items). Saved views, starred and recent scopes and links from
-  before keep working: one place becomes a scope of one, and a saved filter
-  its rules (an organization or role saved alone is dropped).
-
-### Documentation
-
-- The README is now an overview: what tadu is, install, a quick start, how the
-  files work, the commands at a glance, short guides and how to develop tadu.
-  The full reference moved to `docs/`: `commands.md` (every command and
-  option), `doctor.md` (checks, pre-commit and CI, finding codes), `agents.md`
-  (rule block, MCP, Claude Code hook, skills) and `workspace-and-board.md`.
-- The docs name `--root` of `set` and `claim`, and `file` as a `list --sort`
-  order.
-
-### Fixed
-
-- A change the board or an MCP call made to a `TODO.md` backlog that `tadu doctor` then found
-  errors in (exit 1, after writing) was shown as refused, and as a tool error: trying again
-  made it twice. It is now done, with doctor's report; doctor's own exit 1 is no tool error
-  either.
-- A word after `--` that starts with `-` (`tadu set -- ID -x=1`, or a tool call's value) was
-  refused as an unknown option.
-- The board's Changes view read one day fewer than `tadu changes` for the same "last 14 days";
-  its day ranges now count as the command and `--done-days` do.
-- A Unicode digit such as `²` in a `Content-Length`, a `done_days`, an `Estimate:` or
-  `estimate=` value, or an archive folder's name stopped the command (or the board's request)
-  with a traceback; it now reads as no number.
-- A command that failed unexpectedly under `tadu mcp` or the board stopped the server; the
-  call now exits 70 with the traceback as its errors.
-- The board's Edit dialog dropped a field emptied by hand without a word (`tadu mark` cannot
-  remove a field): it now says so and changes nothing.
-- In the board's Filter menu and scope tree, Tab closed the popup; it now reaches the ways of
-  matching, Remove filter and Clear, and the popup closes when the focus leaves it.
-- The board offered New item and drag and drop for a workspace repository with no checkout on
-  this machine.
-- A typed filter named after a JavaScript object property (`constructor:x`, `is:toString`)
-  broke the search box.
-- The board's calls failed in a browser with `403`: with `Referrer-Policy: no-referrer` a
-  browser sends `Origin: null`, and some send no `Origin` at all on a call to the page's own
-  server. The board now sends `Referrer-Policy: same-origin` and checks `Origin` and
-  `Sec-Fetch-Site` when they are given. A Chromium test drives the page to catch such breaks.
-- The board's layout: New item sits in the page head, so the toolbar fits on one line and
-  the phone page no longer scrolls sideways; five columns fit a 1440 px screen; the change
-  dialog dims the page behind it, gives whole lines to notes and evidence, shows only the
-  fields of the chosen repository's format and no command-line hints; a task's detail leaves
-  out Kind, Check on and Not before; the views drawn from a call list their rows like the
-  other lists; the filters popover scrolls; summary chips never clip their count. Five board
-  columns and the toolbar fit on one line from 1280 px; below 1100 px the summary chips wrap
-  instead of scrolling out of sight.
-- A row of the board's Changes view could be opened only with the mouse; its title is now a
-  button.
-- Board cards and list rows name a task by its id (`t-55161023`) instead of a file path cut
-  off mid-id, so its due date stays in view; a phone card keeps its facts on one line and has
-  room for a two-line title, which overlapped them.
-- Commands take options between their positionals: `tadu show KEY --history ROOT` reads ROOT
-  instead of refusing it.
-- `tadu mark` on a task backlog failed with "TODO.md: missing"; it now changes
-  the task.
-- `tadu migrate` kept a field line followed directly by `- Result:` or
-  `- Evidence:` bullets, as `tadu close` writes an entry whose last line is a
-  field, as a note: a closed item's `ID:` was lost and its task got a new id.
-
-## 0.2.0
-
-### Compatibility
-
-Existing backlogs read as before: `list`, `show`, `feed` and `doctor` print the
-same text and findings for files without the new fields, and every JSON object
-keeps its keys and values, with `kind`, `check_on` and `not_before` added
-(`null` when absent).
-
-- The rule block is v5. Repositories synced with an older one get an `R004`
-  warning until `tadu sync . --write` updates them.
-- Repositories given as paths whose directories share a name are named by their
-  full path in `list`, `next`, `inbox`, `urgent`, `show` and `feed`, and in the
-  derived `k-` keys of their items, so two checkouts named `api` stay apart. A
-  directory given twice is read once.
-
-### Added
-
 - Format 2 tasks have `kind` (`task`, `decision`, `waiting`, `later`) and
   `check_on` (a date), the format 1 `Kind:` and `Check on:` fields, so
   `list --kind`, `--check-before`, `next`, `inbox` and `urgent` work the same on
@@ -420,6 +291,65 @@ keeps its keys and values, with `kind`, `check_on` and `not_before` added
 
 ### Changed
 
+- A command stops, exit 2, on a backlog whose `todo/tadu.json` declares a format newer
+  than it reads, and says to upgrade tadu, instead of misreading it or writing format 2 tasks
+  into it. The Claude Code hook names the problem but still exits 0. Only the backlog the
+  command reads counts: run inside such a checkout, a command that names another path still
+  works, and a workspace command or the board reports that repository by key, as one it could
+  not read, and serves the others.
+- `tadu ready` leaves out the children, at any depth, of a parent task deferred by a
+  future `defer_until` or by kind `later`; `--with-deferred-children` lists them anyway.
+- `tadu sync` writes a rule block that names only the task backlog (format 2) into a
+  repository that has `todo/tadu.json`, so its instruction file no longer teaches
+  `TODO.md` and `TODO_LOG.md`. Other repositories get the block for both formats
+  as before. Both carry the v5 marker, so no `R004` warning appears.
+- Every command starts about twice as fast (~340 ms to ~150 ms): it imports only
+  its own code, and `--version` reads the installed version only when asked.
+- Big backlogs (measured with 27,500 tasks, `bench/format-study/bench_tadu.py`
+  at scale L): `close` prints the few lines it changes instead of most of the
+  log (60,644 lines before) and takes 3 s instead of 10; `list`'s default view
+  and the board's data, on a Markdown backlog, parse only the log entries of
+  the Done window (about 2.5x faster, same output); `add` and `mark` no longer
+  check the unchanged log twice (about 2x faster).
+- Remotes are read with `urllib.parse`: ssh and https remotes with a user or a
+  port, `git://` and `git+ssh://`, and GitLab subgroups now link to their forge.
+
+- `tadu mcp` serves only the reading tools unless started with
+  `--allow write`.
+- MCP tool arguments are named as the command options, and other common names
+  are accepted too: `notes` for `note`, `assignee` for `assignees`, `key` for
+  `id` (and `id` for `show`'s `key`), `as` or `person` for `claim`'s `who`, a
+  plural such as `fields` or `links` for its list. One text given for a list
+  is a list of it.
+- `add`, `mark` and `close` refuse an option only the other backlog format
+  takes (`--kind` on a task backlog, `--type` on `TODO.md`...) instead of
+  dropping it in silence.
+- `add` and `mark` take `--assignee` and `--label` as repeatable options that
+  also comma-separate, on both formats; `--assignees` and `--labels` are the
+  same options. `mark --estimate` must be a whole number.
+- `mark` and `close` need `--id` or `--match`.
+- `tadu doctor` without arguments checks `.`; `doctor --workspace` also checks
+  the files of every repository, and no longer takes paths beside it. `sync`
+  defaults to `.` like the others.
+- The board's `/api/history` and `/api/changes` are replaced by calls of
+  `show` and `changes`; `/api/cards` takes `?done_days=N`.
+- `tadu changes` (and the board's Changes view) says, for a changed item, how
+  many lines of each field the commit added and removed (`notes: 1 added,
+  1 removed`), so an edit of notes no longer shows as a change of nothing.
+- The board draws a task's words under their titles (blocker, notes, done
+  when, result, evidence, links, files...) instead of its raw JSON, which
+  stays folded under Task file.
+- The board's History section offers fields changed after the item was
+  created (not every field the creation set) and marks uncommitted changes;
+  a field reads `done when`, not `done_when`.
+- `tadu --help` lists the commands as reading, writing, setting up, then
+  serving.
+- The board's three scope pickers (company, project, repository) and the
+  Scope & filters popover are replaced by the Scope tree, the Filter menu and a
+  Display popover (grouping, order, the done window, empty columns and
+  cancelled items). Saved views, starred and recent scopes and links from
+  before keep working: one place becomes a scope of one, and a saved filter
+  its rules (an organization or role saved alone is dropped).
 - `tadu add` on a `TODO.md` backlog took the options of a task backlog and
   dropped them without a word. It now writes those format 1 has a spelling for
   (`--label` and `--assignee` join `Labels:` and `Assignees:`, `--defer-until`
@@ -440,8 +370,63 @@ keeps its keys and values, with `kind`, `check_on` and `not_before` added
 - Board: the priority and kind badges are left out where the list already
   names them, when grouped by that attribute or filtered to one value of it.
 
+### Documentation
+
+- The README is now an overview: what tadu is, install, a quick start, how the
+  files work, the commands at a glance, short guides and how to develop tadu.
+  The full reference moved to `docs/`: `commands.md` (every command and
+  option), `doctor.md` (checks, pre-commit and CI, finding codes), `agents.md`
+  (rule block, MCP, Claude Code hook, skills) and `workspace-and-board.md`.
+- The docs name `--root` of `set` and `claim`, and `file` as a `list --sort`
+  order.
+
 ### Fixed
 
+- A change the board or an MCP call made to a `TODO.md` backlog that `tadu doctor` then found
+  errors in (exit 1, after writing) was shown as refused, and as a tool error: trying again
+  made it twice. It is now done, with doctor's report; doctor's own exit 1 is no tool error
+  either.
+- A word after `--` that starts with `-` (`tadu set -- ID -x=1`, or a tool call's value) was
+  refused as an unknown option.
+- The board's Changes view read one day fewer than `tadu changes` for the same "last 14 days";
+  its day ranges now count as the command and `--done-days` do.
+- A Unicode digit such as `²` in a `Content-Length`, a `done_days`, an `Estimate:` or
+  `estimate=` value, or an archive folder's name stopped the command (or the board's request)
+  with a traceback; it now reads as no number.
+- A command that failed unexpectedly under `tadu mcp` or the board stopped the server; the
+  call now exits 70 with the traceback as its errors.
+- The board's Edit dialog dropped a field emptied by hand without a word (`tadu mark` cannot
+  remove a field): it now says so and changes nothing.
+- In the board's Filter menu and scope tree, Tab closed the popup; it now reaches the ways of
+  matching, Remove filter and Clear, and the popup closes when the focus leaves it.
+- The board offered New item and drag and drop for a workspace repository with no checkout on
+  this machine.
+- A typed filter named after a JavaScript object property (`constructor:x`, `is:toString`)
+  broke the search box.
+- The board's calls failed in a browser with `403`: with `Referrer-Policy: no-referrer` a
+  browser sends `Origin: null`, and some send no `Origin` at all on a call to the page's own
+  server. The board now sends `Referrer-Policy: same-origin` and checks `Origin` and
+  `Sec-Fetch-Site` when they are given. A Chromium test drives the page to catch such breaks.
+- The board's layout: New item sits in the page head, so the toolbar fits on one line and
+  the phone page no longer scrolls sideways; five columns fit a 1440 px screen; the change
+  dialog dims the page behind it, gives whole lines to notes and evidence, shows only the
+  fields of the chosen repository's format and no command-line hints; a task's detail leaves
+  out Kind, Check on and Not before; the views drawn from a call list their rows like the
+  other lists; the filters popover scrolls; summary chips never clip their count. Five board
+  columns and the toolbar fit on one line from 1280 px; below 1100 px the summary chips wrap
+  instead of scrolling out of sight.
+- A row of the board's Changes view could be opened only with the mouse; its title is now a
+  button.
+- Board cards and list rows name a task by its id (`t-55161023`) instead of a file path cut
+  off mid-id, so its due date stays in view; a phone card keeps its facts on one line and has
+  room for a two-line title, which overlapped them.
+- Commands take options between their positionals: `tadu show KEY --history ROOT` reads ROOT
+  instead of refusing it.
+- `tadu mark` on a task backlog failed with "TODO.md: missing"; it now changes
+  the task.
+- `tadu migrate` kept a field line followed directly by `- Result:` or
+  `- Evidence:` bullets, as `tadu close` writes an entry whose last line is a
+  field, as a note: a closed item's `ID:` was lost and its task got a new id.
 - `tadu add` on a task backlog accepted `--kind`, `--check-on`,
   `--not-before`, `--assignees`, `--labels` and `--no-id` and dropped them
   without a word. The first two are stored, `--not-before` is `defer_until`,
