@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tadu.build_cards import build_cards
+from tadu.newer_format_error import NewerFormatError
 from tadu.read_repository_items import read_repository_items
 from tadu.scan_problem import ScanProblem
 
@@ -19,7 +20,10 @@ if TYPE_CHECKING:
 def workspace_cards(
     workspace: Workspace, local: LocalConfig, cutoff: date
 ) -> tuple[tuple[Card, ...], tuple[ScanProblem, ...]]:
-    """Cards in repository order; unreadable repositories become problems."""
+    """Cards in repository order; unreadable repositories become problems.
+
+    So does one written in a newer tadu format: the others are still served.
+    """
     cards: list[Card] = []
     problems: list[ScanProblem] = []
     for entry in workspace.repositories:
@@ -27,7 +31,10 @@ def workspace_cards(
         if root is None:
             problems.append(ScanProblem(entry.key, "no checkout path in tadu-workspace.local.toml"))
             continue
-        found = read_repository_items(root, entry.backlog, entry.key, cutoff)
+        try:
+            found = read_repository_items(root, entry.backlog, entry.key, cutoff)
+        except NewerFormatError as error:
+            found = ScanProblem(entry.key, str(error))
         if isinstance(found, ScanProblem):
             problems.append(found)
             continue

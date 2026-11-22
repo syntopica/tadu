@@ -2,17 +2,26 @@
   "tadu": 2,
   "id": "t-31de250d-32de-4a73-b644-01cc1718d92e",
   "title": "Refuse a newer format only for the backlog a command targets",
-  "state": "pending",
+  "state": "done",
   "category": "compatibility",
   "type": "bug",
   "priority": "normal",
   "kind": "task",
   "created": "2026-11-22",
+  "started": "2026-11-22",
+  "assignees": [
+    "agent:claude"
+  ],
   "discovered_from": "t-9069bf01-2106-4f5f-b410-577d4beefb05",
   "notes": [
     "2026-11-22: from inside a format-3 checkout, tadu list /other/repo exits 2, because config_values probes the current directory's backlog before reading arguments."
   ],
   "done_when": [
     "A command run inside a newer-format checkout but targeting another path works; a test covers it"
+  ],
+  "closed": "2026-11-22",
+  "result": "Refuse a newer format only for the backlog a command targets",
+  "evidence": [
+    "holds_backlog checks todo/tadu.json without reading its format; tests/test_newer_format_elsewhere.py::test_a_command_inside_a_newer_checkout_reads_the_path_it_names passes; gate green"
   ]
 }

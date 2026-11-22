@@ -24,9 +24,12 @@ dependency by hash for `pip install --require-hashes` (see the README).
 
 ### Changed
 
-- Every command stops, exit 2, on a backlog whose `todo/tadu.json` declares a format newer
+- A command stops, exit 2, on a backlog whose `todo/tadu.json` declares a format newer
   than it reads, and says to upgrade tadu, instead of misreading it or writing format 2 tasks
-  into it. The Claude Code hook names the problem but still exits 0.
+  into it. The Claude Code hook names the problem but still exits 0. Only the backlog the
+  command reads counts: run inside such a checkout, a command that names another path still
+  works, and a workspace command or the board reports that repository by key, as one it could
+  not read, and serves the others.
 - `tadu ready` leaves out the children, at any depth, of a parent task deferred by a
   future `defer_until` or by kind `later`; `--with-deferred-children` lists them anyway.
 - `tadu sync` writes a rule block that names only the task backlog (format 2) into a

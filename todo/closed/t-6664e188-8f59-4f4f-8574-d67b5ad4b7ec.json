@@ -2,17 +2,26 @@
   "tadu": 2,
   "id": "t-6664e188-8f59-4f4f-8574-d67b5ad4b7ec",
   "title": "Answer a clear error when the board reads a newer-format repository",
-  "state": "pending",
+  "state": "done",
   "category": "board",
   "type": "bug",
   "priority": "normal",
   "kind": "task",
   "created": "2026-11-22",
+  "started": "2026-11-22",
+  "assignees": [
+    "agent:claude"
+  ],
   "discovered_from": "t-9069bf01-2106-4f5f-b410-577d4beefb05",
   "notes": [
     "2026-11-22: not probed. NewerFormatError is caught only in cli.main, so a board request that reads a newer-format repository likely fails as an internal error. Smallest step: a board test with one format-3 repository."
   ],
   "done_when": [
     "A board test with a format-3 repository gets a named refusal, not an internal error"
+  ],
+  "closed": "2026-11-22",
+  "result": "Answer a clear error when the board reads a newer-format repository",
+  "evidence": [
+    "board payload lists the format-3 repository as a problem and leaves it out of formats; a board add to it answers exit 2 naming the upgrade (board writes already ran through cli.main); tests/test_newer_format_elsewhere.py::test_the_board_shows_the_rest_and_refuses_a_change_by_name passes"
   ]
 }

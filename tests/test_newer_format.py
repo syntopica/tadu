@@ -23,7 +23,8 @@ def test_commands_stop_and_name_the_upgrade(
     ):
         assert main(argv) == 2
         err = capsys.readouterr().err
-        assert err.startswith("tadu: todo/tadu.json: written in tadu format 3, and tadu ")
+        assert err.startswith("tadu: ")
+        assert "todo/tadu.json: written in tadu format 3, and tadu " in err
         assert err.endswith(" reads format 2 and older: upgrade tadu\n")
     assert sorted(p.name for p in (root / "todo").iterdir()) == ["tadu.json"]
 

@@ -59,6 +59,7 @@ def board_payload(
         loaded, local, access_problems, user = view.workspace, view.local, view.problems, view.user
     cutoff = today - timedelta(days=done_days)
     cards, problems = workspace_cards(loaded, local, cutoff)
+    unread = {problem.repository for problem in problems}
     mine = {id(card) for _, card in inbox_cards(cards, local.me, today)} if local.me else set()
     pointing = reverse_relation_index(cards)
     return {
@@ -83,11 +84,12 @@ def board_payload(
         "sections": SECTION_TITLES,
         "done_days": done_days,
         "allow": state.allow,
-        # keys: load_workspace rejects a repository key used twice.
+        # keys: load_workspace rejects a repository key used twice. A repository that could not
+        # be read has none: one in a newer format would raise here.
         "formats": {
             entry.key: backlog_format(str(local.paths[entry.key] / entry.backlog))
             for entry in loaded.repositories
-            if entry.key in local.paths
+            if entry.key in local.paths and entry.key not in unread
         },
         "writable": writable_keys(state.allow, loaded, local),
         "tools": {name: tool["inputSchema"] for name, tool in operation_tools(state.allow).items()},
