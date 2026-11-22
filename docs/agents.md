@@ -53,6 +53,24 @@ The current block is v5. A repository synced with an older one gets an `R004` wa
 | v3 | `tadu close`, running `tadu doctor .` before committing, and how to install tadu |
 | v4 | item kinds; `next`, `inbox`, `urgent`, `add` and `mark`, so an agent working alone records a decision for a person instead of waiting for one; querying the backlog instead of reading it whole; `tadu similar` before adding an item; working a task backlog through its commands |
 
+### Other agents
+
+Most agents already read `AGENTS.md`, so the one block reaches them with no other file. For the
+rest, `tadu sync . --agent NAME --write` writes the block into their own file.
+
+| Agent | Reads | Set up |
+| ----- | ----- | ------ |
+| Codex | `AGENTS.md` | `tadu sync . --write` |
+| Claude Code | `CLAUDE.md` (`AGENTS.md` only with its AGENTS.md support enabled) | a `CLAUDE.md` holding `@AGENTS.md`, or `tadu sync . --file CLAUDE.md --write` |
+| Gemini CLI | `GEMINI.md`; `AGENTS.md` only when `context.fileName` in its settings names it | `tadu sync . --agent gemini --write` |
+| GitHub Copilot | `AGENTS.md` for its agent; `.github/copilot-instructions.md` for every surface | `tadu sync . --agent copilot --write` |
+| Cursor | `AGENTS.md`, and the rules under `.cursor/rules/` | nothing; `tadu sync . --agent cursor --write` for a project rule |
+| Windsurf | `AGENTS.md` as an always-on rule | `tadu sync . --write` |
+
+A Cursor repository that has both `AGENTS.md` and `.cursor/rules/tadu.mdc` gives the agent the block
+twice; keep one. `doctor` checks only `AGENTS.md` or `CLAUDE.md`: after upgrading tadu, run each
+`sync --agent` again.
+
 ### An agent working alone
 
 An agent takes its work from `tadu next`. When it meets a question only a person can answer, it

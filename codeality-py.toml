@@ -17,6 +17,7 @@ test-max-file-lines = 200
 [roles]
 data = [
   "tadu/access_levels.py",
+  "tadu/agent_rule_files.py",
   "tadu/actor_pattern.py",
   "tadu/add_field_params.py",
   "tadu/add_operation.py",

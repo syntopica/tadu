@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-77c0e259-f137-485d-8d1e-103078cc1036",
+  "title": "Let sync write the rule block for more agents than AGENTS.md and CLAUDE.md",
+  "state": "done",
+  "category": "adoption",
+  "type": "feature",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-19",
+  "started": "2026-11-22",
+  "assignees": [
+    "agent:claude"
+  ],
+  "notes": [
+    "Cursor and Codex-specific instruction files and hooks are candidates."
+  ],
+  "done_when": [
+    "sync supports the extra targets and the docs list them"
+  ],
+  "closed": "2026-11-22",
+  "result": "Let sync write the rule block for more agents than AGENTS.md and CLAUDE.md",
+  "evidence": [
+    "tadu sync --agent gemini|copilot|cursor writes GEMINI.md, .github/copilot-instructions.md, .cursor/rules/tadu.mdc (alwaysApply front matter, folders created on --write); docs/commands.md sync section and docs/agents.md 'Other agents' table list them; tests/test_sync_agent.py; codeality-py gate all stages passed"
+  ]
+}

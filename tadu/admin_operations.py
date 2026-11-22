@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 from tadu.operation import Operation
 from tadu.param import Param
 
@@ -11,7 +13,17 @@ ADMIN_OPERATIONS = (
     Operation(
         "sync",
         "write the marked rule block into the instruction file",
-        (FILE, Param("adopt_legacy", "flag", "replace an unmarked legacy rule section")),
+        (
+            replace(FILE, exclusive="target"),
+            Param(
+                "agent",
+                "choice",
+                "write the agent's own instruction file instead of --file",
+                ("gemini", "copilot", "cursor"),
+                exclusive="target",
+            ),
+            Param("adopt_legacy", "flag", "replace an unmarked legacy rule section"),
+        ),
         access="admin",
     ),
     Operation(

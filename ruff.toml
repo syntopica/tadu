@@ -70,6 +70,7 @@ ignore = [
 "tadu/doctor_command.py" = ["T201"]
 "tadu/run_sync.py" = ["T201"]
 "tadu/read_sync_source.py" = ["T201"]
+"tadu/make_parent_directory.py" = ["T201"]
 "tadu/run_init.py" = ["T201"]
 "tadu/create_missing_file.py" = ["T201"]
 "tadu/run_close.py" = ["T201"]

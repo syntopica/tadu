@@ -120,6 +120,7 @@ tadu sync . --write   # apply it
 | Option | Meaning |
 | ------ | ------- |
 | `--file FILE` | instruction file, relative to the repository root (default `AGENTS.md`, else `CLAUDE.md`) |
+| `--agent NAME` | write the agent's own instruction file instead: `gemini`, `copilot` or `cursor` (see below) |
 | `--adopt-legacy` | replace an older, unmarked section headed "Continuous TODO" |
 | `--write` | apply instead of printing the diff |
 
@@ -133,6 +134,12 @@ tadu sync . --write   # apply it
   that a tool creates later does not move the block. Claude Code reads `AGENTS.md` only when its
   AGENTS.md support is enabled: in a repository worked with Claude Code, add a `CLAUDE.md`
   containing the line `@AGENTS.md`.
+- `--agent` writes the file an agent reads besides, or instead of, `AGENTS.md`: `gemini` is
+  `GEMINI.md`, `copilot` is `.github/copilot-instructions.md` and `cursor` is
+  `.cursor/rules/tadu.mdc`, created with `alwaysApply: true` front matter so the rule loads in
+  every chat. Missing folders are created on `--write`. `--file` and `--agent` together are
+  refused; `--agent` wins over a `file` set in a config file or a tool call. `doctor` checks only `AGENTS.md` or `CLAUDE.md`, so run `sync --agent NAME --write`
+  again after upgrading tadu. [agents.md](agents.md#other-agents) says which agent reads what.
 - The write goes to a temporary file in the same directory that then replaces the target, and
   only when the file still holds what `sync` read: an edit made meanwhile is kept and `sync` exits
   `2`. Line endings (LF or CRLF) and file mode are kept.

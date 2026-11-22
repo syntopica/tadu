@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tadu.agent_file import agent_file
 from tadu.claim_command import claim_command
 from tadu.close_command import close_command
 from tadu.dispatch_add import dispatch_add
@@ -68,7 +69,10 @@ def command_handlers(
         "feed": lambda: run_feed(args, today),
         "board": lambda: run_board(args, main),
         "sync": lambda: run_sync(
-            args.path, args.file, write=args.write, adopt_legacy=args.adopt_legacy
+            args.path,
+            agent_file(args.file, args.agent),
+            write=args.write,
+            adopt_legacy=args.adopt_legacy,
         ),
         "doctor": lambda: doctor_command(args, today),
     }

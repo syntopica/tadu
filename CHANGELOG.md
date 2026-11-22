@@ -28,6 +28,9 @@ on Windows; Linux keeps `~/.cache/tadu`). Commands import only what they run.
 
 ### Added
 
+- `tadu sync --agent gemini|copilot|cursor` writes the rule block into `GEMINI.md`,
+  `.github/copilot-instructions.md` or `.cursor/rules/tadu.mdc` (with front matter that makes the
+  rule always apply), creating missing folders. `docs/agents.md` lists which agent reads which file.
 - `tadu close --superseded-by ID` cancels a task as replaced by another in one step, as
   `--duplicate-of` does for a repeat; `show` lists it under `replaces` on the task that took over,
   and the tasks that waited on it are told to block on the replacement instead.
