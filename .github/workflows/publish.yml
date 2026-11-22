@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
-      contents: read
+      # write: attaches the hashed requirements files to the GitHub release
+      contents: write
       # Trusted publishing: no token, no twine credentials, no local login.
       id-token: write
     steps:
@@ -36,5 +37,18 @@ jobs:
       - name: Build the distributions
         run: uv build
 
+      - name: Pin the release and its dependencies by hash
+        run: |
+          mkdir requirements
+          release/hashed_requirements.sh > requirements/tadu-requirements.txt
+          release/hashed_requirements.sh github > requirements/tadu-github-requirements.txt
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+
+      - name: Attach the hashed requirements to the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "$GITHUB_REF_NAME" requirements/*.txt
+          --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes

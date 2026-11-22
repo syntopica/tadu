@@ -69,18 +69,36 @@ $ tadu show t-006963ad --history
 
 ## Install
 
-tadu needs Python 3.12 or newer; the installer brings the few libraries it uses: `cryptography`,
-`requests` and `requests-oauthlib` (with `oauthlib`), Werkzeug and `limits` for the board's GitHub
-sign-in, `filelock` for locking a backlog on Windows, and `platformdirs` for each system's cache
-directory. A command imports only what it runs, so `tadu list` loads none of the sign-in
-libraries. Install it as a command:
+tadu needs Python 3.12 or newer and two libraries: `filelock`, for locking a backlog on
+Windows, and `platformdirs`, for each system's cache directory. Install it as a command:
 
 ```bash
 uv tool install tadu          # or: pipx install tadu, or: python3 -m pip install tadu
 tadu --version
 ```
 
-The development version installs from git the same way:
+The board's GitHub sign-in (`tadu board --auth github`) needs more: `cryptography`, `requests`
+and `requests-oauthlib` (with `oauthlib`), Werkzeug and `limits`. They come with the `github`
+extra, `uv tool install 'tadu[github]'`, and without them that command says so and stops.
+
+### Pinned by hash
+
+Each release attaches two requirements files to its
+[GitHub release](https://github.com/syntopica/tadu/releases): `tadu-requirements.txt` and
+`tadu-github-requirements.txt`. They pin tadu and every dependency to an exact version and
+hash, taken from `uv.lock` and the uploaded distributions. Installed with `--require-hashes`,
+pip refuses any file whose hash differs, so nothing is resolved fresh at install time:
+
+```bash
+python3 -m venv ~/.local/share/tadu && ~/.local/share/tadu/bin/pip install --require-hashes \
+  -r https://github.com/syntopica/tadu/releases/download/v0.2.0/tadu-requirements.txt
+~/.local/share/tadu/bin/tadu --version
+```
+
+`uv tool install` does not check hashes given in a constraints or requirements file, so use pip
+(or `uv pip install --require-hashes` into a `uv venv`) for this.
+
+The development version installs from git:
 `uv tool install git+https://github.com/syntopica/tadu`.
 
 ## Quick start

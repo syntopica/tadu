@@ -1946,11 +1946,15 @@ version = "0.2.0"
 source = { editable = "." }
 default-groups = ["quality"]
 dependencies = [
-    { name = "cryptography" },
     { name = "filelock" },
+    { name = "platformdirs" },
+]
+
+[package.optional-dependencies]
+github = [
+    { name = "cryptography" },
     { name = "limits" },
     { name = "oauthlib" },
-    { name = "platformdirs" },
     { name = "requests" },
     { name = "requests-oauthlib" },
     { name = "werkzeug" },
@@ -1970,6 +1974,7 @@ quality = [
     { name = "pytest-xdist" },
     { name = "ruff" },
     { name = "syntopica-codeality-py" },
+    { name = "tadu", extra = ["github"] },
     { name = "types-jsonschema" },
     { name = "types-oauthlib" },
     { name = "types-requests" },
@@ -1978,15 +1983,16 @@ quality = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cryptography", specifier = ">=44" },
+    { name = "cryptography", marker = "extra == 'github'", specifier = ">=44" },
     { name = "filelock", specifier = ">=3.16" },
-    { name = "limits", specifier = ">=4" },
-    { name = "oauthlib", specifier = ">=3.2" },
+    { name = "limits", marker = "extra == 'github'", specifier = ">=4" },
+    { name = "oauthlib", marker = "extra == 'github'", specifier = ">=3.2" },
     { name = "platformdirs", specifier = ">=4.3" },
-    { name = "requests", specifier = ">=2.32" },
-    { name = "requests-oauthlib", specifier = ">=2" },
-    { name = "werkzeug", specifier = ">=3.1" },
+    { name = "requests", marker = "extra == 'github'", specifier = ">=2.32" },
+    { name = "requests-oauthlib", marker = "extra == 'github'", specifier = ">=2" },
+    { name = "werkzeug", marker = "extra == 'github'", specifier = ">=3.1" },
 ]
+provides-extras = ["github"]
 
 [package.metadata.requires-dev]
 quality = [
@@ -2002,6 +2008,7 @@ quality = [
     { name = "pytest-xdist", specifier = ">=3.8,<4" },
     { name = "ruff", specifier = ">=0.17,<1" },
     { name = "syntopica-codeality-py", specifier = ">=0.2.5,<1" },
+    { name = "tadu", extras = ["github"] },
     { name = "types-jsonschema" },
     { name = "types-oauthlib" },
     { name = "types-requests" },

@@ -37,7 +37,7 @@ You need:
 - an address the team can reach over https, and a reverse proxy in front of the board (Caddy or nginx). The address can be a subdomain (`https://tadu.example.com`), a domain of its own (`https://example-tadu.com`) or a subfolder of a site you already run (`https://example.com/tadu`); see [4. Put it behind https](#4-put-it-behind-https). The examples below use `https://board.example.com`;
 - the right to create a GitHub App, and to install it on the organizations that own the repositories (an organization owner, or someone they allow).
 
-The board needs Python 3.12 and tadu (`pip install tadu` or `uv tool install tadu`), whose installer brings the libraries that sign people in: [`cryptography`](https://cryptography.io), [`requests`](https://requests.readthedocs.io), [`requests-oauthlib`](https://requests-oauthlib.readthedocs.io) with `oauthlib`, and [Werkzeug](https://werkzeug.palletsprojects.com)'s cookie parser. Only `tadu board --auth github` loads them.
+The board needs Python 3.12 and tadu with its `github` extra (`pip install 'tadu[github]'` or `uv tool install 'tadu[github]'`), which brings the libraries that sign people in: [`cryptography`](https://cryptography.io), [`requests`](https://requests.readthedocs.io), [`requests-oauthlib`](https://requests-oauthlib.readthedocs.io) with `oauthlib`, and [Werkzeug](https://werkzeug.palletsprojects.com)'s cookie parser. Only `tadu board --auth github` loads them.
 
 ## 1. Register a GitHub App
 

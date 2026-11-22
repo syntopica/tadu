@@ -42,4 +42,6 @@ def board_preflight(
             team = prepare_team_board(args)
     except (WorkspaceError, ValueError) as error:
         return None, str(error)
+    except ModuleNotFoundError as error:
+        return None, f"--auth github needs the github extra ({error}): install 'tadu[github]'"
     return team, None

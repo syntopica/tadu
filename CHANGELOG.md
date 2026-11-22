@@ -16,6 +16,11 @@ for the board's GitHub sign-in, `filelock` to lock a backlog on Windows (it ran
 unlocked there), and `platformdirs` for each system's cache directory (the item
 cache moves to `~/Library/Caches/tadu` on macOS and `%LOCALAPPDATA%\tadu\Cache`
 on Windows; Linux keeps `~/.cache/tadu`). Commands import only what they run.
+The six sign-in libraries come only with the `github` extra (`tadu[github]`), so
+a plain install brings two; `tadu board --auth github` without them says which one
+is missing and stops. Each release attaches `tadu-requirements.txt` and
+`tadu-github-requirements.txt` to its GitHub release, pinning tadu and every
+dependency by hash for `pip install --require-hashes` (see the README).
 
 ### Changed
 

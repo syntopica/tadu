@@ -6,11 +6,16 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
-  "cryptography>=44",
   "filelock>=3.16",
+  "platformdirs>=4.3",
+]
+
+[project.optional-dependencies]
+# Only `tadu board --auth github` needs these.
+github = [
+  "cryptography>=44",
   "limits>=4",
   "oauthlib>=3.2",
-  "platformdirs>=4.3",
   "requests>=2.32",
   "requests-oauthlib>=2",
   "werkzeug>=3.1",
@@ -61,6 +66,8 @@ DEP004 = ["pytest"]
 
 [dependency-groups]
 quality = [
+  # the tests cover the GitHub sign-in too
+  "tadu[github]",
   "syntopica-codeality-py>=0.2.5,<1",
   "deptry>=0.25.1,<1",
   "mypy>=2.4,<3",
