@@ -2,16 +2,25 @@
   "tadu": 2,
   "id": "t-9069bf01-2106-4f5f-b410-577d4beefb05",
   "title": "Refuse to open a backlog written by a newer tadu format than the binary knows",
-  "state": "pending",
+  "state": "done",
   "category": "compatibility",
   "type": "feature",
   "priority": "normal",
   "kind": "task",
   "created": "2026-11-19",
+  "started": "2026-11-22",
+  "assignees": [
+    "agent:claude"
+  ],
   "notes": [
     "An old tadu should stop with an actionable message instead of misreading newer files."
   ],
   "done_when": [
     "an older binary exits with a clear error on a newer format and a test covers it"
+  ],
+  "closed": "2026-11-22",
+  "result": "Refuse to open a backlog written by a newer tadu format than the binary knows",
+  "evidence": [
+    "is_task_backlog refuses a todo/tadu.json declaring a format above 2 (NewerFormatError); cli main prints 'tadu: ... upgrade tadu' and exits 2, the hook exits 0; tests/test_newer_format.py covers list, doctor, add and the hook; gate passed, doctor clean"
   ]
 }

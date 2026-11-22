@@ -244,6 +244,8 @@ rule block checks; format 1's TODO and log checks do not apply.
 Every file carries its version. A reader upgrades older files through small steps, so a later tool
 still opens a version-2 file; format 1 is Markdown and is converted once by `tadu migrate`. A tool
 never rewrites a file with a newer version than it knows: it reads the keys it understands and
-reports J002, so agents on different tadu versions cannot strip each other's fields. Unknown keys
+reports J002, so agents on different tadu versions cannot strip each other's fields. A newer
+version in `todo/tadu.json` is different: the whole backlog moved to a format the tool does not
+know, so it stops before reading or writing anything and says to upgrade. Unknown keys
 are kept on rewrite. The version only changes for a breaking change; new optional keys do not
 change it.
