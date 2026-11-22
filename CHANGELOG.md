@@ -36,6 +36,9 @@ dependency by hash for `pip install --require-hashes` (see the README).
 
 ### Added
 
+- A workspace repository may set `branch`: the team board's pull requests, merges and commits
+  for it target that branch instead of the GitHub default branch (docs/team-board.md,
+  "Several branches").
 - `tadu sync --agent gemini|copilot|cursor` writes the rule block into `GEMINI.md`,
   `.github/copilot-instructions.md` or `.cursor/rules/tadu.mdc` (with front matter that makes the
   rule always apply), creating missing folders. `docs/agents.md` lists which agent reads which file.

@@ -14,3 +14,10 @@ def test_proposals_default_to_pr_and_accept_the_other_modes() -> None:
 def test_any_other_proposals_value_is_refused(value: object) -> None:
     with pytest.raises(WorkspaceError, match="proposals"):
         parse_repository({"key": "a", "proposals": value})
+
+
+def test_branch_is_optional_text() -> None:
+    assert parse_repository({"key": "a"}).branch is None
+    assert parse_repository({"key": "a", "branch": "dev"}).branch == "dev"
+    with pytest.raises(WorkspaceError, match="branch"):
+        parse_repository({"key": "a", "branch": 3})

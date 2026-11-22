@@ -20,7 +20,8 @@ def propose_changes(
 ) -> str:
     """What to tell the person: what the request's mode made if they may push to `name`, else an issue.
 
-    The mode is `pr`, `merge` or `direct` (see propose_as_writer).
+    The mode is `pr`, `merge` or `direct` (see propose_as_writer), on the request's branch,
+    else the repository's default branch.
 
     Everything goes to GitHub with their token, so GitHub holds them to their rights and
     names them the author. ProposalError when nothing could be made; SignedOutError when
@@ -33,7 +34,7 @@ def propose_changes(
     repository = api.get("")
     permissions = repository.get("permissions")
     if isinstance(permissions, dict) and permissions.get("push") is True:
-        default = proposal_field(repository, "default_branch")
+        default = request.branch or proposal_field(repository, "default_branch")
         site = proposal_field(repository, "html_url")
         return propose_as_writer(api, default, site, request)
     url = open_issue(api, request)

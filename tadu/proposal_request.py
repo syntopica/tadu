@@ -13,7 +13,8 @@ if TYPE_CHECKING:
 class ProposalRequest:
     """The person who asked, the operation and its arguments, and the files it changes.
 
-    `mode` is how the repository has a pusher's change applied (see PROPOSAL_MODES).
+    `mode` is how the repository has a pusher's change applied (see PROPOSAL_MODES), and
+    `branch` the branch it targets (None for the default branch).
     """
 
     login: str
@@ -21,3 +22,4 @@ class ProposalRequest:
     arguments: dict[str, object]
     changes: list[FileChange]
     mode: str = "pr"
+    branch: str | None = None

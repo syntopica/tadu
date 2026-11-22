@@ -2,12 +2,16 @@
   "tadu": 2,
   "id": "t-bccb13cd-471a-4530-8a4c-b873e2309bd5",
   "title": "Review how board proposals behave with several branches (dev, main, features)",
-  "state": "pending",
+  "state": "done",
   "category": "board",
   "type": "feature",
   "priority": "normal",
   "kind": "task",
   "created": "2026-11-19",
+  "started": "2026-11-22",
+  "assignees": [
+    "agent:claude"
+  ],
   "related": [
     "t-f4d09f0e-0b1b-4589-b45b-2c8bb99f19c4"
   ],
@@ -20,5 +24,10 @@
   ],
   "done_when": [
     "The branch behavior is decided, documented in docs/team-board.md and covered by tests, or a decision task records why it stays default-branch only"
+  ],
+  "closed": "2026-11-22",
+  "result": "Review how board proposals behave with several branches (dev, main, features)",
+  "evidence": [
+    "Decided: one target branch per repository (workspace 'branch', default = GitHub default branch); the board reads its checkout, which must be on that branch; reaching main from dev is the team's own merge; the checkout does not pull itself. Documented in docs/team-board.md 'Several branches'; tests/test_board_proposal_branch.py (pr and direct land on dev, fail without the change) and test_parse_repository_proposals.py; gate passed, doctor clean"
   ]
 }

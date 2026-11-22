@@ -46,7 +46,9 @@ def propose_call(
         if code == INTERNAL_ERROR:
             errors = f"tadu {name}: internal error\n"
         if code in (0, 1) and changes:
-            request = ProposalRequest(session.login, name, arguments, changes, target.proposals)
+            request = ProposalRequest(
+                session.login, name, arguments, changes, target.proposals, target.branch
+            )
             output = propose_changes(sign_in, session.token, target.name, request) + "\n"
     except ProposalError as error:
         if error.status == HTTPStatus.CONFLICT:

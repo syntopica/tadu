@@ -13,7 +13,10 @@ from tadu.workspace_error import WorkspaceError
 
 
 def parse_repository(row: dict[str, object]) -> RepositoryEntry:
-    """Read key, remote, backlog, github_id, access and proposals; the backlog must stay inside the repository."""
+    """Read key, remote, backlog, github_id, access, proposals and branch.
+
+    The backlog must stay inside the repository.
+    """
     key = required_text(row, "repository", "key")
     backlog = optional_text(row, "repository", "backlog") or "."
     path = PurePath(backlog)
@@ -33,4 +36,5 @@ def parse_repository(row: dict[str, object]) -> RepositoryEntry:
         msg = f"repository {key}: proposals must be one of {', '.join(PROPOSAL_MODES)}"
         raise WorkspaceError(msg)
     remote = optional_text(row, "repository", "remote")
-    return RepositoryEntry(key, remote, backlog, access, github_id, proposals)
+    branch = optional_text(row, "repository", "branch")
+    return RepositoryEntry(key, remote, backlog, access, github_id, proposals, branch)

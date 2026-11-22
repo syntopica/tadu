@@ -403,7 +403,7 @@ A board with `--auth github` never writes the server's checkouts. When a person 
 
 The answer is `proposed: <url>`, and the card changes on the board only once the pull request is merged (and the checkout pulled) or the issue is handled. GitHub names the person as the author of everything, and holds them to their own rights: if GitHub refuses a step, the person gets a short error and nothing is left half made on the server.
 
-The pull request is built from the repository as GitHub holds it, so **the server's checkout must match the default branch**. Before anything is created, the board compares the blobs of the backlog files on the default branch with the checkout's; when they differ it answers HTTP 409 (`the repository changed since the board last read it; refresh and try again`) and creates nothing. Keep the checkouts current (see [Keep the checkouts current](#keep-the-checkouts-current)); a checkout on another branch or with local edits will refuse every proposal. Only repositories with a GitHub remote can receive a proposal.
+The pull request is built from the repository as GitHub holds it, so **the server's checkout must match the target branch** (the default branch unless the repository sets [`branch`](#several-branches)). Before anything is created, the board compares the blobs of the backlog files on that branch with the checkout's; when they differ it answers HTTP 409 (`the repository changed since the board last read it; refresh and try again`) and creates nothing. Keep the checkouts current (see [Keep the checkouts current](#keep-the-checkouts-current)); a checkout on another branch or with local edits will refuse every proposal. Only repositories with a GitHub remote can receive a proposal.
 
 ### Merge or commit at once: `proposals`
 
@@ -422,7 +422,21 @@ proposals = "merge"   # "pr" (default), "merge" or "direct"
 
 Someone who may not push always gets an issue, in every mode, and GitHub's own rules (branch protection, required reviews) still bind the person. The answer starts with `merged: <url>`, `committed: <url>` or `proposed: <url>`. The card changes once the server's checkout is pulled, so in these two modes keep the checkouts very current: until then the next change to that repository answers 409 (the checkout no longer matches the default branch).
 
-**Several branches (not settled).** Every proposal targets the repository's GitHub default branch, and the server's checkout must match it. With a `dev`/`main` split, a change lands on the default branch, not on `dev`, and no setting picks another target branch. In `merge` and `direct` modes the default branch moves on every change, so a checkout left on another branch, or not pulled, refuses the next change. How this should work with several branches is still to be reviewed.
+### Several branches
+
+Proposals target the repository's GitHub default branch. When the backlog the team works from lives on another branch, such as `dev` in a `dev`/`main` split, the repository names it:
+
+```toml
+[[repository]]
+key = "shop"
+remote = "https://github.com/acme/shop"
+branch = "dev"        # proposals, merges and commits target dev, not the default branch
+```
+
+- **One target per repository.** Every pull request has `branch` as its base, `merge` merges into it and `direct` commits on it. Feature branches are never targets: a proposal's own `tadu/<operation>-<random>` branch is the only one the board creates.
+- **The board reads its checkout.** It shows whatever the server's checkout holds, so check it out on the target branch; a checkout on any other branch answers 409 to every change, because its backlog files differ from the target's.
+- **Reaching the other branches is your own merge.** A change that lands on `dev` reaches `main` when you merge `dev` into `main`, as for code; tadu never writes a second branch. Task files merge cleanly, since each task is its own file.
+- **The checkout does not pull itself.** In `merge` and `direct` modes the target branch moves on every change, so pull the checkout often (see [Keep the checkouts current](#keep-the-checkouts-current)); until it is pulled, the next change to that repository answers 409 and creates nothing.
 
 ## Security model
 
