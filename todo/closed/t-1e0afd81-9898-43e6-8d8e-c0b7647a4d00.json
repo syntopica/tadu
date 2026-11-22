@@ -3,7 +3,7 @@
   "id": "t-1e0afd81-9898-43e6-8d8e-c0b7647a4d00",
   "title": "Make the codeality-py quality gate pass again on main",
   "state": "done",
-  "category": "quality",
+  "category": "tooling",
   "type": "bug",
   "priority": "high",
   "kind": "task",
