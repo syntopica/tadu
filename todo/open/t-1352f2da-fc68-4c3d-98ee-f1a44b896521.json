@@ -10,6 +10,6 @@
   "created": "2026-11-19",
   "notes": [
     "Epic, task and sub-task readable at a glance; parent already exists.",
-    "2026-11-22: ids are t-<uuid> in format 2, so hierarchical ids are a format change (format 3). Older binaries now refuse a newer todo/tadu.json, which makes a format bump safe; the parent field already links the levels."
+    "2026-11-22: ids are t-<uuid> in format 2, so hierarchical ids are a format change (format 3). Binaries from the release after 0.2.0 on refuse a newer todo/tadu.json; 0.2.0 and older still misread one, so a bump needs that release widely installed first. The parent field already links the levels."
   ]
 }

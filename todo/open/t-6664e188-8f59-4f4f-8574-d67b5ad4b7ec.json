@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-6664e188-8f59-4f4f-8574-d67b5ad4b7ec",
+  "title": "Answer a clear error when the board reads a newer-format repository",
+  "state": "pending",
+  "category": "board",
+  "type": "bug",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-22",
+  "discovered_from": "t-9069bf01-2106-4f5f-b410-577d4beefb05",
+  "notes": [
+    "2026-11-22: not probed. NewerFormatError is caught only in cli.main, so a board request that reads a newer-format repository likely fails as an internal error. Smallest step: a board test with one format-3 repository."
+  ],
+  "done_when": [
+    "A board test with a format-3 repository gets a named refusal, not an internal error"
+  ]
+}

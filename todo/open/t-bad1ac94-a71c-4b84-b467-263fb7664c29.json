@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-bad1ac94-a71c-4b84-b467-263fb7664c29",
+  "title": "Skip only the newer-format repository in workspace commands",
+  "state": "pending",
+  "category": "compatibility",
+  "type": "bug",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-22",
+  "discovered_from": "t-9069bf01-2106-4f5f-b410-577d4beefb05",
+  "notes": [
+    "2026-11-22: tadu list --workspace exits 2 as a whole when one repository's todo/tadu.json declares a newer format (probe in scratch workspace); one teammate upgrading one repository stops every workspace command and the board."
+  ],
+  "done_when": [
+    "A workspace command reports the newer-format repository by key and still serves the others; a test covers it"
+  ]
+}
