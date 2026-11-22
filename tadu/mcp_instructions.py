@@ -9,6 +9,7 @@ do), decision (a choice a person must make), waiting (someone else owes somethin
 (not now). Due is its deadline, Check on the day to look at it again, Not before the day
 before which it cannot start. An item without a kind is unclassified; do not guess one.
 
+- When you start working on this backlog, call `prime` for a short briefing.
 - When the user asks what is urgent, call `urgent`.
 - When the user asks you to work alone or will be away, call `next` and work through its
   tasks, most pressing first. Never act on a decision, waiting or later item.

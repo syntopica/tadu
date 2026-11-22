@@ -66,4 +66,4 @@ def test_the_tools_follow_allow(
         assert main(["mcp", str(tmp_path), *extra]) == 0
         reply = json.loads(capsys.readouterr().out)
         names.append(len(reply["result"]["tools"]))
-    assert names == [10, 15, 20]
+    assert names == [11, 16, 21]

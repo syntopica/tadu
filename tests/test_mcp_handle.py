@@ -36,7 +36,7 @@ def test_initialize_negotiates_and_instructs() -> None:
 def test_tools_ping_and_errors() -> None:
     listed = handle("tools/list")
     assert listed is not None
-    assert len(listed["result"]["tools"]) == 10  # type: ignore[index]
+    assert len(listed["result"]["tools"]) == 11  # type: ignore[index]
     assert handle("ping") == {"jsonrpc": "2.0", "id": 7, "result": {}}
     called = handle("tools/call", {"name": "next", "arguments": {"json": True}})
     assert called is not None

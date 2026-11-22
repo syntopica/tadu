@@ -171,6 +171,7 @@ Format 1 items may also carry `ID:`, `Priority:`, `Assignees:`, `Labels:`, `Queu
 | | `tadu inbox` | what waits on a person: decisions, due follow-ups and checks, blocked tasks |
 | | `tadu urgent` | what is urgent, high priority or due soon, by who has to act |
 | | `tadu ready` | open items nothing blocks or defers |
+| | `tadu prime` | a short briefing for an agent: open counts, next tasks and the workflow's commands |
 | | `tadu similar TEXT` | existing items like a new one, to check before adding |
 | | `tadu feed` | recently closed items as JSON |
 | **Write** | `tadu add` | a new item or task |

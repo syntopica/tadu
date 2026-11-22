@@ -19,6 +19,7 @@ def test_every_operation_in_help_order() -> None:
         "next",
         "inbox",
         "urgent",
+        "prime",
         "similar",
         "feed",
         "doctor",

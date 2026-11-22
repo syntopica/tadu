@@ -21,6 +21,7 @@ from tadu.run_list import run_list
 from tadu.run_mcp import run_mcp
 from tadu.run_migrate import run_migrate
 from tadu.run_next import run_next
+from tadu.run_prime import run_prime
 from tadu.run_ready import run_ready
 from tadu.run_set import run_set
 from tadu.run_show import run_show
@@ -61,6 +62,7 @@ def command_handlers(
         "next": lambda: run_next(args, today),
         "inbox": lambda: run_inbox(args, today),
         "urgent": lambda: run_urgent(args, today),
+        "prime": lambda: run_prime(args, today),
         "ready": lambda: run_ready(args, today),
         "similar": lambda: run_similar(args, today),
         "feed": lambda: run_feed(args, today),

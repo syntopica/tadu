@@ -82,6 +82,7 @@ ignore = [
 "tadu/run_show.py" = ["T201"]
 "tadu/show_history.py" = ["T201"]
 "tadu/run_changes.py" = ["T201"]
+"tadu/run_prime.py" = ["T201"]
 "tadu/run_feed.py" = ["T201"]
 "tadu/run_todo_change.py" = ["T201"]
 "tadu/plan_mark.py" = ["T201"]

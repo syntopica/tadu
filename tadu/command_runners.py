@@ -20,6 +20,7 @@ DATED_COMMANDS = {
     "next": "run_next",
     "inbox": "run_inbox",
     "urgent": "run_urgent",
+    "prime": "run_prime",
     "ready": "run_ready",
     "similar": "run_similar",
     "feed": "run_feed",

@@ -6,7 +6,7 @@ the checks `doctor` runs, see [doctor.md](doctor.md).
 
 - [Conventions](#conventions)
 - Set up: [`init`](#init) · [`sync`](#sync) · [`migrate`](#migrate)
-- Read: [`list`](#list) · [`show`](#show) · [`changes`](#changes) · [`next`, `inbox`, `urgent`](#next-inbox-urgent) · [`ready`](#ready) · [`similar`](#similar) · [`feed`](#feed)
+- Read: [`list`](#list) · [`show`](#show) · [`changes`](#changes) · [`next`, `inbox`, `urgent`](#next-inbox-urgent) · [`ready`](#ready) · [`prime`](#prime) · [`similar`](#similar) · [`feed`](#feed)
 - Write: [`add`](#add) · [`mark`](#mark) · [`close`](#close) · [`set`](#set) · [`claim`](#claim)
 - Maintain: [`doctor`](#doctor) · [`archive`](#archive) · [`fmt`](#fmt)
 - Integrate: [`board`](#board) · [`mcp`](#mcp) · [`hook claude`](#hook-claude)
@@ -504,6 +504,19 @@ open `blocked_by` task and no future `defer_until` (format 2). A task whose `par
 by a future `defer_until` or by kind `later`, waits with it at any depth;
 `--with-deferred-children` lists those children anyway. Takes repository paths or
 `--workspace`, `--json`, `--limit` and `--offset`.
+
+## prime
+
+```bash
+tadu prime
+```
+
+Print a short briefing for an agent starting a session: how many items are open, the first five
+tasks [`next`](#next-inbox-urgent) gives, how many wait on a person (`inbox`) and how many are urgent
+or due by tomorrow (`urgent`), then the commands of the workflow for the backlog's format: `claim`,
+`close --id` and `set` for a task backlog, `close --match` and `mark` for `TODO.md`. Unlike the
+rule block `sync` writes, it is computed from the backlog each time. Takes repository paths or
+`--workspace`, and `--person`.
 
 ## similar
 

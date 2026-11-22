@@ -54,4 +54,12 @@ ATTENTION_OPERATIONS = (
         describe="Urgent or high priority items and items due soon or overdue, grouped by who "
         "acts (do, decide, chase, check, blocked). Use it when the user asks what is urgent.",
     ),
+    Operation(
+        "prime",
+        "a short briefing for an agent: open counts, the next tasks and the workflow's commands",
+        (PERSON,),
+        describe="A short briefing to read before working the backlog: how many items are open, "
+        "the first tasks next gives, how many wait on a person or are urgent, and the commands "
+        "of the workflow for this backlog's format. Call it when you start a session.",
+    ),
 )

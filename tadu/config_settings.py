@@ -20,6 +20,7 @@ CONFIG_OPTIONS = {
     "next": (*SCOPE, "json"),
     "inbox": (*SCOPE, "json"),
     "urgent": (*SCOPE, "json", "days"),
+    "prime": SCOPE,
     "similar": (*SCOPE, "limit"),
     "feed": (*SCOPE, "done_days"),
     "board": (

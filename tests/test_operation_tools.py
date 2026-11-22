@@ -1,6 +1,6 @@
 from tadu.operation_tools import operation_tools
 
-READS = ["list", "show", "changes", "ready", "next", "inbox", "urgent", "similar", "feed"]
+READS = ["list", "show", "changes", "ready", "next", "inbox", "urgent", "prime", "similar", "feed"]
 WRITES = ["add", "close", "mark", "set", "claim"]
 ADMIN = ["sync", "init", "archive", "fmt", "migrate"]
 

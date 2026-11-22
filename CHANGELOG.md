@@ -28,6 +28,9 @@ on Windows; Linux keeps `~/.cache/tadu`). Commands import only what they run.
 
 ### Added
 
+- `tadu prime` prints a short briefing an agent reads when it starts: how many items are open,
+  the first tasks `next` gives, how many wait on a person or are urgent, and the commands of
+  the workflow for the backlog's format. It is also an MCP tool.
 - `proposals = "pr" | "merge" | "direct"` on a `[[repository]]` of a team board's workspace:
   a change by someone who may push is merged at once (`merge`) or committed to the default branch
   (`direct`) instead of waiting as a pull request (`pr`, the default). A refused merge or commit

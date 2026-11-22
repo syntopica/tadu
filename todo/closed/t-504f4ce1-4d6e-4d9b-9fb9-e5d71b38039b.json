@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-504f4ce1-4d6e-4d9b-9fb9-e5d71b38039b",
   "title": "Add a tadu prime command that prints the workflow context an agent needs for this backlog",
-  "state": "pending",
+  "state": "done",
   "category": "agent-ergonomics",
   "type": "feature",
   "priority": "high",
@@ -13,5 +13,10 @@
   ],
   "done_when": [
     "tadu prime prints a short, current briefing and a test covers it"
+  ],
+  "closed": "2026-11-22",
+  "result": "Add a tadu prime command that prints the workflow context an agent needs for this backlog",
+  "evidence": [
+    "tests/test_prime.py (4 tests) pass, run_prime and prime_workflow fully covered; full suite 2303 passed; tadu prime . prints counts, next tasks and the format 2 workflow"
   ]
 }
