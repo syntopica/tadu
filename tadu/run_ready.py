@@ -27,7 +27,11 @@ def run_ready(args: argparse.Namespace, today: date) -> int:
         print(f"tadu ready: {error}", file=sys.stderr)
         return 2
     keys = short_keys(tuple(card.item.key for card in cards))
-    shown, note = card_page(ready_cards(cards, today), args.offset, args.limit)
+    shown, note = card_page(
+        ready_cards(cards, today, with_deferred_children=args.with_deferred_children),
+        args.offset,
+        args.limit,
+    )
     print_card_lines(shown, keys, as_json=args.json)
     if note:
         print(f"tadu ready: {note}", file=sys.stderr)

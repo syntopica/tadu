@@ -168,7 +168,8 @@ one file and cannot drift out of sync.
 | `duplicate_of` | the same work (cancelled) | duplicates |
 
 `tadu ready` lists open tasks that no open `blocked_by` task and no future `defer_until` holds
-back. Closing a task reports each task that waited on it and changes none of them: the agent
+back, and leaves out the children, at any depth, of a `parent` with a future `defer_until` or of
+kind `later` (`--with-deferred-children` lists them). Closing a task reports each task that waited on it and changes none of them: the agent
 decides whether a freed task moves to `pending`. Until it does, doctor lists it (J014).
 
 ## Ids

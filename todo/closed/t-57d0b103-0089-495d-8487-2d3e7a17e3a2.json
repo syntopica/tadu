@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-57d0b103-0089-495d-8487-2d3e7a17e3a2",
   "title": "Hide the children of a deferred parent from tadu ready",
-  "state": "pending",
+  "state": "done",
   "category": "format",
   "type": "feature",
   "priority": "high",
@@ -13,5 +13,10 @@
   ],
   "done_when": [
     "ready omits children of a deferred parent and a flag lists them, with tests"
+  ],
+  "closed": "2026-11-22",
+  "result": "Hide the children of a deferred parent from tadu ready",
+  "evidence": [
+    "tests/test_ready_deferred_children.py (3 tests) pass; full suite 2298 passed; tadu ready --with-deferred-children lists them"
   ]
 }

@@ -10,7 +10,15 @@ ATTENTION_OPERATIONS = (
     Operation(
         "ready",
         "print the open items nothing blocks or defers, most urgent first",
-        (JSON_ITEMS, *PAGE),
+        (
+            JSON_ITEMS,
+            Param(
+                "with_deferred_children",
+                "flag",
+                "also list the children of a deferred parent",
+            ),
+            *PAGE,
+        ),
     ),
     Operation(
         "next",

@@ -500,7 +500,9 @@ shop:TODO.md:26 [blocked] high **Shipping:** Switch to live carrier rates.
 ## ready
 
 Print the open items nothing holds back, most urgent first: pending and in-progress items with no
-open `blocked_by` task and no future `defer_until` (format 2). Takes repository paths or
+open `blocked_by` task and no future `defer_until` (format 2). A task whose `parent` is deferred,
+by a future `defer_until` or by kind `later`, waits with it at any depth;
+`--with-deferred-children` lists those children anyway. Takes repository paths or
 `--workspace`, `--json`, `--limit` and `--offset`.
 
 ## similar
