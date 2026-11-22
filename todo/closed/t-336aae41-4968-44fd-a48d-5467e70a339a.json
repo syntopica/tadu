@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-336aae41-4968-44fd-a48d-5467e70a339a",
   "title": "Create the Oficina Vibra GitHub account",
-  "state": "pending",
+  "state": "done",
   "category": "board",
   "type": "chore",
   "priority": "normal",
@@ -14,5 +14,10 @@
   ],
   "done_when": [
     "The account exists, its username is in the 1Password item, and it can sign in"
+  ],
+  "closed": "2026-11-22",
+  "result": "Create the Oficina Vibra GitHub account",
+  "evidence": [
+    "GitHub user oficina-vibra (id 359843098) created 2026-11-22T12:12:24Z with oficina@tieneslavibra.com, email verified by launch code, signed in from the Vibra Chrome profile; login name added to 1Password Vibra 'GitHub Oficina Vibra'"
   ]
 }

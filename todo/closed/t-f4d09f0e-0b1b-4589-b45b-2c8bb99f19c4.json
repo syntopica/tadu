@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-f4d09f0e-0b1b-4589-b45b-2c8bb99f19c4",
   "title": "Check shared board proposals against the real GitHub API",
-  "state": "blocked",
+  "state": "done",
   "category": "board",
   "type": "test",
   "priority": "normal",
@@ -17,5 +17,10 @@
   ],
   "done_when": [
     "One proposal and one issue were opened on a scratch repository by a signed-in test user, and the board showed the URL"
+  ],
+  "closed": "2026-11-22",
+  "result": "Check shared board proposals against the real GitHub API",
+  "evidence": [
+    "2026-11-22: oficina-vibra (read collaborator on syntopica/tadu-board-scratch) signed in to tadu board --auth github --allow write, pressed Start; the board opened issue 2 authored by oficina-vibra with the claim diff and showed 'proposed: https://github.com/syntopica/tadu-board-scratch/issues/2 (an issue, as you may not push...)'. The pull request path was verified 2026-11-19 (PR 1). Found and documented: a private GitHub App 404s on sign-in for non-members; the scratch App was made public. Rate limits were not exercised."
   ]
 }

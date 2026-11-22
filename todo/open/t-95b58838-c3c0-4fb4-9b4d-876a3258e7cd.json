@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-95b58838-c3c0-4fb4-9b4d-876a3258e7cd",
+  "title": "Make the proposal URL a link in the board's result message",
+  "state": "pending",
+  "category": "board",
+  "type": "feature",
+  "priority": "low",
+  "kind": "task",
+  "created": "2026-11-22",
+  "notes": [
+    "2026-11-22 real GitHub check: after Start the board prints 'proposed: https://github.com/.../issues/2 (...)' as plain text; the page has no anchor for it, so the person must copy the URL."
+  ]
+}
