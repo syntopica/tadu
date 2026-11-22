@@ -8,11 +8,12 @@
   "priority": "normal",
   "created": "2026-11-19",
   "blocked_by": [
-    "t-16e0540f-7d2f-4c1e-ab05-d6e0d3f8cea4"
+    "t-336aae41-4968-44fd-a48d-5467e70a339a"
   ],
   "notes": [
     "Step 2 was built and tested only against the fake GitHub. Unverified: App user token limits, rate limits, branch protection on ref creation, the App's Contents, Pull requests and Issues write permissions.",
-    "Real GitHub check done 2026-11-19 for the pull request path (PR 1 on syntopica/tadu-board-scratch). Left: the issue path for a user without push rights, and rate limits."
+    "Real GitHub check done 2026-11-19 for the pull request path (PR 1 on syntopica/tadu-board-scratch). Left: the issue path for a user without push rights, and rate limits.",
+    "2026-11-22: the account chosen is Oficina Vibra; waiting on its signup, which GitHub's bot check blocks for an agent. After it: add it as a read-only collaborator on syntopica/tadu-board-scratch, run the board with --auth github and the App in 1Password BusiRocket 'tadu board GitHub App (scratch test)', sign in as Oficina Vibra in an isolated Orca profile, press Start, confirm an issue opens and the board shows its URL."
   ],
   "done_when": [
     "One proposal and one issue were opened on a scratch repository by a signed-in test user, and the board showed the URL"

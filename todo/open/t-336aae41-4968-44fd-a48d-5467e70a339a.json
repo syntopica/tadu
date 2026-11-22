@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-336aae41-4968-44fd-a48d-5467e70a339a",
+  "title": "Create the Oficina Vibra GitHub account",
+  "state": "pending",
+  "category": "board",
+  "type": "chore",
+  "priority": "normal",
+  "kind": "waiting",
+  "created": "2026-11-22",
+  "notes": [
+    "GitHub's bot check (DataDome, 'El acceso está restringido temporalmente') blocks the signup from Orca's automated browser, 2026-11-22, so a person must do it. Sign up at https://github.com/signup with oficina@tieneslavibra.com and the password in 1Password, vault Vibra, item 'GitHub Oficina Vibra' (add the username there). The verification code arrives at oficina@tieneslavibra.com (Vexa reads it). Then an agent signs in from the Orca profile github-deluxe-producciones, or a new one.",
+    "The Orca profile made for the attempt was removed; use a fresh isolated profile."
+  ],
+  "done_when": [
+    "The account exists, its username is in the 1Password item, and it can sign in"
+  ]
+}
