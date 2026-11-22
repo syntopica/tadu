@@ -405,6 +405,10 @@ github = "ana-studio"
   `access` is optional, default `admin`: the most a tool may do to the
   repository through the workspace, `read`, `write` (change items) or `admin`
   (also rewrite the whole backlog); any other value is an error.
+  `proposals` is optional, default `pr`: how a board that signs in with GitHub
+  hands a change to a repository its user can push to, `pr`, `merge` or
+  `direct`; any other value is an error. `branch` is optional text: the branch
+  those changes target, by default the repository's GitHub default branch.
 - `[[project]]`: `key` is required; `name` defaults to the key; `repositories`
   lists repository keys, all of which must exist, and a repository belongs to at
   most one project. `roles` is an inline table from a role name (any string) to
