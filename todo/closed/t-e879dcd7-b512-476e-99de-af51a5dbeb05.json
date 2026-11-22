@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-e879dcd7-b512-476e-99de-af51a5dbeb05",
   "title": "Store durable per-repository facts that tadu prime can print",
-  "state": "pending",
+  "state": "cancelled",
   "category": "agent-ergonomics",
   "type": "feature",
   "priority": "normal",
@@ -10,5 +10,7 @@
   "created": "2026-11-19",
   "notes": [
     "Overlaps with the existing project memory tools; decide whether tadu should hold facts at all."
-  ]
+  ],
+  "closed": "2026-11-22",
+  "resolution": "Decided against: facts stay in instruction files and agent memory, not in tadu"
 }

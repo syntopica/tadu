@@ -306,6 +306,22 @@ tadu close --id t-8c41d2e7 --evidence "pnpm test -- webhook-idempotency passes" 
 Work through the commands, never by editing the JSON by hand. See [migrate](https://github.com/syntopica/tadu/blob/main/docs/commands.md#migrate)
 and the [format 2 spec](https://github.com/syntopica/tadu/blob/main/spec/todo-format-v2.md).
 
+### Keep a personal backlog in a shared repository
+
+tadu reads files, not commits, so a backlog git ignores works like any other. To keep your own
+backlog out of a project you share, ignore it for your clone only and put the agent rule in a
+personal instruction file ignored the same way:
+
+```bash
+printf 'todo/\nCLAUDE.local.md\n' >> .git/info/exclude
+tadu init --format 2 --file CLAUDE.local.md --write
+```
+
+`add`, `list`, `claim`, `close` and `doctor` work as usual. What reads git history has nothing
+to read: `tadu changes` and an item's history stay empty, and nothing is backed up or shared
+by a push. `tadu doctor` warns that the repository has no AGENTS.md or CLAUDE.md when the
+project has neither.
+
 ### Work across repositories
 
 A workspace is a `tadu-workspace.toml` listing repositories and people, plus an untracked

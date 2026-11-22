@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-cf75c3e2-aaf5-4db8-9ee0-1756da783c52",
+  "title": "Add a mode that keeps a backlog out of the repository's commits for personal use on a shared project",
+  "state": "done",
+  "category": "adoption",
+  "type": "feature",
+  "priority": "normal",
+  "kind": "decision",
+  "created": "2026-11-19",
+  "notes": [
+    "Options: git-ignored todo/ with a separate store, or a second repository routed by config. Decide before building."
+  ],
+  "closed": "2026-11-22",
+  "result": "No new mode. A personal backlog lives in todo/ listed in .git/info/exclude, with the agent rule in an instruction file excluded the same way; tadu reads files, so every command but git history works. Documented in the README, Keep a personal backlog in a shared repository.",
+  "evidence": [
+    "Probe 2026-11-22 in a scratch git repo with todo/ and CLAUDE.local.md in .git/info/exclude: init --format 2, add, list, close, doctor (exit 0) worked; git status shows both ignored; tadu changes reports no change, as documented"
+  ]
+}
