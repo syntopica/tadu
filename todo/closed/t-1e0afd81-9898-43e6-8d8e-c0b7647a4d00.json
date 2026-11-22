@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-1e0afd81-9898-43e6-8d8e-c0b7647a4d00",
+  "title": "Make the codeality-py quality gate pass again on main",
+  "state": "done",
+  "category": "quality",
+  "type": "bug",
+  "priority": "high",
+  "kind": "task",
+  "created": "2026-11-22",
+  "notes": [
+    "Found 2026-11-22: uv run codeality-py gate reports BPY001 in tadu/proposal_modes.py and tadu/proposal_review.py (no declaration), BPY004 in tests/test_team_board_proposals.py (216 code lines, cap 200), coverage below 100% (tadu/propose_direct.py line 28 uncovered), and uv run mypy tadu tests reports explicit Any in tests/test_board_calls.py:113 and tests/test_team_board_warnings.py:23. All came in with f9ab73e, before the prime and ready commits."
+  ],
+  "done_when": [
+    "uv run codeality-py gate --json reports no findings and uv run mypy tadu tests is clean"
+  ],
+  "closed": "2026-11-22",
+  "result": "Make the codeality-py quality gate pass again on main",
+  "evidence": [
+    "uv run codeality-py gate --json: every stage passed (pytest at 100% coverage, propose_direct conflict branch covered by tests/test_board_proposal_modes.py); uv run mypy tadu tests clean"
+  ]
+}

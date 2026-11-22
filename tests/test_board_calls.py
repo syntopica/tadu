@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, cast
+from typing import TYPE_CHECKING, cast
 
 import pytest
 from board_server import BoardServer, post, serve_board
@@ -14,6 +14,9 @@ from tadu import board_call as board_call_module
 from tadu.board_body_limit import BOARD_BODY_LIMIT
 from tadu.board_call import board_call
 from tadu.captured_run import INTERNAL_ERROR
+
+if TYPE_CHECKING:
+    from tadu.board_state import BoardState
 
 
 def call(board: BoardServer, name: str, arguments: object, **headers: str) -> Response:
@@ -110,5 +113,5 @@ def test_an_internal_error_hides_its_trace_on_a_board_for_strangers(
         board_call_module, "run_operation", lambda *_a: (INTERNAL_ERROR, "", "trace")
     )
     state = SimpleNamespace(workspace=tmp_path, allow="read", main=None)
-    status, body, _type = board_call("/api/op/list", b"{}", cast("Any", state), trace=False)
+    status, body, _type = board_call("/api/op/list", b"{}", cast("BoardState", state), trace=False)
     assert (status, json.loads(body)["errors"]) == (200, "tadu list: internal error\n")

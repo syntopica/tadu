@@ -86,6 +86,8 @@ data = [
   "tadu/operation_lock.py",
   "tadu/operations.py",
   "tadu/priorities.py",
+  "tadu/proposal_modes.py",
+  "tadu/proposal_review.py",
   "tadu/queues.py",
   "tadu/redirected_checkouts.py",
   "tadu/required_log_labels.py",

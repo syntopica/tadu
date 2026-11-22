@@ -1,12 +1,15 @@
 import argparse
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, cast
+from typing import TYPE_CHECKING, cast
 
 import pytest
 
 from tadu import team_board_warnings as module
 from tadu.team_board_warnings import team_board_warnings
+
+if TYPE_CHECKING:
+    from tadu.github_sign_in import GithubSignIn
 
 
 @pytest.fixture(autouse=True)
@@ -20,7 +23,7 @@ def warn(host: str, allow: str, *, proxy_hops: int = 0, problem: str | None = No
         public_url="http://127.0.0.1:1", secure=True, proxy_hops=proxy_hops, sessions=sessions
     )
     return team_board_warnings(
-        argparse.Namespace(host=host, allow=allow), cast("Any", github), Path()
+        argparse.Namespace(host=host, allow=allow), cast("GithubSignIn", github), Path()
     )
 
 
