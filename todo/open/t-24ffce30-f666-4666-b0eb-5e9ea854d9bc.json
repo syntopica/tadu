@@ -9,6 +9,7 @@
   "kind": "later",
   "created": "2026-11-19",
   "notes": [
-    "Archive keeps everything; this would add a short digest for agents to read instead."
+    "Archive keeps everything; this would add a short digest for agents to read instead.",
+    "2026-11-22: tadu prime now prints a compact session context; a digest of old closed tasks would extend it rather than add a new command."
   ]
 }

@@ -9,6 +9,7 @@
   "kind": "later",
   "created": "2026-11-19",
   "notes": [
-    "Match by issue URL so a second repository's issue never overwrites the first one's task."
+    "Match by issue URL so a second repository's issue never overwrites the first one's task.",
+    "2026-11-22: depends on the same GitHub API calls as the blocked task to check shared board proposals against the real GitHub API; do that check first."
   ]
 }
