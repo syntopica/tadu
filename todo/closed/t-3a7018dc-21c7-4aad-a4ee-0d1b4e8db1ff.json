@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-3a7018dc-21c7-4aad-a4ee-0d1b4e8db1ff",
+  "title": "Publish tadu 0.2.0",
+  "state": "done",
+  "category": "release",
+  "type": "chore",
+  "priority": "normal",
+  "notes": [
+    "CHANGELOG.md lists the changes. The tadu list line format and the v4 rule block are the breaking parts."
+  ],
+  "closed": "2026-11-22",
+  "result": "Publish tadu 0.2.0",
+  "evidence": [
+    "2026-11-22: tag v0.2.0 (commit c82f7da) ran Publish run 45021729961, success; PyPI lists 0.1.0 and 0.2.0; GitHub release v0.2.0 carries tadu-requirements.txt and tadu-github-requirements.txt. Gate (codeality-py gate) passed locally before tagging."
+  ]
+}

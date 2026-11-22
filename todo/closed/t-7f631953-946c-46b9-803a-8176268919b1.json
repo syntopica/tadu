@@ -2,7 +2,7 @@
   "tadu": 2,
   "id": "t-7f631953-946c-46b9-803a-8176268919b1",
   "title": "One-command install with locked, hashed dependencies",
-  "state": "blocked",
+  "state": "done",
   "category": "release",
   "type": "feature",
   "priority": "normal",
@@ -24,5 +24,10 @@
   ],
   "done_when": [
     "A documented single command installs a released tadu with every dependency pinned by hash (a published requirements file with hashes or a uv lock), and the plain CLI install does not pull the board's sign-in libraries"
+  ],
+  "closed": "2026-11-22",
+  "result": "One-command install with locked, hashed dependencies",
+  "evidence": [
+    "2026-11-22: from the v0.2.0 release assets, uv pip install --require-hashes --no-deps -r tadu-requirements.txt into a fresh Python 3.12 venv installs 3 packages and tadu --version prints 0.2.0; tadu-github-requirements.txt installs 20 and cryptography, requests_oauthlib, werkzeug and limits import. A first try failed with 'no version of tadu==0.2.0' from uv's stale index cache; --refresh fixed it."
   ]
 }
