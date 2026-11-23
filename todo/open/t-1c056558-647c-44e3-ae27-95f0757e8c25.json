@@ -1,11 +1,14 @@
 {
   "tadu": 2,
   "id": "t-1c056558-647c-44e3-ae27-95f0757e8c25",
-  "title": "Add message-like task types for agents to hand work to each other",
+  "title": "Add message-like task kinds so agents can hand work to each other (idea, not started)",
   "state": "pending",
   "category": "agent-ergonomics",
   "type": "feature",
   "priority": "low",
   "kind": "later",
-  "created": "2026-11-19"
+  "created": "2026-11-19",
+  "notes": [
+    "2026-11-24 audit: not done. Spec v2 kinds are still only task/decision/waiting/later (spec/todo-format-v2.md, spec/todo-format-v1.md Item kinds); grep finds no message or handoff type in spec or src. Deliberately deferred (kind=later, low). Next step: owner decides whether claim/inbox/waiting already cover agent handoff; if not, write a short spec proposal."
+  ]
 }

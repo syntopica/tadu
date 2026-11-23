@@ -1,7 +1,7 @@
 {
   "tadu": 2,
   "id": "t-95b58838-c3c0-4fb4-9b4d-876a3258e7cd",
-  "title": "Make the proposal URL a link in the board's result message",
+  "title": "Render the proposal URL in the board notice as a clickable link (notice is plain text today)",
   "state": "pending",
   "category": "board",
   "type": "feature",
@@ -9,6 +9,7 @@
   "kind": "task",
   "created": "2026-11-22",
   "notes": [
-    "2026-11-22 real GitHub check: after Start the board prints 'proposed: https://github.com/.../issues/2 (...)' as plain text; the page has no anchor for it, so the person must copy the URL."
+    "2026-11-22 real GitHub check: after Start the board prints 'proposed: https://github.com/.../issues/2 (...)' as plain text; the page has no anchor for it, so the person must copy the URL.",
+    "2026-11-24 audit: not done. tadu/board/run-change.js:53-54 builds store.notice as a plain string (\"proposed: <url> (...)\"); tadu/board/render-notice.js:22 renders it with el(\"span\",\"\",store.notice), no anchor. Smallest step: split the URL out of the notice, check it with safeRemote, render via externalLink (tadu/board/external-link.js). No commit since touches this."
   ]
 }

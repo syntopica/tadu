@@ -1,7 +1,7 @@
 {
   "tadu": 2,
   "id": "t-571bbb1d-04ae-4b8a-8b91-5bbd5c7bcc02",
-  "title": "Audit rule files for contradictions and near-duplicates",
+  "title": "Build a rule-file audit that flags contradictions and near-duplicates, previews by default and backs up sources when merging",
   "state": "pending",
   "category": "tooling",
   "type": "feature",
@@ -9,6 +9,7 @@
   "kind": "later",
   "created": "2026-11-19",
   "notes": [
-    "Preview by default; applying merges and keeps a backup of each source."
+    "Preview by default; applying merges and keeps a backup of each source.",
+    "2026-11-24 audit: not started. No audit/dedup command for rule files exists in ~/p/agents (scripts/commands has compileRules, guidanceDoctor, verifyRulesOutput, assertAlwaysOnRuleBudget only) and tadu has none (its contradiction checks cover task fields, not rule files). Unclear which repo should own it; agents is the likely home since it holds src/rules. Smallest next step: decide the owning repo and whether guidance:doctor should gain the check; kept as later/low."
   ]
 }

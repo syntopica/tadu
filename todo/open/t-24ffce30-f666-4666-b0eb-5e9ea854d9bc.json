@@ -1,7 +1,7 @@
 {
   "tadu": 2,
   "id": "t-24ffce30-f666-4666-b0eb-5e9ea854d9bc",
-  "title": "Summarise old closed tasks to save agent context",
+  "title": "Add a short digest of old closed tasks to tadu prime so agents skip reading the archive",
   "state": "pending",
   "category": "agent-ergonomics",
   "type": "feature",
@@ -10,6 +10,7 @@
   "created": "2026-11-19",
   "notes": [
     "Archive keeps everything; this would add a short digest for agents to read instead.",
-    "2026-11-22: tadu prime now prints a compact session context; a digest of old closed tasks would extend it rather than add a new command."
+    "2026-11-22: tadu prime now prints a compact session context; a digest of old closed tasks would extend it rather than add a new command.",
+    "2026-11-24 audit: not done. tadu prime prints open/next/waiting/urgent counts only; no digest of closed tasks in code (grep digest finds nothing). Still low priority later. Smallest next step: decide a cap (e.g. last N closed titles) and add it to prime output."
   ]
 }

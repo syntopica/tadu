@@ -1,7 +1,7 @@
 {
   "tadu": 2,
   "id": "t-e123e76f-28d1-443a-8842-33d76652f53f",
-  "title": "Sync tasks with GitHub Issues in both directions",
+  "title": "Sync tasks with GitHub Issues in both directions, matched by issue URL",
   "state": "pending",
   "category": "adoption",
   "type": "feature",
@@ -10,6 +10,7 @@
   "created": "2026-11-19",
   "notes": [
     "Match by issue URL so a second repository's issue never overwrites the first one's task.",
-    "2026-11-22: depends on the same GitHub API calls as the blocked task to check shared board proposals against the real GitHub API; do that check first."
+    "2026-11-22: depends on the same GitHub API calls as the blocked task to check shared board proposals against the real GitHub API; do that check first.",
+    "2026-11-24 audit: not done, no code for issue import/export exists (git grep finds issues only in board docs where cards open PRs/issues). Prerequisite check of board proposals against real GitHub API is now done (t-f4d09f0e). Kind later, low priority: leave until the owner wants it. Smallest next step if picked up: spec the mapping (issue URL as key, state/title/labels) before coding."
   ]
 }
