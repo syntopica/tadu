@@ -19,7 +19,9 @@ def test_the_page_works_in_chromium(tmp_path: Path) -> None:
     if node is None or not (ROOT / "node_modules" / "puppeteer-core").is_dir():
         pytest.skip("needs Node.js and `npm ci` (puppeteer-core, @sparticuz/chromium)")
     if sys.platform != "linux" and not os.environ.get("CHROME_PATH"):
-        pytest.skip("@sparticuz/chromium unpacks a Linux binary: set CHROME_PATH to a local Chromium")
+        pytest.skip(
+            "@sparticuz/chromium unpacks a Linux binary: set CHROME_PATH to a local Chromium"
+        )
     workspace = a11y_workspace(tmp_path)
     shots = os.environ.get("TADU_SCREENSHOTS", "")
     with serve_board(workspace, "write") as board:
