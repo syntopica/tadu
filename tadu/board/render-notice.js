@@ -1,5 +1,6 @@
 import { el } from "./el.js";
 import { icon } from "./icon.js";
+import { noticeLine } from "./notice-line.js";
 import { requestRender } from "./request-render.js";
 
 // The line that says a change was made, announced as a status, with a
@@ -19,5 +20,5 @@ export function renderNotice(store) {
     store.notice = "";
     requestRender();
   });
-  notice.replaceChildren(el("span", "", store.notice), ...(store.notice === "" ? [] : [dismiss]));
+  notice.replaceChildren(noticeLine(store.notice), ...(store.notice === "" ? [] : [dismiss]));
 }

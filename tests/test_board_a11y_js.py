@@ -97,6 +97,35 @@ def test_the_notice_is_a_status_with_a_dismiss_button() -> None:
     }
 
 
+def test_the_notice_links_an_https_url_and_never_parses_html() -> None:
+    shown = run("""
+    const { renderNotice } = await load("render-notice.js");
+    const notice = document.getElementById("notice");
+    const read = (text) => {
+      store.notice = text;
+      notice.shownText = undefined;
+      renderNotice(store);
+      const line = notice.children[0];
+      const links = line.querySelectorAll("a");
+      return [line.textContent, links.map((a) => [a.href, a.rel, a.target]), line.querySelectorAll("img").length];
+    };
+    out([
+      read("Fix: proposed: https://github.com/o/r/issues/2 (an issue)."),
+      read("Fix: proposed: javascript:alert(1) (x)"),
+      read("Fix: proposed: http://example.com/x (x)"),
+      read("<img src=x onerror=alert(1)> https://github.com/o/r/pull/3"),
+    ]);
+    """)
+    link = ["https://github.com/o/r/issues/2", "noopener noreferrer", "_blank"]
+    pull = ["https://github.com/o/r/pull/3", "noopener noreferrer", "_blank"]
+    assert shown == [
+        ["Fix: proposed: https://github.com/o/r/issues/2 (an issue).", [link], 0],
+        ["Fix: proposed: javascript:alert(1) (x)", [], 0],
+        ["Fix: proposed: http://example.com/x (x)", [], 0],
+        ["<img src=x onerror=alert(1)> https://github.com/o/r/pull/3", [pull], 0],
+    ]
+
+
 def test_small_shared_helpers() -> None:
     shown = board_js("""
     const { capitalize } = await load("capitalize.js");
