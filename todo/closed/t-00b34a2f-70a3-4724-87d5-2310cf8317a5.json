@@ -1,0 +1,16 @@
+{
+  "tadu": 2,
+  "id": "t-00b34a2f-70a3-4724-87d5-2310cf8317a5",
+  "title": "tests/test_crash.py fails for 'v2 init' stopped by SIGKILL and SIGINT: a leftover todo/.tadu.json temporary is reported",
+  "state": "done",
+  "category": "bugs",
+  "type": "bug",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-24",
+  "closed": "2026-11-24",
+  "result": "tests/test_crash.py fails for 'v2 init' stopped by SIGKILL and SIGINT: a leftover todo/.tadu.json temporary is reported",
+  "evidence": [
+    "Root cause: run_task_init called run_sync before todo/tadu.json existed, so a format 2 init wrote the format 1 rule block and a rerun rewrote AGENTS.md. run_sync now takes task_backlog. uv run pytest -q -k crash -m 'not browser': 61 passed; -k 'sync or init': 56 passed; ruff and mypy clean."
+  ]
+}

@@ -20,10 +20,13 @@ from tadu.task_rule_block_text import task_rule_block_text
 from tadu.write_if_unchanged import write_if_unchanged
 
 
-def run_sync(path: str, file: str | None, *, write: bool, adopt_legacy: bool) -> int:
+def run_sync(  # noqa: PLR0913
+    path: str, file: str | None, *, write: bool, adopt_legacy: bool, task_backlog: bool = False
+) -> int:
     """Print the diff for the rule block; apply it only with write, to the text that was read.
 
     A new file starts with the opening text its agent needs, such as Cursor's front matter.
+    `task_backlog` asks for the format 2 block before todo/tadu.json exists (tadu init).
     """
     root = Path(path)
     if not root.is_dir():
@@ -35,7 +38,7 @@ def run_sync(path: str, file: str | None, *, write: bool, adopt_legacy: bool) ->
         return 2
     target, before = source
     newline = dominant_newline(before)
-    text = task_rule_block_text() if is_task_backlog(root) else rule_block_text()
+    text = task_rule_block_text() if task_backlog or is_task_backlog(root) else rule_block_text()
     block = convert_newlines(text, newline)
     after = replace_rule_block(before, block, adopt_legacy=adopt_legacy)
     if after is None:

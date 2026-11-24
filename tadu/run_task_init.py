@@ -30,7 +30,7 @@ def run_task_init(path: str, file: str | None, *, write: bool) -> int:
     ):
         print(f"{target}: not a regular file; fix by hand", file=sys.stderr)
         return 2
-    status = run_sync(path, file, write=write, adopt_legacy=False)
+    status = run_sync(path, file, write=write, adopt_legacy=False, task_backlog=True)
     if status != 0:
         return status
     if write:
