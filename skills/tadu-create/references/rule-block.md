@@ -8,6 +8,9 @@ task under `todo/` (format 2, when `todo/tadu.json` exists). Use
 `TODO_HISTORY_INDEX.jsonl`, when present, to avoid parsing unchanged
 conversations more than once.
 
+- For pending-work consultation, use the provided Tadu snapshot or `tadu prime .`
+  once. A review does not authorize executing tasks. Query details only as needed;
+  use `tadu list --open --json --compact --limit 20` for a bounded inventory.
 - Do not read the backlog files whole: query them. `tadu list` filters with
   `--category`, `--type`, `--text`, `--due-within N`, `--overdue`,
   `--min-priority`, `--open` (pending work only) and `--history`; `tadu ready`

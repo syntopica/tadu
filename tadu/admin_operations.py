@@ -4,17 +4,16 @@ from __future__ import annotations
 
 from dataclasses import replace
 
+from tadu.instruction_file_param import INSTRUCTION_FILE_PARAM
 from tadu.operation import Operation
 from tadu.param import Param
-
-FILE = Param("file", "text", "instruction file (default: AGENTS.md, else CLAUDE.md)")
 
 ADMIN_OPERATIONS = (
     Operation(
         "sync",
         "write the marked rule block into the instruction file",
         (
-            replace(FILE, exclusive="target"),
+            replace(INSTRUCTION_FILE_PARAM, exclusive="target"),
             Param(
                 "agent",
                 "choice",
@@ -30,7 +29,7 @@ ADMIN_OPERATIONS = (
         "init",
         "start a tadu backlog in a repository without one",
         (
-            FILE,
+            INSTRUCTION_FILE_PARAM,
             Param(
                 "format",
                 "choice",

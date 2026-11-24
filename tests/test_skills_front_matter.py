@@ -21,8 +21,8 @@ def front_matter(text: str) -> dict[str, str]:
     return fields
 
 
-def test_both_skills_are_present() -> None:
-    assert [path.name for path in SKILL_DIRS] == ["tadu-create", "tadu-work"]
+def test_all_skills_are_present() -> None:
+    assert [path.name for path in SKILL_DIRS] == ["tadu-create", "tadu-review", "tadu-work"]
 
 
 @pytest.mark.parametrize("skill_dir", SKILL_DIRS, ids=lambda path: path.name)
@@ -32,7 +32,9 @@ def test_front_matter_names_the_directory(skill_dir: Path) -> None:
     assert fields["description"]
 
 
-@pytest.mark.parametrize("skill_dir", SKILL_DIRS, ids=lambda path: path.name)
+@pytest.mark.parametrize(
+    "skill_dir", [p for p in SKILL_DIRS if p.name != "tadu-review"], ids=lambda path: path.name
+)
 def test_format_reference_matches_the_spec(skill_dir: Path) -> None:
     copy = (skill_dir / "references" / "format.md").read_text(encoding="utf-8")
     spec = (REPO_ROOT / "spec" / "todo-format-v1.md").read_text(encoding="utf-8")
@@ -41,7 +43,9 @@ def test_format_reference_matches_the_spec(skill_dir: Path) -> None:
     assert rest == spec
 
 
-@pytest.mark.parametrize("skill_dir", SKILL_DIRS, ids=lambda path: path.name)
+@pytest.mark.parametrize(
+    "skill_dir", [p for p in SKILL_DIRS if p.name != "tadu-review"], ids=lambda path: path.name
+)
 def test_format_v2_reference_matches_the_spec(skill_dir: Path) -> None:
     copy = (skill_dir / "references" / "format-v2.md").read_text(encoding="utf-8")
     spec = (REPO_ROOT / "spec" / "todo-format-v2.md").read_text(encoding="utf-8")

@@ -40,7 +40,7 @@ def run_list(args: argparse.Namespace, today: date) -> int:
     selected = select_cards(cards, card_filter, query, today)
     keys = short_keys(tuple(card.item.key for card in cards))
     shown, note = card_page(selected, query.offset, query.limit)
-    print_card_lines(shown, keys, as_json=args.json)
+    print_card_lines(shown, keys, as_json=args.json, compact=args.compact)
     if note:
         print(f"tadu list: {note}", file=sys.stderr)
     print_problems("list", problems)

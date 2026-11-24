@@ -52,7 +52,9 @@ def test_the_board_shows_the_rest_and_refuses_a_change_by_name(tmp_path: Path) -
     workspace = a11y_workspace(tmp_path)
     upgrade_tasks(workspace)
     payload = board_payload(board_state(workspace), 14, date(2026, 11, 4))
-    (problem,) = payload["problems"]  # type: ignore[misc]
+    problems = payload["problems"]
+    assert isinstance(problems, list)
+    (problem,) = problems
     assert problem["repository"] == "tasks"
     assert UPGRADE in problem["message"]
     assert payload["formats"] == {"shop": 1, "ro": 1}

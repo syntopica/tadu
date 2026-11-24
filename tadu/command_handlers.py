@@ -42,7 +42,7 @@ def command_handlers(
 ) -> dict[str, Callable[[], int]]:
     """The command of each operation name, bound to the parsed arguments and the day."""
     return {
-        "hook": hook_command,
+        "hook": lambda: hook_command(args.agent),
         "close": lambda: close_command(args, today),
         "mark": lambda: mark_command(args, today),
         "mcp": lambda: run_mcp(args, main),

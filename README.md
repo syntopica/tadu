@@ -10,6 +10,8 @@ gives agents and people the commands to read and change them without breaking th
 is closed with proof (the test, command or PR that shows it is done), a checker guards every
 commit, and git keeps every change, which `tadu show --history` reads back.
 
+Using Codex? The [native plugin](docs/agents.md#codex-quick-start) supplies pending-work context automatically, bundles the skills and exposes read-only MCP tools. Ask “review pending tasks” after installation; `tadu prime .` is the one-command fallback.
+
 ```console
 $ tadu add --title "Reject duplicate webhook deliveries" --category Checkout --kind task --priority high --write
 ...

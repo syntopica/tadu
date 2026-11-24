@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-cf6042e1-7fbc-404a-ab90-6f2de383f5e4",
+  "title": "Make native backlog consultation discoverable and bounded",
+  "state": "done",
+  "category": "agent-ergonomics",
+  "type": "feature",
+  "priority": "high",
+  "kind": "task",
+  "created": "2026-11-24",
+  "started": "2026-11-24",
+  "assignees": [
+    "agent:maintenance"
+  ],
+  "notes": [
+    "Original pending-task review was not routed, project instructions were shadowed, and full JSON duplicated raw task documents. Ship a native plugin, consultation skill, correct sync precedence and opt-in compact inventory."
+  ],
+  "done_when": [
+    "Fresh runtime discovers trusted hooks and current skills and calls read-only MCP prime; repository quality gate passes."
+  ],
+  "closed": "2026-11-24",
+  "result": "Added native plugin hooks, read-only MCP, current bundled skills, bounded consultation, compact JSON and instruction discovery matching the client.",
+  "evidence": [
+    "uv run codeality-py gate --json: all required stages passed with 100% coverage; opt-in tests/test_codex_native.py: 2 passed against a fresh installed runtime."
+  ]
+}

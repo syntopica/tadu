@@ -4,21 +4,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tadu.holds_rule_markers import holds_rule_markers
-
 if TYPE_CHECKING:
     from pathlib import Path
 
 
 def instruction_file(root: Path, explicit: str | None) -> Path | None:
-    """The explicit file, else the AGENTS.md or CLAUDE.md holding the block, else either one.
+    """Honor an explicit target; otherwise use the first agent-discovered instruction file.
 
-    AGENTS.md wins over CLAUDE.md when neither or both hold the block. A tool such as `next dev` can create AGENTS.md beside a CLAUDE.md that already carries
-    the block; the block's file stays canonical.
+    An existing CLAUDE.md block must not hide a higher-precedence AGENTS.md from sync or doctor.
     """
     if explicit is not None:
         return root / explicit
-    present = [root / name for name in ("AGENTS.md", "CLAUDE.md") if (root / name).is_file()]
-    marked = [path for path in present if holds_rule_markers(path)]
-    chosen = marked or present
+    names = ("AGENTS.override.md", "AGENTS.md", "CLAUDE.md")
+    present = [root / name for name in names if (root / name).is_file()]
+    chosen = [path for path in present if path.stat().st_size] or present
     return chosen[0] if chosen else None

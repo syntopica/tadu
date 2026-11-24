@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "tadu hook codex", "timeout": 10, "statusMessage": "Tadu: reviewing pending work" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          { "type": "command", "command": "tadu hook codex", "timeout": 10, "statusMessage": "Tadu: validating backlog changes" }
+        ]
+      }
+    ]
+  }
+}

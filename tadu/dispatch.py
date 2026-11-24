@@ -34,7 +34,7 @@ def dispatch(args: argparse.Namespace, main: Callable[[list[str]], int]) -> int:
     elif name in SERVER_COMMANDS:
         runner, arguments = SERVER_COMMANDS[name], (args, main)
     elif name == "hook":
-        runner, arguments = "hook_command", ()
+        runner, arguments = "hook_command", (args.agent,)
     else:
         runner, arguments, options = file_command_call(args, today)
 

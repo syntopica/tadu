@@ -7,6 +7,9 @@ repository keeps one JSON file per task under `todo/` (format 2, `todo/tadu.json
 Use `TODO_HISTORY_INDEX.jsonl`, when present, to avoid parsing unchanged
 conversations more than once.
 
+- For pending-work consultation, use the provided Tadu snapshot or `tadu prime .`
+  once. A review does not authorize executing tasks. Query details only as needed;
+  use `tadu list --open --json --compact --limit 20` for a bounded inventory.
 - Never edit task files by hand. Use `tadu add` (with category, type and
   priority), `tadu set ID key=value`, `tadu claim ID --as agent:<name>` before
   working on a task, and `tadu close --id ID --evidence "<proof>"`

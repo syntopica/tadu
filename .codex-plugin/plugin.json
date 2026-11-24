@@ -1,0 +1,16 @@
+{
+  "name": "tadu",
+  "version": "0.2.0",
+  "description": "Review and maintain repository backlogs with bounded live context.",
+  "skills": "./skills",
+  "mcpServers": {
+    "tadu": { "command": "tadu", "args": ["mcp"] }
+  },
+  "hooks": "./hooks/codex.json",
+  "interface": {
+    "displayName": "Tadu",
+    "shortDescription": "Repository tasks, decisions and follow-ups",
+    "developerName": "Syntopica",
+    "category": "Productivity"
+  }
+}

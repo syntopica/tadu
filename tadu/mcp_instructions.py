@@ -10,6 +10,9 @@ do), decision (a choice a person must make), waiting (someone else owes somethin
 before which it cannot start. An item without a kind is unclassified; do not guess one.
 
 - When you start working on this backlog, call `prime` for a short briefing.
+- For a pending-work review, use the supplied Tadu snapshot or call `prime` once.
+  Review alone does not authorize execution. Use `list` with `compact` and a small
+  `limit` for inventory queries and `show` for individual details.
 - When the user asks what is urgent, call `urgent`.
 - When the user asks you to work alone or will be away, call `next` and work through its
   tasks, most pressing first. Never act on a decision, waiting or later item.

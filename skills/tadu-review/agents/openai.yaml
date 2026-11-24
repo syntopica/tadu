@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review pending work"
+  short_description: "Review repository tasks, priorities and blockers"
+  default_prompt: "Review this repository's pending work with Tadu."

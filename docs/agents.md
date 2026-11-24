@@ -3,12 +3,41 @@
 tadu is built so that a coding agent keeps the backlog as carefully as a person would. There are
 four ways to connect one; use any of them, or all.
 
+## Codex quick start
+
+Install the CLI and the native plugin:
+
+```bash
+uv tool install --force 'git+https://github.com/syntopica/tadu.git'
+codex plugin marketplace add https://github.com/syntopica/tadu.git --json
+codex plugin add tadu@tadu --json
+tadu sync . --write
+```
+
+For a local checkout, use its directory instead of the marketplace URL. Review and trust the plugin's two hook commands in Codex, then open a new agent. The plugin bundles a read-only MCP server and the current create, review and work skills; no separate MCP registration or manual skill copy is needed. Disable older standalone copies of the same skills to avoid conflicting guidance.
+
+Ask “review pending tasks” or “revisa las tareas pendientes”. The prompt hook recognizes the backlog request and supplies the equivalent of `tadu prime .`: live counts, at most five next tasks and the workflow. It stays silent for unrelated requests or directories without a backlog. The review skill uses that snapshot directly and queries individual details only when needed. Reviewing does not authorize executing tasks or sending messages.
+
+Without a plugin, start consultation with `tadu prime .`. For a structured inventory use `tadu list --open --json --compact --limit 20`, then `tadu show KEY` for details. Full `list --json` keeps its existing raw-text contract.
+
+The native hooks call `tadu hook codex`. The prompt handler reads only the nearest backlog. The post-tool handler recognizes shell writes and patch headers and reports doctor errors without applying changes. Hooks never call a model or external service. The CLI must remain on Codex's PATH.
+
+The adapter follows the [native hook payload](https://learn.chatgpt.com/docs/hooks#posttooluse): shell tools arrive as `Bash`, and patch text as `apply_patch` with `tool_input.command`. Direct tool argument shapes are accepted for compatibility too.
+
+Native runtime acceptance, after installation and hook trust:
+
+```bash
+TADU_TEST_CODEX=1 uv run pytest -n 0 -q tests/test_codex_native.py
+```
+
+Set `TADU_CODEX_PROJECT=/absolute/project/path` to check another project. This starts a fresh app server, checks trusted hooks and bundled skills, and calls the read-only MCP `prime` tool in an ephemeral thread. It does not run a model turn. The final conversational acceptance is a new agent receiving the original backlog request.
+
 | Way | What the agent gets | Set up |
 | --- | ------------------- | ------ |
 | [The rule block](#the-rule-block) | instructions in `AGENTS.md` or `CLAUDE.md`: how to add, work and close items | `tadu sync . --write` |
 | [MCP server](#mcp-server) | the commands as tools it sees without any instruction file | `claude mcp add tadu -- tadu mcp --allow write` |
 | [Claude Code hook](#claude-code-hook) | `doctor` errors handed back right after it edits the backlog | one entry in `.claude/settings.json` |
-| [Skills](#skills) | `tadu-create` and `tadu-work` | the Claude Code plugin |
+| [Skills](#skills)                     | `tadu-create`, `tadu-review` and `tadu-work`                                 | the native Codex or Claude Code plugin          |
 
 ## The rule block
 
@@ -60,12 +89,21 @@ rest, `tadu sync . --agent NAME --write` writes the block into their own file.
 
 | Agent | Reads | Set up |
 | ----- | ----- | ------ |
-| Codex | `AGENTS.md` | `tadu sync . --write` |
+| Codex          | `AGENTS.override.md`, else `AGENTS.md`, else a configured fallback             | `tadu sync . --write`                                                         |
 | Claude Code | `CLAUDE.md` (`AGENTS.md` only with its AGENTS.md support enabled) | a `CLAUDE.md` holding `@AGENTS.md`, or `tadu sync . --file CLAUDE.md --write` |
 | Gemini CLI | `GEMINI.md`; `AGENTS.md` only when `context.fileName` in its settings names it | `tadu sync . --agent gemini --write` |
 | GitHub Copilot | `AGENTS.md` for its agent; `.github/copilot-instructions.md` for every surface | `tadu sync . --agent copilot --write` |
 | Cursor | `AGENTS.md`, and the rules under `.cursor/rules/` | nothing; `tadu sync . --agent cursor --write` for a project rule |
 | Windsurf | `AGENTS.md` as an always-on rule | `tadu sync . --write` |
+
+Default sync and doctor prefer `AGENTS.override.md`, then `AGENTS.md`, then `CLAUDE.md`. A block already in `CLAUDE.md` does not override that order: Codex does not read its fallback when `AGENTS.md` exists. When both agents use separate files, sync each explicitly; existing content is preserved:
+
+```bash
+tadu sync . --file AGENTS.md --write
+tadu sync . --file CLAUDE.md --write
+```
+
+If `AGENTS.override.md` exists, target it for Codex instead. `doctor` checks the default target; explicit secondary targets need their own `sync --file FILE` check.
 
 A Cursor repository that has both `AGENTS.md` and `.cursor/rules/tadu.mdc` gives the agent the block
 twice; keep one. `doctor` checks only `AGENTS.md` or `CLAUDE.md`: after upgrading tadu, run each
@@ -128,7 +166,11 @@ or in the project's `.mcp.json`, with `"args": ["mcp", "--workspace", "/path/to/
 serve a workspace (leave out `--allow write` for an agent that should only read):
 
 ```json
-{ "mcpServers": { "tadu": { "command": "tadu", "args": ["mcp", "--allow", "write"] } } }
+{
+  "mcpServers": {
+    "tadu": { "command": "tadu", "args": ["mcp", "--allow", "write"] }
+  }
+}
 ```
 
 **Codex**, in `~/.codex/config.toml`:
@@ -160,7 +202,9 @@ The [plugin](#skills) installs the hook. Without it, add this to `.claude/settin
     "PostToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit|Bash",
-        "hooks": [{ "type": "command", "command": "tadu hook claude", "timeout": 20 }]
+        "hooks": [
+          { "type": "command", "command": "tadu hook claude", "timeout": 20 }
+        ]
       }
     ]
   }
@@ -169,11 +213,12 @@ The [plugin](#skills) installs the hook. Without it, add this to `.claude/settin
 
 ## Skills
 
-Two agent skills ship with the format, and the Claude Code plugin also installs the hook above (it
+Three agent skills ship with the format, and the Claude Code plugin also installs the hook above (it
 stays silent when `tadu` is not installed):
 
 - `tadu-create` builds `TODO.md`, `TODO_LOG.md` and the history index from the project's agent
   conversation history.
+- `tadu-review` consults the existing Markdown or task-file backlog without executing it.
 - `tadu-work` executes an existing backlog under an approved plan and run caps.
 
 In Claude Code:

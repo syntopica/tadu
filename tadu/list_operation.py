@@ -16,6 +16,7 @@ LIST_OPERATION = Operation(
         DONE_DAYS,
         Param("view", "text", "saved view of the workspace; flags given beside it win"),
         JSON_ITEMS,
+        Param("compact", "flag", "with --json, omit raw task text; use show for details"),
         Param("project", "text", "project id"),
         Param("org", "text", "organization id"),
         Param("role", "text", "organization role"),

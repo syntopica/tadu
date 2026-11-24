@@ -61,7 +61,7 @@ itself.
 or tasks of `todo/closed/` and `todo/archive/`. Cancelled items are hidden unless asked for.
 
 **Output.** Lines for people, `--json` for one JSON object per item (the keys are in the
-[format 1 spec](../spec/todo-format-v1.md#tadu-list---json)). A task of a task backlog prints by
+[format 1 spec](../spec/todo-format-v1.md#tadu-list---json)). Add `--compact` to omit the raw `text` document from JSON, preserving every other key. Use this for inventory queries and `show` for details; full JSON remains unchanged. A task of a task backlog prints by
 its shortest unique id prefix (`t-8c41d2e7`), and any command takes such a prefix of at least 10
 characters; an ambiguous prefix is refused with the candidates listed.
 
@@ -119,7 +119,7 @@ tadu sync . --write   # apply it
 
 | Option | Meaning |
 | ------ | ------- |
-| `--file FILE` | instruction file, relative to the repository root (default `AGENTS.md`, else `CLAUDE.md`) |
+| `--file FILE`    | instruction file, relative to the repository root (default `AGENTS.override.md`, then `AGENTS.md`, then `CLAUDE.md`) |
 | `--agent NAME` | write the agent's own instruction file instead: `gemini`, `copilot` or `cursor` (see below) |
 | `--adopt-legacy` | replace an older, unmarked section headed "Continuous TODO" |
 | `--write` | apply instead of printing the diff |
@@ -129,11 +129,7 @@ tadu sync . --write   # apply it
 - The block sits between `<!-- tadu:rule v5 -->` and `<!-- /tadu:rule -->` marker lines; only the
   text between them changes. Markers count only as a whole line outside a fenced code block, so
   quoting them in prose or in an example is safe.
-- With neither `AGENTS.md` nor `CLAUDE.md` present, `sync` (and `init`) creates `AGENTS.md`. When
-  both exist it uses the one that already holds the block, else `AGENTS.md`, so an `AGENTS.md`
-  that a tool creates later does not move the block. Claude Code reads `AGENTS.md` only when its
-  AGENTS.md support is enabled: in a repository worked with Claude Code, add a `CLAUDE.md`
-  containing the line `@AGENTS.md`.
+- With no instruction file present, `sync` (and `init`) creates `AGENTS.md`. Otherwise it prefers `AGENTS.override.md`, `AGENTS.md`, then `CLAUDE.md`, matching Codex's precedence. A pre-existing block in `CLAUDE.md` does not hide a later `AGENTS.md`. Sync separate files explicitly with `--file`; no existing content in the other file is removed. Claude Code can instead import `AGENTS.md` from `CLAUDE.md` or use its built-in AGENTS.md support.
 - `--agent` writes the file an agent reads besides, or instead of, `AGENTS.md`: `gemini` is
   `GEMINI.md`, `copilot` is `.github/copilot-instructions.md` and `cursor` is
   `.cursor/rules/tadu.mdc`, created with `alwaysApply: true` front matter so the rule loads in

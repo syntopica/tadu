@@ -7,13 +7,13 @@ from tadu.param import Param
 
 HOOK_OPERATION = Operation(
     "hook",
-    "agent hooks that run doctor after a backlog change",
+    "agent hooks for backlog context and validation",
     (
         Param(
             "agent",
             "choice",
-            "claude: a Claude Code PostToolUse hook",
-            ("claude",),
+            "claude: PostToolUse validation; codex: prompt briefing and PostToolUse validation",
+            ("claude", "codex"),
             required=True,
             positional=True,
         ),

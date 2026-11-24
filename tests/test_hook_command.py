@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+from tadu.cli import main
 from tadu.hook_command import hook_command
 
 
@@ -29,3 +30,13 @@ def test_undecodable_input_is_silent(
     stdin(monkeypatch, b"\xff")
     assert hook_command() == 0
     assert capsys.readouterr().out == ""
+
+
+def test_cli_dispatches_the_codex_adapter(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "TODO.md").write_text("# TODO\n\n- [ ] Fix login\n")
+    payload = f'{{"cwd": "{tmp_path}", "prompt": "revisa las tareas pendientes"}}'
+    stdin(monkeypatch, payload.encode())
+    assert main(["hook", "codex"]) == 0
+    assert "Open: 1 items." in capsys.readouterr().out

@@ -59,6 +59,7 @@ data = [
   "tadu/history_operations.py",
   "tadu/hook_operation.py",
   "tadu/index_required_keys.py",
+  "tadu/instruction_file_param.py",
   "tadu/item_cache_settings.py",
   "tadu/item_date_prefix_pattern.py",
   "tadu/item_state_pattern.py",
