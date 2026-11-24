@@ -85,6 +85,8 @@ await page.setDragInterception(false);
 await page.waitForNetworkIdle({ idleTime: 300 });
 await page.click("#new-item");
 await page.waitForSelector("#change input[name=title]");
+// The dialog focuses its first field a frame after it opens; typing before that loses the rest of the title.
+await page.waitForFunction(() => document.activeElement?.closest("#change"));
 await page.focus("#change input[name=title]");
 await page.keyboard.type("Fix the cart rounding");
 await click(page, "#change", "Preview");
