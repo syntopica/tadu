@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-63a297fd-aa83-4460-af7c-4e351c11d645",
+  "title": "Ship a pre-commit snippet that skips a repository's full gate on backlog-only commits and runs tadu doctor instead",
+  "state": "pending",
+  "category": "adoption",
+  "type": "untriaged",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-27",
+  "notes": [
+    "Seen 2026-11-27 in ~/p/intelifactu: its husky pre-commit ran type-check, lint and 4.900 tests on a commit that only added one todo/ JSON, and failed on an unrelated stale test table, so the backlog change could not land. Fix there (commit b11184f20): add todo/* to the hook's docs-only skip list. Owner wants this for every repository that adopts tadu.",
+    "Smallest step: document the case pattern in the README adoption section (husky, plain .git/hooks and pre-commit framework variants), with `tadu doctor .` as the check for backlog paths (todo/, TODO.md, TODO_LOG.md); optionally a `tadu hook print` command that emits it."
+  ],
+  "done_when": [
+    "The README shows a copy-paste pre-commit snippet that exits early with tadu doctor when only backlog paths are staged, and a test checks the snippet against a backlog-only and a mixed staging"
+  ]
+}
