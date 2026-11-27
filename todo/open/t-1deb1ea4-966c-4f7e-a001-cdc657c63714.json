@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-1deb1ea4-966c-4f7e-a001-cdc657c63714",
+  "title": "Report deferred tasks separately from due checks in tadu next",
+  "state": "pending",
+  "category": "cli",
+  "type": "bug",
+  "priority": "normal",
+  "kind": "task",
+  "created": "2026-11-27",
+  "notes": [
+    "Observed in CaseGPT with Tadu 0.2.0: tadu next reported 18 to check before the obsolete widget item was retired and 17 afterwards, while tadu inbox listed one due check throughout. run_next counts every remaining kind=later through card_section and section_counts, regardless of check_on.",
+    "The next summary should identify undated and future later items as deferred and reserve due check wording for the same date predicate that drives the inbox Check section. An item already counted as blocked should not disappear into a misleading due-check bucket."
+  ],
+  "done_when": [
+    "CLI tests cover undated, future, and due check_on values on later items and a due check on a blocked task. The next summary and inbox agree on due reviews, while preserving the full count of deferred items."
+  ]
+}
