@@ -10,9 +10,11 @@
   "created": "2026-11-27",
   "notes": [
     "Seen 2026-11-27 in ~/p/intelifactu: its husky pre-commit ran type-check, lint and 4.900 tests on a commit that only added one todo/ JSON, and failed on an unrelated stale test table, so the backlog change could not land. Fix there (commit b11184f20): add todo/* to the hook's docs-only skip list. Owner wants this for every repository that adopts tadu.",
-    "Smallest step: document the case pattern in the README adoption section (husky, plain .git/hooks and pre-commit framework variants), with `tadu doctor .` as the check for backlog paths (todo/, TODO.md, TODO_LOG.md); optionally a `tadu hook print` command that emits it."
+    "Smallest step: document the case pattern in the README adoption section (husky, plain .git/hooks and pre-commit framework variants), with `tadu doctor .` as the check for backlog paths (todo/, TODO.md, TODO_LOG.md); optionally a `tadu hook print` command that emits it.",
+    "Owner request 2026-11-28: the same skip applies to CI, not only to the pre-commit hook. A push or pull request that only touches backlog paths should not run the full workflow; at most a job runs tadu doctor. Add a GitHub Actions example (paths-ignore on the gate workflow plus a doctor job on the backlog paths) to the README next to the hook snippet, and apply it to this repository's own quality.yml. Mind required status checks: a skipped required workflow blocks a backlog-only pull request. The generated workflows and lefthook config for codeality adopters are the codeality task 'Skip the generated CI gates and pre-commit hooks on backlog-only changes, running only tadu doctor'."
   ],
   "done_when": [
-    "The README shows a copy-paste pre-commit snippet that exits early with tadu doctor when only backlog paths are staged, and a test checks the snippet against a backlog-only and a mixed staging"
+    "The README shows a copy-paste pre-commit snippet that exits early with tadu doctor when only backlog paths are staged, and a test checks the snippet against a backlog-only and a mixed staging",
+    "The README shows a GitHub Actions example that skips the gate workflow on backlog-only pushes and runs tadu doctor instead, and this repository's quality.yml uses it"
   ]
 }
