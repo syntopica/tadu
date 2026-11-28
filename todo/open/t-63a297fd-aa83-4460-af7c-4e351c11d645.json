@@ -4,7 +4,7 @@
   "title": "Ship a pre-commit snippet that skips a repository's full gate on backlog-only commits and runs tadu doctor instead",
   "state": "pending",
   "category": "adoption",
-  "type": "untriaged",
+  "type": "feature",
   "priority": "normal",
   "kind": "task",
   "created": "2026-11-27",
